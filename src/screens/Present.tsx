@@ -336,7 +336,7 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
   if (art.type === "tweet")          return <TweetCard       inject={inject} artifact={art} />;
   if (art.type === "email")          return <EmailCard       inject={inject} artifact={art} />;
   if (art.type === "legal_letter")   return <LegalLetter     inject={inject} artifact={art} />;
-  if (art.type === "news_headline")  return <NewsHeadline    inject={inject} artifact={art} />;
+  if (art.type === "news_headline")  return <NewsHeadline    inject={inject} />;
 
   return (
     <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
