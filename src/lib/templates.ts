@@ -390,7 +390,6 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         imageUrl: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80",
         targetRoles: ["CEO", "CCO", "CLO"],
         expectedKeywords: ["deepfake", "verify", "statement", "legal", "forensic"],
-        decisionOptions: [],
       },
 
       // Branch A — immediate denial
@@ -542,7 +541,6 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80",
         targetRoles: ["CEO", "CISO", "CTO", "CFO"],
         expectedKeywords: ["patch", "offline", "WAF", "breach", "revenue", "GDPR"],
-        decisionOptions: [],
       },
 
       // Branch A — went offline
@@ -568,7 +566,6 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         ],
         targetRoles: ["CEO", "CCO", "CLO"],
         expectedKeywords: ["transparency", "narrative", "maintenance", "board", "customer trust"],
-        decisionOptions: [],
       },
 
       // Branch B — stayed live, breach happened
@@ -594,7 +591,6 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         ],
         targetRoles: ["CEO", "CISO", "CLO", "CFO"],
         expectedKeywords: ["GDPR", "notification", "ICO", "shut down", "72 hours", "customer notification"],
-        decisionOptions: [],
       },
 
       // Branch C — silent feature flag
@@ -620,7 +616,6 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         ],
         targetRoles: ["CEO", "CCO", "CLO"],
         expectedKeywords: ["blogger", "narrative", "statement", "ahead of", "concealment"],
-        decisionOptions: [],
       },
 
       // Convergence
@@ -647,7 +642,6 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         targetRoles: ["CEO", "CTO", "CFO", "CISO"],
         expectedKeywords: ["audit", "board", "systemic", "remediation", "investment", "governance"],
         imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-        decisionOptions: [],
       },
     ],
   },
