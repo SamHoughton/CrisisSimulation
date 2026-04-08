@@ -5,9 +5,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        sidebar: "#0f172a",
-        "sidebar-hover": "#1e293b",
-        surface: "#1e293b",
+        rtr: {
+          base:     "#0d0e10",
+          sidebar:  "#111215",
+          panel:    "#15171a",
+          elevated: "#1c1f24",
+          hover:    "#22262d",
+          border:   "#1e2128",
+          "border-light": "#2a2e3a",
+          text:     "#e8eaf0",
+          muted:    "#8b8fa8",
+          dim:      "#4a4f65",
+          green:    "#4afe91",
+          red:      "#e8002d",
+        },
+      },
+      fontFamily: {
+        mono: ["'Share Tech Mono'", "Cascadia Code", "monospace"],
       },
       keyframes: {
         "inject-in": {

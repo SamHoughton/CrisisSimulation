@@ -41,10 +41,10 @@ export const DIFFICULTY_LABEL: Record<string, string> = {
 };
 
 export const DIFFICULTY_COLOUR: Record<string, string> = {
-  LOW: "text-emerald-600 bg-emerald-50",
-  MEDIUM: "text-amber-600 bg-amber-50",
-  HIGH: "text-orange-600 bg-orange-50",
-  CRITICAL: "text-red-600 bg-red-50",
+  LOW:      "text-emerald-400 bg-emerald-500/15",
+  MEDIUM:   "text-amber-400 bg-amber-500/15",
+  HIGH:     "text-orange-400 bg-orange-500/15",
+  CRITICAL: "text-red-400 bg-red-500/15",
 };
 
 export const ROLE_SHORT: Record<string, string> = {
@@ -67,16 +67,16 @@ export const ROLE_LONG: Record<string, string> = {
 };
 
 export const ROLE_COLOUR: Record<string, string> = {
-  CEO: "bg-purple-100 text-purple-800",
-  CFO: "bg-blue-100 text-blue-800",
-  CISO: "bg-red-100 text-red-800",
-  CLO: "bg-slate-100 text-slate-800",
-  CCO: "bg-pink-100 text-pink-800",
-  COO: "bg-indigo-100 text-indigo-800",
-  CTO: "bg-cyan-100 text-cyan-800",
-  BOARD_REP: "bg-amber-100 text-amber-800",
-  HR_LEAD: "bg-green-100 text-green-800",
-  CUSTOM: "bg-gray-100 text-gray-800",
+  CEO:      "bg-purple-500/20 text-purple-300",
+  CFO:      "bg-blue-500/20 text-blue-300",
+  CISO:     "bg-red-500/20 text-red-300",
+  CLO:      "bg-slate-500/20 text-slate-300",
+  CCO:      "bg-pink-500/20 text-pink-300",
+  COO:      "bg-indigo-500/20 text-indigo-300",
+  CTO:      "bg-cyan-500/20 text-cyan-300",
+  BOARD_REP:"bg-amber-500/20 text-amber-300",
+  HR_LEAD:  "bg-green-500/20 text-green-300",
+  CUSTOM:   "bg-zinc-500/20 text-zinc-300",
 };
 
 export const ALL_ROLES = [
