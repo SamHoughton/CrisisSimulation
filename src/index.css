@@ -71,6 +71,35 @@ select.input, select {
   50%       { box-shadow: 0 0 20px 4px rgba(74, 254, 145, 0.25); }
 }
 
+/* News ticker */
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ticker-track {
+  display: inline-block;
+  animation: ticker-scroll 40s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Timer urgency flash when ≤ 60 s */
+.timer-urgent {
+  animation: timer-flash 1s ease-in-out infinite;
+}
+@keyframes timer-flash {
+  0%, 100% { color: #e8002d; }
+  50%       { color: rgba(232, 0, 45, 0.4); }
+}
+
+/* Crisis bar fill */
+.crisis-fill {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

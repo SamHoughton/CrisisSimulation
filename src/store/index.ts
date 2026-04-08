@@ -143,12 +143,14 @@ export const useStore = create<AppStore>()(
           responses: [],
           decisions: [],
         };
+        const injectNum = session.liveInjects.length + 1;
+        const totalInjects = session.scenario.injects.length;
         set((st) => ({
           session: st.session
             ? { ...st.session, liveInjects: [...st.session.liveInjects, liveInject] }
             : st.session,
         }));
-        broadcast({ type: "inject", inject: inj });
+        broadcast({ type: "inject", inject: inj, injectNum, totalInjects });
         if (session.status === "setup") get().launchSession();
       },
 

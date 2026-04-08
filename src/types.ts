@@ -29,6 +29,42 @@ export interface InjectBranch {
   nextInjectId: string;
 }
 
+// ─── Inject artifact ─────────────────────────────────────────────────────────
+
+export type ArtifactType =
+  | "ransomware_note"
+  | "tweet"
+  | "siem_alert"
+  | "email"
+  | "legal_letter"
+  | "news_headline"
+  | "default";
+
+export interface InjectArtifact {
+  type: ArtifactType;
+  // tweet
+  tweetHandle?: string;
+  tweetDisplayName?: string;
+  tweetLikes?: number;
+  tweetRetweets?: number;
+  // email
+  emailFrom?: string;
+  emailTo?: string;
+  emailSubject?: string;
+  // legal
+  legalCaseRef?: string;
+  legalAuthority?: string;
+  // siem
+  siemAlertId?: string;
+  siemSeverity?: "CRITICAL" | "HIGH" | "MEDIUM";
+  siemSourceIp?: string;
+  siemEventType?: string;
+  // ransomware
+  ransomAmount?: string;
+  ransomDeadlineHours?: number;
+  ransomWalletAddress?: string;
+}
+
 export interface Inject {
   id: string;
   order: number;
@@ -42,6 +78,9 @@ export interface Inject {
   branches?: InjectBranch[];      // tree branching: per-option next inject overrides
   targetRoles: ExecRole[];
   expectedKeywords?: string[];
+  artifact?: InjectArtifact;      // styled display type for present screen
+  timerMinutes?: number;          // per-inject countdown (facilitator controlled)
+  tickerHeadline?: string;        // added to news ticker when inject is released
 }
 
 export interface Scenario {
@@ -164,8 +203,9 @@ export interface Settings {
 // ─── BroadcastChannel message types ─────────────────────────────────────────
 
 export type PresentMessage =
-  | { type: "inject"; inject: Inject }
+  | { type: "inject"; inject: Inject; injectNum: number; totalInjects: number }
   | { type: "adhoc"; body: string }
   | { type: "status"; status: SessionStatus; scenario?: Scenario }
   | { type: "vote"; role: string; roleName: string; optionKey: string }
-  | { type: "vote-reveal"; decisions: DecisionEntry[] };
+  | { type: "vote-reveal"; decisions: DecisionEntry[] }
+  | { type: "timer"; action: "start" | "stop" | "reset"; seconds: number };

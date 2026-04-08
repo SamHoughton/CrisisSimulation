@@ -1,111 +1,191 @@
 import { useState, useEffect, useRef } from "react";
-import { ShieldAlert, GitBranch, Clock, CheckCircle2 } from "lucide-react";
+import { ShieldAlert, GitBranch, CheckCircle2, Wifi } from "lucide-react";
 import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
-import type { DecisionEntry, Inject, Scenario } from "@/types";
+import type { DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Background ticker headlines (always scrolling) ───────────────────────────
+const BG_HEADLINES = [
+  "NCSC issues guidance on heightened ransomware threat to critical infrastructure",
+  "ICO enforcement action up 42% year-on-year as GDPR scrutiny intensifies",
+  "Cyber insurance premiums rise sharply following wave of high-profile incidents",
+  "Security researchers warn of new AI-generated phishing and deepfake campaigns",
+  "Global ransomware payments exceeded $1.1 billion last year — record high",
+  "FCA confirms increase in market surveillance and enforcement activity",
+  "Supply chain attacks targeting financial services sector on the rise",
+  "Major breach at third-party SaaS provider exposes millions of customer records",
+];
 
-interface VoteRecord {
-  role: string;
-  roleName: string;
-  optionKey: string;
-}
+// ─── Option colours ───────────────────────────────────────────────────────────
+const OPT: Record<string, { bg: string; border: string; text: string; bar: string; winBg: string; winBorder: string }> = {
+  A: { bg: "rgba(59,130,246,0.12)",  border: "rgba(59,130,246,0.35)",  text: "#93c5fd", bar: "#3b82f6",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
+  B: { bg: "rgba(16,185,129,0.12)",  border: "rgba(16,185,129,0.35)",  text: "#6ee7b7", bar: "#10b981",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
+  C: { bg: "rgba(245,158,11,0.12)",  border: "rgba(245,158,11,0.35)",  text: "#fcd34d", bar: "#f59e0b",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
+  D: { bg: "rgba(168,85,247,0.12)",  border: "rgba(168,85,247,0.35)",  text: "#d8b4fe", bar: "#a855f7",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
+};
+function opt(key: string) { return OPT[key] ?? OPT.A; }
 
-interface VoteState {
-  votes: VoteRecord[];
-  revealed: boolean;
-  winner: string | null;
-}
+// ─── State types ──────────────────────────────────────────────────────────────
 
-type PresentState =
-  | { phase: "waiting"; scenario: Scenario | null }
+interface VoteRecord { role: string; roleName: string; optionKey: string; }
+interface VoteState  { votes: VoteRecord[]; revealed: boolean; winner: string | null; }
+
+type PresentPhase =
+  | { phase: "waiting";  scenario: Scenario | null }
   | { phase: "briefing"; scenario: Scenario }
-  | { phase: "inject"; inject: Inject; num: number }
-  | { phase: "adhoc"; body: string }
+  | { phase: "inject";   inject: Inject; num: number }
+  | { phase: "adhoc";    body: string }
   | { phase: "paused" }
   | { phase: "ended" };
-
-// ─── Option colours (A/B/C/D) ─────────────────────────────────────────────────
-const OPT_COLOURS: Record<string, { bg: string; border: string; text: string; bar: string }> = {
-  A: { bg: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.4)",  text: "#93c5fd", bar: "#3b82f6" },
-  B: { bg: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.4)",  text: "#6ee7b7", bar: "#10b981" },
-  C: { bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.4)",  text: "#fcd34d", bar: "#f59e0b" },
-  D: { bg: "rgba(168,85,247,0.12)", border: "rgba(168,85,247,0.4)",  text: "#d8b4fe", bar: "#a855f7" },
-};
-function optColour(key: string) {
-  return OPT_COLOURS[key] ?? OPT_COLOURS.A;
-}
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
 export function Present() {
-  const [state, setState]       = useState<PresentState>({ phase: "waiting", scenario: null });
+  const [phase, setPhase]       = useState<PresentPhase>({ phase: "waiting", scenario: null });
   const [voteState, setVoteState] = useState<VoteState>({ votes: [], revealed: false, winner: null });
-  const injectCountRef          = useRef(0);
+  const [crisisLevel, setCrisisLevel] = useState(0);   // 0–100
+  const [headlines, setHeadlines]     = useState<string[]>(BG_HEADLINES);
+  const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const injectCountRef = useRef(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // BroadcastChannel listener
   useEffect(() => {
     const bc = new BroadcastChannel("crisis-present");
-
     bc.onmessage = (e) => {
       const msg = e.data;
-
       if (msg.type === "inject") {
         injectCountRef.current += 1;
-        setState({ phase: "inject", inject: msg.inject, num: injectCountRef.current });
+        setPhase({ phase: "inject", inject: msg.inject, num: injectCountRef.current });
         setVoteState({ votes: [], revealed: false, winner: null });
-
+        setCrisisLevel(Math.round((msg.injectNum / msg.totalInjects) * 100));
+        if (msg.inject.tickerHeadline) {
+          setHeadlines((h) => [msg.inject.tickerHeadline, ...h]);
+        }
       } else if (msg.type === "adhoc") {
-        setState({ phase: "adhoc", body: msg.body });
-
+        setPhase({ phase: "adhoc", body: msg.body });
       } else if (msg.type === "status") {
         if (msg.status === "active" && msg.scenario) {
-          setState(msg.scenario.briefing
+          setPhase(msg.scenario.briefing
             ? { phase: "briefing", scenario: msg.scenario }
             : { phase: "waiting", scenario: msg.scenario });
         } else if (msg.status === "paused") {
-          setState({ phase: "paused" });
+          setPhase({ phase: "paused" });
         } else if (msg.status === "ended") {
-          setState({ phase: "ended" });
+          setPhase({ phase: "ended" });
         } else if (msg.scenario) {
-          setState({ phase: "waiting", scenario: msg.scenario });
+          setPhase({ phase: "waiting", scenario: msg.scenario });
         }
-
       } else if (msg.type === "vote") {
         setVoteState((prev) => ({
           ...prev,
           votes: [...prev.votes, { role: msg.role, roleName: msg.roleName, optionKey: msg.optionKey }],
         }));
-
       } else if (msg.type === "vote-reveal") {
         const decisions: DecisionEntry[] = msg.decisions;
-        // Tally
         const counts: Record<string, number> = {};
         for (const d of decisions) counts[d.optionKey] = (counts[d.optionKey] ?? 0) + 1;
         const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-        setVoteState({ votes: decisions.map((d) => ({ role: d.role, roleName: d.name || d.role, optionKey: d.optionKey })), revealed: true, winner });
+        setVoteState({
+          votes: decisions.map((d) => ({ role: d.role, roleName: d.name || d.role, optionKey: d.optionKey })),
+          revealed: true, winner,
+        });
+      } else if (msg.type === "timer") {
+        if (msg.action === "start") {
+          setTimerSeconds(msg.seconds);
+          setTimerRunning(true);
+        } else if (msg.action === "stop") {
+          setTimerRunning(false);
+        } else if (msg.action === "reset") {
+          setTimerSeconds(msg.seconds);
+          setTimerRunning(false);
+        }
       }
     };
-
     return () => bc.close();
   }, []);
 
+  // Timer tick on present screen
+  useEffect(() => {
+    if (!timerRunning) return;
+    timerRef.current = setInterval(() => {
+      setTimerSeconds((s) => {
+        if (s === null || s <= 1) { setTimerRunning(false); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [timerRunning]);
+
+  const timerUrgent = timerSeconds !== null && timerSeconds <= 60 && timerSeconds > 0;
+  const timerLabel  = timerSeconds !== null
+    ? `${String(Math.floor(timerSeconds / 60)).padStart(2, "0")}:${String(timerSeconds % 60).padStart(2, "0")}`
+    : null;
+
+  // Crisis bar colour
+  const crisisBarColour = crisisLevel < 35 ? "#4afe91" : crisisLevel < 65 ? "#f59e0b" : "#e8002d";
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0a0b0d", color: "#e8eaf0" }}>
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-8 py-3 border-b"
-        style={{ borderColor: "#1e2128", borderTop: "2px solid #e8002d" }}>
-        <span className="brand-glow text-sm">CrisisTabletop</span>
-        <LiveClock />
+    <div className="min-h-screen flex flex-col select-none" style={{ background: "#0a0b0d", color: "#e8eaf0" }}>
+      {/* ── Top bar ─────────────────────────────────────────────────────────── */}
+      <div className="shrink-0" style={{ borderTop: "2px solid #e8002d" }}>
+        {/* Crisis escalation bar */}
+        <div className="h-1.5 w-full" style={{ background: "#111215" }}>
+          <div className="h-full crisis-fill" style={{ width: `${crisisLevel}%`, background: crisisBarColour }} />
+        </div>
+        <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: "#1e2128" }}>
+          <div className="flex items-center gap-4">
+            <span className="brand-glow text-sm">CrisisTabletop</span>
+            {crisisLevel > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-32 rounded-full" style={{ background: "#1c1f24" }}>
+                  <div className="h-full rounded-full crisis-fill" style={{ width: `${crisisLevel}%`, background: crisisBarColour }} />
+                </div>
+                <span className="text-xs font-mono" style={{ color: crisisBarColour }}>
+                  {crisisLevel < 35 ? "ESCALATING" : crisisLevel < 65 ? "CRITICAL" : "SEVERE"}
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-5">
+            {timerLabel && (
+              <div className="flex items-center gap-2">
+                <Wifi className={cn("w-3.5 h-3.5", timerRunning ? "text-rtr-green" : "text-rtr-dim")} />
+                <span className={cn("font-mono text-lg font-bold", timerUrgent ? "timer-urgent" : "text-rtr-text")}>
+                  {timerLabel}
+                </span>
+              </div>
+            )}
+            <LiveClock />
+          </div>
+        </div>
       </div>
 
-      {state.phase === "waiting"  && <WaitingScreen scenario={state.scenario} />}
-      {state.phase === "briefing" && <BriefingScreen scenario={state.scenario} />}
-      {state.phase === "inject"   && (
-        <InjectScreen inject={state.inject} num={state.num} voteState={voteState} />
-      )}
-      {state.phase === "adhoc"    && <AdHocScreen body={state.body} />}
-      {state.phase === "paused"   && <PausedScreen />}
-      {state.phase === "ended"    && <EndedScreen />}
+      {/* ── Main content ────────────────────────────────────────────────────── */}
+      <div className="flex-1 overflow-hidden">
+        {phase.phase === "waiting"  && <WaitingScreen scenario={phase.scenario} />}
+        {phase.phase === "briefing" && <BriefingScreen scenario={phase.scenario} />}
+        {phase.phase === "inject"   && <InjectScreen inject={phase.inject} num={phase.num} voteState={voteState} />}
+        {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
+        {phase.phase === "paused"   && <PausedScreen />}
+        {phase.phase === "ended"    && <EndedScreen />}
+      </div>
+
+      {/* ── News ticker ─────────────────────────────────────────────────────── */}
+      <div className="shrink-0 border-t py-2 overflow-hidden" style={{ borderColor: "#1e2128", background: "#0d0e10" }}>
+        <div className="ticker-wrap">
+          <div className="ticker-track">
+            {[...headlines, ...headlines].map((h, i) => (
+              <span key={i} className="inline-flex items-center gap-3 mr-12">
+                <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#e8002d" }}>
+                  ■ LIVE
+                </span>
+                <span className="text-xs font-mono" style={{ color: "#8b8fa8" }}>{h}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -121,11 +201,11 @@ function LiveClock() {
   return <span className="text-xs font-mono" style={{ color: "#4a4f65" }}>{time}</span>;
 }
 
-// ─── Waiting ──────────────────────────────────────────────────────────────────
+// ─── Waiting screen ───────────────────────────────────────────────────────────
 
 function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-8">
+    <div className="h-full flex flex-col items-center justify-center px-8">
       <div className="flex items-center justify-center w-20 h-20 rounded-2xl mb-8"
         style={{ background: "rgba(232,0,45,0.1)", border: "1px solid rgba(232,0,45,0.25)" }}>
         <ShieldAlert className="w-10 h-10" style={{ color: "#e8002d" }} />
@@ -141,22 +221,23 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
         </div>
       )}
       <div className="flex items-center gap-2 text-sm" style={{ color: "#4a4f65" }}>
-        <Clock className="w-4 h-4 animate-pulse" />
-        Waiting for facilitator to begin…
+        <span className="animate-pulse">●</span> Waiting for facilitator to begin…
       </div>
     </div>
   );
 }
 
-// ─── Briefing ─────────────────────────────────────────────────────────────────
+// ─── Briefing screen ──────────────────────────────────────────────────────────
 
 function BriefingScreen({ scenario }: { scenario: Scenario }) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-16 max-w-5xl mx-auto w-full">
-      {scenario.imageUrl && (
-        <div className="w-full h-40 rounded-2xl overflow-hidden mb-8"
+    <div className="h-full flex flex-col items-center justify-center px-16 max-w-5xl mx-auto w-full">
+      {(scenario.imageUrl || scenario.coverGradient) && (
+        <div className="w-full h-36 rounded-2xl overflow-hidden mb-8"
           style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}>
-          <img src={scenario.imageUrl} alt="" className="w-full h-full object-cover opacity-60" />
+          {scenario.imageUrl && (
+            <img src={scenario.imageUrl} alt="" className="w-full h-full object-cover opacity-60" />
+          )}
         </div>
       )}
       <p className="text-xs font-semibold uppercase tracking-widest mb-4 font-mono" style={{ color: "#4afe91" }}>
@@ -181,20 +262,17 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
   );
 }
 
-// ─── Inject ───────────────────────────────────────────────────────────────────
+// ─── Inject screen ────────────────────────────────────────────────────────────
 
 function InjectScreen({ inject, num, voteState }: {
-  inject: Inject;
-  num: number;
-  voteState: VoteState;
+  inject: Inject; num: number; voteState: VoteState;
 }) {
   const showVoting = inject.isDecisionPoint && inject.decisionOptions.length > 0;
-  const totalVotes = voteState.votes.length;
 
   return (
-    <div className="flex-1 flex flex-col px-10 py-10 max-w-6xl mx-auto w-full inject-arrive">
+    <div className="h-full flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 shrink-0">
         <div className="flex items-center gap-3">
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#e8002d" }} />
@@ -204,31 +282,20 @@ function InjectScreen({ inject, num, voteState }: {
             New Development
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-mono" style={{ color: "#4a4f65" }}>
-            {new Date().toLocaleTimeString()}
-          </span>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full font-mono"
-            style={{ color: "#8b8fa8", background: "#1c1f24", border: "1px solid #2a2e3a" }}>
-            Inject {num}
-          </span>
-        </div>
+        <span className="text-xs font-semibold px-3 py-1 rounded-full font-mono"
+          style={{ color: "#8b8fa8", background: "#1c1f24", border: "1px solid #2a2e3a" }}>
+          Inject {num}
+        </span>
       </div>
 
-      <div className={cn("flex gap-8", showVoting ? "items-start" : "flex-col")}>
-        {/* Left: inject body */}
-        <div className={cn("flex flex-col", showVoting ? "flex-1" : "w-full")}>
-          {inject.imageUrl && (
-            <div className="w-full h-36 rounded-xl overflow-hidden mb-5">
-              <img src={inject.imageUrl} alt="" className="w-full h-full object-cover" />
-            </div>
-          )}
-          <h2 className="text-3xl font-bold mb-5" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
-          <div className="rounded-2xl p-7" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
-            <p className="text-xl leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
-          </div>
+      {/* Body layout */}
+      <div className={cn("flex gap-8 flex-1 min-h-0", showVoting ? "items-start" : "flex-col")}>
+        {/* Left / main: artifact */}
+        <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
+          <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
+          <ArtifactDisplay inject={inject} />
           {inject.targetRoles.length > 0 && (
-            <div className="flex items-center gap-2 mt-4">
+            <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-mono" style={{ color: "#4a4f65" }}>Directed at:</span>
               {inject.targetRoles.map((r) => (
                 <span key={r} className={`text-xs font-bold px-2 py-0.5 rounded ${ROLE_COLOUR[r]}`}>
@@ -239,10 +306,305 @@ function InjectScreen({ inject, num, voteState }: {
           )}
         </div>
 
-        {/* Right: voting panel */}
+        {/* Right: voting */}
         {showVoting && (
-          <VotingDisplay inject={inject} voteState={voteState} totalVotes={totalVotes} />
+          <VotingDisplay inject={inject} voteState={voteState} />
         )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Artifact display ─────────────────────────────────────────────────────────
+
+function ArtifactDisplay({ inject }: { inject: Inject }) {
+  const art = inject.artifact;
+
+  if (!art || art.type === "default") {
+    return (
+      <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
+        {inject.imageUrl && (
+          <img src={inject.imageUrl} alt="" className="w-full h-40 object-cover rounded-xl mb-5 opacity-70" />
+        )}
+        <p className="text-xl leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+      </div>
+    );
+  }
+
+  if (art.type === "ransomware_note") return <RansomwareNote inject={inject} artifact={art} />;
+  if (art.type === "siem_alert")     return <SiemAlert      inject={inject} artifact={art} />;
+  if (art.type === "tweet")          return <TweetCard       inject={inject} artifact={art} />;
+  if (art.type === "email")          return <EmailCard       inject={inject} artifact={art} />;
+  if (art.type === "legal_letter")   return <LegalLetter     inject={inject} artifact={art} />;
+  if (art.type === "news_headline")  return <NewsHeadline    inject={inject} artifact={art} />;
+
+  return (
+    <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
+      <p className="text-xl leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+    </div>
+  );
+}
+
+// ── Ransomware note ────────────────────────────────────────────────────────────
+
+function RansomwareNote({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  return (
+    <div className="rounded-xl overflow-hidden font-mono"
+      style={{ background: "#050505", border: "1px solid #e8002d", boxShadow: "0 0 30px rgba(232,0,45,0.15)" }}>
+      {/* Title bar */}
+      <div className="px-4 py-2 flex items-center gap-2" style={{ background: "#0f0000", borderBottom: "1px solid #e8002d" }}>
+        <span className="w-3 h-3 rounded-full bg-red-600" />
+        <span className="w-3 h-3 rounded-full bg-yellow-600" />
+        <span className="w-3 h-3 rounded-full bg-green-900" />
+        <span className="text-xs ml-2" style={{ color: "#e8002d" }}>README_DECRYPT.txt</span>
+      </div>
+      <div className="p-7">
+        <p className="text-2xl font-bold mb-6 text-center" style={{ color: "#e8002d" }}>
+          !!! YOUR FILES HAVE BEEN ENCRYPTED !!!
+        </p>
+        <div className="text-sm leading-relaxed space-y-3 mb-8" style={{ color: "#cc3333" }}>
+          <p>{inject.body}</p>
+        </div>
+        <div className="rounded-lg p-4 mb-5 space-y-2" style={{ background: "#0a0a0a", border: "1px solid #330000" }}>
+          {art.ransomAmount && (
+            <div className="flex justify-between">
+              <span style={{ color: "#e8002d" }}>DEMAND:</span>
+              <span style={{ color: "#ff4444" }}>{art.ransomAmount} Bitcoin</span>
+            </div>
+          )}
+          {art.ransomDeadlineHours && (
+            <div className="flex justify-between">
+              <span style={{ color: "#e8002d" }}>DEADLINE:</span>
+              <span style={{ color: "#ff4444" }}>{art.ransomDeadlineHours} HOURS</span>
+            </div>
+          )}
+          {art.ransomWalletAddress && (
+            <div>
+              <span style={{ color: "#e8002d" }}>WALLET:</span>
+              <p className="text-xs mt-1 break-all" style={{ color: "#ff6666" }}>{art.ransomWalletAddress}</p>
+            </div>
+          )}
+        </div>
+        <p className="text-xs text-center" style={{ color: "#660000" }}>
+          After deadline all data will be published publicly. Do not contact law enforcement.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── SIEM alert ─────────────────────────────────────────────────────────────────
+
+function SiemAlert({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const sevColour = art.siemSeverity === "CRITICAL" ? "#e8002d" : art.siemSeverity === "HIGH" ? "#f59e0b" : "#4afe91";
+  return (
+    <div className="rounded-xl font-mono overflow-hidden"
+      style={{ background: "#060809", border: `1px solid ${sevColour}40`, boxShadow: `0 0 20px ${sevColour}15` }}>
+      {/* Header bar */}
+      <div className="px-5 py-3 flex items-center justify-between"
+        style={{ background: `${sevColour}12`, borderBottom: `1px solid ${sevColour}40` }}>
+        <div className="flex items-center gap-3">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: sevColour }} />
+            <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: sevColour }} />
+          </span>
+          <span className="text-sm font-bold" style={{ color: sevColour }}>
+            {art.siemSeverity ?? "CRITICAL"} SECURITY ALERT
+          </span>
+        </div>
+        <span className="text-xs" style={{ color: "#4a4f65" }}>{new Date().toLocaleTimeString()} UTC</span>
+      </div>
+      <div className="p-6 space-y-4">
+        {/* Metadata grid */}
+        <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm mb-4">
+          {art.siemAlertId && (
+            <><span style={{ color: "#4a4f65" }}>Alert ID</span><span style={{ color: "#e8eaf0" }}>{art.siemAlertId}</span></>
+          )}
+          {art.siemEventType && (
+            <><span style={{ color: "#4a4f65" }}>Event Type</span><span style={{ color: sevColour }}>{art.siemEventType}</span></>
+          )}
+          {art.siemSourceIp && (
+            <><span style={{ color: "#4a4f65" }}>Source IP</span><span style={{ color: "#e8eaf0" }}>{art.siemSourceIp}</span></>
+          )}
+          <><span style={{ color: "#4a4f65" }}>Severity</span>
+          <span className="font-bold" style={{ color: sevColour }}>{art.siemSeverity ?? "CRITICAL"}</span></>
+        </div>
+        {/* Description */}
+        <div className="rounded-lg p-4 text-sm leading-relaxed" style={{ background: "#0d0e10", border: "1px solid #1e2128" }}>
+          <p style={{ color: "#c5c8d8" }}>{inject.body}</p>
+        </div>
+        {/* Footer */}
+        <div className="flex items-center gap-2 text-xs" style={{ color: "#4a4f65" }}>
+          <span className="px-2 py-0.5 rounded" style={{ background: `${sevColour}20`, color: sevColour }}>
+            AUTOMATED RESPONSE TRIGGERED
+          </span>
+          <span>Network isolation protocols engaged</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Tweet card ─────────────────────────────────────────────────────────────────
+
+function TweetCard({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const [likes, setLikes] = useState(art.tweetLikes ?? Math.floor(Math.random() * 50000) + 5000);
+  const [rts,   setRts]   = useState(art.tweetRetweets ?? Math.floor(Math.random() * 20000) + 2000);
+
+  // Slowly increment engagement for drama
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLikes((l) => l + Math.floor(Math.random() * 120) + 30);
+      setRts((r)   => r + Math.floor(Math.random() * 50)  + 10);
+    }, 1500);
+    return () => clearInterval(id);
+  }, []);
+
+  const handle = art.tweetHandle ?? "@Breaking_Alert";
+  const name   = art.tweetDisplayName ?? handle.replace("@", "");
+  const initials = name.slice(0, 2).toUpperCase();
+
+  function fmtNum(n: number) {
+    if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+    if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+    return String(n);
+  }
+
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ background: "#16181c", border: "1px solid #2f3336" }}>
+      <div className="p-6">
+        {/* Author */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold"
+            style={{ background: "#1d9bf0", color: "#fff" }}>
+            {initials}
+          </div>
+          <div>
+            <p className="font-bold" style={{ color: "#e8eaf0" }}>{name}</p>
+            <p className="text-sm" style={{ color: "#8b8fa8" }}>{handle}</p>
+          </div>
+          {/* X logo */}
+          <div className="ml-auto">
+            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="#e8eaf0">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </div>
+        </div>
+        {/* Tweet body */}
+        <p className="text-xl leading-relaxed mb-5" style={{ color: "#e8eaf0" }}>{inject.body}</p>
+        {/* Timestamp */}
+        <p className="text-sm mb-4" style={{ color: "#8b8fa8" }}>
+          {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {new Date().toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}
+        </p>
+        {/* Engagement bar */}
+        <div className="flex items-center gap-6 pt-4" style={{ borderTop: "1px solid #2f3336" }}>
+          <div className="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="#8b8fa8" strokeWidth="2">
+              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span className="text-sm font-bold vote-count" style={{ color: "#e8eaf0" }}>{fmtNum(rts)}</span>
+            <span className="text-sm" style={{ color: "#8b8fa8" }}>Reposts</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#e8002d">
+              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span className="text-sm font-bold vote-count" style={{ color: "#e8eaf0" }}>{fmtNum(likes)}</span>
+            <span className="text-sm" style={{ color: "#8b8fa8" }}>Likes</span>
+          </div>
+          <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
+            style={{ background: "rgba(232,0,45,0.15)", color: "#e8002d" }}>
+            <span className="animate-pulse">●</span> TRENDING
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Email card ─────────────────────────────────────────────────────────────────
+
+function EmailCard({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#15171a", border: "1px solid #2a2e3a" }}>
+      {/* Email header */}
+      <div className="px-5 py-3 border-b" style={{ borderColor: "#2a2e3a", background: "#1c1f24" }}>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>From</span>
+          <span className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{art.emailFrom ?? "unknown@sender.com"}</span>
+        </div>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>To</span>
+          <span className="text-sm" style={{ color: "#8b8fa8" }}>{art.emailTo ?? "leadership@company.com"}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>Re</span>
+          <span className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>{art.emailSubject ?? inject.title}</span>
+        </div>
+      </div>
+      <div className="p-6">
+        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Legal letter ───────────────────────────────────────────────────────────────
+
+function LegalLetter({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#fafaf5", color: "#1a1a1a" }}>
+      {/* Letterhead */}
+      <div className="px-8 py-5 flex items-start justify-between" style={{ borderBottom: "3px solid #1a1a1a" }}>
+        <div>
+          <p className="text-lg font-bold tracking-wide uppercase" style={{ fontFamily: "Georgia, serif" }}>
+            {art.legalAuthority ?? "Legal Notice"}
+          </p>
+          {art.legalCaseRef && (
+            <p className="text-sm mt-1" style={{ color: "#555" }}>Case Ref: {art.legalCaseRef}</p>
+          )}
+        </div>
+        <div className="text-right text-sm" style={{ color: "#555" }}>
+          <p>OFFICIAL</p>
+          <p>{new Date().toLocaleDateString([], { day: "numeric", month: "long", year: "numeric" })}</p>
+        </div>
+      </div>
+      {/* Body */}
+      <div className="px-8 py-6">
+        <p className="text-base leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#222" }}>
+          {inject.body}
+        </p>
+      </div>
+      {/* Footer */}
+      <div className="px-8 py-4" style={{ borderTop: "1px solid #ccc", background: "#f0ede6" }}>
+        <p className="text-xs" style={{ color: "#777" }}>
+          This is an official communication. Please retain this notice and seek independent legal advice immediately.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── News headline ──────────────────────────────────────────────────────────────
+
+function NewsHeadline({ inject }: { inject: Inject }) {
+  return (
+    <div className="rounded-xl overflow-hidden">
+      {/* Breaking news banner */}
+      <div className="px-6 py-3 flex items-center gap-4" style={{ background: "#e8002d" }}>
+        <span className="text-white font-black text-sm uppercase tracking-widest">Breaking News</span>
+        <span className="flex items-center gap-1.5 text-white/80 text-xs">
+          <span className="animate-pulse">●</span> LIVE
+        </span>
+      </div>
+      <div className="p-7" style={{ background: "#15171a", border: "1px solid rgba(232,0,45,0.3)" }}>
+        <h3 className="text-2xl font-bold leading-tight mb-4" style={{ color: "#e8eaf0" }}>{inject.title}</h3>
+        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+        <div className="flex items-center gap-3 mt-5 text-xs" style={{ color: "#4a4f65" }}>
+          <span>CrisisNews Desk</span>
+          <span>·</span>
+          <span>{new Date().toLocaleTimeString()}</span>
+        </div>
       </div>
     </div>
   );
@@ -250,75 +612,57 @@ function InjectScreen({ inject, num, voteState }: {
 
 // ─── Voting display ───────────────────────────────────────────────────────────
 
-function VotingDisplay({ inject, voteState, totalVotes }: {
-  inject: Inject;
-  voteState: VoteState;
-  totalVotes: number;
-}) {
+function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteState }) {
   const { votes, revealed, winner } = voteState;
-
-  // Count per option
   const counts: Record<string, number> = {};
   for (const v of votes) counts[v.optionKey] = (counts[v.optionKey] ?? 0) + 1;
   const maxCount = Math.max(1, ...Object.values(counts));
 
   return (
     <div className="w-80 shrink-0 flex flex-col gap-3">
-      {/* Header */}
       <div className="flex items-center gap-2 mb-1">
         <GitBranch className="w-4 h-4" style={{ color: "#fbbf24" }} />
         <span className="text-xs font-bold uppercase tracking-wider font-mono" style={{ color: "#fcd34d" }}>
           Decision Required
         </span>
         <span className="ml-auto text-xs font-mono" style={{ color: "#4a4f65" }}>
-          {totalVotes} vote{totalVotes !== 1 ? "s" : ""}
+          {votes.length} vote{votes.length !== 1 ? "s" : ""}
         </span>
       </div>
 
-      {/* Options */}
-      {inject.decisionOptions.map((opt) => {
-        const c        = optColour(opt.key);
-        const count    = counts[opt.key] ?? 0;
-        const pct      = totalVotes === 0 ? 0 : Math.round((count / totalVotes) * 100);
-        const barWidth = totalVotes === 0 ? 0 : (count / maxCount) * 100;
-        const isWinner = revealed && winner === opt.key;
-        const voters   = votes.filter((v) => v.optionKey === opt.key);
+      {inject.decisionOptions.map((option) => {
+        const c       = opt(option.key);
+        const count   = counts[option.key] ?? 0;
+        const pct     = votes.length === 0 ? 0 : Math.round((count / votes.length) * 100);
+        const barW    = votes.length === 0 ? 0 : (count / maxCount) * 100;
+        const isWin   = revealed && winner === option.key;
+        const voters  = votes.filter((v) => v.optionKey === option.key);
 
         return (
-          <div key={opt.key}
-            className={cn("rounded-xl p-4 transition-all duration-500", isWinner && "winner-glow")}
-            style={{
-              background: isWinner ? "rgba(74,254,145,0.1)" : c.bg,
-              border: `1px solid ${isWinner ? "rgba(74,254,145,0.5)" : c.border}`,
-            }}>
-            {/* Option header */}
+          <div key={option.key}
+            className={cn("rounded-xl p-4 transition-all duration-500", isWin && "winner-glow")}
+            style={{ background: isWin ? c.winBg : c.bg, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono shrink-0"
-                style={{ background: isWinner ? "rgba(74,254,145,0.2)" : c.bg, color: isWinner ? "#4afe91" : c.text, border: `1px solid ${isWinner ? "rgba(74,254,145,0.5)" : c.border}` }}>
-                {opt.key}
+                style={{ background: isWin ? "rgba(74,254,145,0.2)" : c.bg, color: isWin ? "#4afe91" : c.text, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
+                {option.key}
               </span>
-              <span className="text-sm font-medium flex-1" style={{ color: isWinner ? "#4afe91" : "#e8eaf0" }}>
-                {opt.label}
+              <span className="text-sm font-medium flex-1" style={{ color: isWin ? "#4afe91" : "#e8eaf0" }}>
+                {option.label}
               </span>
               {revealed && (
-                <span className="text-sm font-bold font-mono vote-count" style={{ color: isWinner ? "#4afe91" : c.text }}>
+                <span className="text-sm font-bold font-mono vote-count" style={{ color: isWin ? "#4afe91" : c.text }}>
                   {pct}%
                 </span>
               )}
-              {isWinner && (
-                <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#4afe91" }} />
-              )}
+              {isWin && <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#4afe91" }} />}
             </div>
-
-            {/* Bar */}
             {revealed && (
               <div className="w-full h-1.5 rounded-full mb-2" style={{ background: "rgba(255,255,255,0.05)" }}>
                 <div className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${barWidth}%`, background: isWinner ? "#4afe91" : c.bar }} />
+                  style={{ width: `${barW}%`, background: isWin ? "#4afe91" : c.bar }} />
               </div>
             )}
-
-            {/* Voter names — show before reveal too */}
             {voters.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1">
                 {voters.map((v, i) => (
@@ -333,7 +677,6 @@ function VotingDisplay({ inject, voteState, totalVotes }: {
         );
       })}
 
-      {/* Winner banner */}
       {revealed && winner && (
         <div className="rounded-xl p-3 text-center" style={{ background: "rgba(74,254,145,0.08)", border: "1px solid rgba(74,254,145,0.25)" }}>
           <p className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#4afe91" }}>
@@ -341,12 +684,8 @@ function VotingDisplay({ inject, voteState, totalVotes }: {
           </p>
         </div>
       )}
-
-      {/* Waiting indicator */}
-      {!revealed && totalVotes === 0 && (
-        <div className="text-center mt-2">
-          <p className="text-xs font-mono" style={{ color: "#4a4f65" }}>Waiting for votes…</p>
-        </div>
+      {!revealed && votes.length === 0 && (
+        <p className="text-xs font-mono text-center mt-2" style={{ color: "#4a4f65" }}>Waiting for votes…</p>
       )}
     </div>
   );
@@ -356,7 +695,7 @@ function VotingDisplay({ inject, voteState, totalVotes }: {
 
 function AdHocScreen({ body }: { body: string }) {
   return (
-    <div className="flex-1 flex flex-col px-16 py-12 max-w-5xl mx-auto w-full inject-arrive">
+    <div className="h-full flex flex-col px-16 py-12 max-w-5xl mx-auto w-full inject-arrive">
       <div className="flex items-center gap-3 mb-8">
         <span className="relative flex h-3 w-3">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
@@ -377,7 +716,7 @@ function AdHocScreen({ body }: { body: string }) {
 
 function PausedScreen() {
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="h-full flex items-center justify-center">
       <div className="text-center">
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5"
           style={{ border: "3px solid rgba(245,158,11,0.3)" }}>
@@ -397,7 +736,7 @@ function PausedScreen() {
 
 function EndedScreen() {
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="h-full flex items-center justify-center">
       <div className="text-center">
         <div className="flex items-center justify-center w-24 h-24 rounded-2xl mx-auto mb-6"
           style={{ background: "rgba(74,254,145,0.08)", border: "1px solid rgba(74,254,145,0.2)" }}>
