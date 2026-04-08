@@ -338,4 +338,317 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
       },
     ],
   },
+
+  // ─── NEW: The Deepfake CEO ────────────────────────────────────────────────────
+  {
+    id: "tpl-deepfake-001",
+    title: "The Deepfake CEO",
+    description:
+      "A hyper-realistic AI-generated video of your CEO making inflammatory statements goes viral at 6am. Tests crisis comms, legal, and identity verification protocols under extreme social media pressure.",
+    type: "SOCIAL_MEDIA_CRISIS",
+    difficulty: "CRITICAL",
+    durationMin: 75,
+    isTemplate: true,
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z",
+    imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80",
+    coverGradient: "135deg, #1a0a2e 0%, #4a0080 50%, #e8002d 100%",
+    roles: ["CEO", "CCO", "CLO", "CISO", "HR_LEAD"],
+    briefing:
+      "It is 06:04 on a Monday morning. Your social media listening tool fires an automated alert. A 47-second video of your CEO — posted from an account called @CEOLeaks — is going viral. In it, the CEO appears to make openly racist remarks and threatens to fire half the workforce. Your CEO is asleep and their phone is off.",
+    injects: [
+      {
+        id: "df-i1",
+        order: 0,
+        title: "The Video Goes Viral",
+        body: "06:04 — The video now has 280,000 views and is trending on X under #[YourCompany]CEO. Media outlets are running 'developing story' banners. Three FTSE 100 investors have emailed your IR team. Your CEO's personal email is being flooded. The video is forensically convincing — standard filters can't detect it as fake.",
+        facilitatorNotes: "This IS a deepfake. The CEO has been impersonated. The challenge: how quickly can the team establish that, and how do they communicate under uncertainty?",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Issue an immediate denial — 'This video is fake' — before forensic confirmation",
+            consequence: "Statement goes out in 12 minutes. Media runs with it. If the video were real, this would be catastrophic. Forensics later confirms it IS fake — credibility saved, but narrow escape.",
+          },
+          {
+            key: "B",
+            label: "Hold all public statements — forensic verification first (est. 2–3 hours)",
+            consequence: "Vacuum filled by speculation. Two major clients call to ask for reassurance. Share price drops 6% at open. Forensic confirmation arrives at 08:45.",
+          },
+          {
+            key: "C",
+            label: "Issue holding statement: 'We are aware and urgently investigating'",
+            consequence: "Buys time without committing. Media pressure builds but no major factual errors made. Forensic confirmation arrives at 08:30.",
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i2a" },
+          { optionKey: "B", nextInjectId: "df-i2b" },
+          { optionKey: "C", nextInjectId: "df-i2c" },
+        ],
+        imageUrl: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80",
+        targetRoles: ["CEO", "CCO", "CLO"],
+        expectedKeywords: ["deepfake", "verify", "statement", "legal", "forensic"],
+        decisionOptions: [],
+      },
+
+      // Branch A — immediate denial
+      {
+        id: "df-i2a",
+        order: 10,
+        title: "Path A: Denial Backfires — Scope Escalates",
+        body: "07:15 — Your immediate denial is now being questioned. A tech journalist has enhanced the audio and claims 'it sounds too real to be AI'. The account that posted the video has disappeared, but not before sending it to 14 journalists. Your stock is down 4.1%. A second, unrelated video surfaces — this one showing the CFO making comments about a competitor. QUESTION: Is this a coordinated attack?",
+        facilitatorNotes: "The CFO video is also fake — same threat actor. This is a targeted disinformation campaign. The team now has to deal with two simultaneous deepfakes AND the fact their first denial is being questioned.",
+        delayMinutes: 0,
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CCO", "CLO", "CISO"],
+        expectedKeywords: ["forensic", "coordinated", "threat actor", "law enforcement", "two videos"],
+      },
+
+      // Branch B — waited too long
+      {
+        id: "df-i2b",
+        order: 10,
+        title: "Path B: The Silence Costs You",
+        body: "08:00 — Two hours of silence has been read as confirmation. Your largest retail partner has paused co-marketing. 140 staff have emailed HR asking for emergency all-hands. A Sunday Times journalist publishes a piece titled 'Company refuses to comment on CEO racism video'. Your CEO is now awake and incandescent — they want to make a personal live video immediately.",
+        facilitatorNotes: "The CEO going live unplanned is high risk — exhausted, emotional, no briefing. But staying silent is also costly. The team must manage the CEO as much as the crisis.",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Let CEO go live immediately on LinkedIn",
+            consequence: "CEO is emotional but convincing. Video gets 800k views. Authenticity wins. But one journalist asks about the CFO video that surfaces 20 minutes later.",
+          },
+          {
+            key: "B",
+            label: "Brief CEO first — 30-minute delay for prep",
+            consequence: "CEO goes live with a clear, calm rebuttal. Timing is tight — forensics not yet back — but CEO's authenticity and the prepared messaging lands well.",
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i3" },
+          { optionKey: "B", nextInjectId: "df-i3" },
+        ],
+        targetRoles: ["CEO", "CCO", "HR_LEAD"],
+        expectedKeywords: ["CEO", "live", "brief", "all-hands", "reputational"],
+      },
+
+      // Branch C — holding statement
+      {
+        id: "df-i2c",
+        order: 10,
+        title: "Path C: The Window Holds — Forensics Race",
+        body: "07:30 — Your holding statement is working. Media are covering the uncertainty angle: 'Company investigates viral CEO video — authenticity questioned'. Your CISO has engaged a specialist deepfake detection firm. Early indicators suggest AI-generated audio artefacts. However, a campaigning journalist has published a thread calling the holding statement 'a cover-up playbook'. Employees are getting nervous.",
+        facilitatorNotes: "This path is the most defensible legally but creates internal tension. HR needs to act on employee comms while the investigation continues.",
+        delayMinutes: 0,
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CISO", "CLO", "CCO", "HR_LEAD"],
+        expectedKeywords: ["forensic", "employee comms", "investigation", "cover-up narrative"],
+      },
+
+      // Convergence inject — all paths lead here
+      {
+        id: "df-i3",
+        order: 20,
+        title: "Forensic Confirmation: It's a Deepfake",
+        body: "09:15 — Your specialist forensic firm confirms: the video is AI-generated. Voice synthesis, facial mapping. They provide a technical report you can publish. The threat actor is linked to an offshore account — likely corporate espionage or activist sabotage. Now the question is: how do you communicate the confirmation, and do you go public with the forensic evidence?",
+        facilitatorNotes: "This is now a 'win' moment but it has to be handled carefully. Publishing the forensic report may invite counter-arguments. Not publishing it leaves lingering doubt. There's also a law enforcement decision to make.",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Publish the full forensic report publicly and file a police report",
+            consequence: "Maximum transparency. Media pivot to 'company vindicated' narrative. Law enforcement involvement signals seriousness. Risk: draws attention to the attack methodology.",
+          },
+          {
+            key: "B",
+            label: "Brief media off-record and publish a summary statement only",
+            consequence: "Controls the narrative tightly. Some journalists feel misled. Story dies within 24 hours. No law enforcement trail — attacker may repeat.",
+          },
+        ],
+        targetRoles: ["CEO", "CLO", "CCO", "CISO"],
+        expectedKeywords: ["publish", "forensic", "police", "law enforcement", "narrative"],
+        imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+      },
+
+      {
+        id: "df-i4",
+        order: 30,
+        title: "The Copycat",
+        body: "Day 2, 14:00 — A competitor's PR firm has reached out to ask 'how you handled it so well'. But simultaneously: a second deepfake — this time of your CFO announcing a fake acquisition — appears on a financial forum. Markets briefly spike on the fake news before trading algorithms flag it. Your CISO believes the same threat actor is behind both. You now have to decide: was this espionage, a short seller, or an activist?",
+        facilitatorNotes: "End the session here or extend. The short-seller angle is the most legally interesting — market manipulation using AI-generated disinformation is a novel regulatory frontier.",
+        delayMinutes: 0,
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CLO", "CISO", "CFO"],
+        expectedKeywords: ["short seller", "market manipulation", "FCA", "threat intelligence", "repeat attack"],
+      },
+    ],
+  },
+
+  // ─── NEW: Black Friday Zero-Day ───────────────────────────────────────────────
+  {
+    id: "tpl-blackfriday-001",
+    title: "Black Friday Zero-Day",
+    description:
+      "A critical zero-day vulnerability in your e-commerce platform is disclosed publicly at 11pm on Thanksgiving. Your biggest trading day starts in 8 hours. Pay the ransom, patch and go dark, or gamble on a hotfix?",
+    type: "RANSOMWARE",
+    difficulty: "CRITICAL",
+    durationMin: 90,
+    isTemplate: true,
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z",
+    imageUrl: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80",
+    coverGradient: "135deg, #0a0a0a 0%, #1a1a00 50%, #e8002d 100%",
+    roles: ["CEO", "CISO", "CFO", "CTO", "CLO", "CCO"],
+    briefing:
+      "It is 23:07 on Thanksgiving Thursday. You are a senior leader at a major e-commerce retailer. Black Friday — your single biggest trading day, worth £180M in projected revenue — starts in less than 9 hours. A security researcher has just published a proof-of-concept exploit for a critical SQL injection vulnerability in the open-source checkout library you use. There are already signs of active exploitation in the wild.",
+    injects: [
+      {
+        id: "bf-i1",
+        order: 0,
+        title: "Zero-Day Goes Public",
+        body: "23:07 — The vulnerability (CVSSv3: 9.8 CRITICAL) allows unauthenticated attackers to dump your entire customer database via your checkout flow. The researcher published the full exploit code. Your CISO estimates you have 30–90 minutes before automated scanners hit every retailer running this library. You have three options.",
+        facilitatorNotes: "There is no perfect option. Option A protects customers but kills revenue. Option B is a gamble. Option C buys time but is a form of deliberate concealment. Watch how the team handles the moral dimensions alongside the technical ones.",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Take the platform offline — emergency maintenance window until patched",
+            consequence: "Platform goes dark at 23:45. All Black Friday traffic gets a maintenance page. No breach. Revenue loss: £180M. Media: 'Retailer ruins Black Friday'. Board emergency call at 06:00.",
+          },
+          {
+            key: "B",
+            label: "Apply emergency WAF rules and rate-limiting — stay live, patch in background",
+            consequence: "Platform stays up. WAF rules block known exploit patterns but not zero-days by definition. At 02:40, SIEM detects 4 successful exploitations. 22,000 card records compromised.",
+          },
+          {
+            key: "C",
+            label: "Go live as planned — quietly disable the affected checkout feature and route via legacy path",
+            consequence: "Revenue continues. 'Legacy path' has its own issues — 3x slower, causes £12M in abandoned carts. At 04:15, a security blogger notices the silent feature flag and tweets about it.",
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "bf-i2a" },
+          { optionKey: "B", nextInjectId: "bf-i2b" },
+          { optionKey: "C", nextInjectId: "bf-i2c" },
+        ],
+        imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80",
+        targetRoles: ["CEO", "CISO", "CTO", "CFO"],
+        expectedKeywords: ["patch", "offline", "WAF", "breach", "revenue", "GDPR"],
+        decisionOptions: [],
+      },
+
+      // Branch A — went offline
+      {
+        id: "bf-i2a",
+        order: 10,
+        title: "Path A: Dark — The Backlash Arrives",
+        body: "07:30 — Patch deployed. Platform coming back up. But Twitter is a warzone: customers are furious, 'BlackFridayFail' is trending #1, and a rival has run emergency ads targeting your customers. Three national papers have 'Why did [Company] go dark on Black Friday?' as their lead business story. Your board has called an emergency 09:00. Key question: was this the right call, and how do you communicate it?",
+        facilitatorNotes: "This is where the RIGHT decision looks wrong in the short term. The team need to articulate WHY this was correct — protecting customer data — without revealing technical details that would confirm the severity of the vulnerability.",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Full transparency — publish a post-incident report explaining the vulnerability",
+            consequence: "Security community praises the decision. Media story pivots to 'Company puts customers first'. Competitor copy-cat patch kicks in 6 hours later. Long-term credibility gain.",
+          },
+          {
+            key: "B",
+            label: "Minimal disclosure — 'planned maintenance' narrative",
+            consequence: "Works until the security researcher tweets that the outage was related to their disclosure. Story becomes about the cover-up, not the original decision.",
+          },
+        ],
+        targetRoles: ["CEO", "CCO", "CLO"],
+        expectedKeywords: ["transparency", "narrative", "maintenance", "board", "customer trust"],
+        decisionOptions: [],
+      },
+
+      // Branch B — stayed live, breach happened
+      {
+        id: "bf-i2b",
+        order: 10,
+        title: "Path B: Breach Confirmed — 22,000 Cards",
+        body: "02:40 — SIEM alert: 22,000 card records exfiltrated via the zero-day. Attacker IP traced to a Tor exit node. Your payment processor has been notified. GDPR 72-hour clock starts NOW. Black Friday is in 5 hours — the platform is technically still running. Do you keep trading or shut down?",
+        facilitatorNotes: "This is now a combined breach + Black Friday crisis. The GDPR clock is ticking. The team made the wrong call at inject 1 — this is the consequence. Shutting down NOW after a breach is worse optics than pre-emptive maintenance.",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Shut down immediately and notify affected customers before Black Friday starts",
+            consequence: "Painful but correct. ICO acknowledges the swift notification. Forensics engaged. Platform back up at 11:00 — late but recoverable.",
+          },
+          {
+            key: "B",
+            label: "Continue trading — patch running — only notify after Black Friday ends",
+            consequence: "Revenue saved. A journalist receives a tip at 14:30. Story breaks mid-Black Friday: 'Company knew about breach and kept trading'. ICO investigation, maximum fine likely.",
+          },
+        ],
+        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
+        expectedKeywords: ["GDPR", "notification", "ICO", "shut down", "72 hours", "customer notification"],
+        decisionOptions: [],
+      },
+
+      // Branch C — silent feature flag
+      {
+        id: "bf-i2c",
+        order: 10,
+        title: "Path C: The Blogger Knows",
+        body: "04:15 — @SecurityResearch247 has 80,000 followers and just tweeted: 'Interesting: [Company] silently disabled their checkout V2 at 23:30 last night. Correlated with last night's zero-day disclosure. No announcement made. Thread incoming.' The tweet already has 4,000 RTs. You have approximately 20 minutes before this goes mainstream.",
+        facilitatorNotes: "The 'quiet fix' approach has failed. The team now has a second crisis layered on top: the appearance of concealment. How quickly can they get ahead of this narrative?",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Get ahead of it — immediate statement: 'We acted swiftly to protect customers'",
+            consequence: "Narrative partially recovers. Security community broadly supportive. Revenue continues. ICO makes enquiries about GDPR notification obligations.",
+          },
+          {
+            key: "B",
+            label: "Ignore the tweet — hope it doesn't go viral",
+            consequence: "Three national journalists pick it up by 05:30. 'Secret cyber cover-up during Black Friday' is the morning headline. Board meeting called for 07:00.",
+          },
+        ],
+        targetRoles: ["CEO", "CCO", "CLO"],
+        expectedKeywords: ["blogger", "narrative", "statement", "ahead of", "concealment"],
+        decisionOptions: [],
+      },
+
+      // Convergence
+      {
+        id: "bf-i3",
+        order: 20,
+        title: "Post-Black Friday: The Board Wants Answers",
+        body: "Saturday 09:00 — Whatever path you took, the board has convened. The Finance Director has circulated a P&L impact analysis. The question on everyone's lips: was this a one-off or systemic? Your CTO has discovered that 11 other open-source libraries you depend on have similar potential vulnerabilities — never audited. The board is asking whether this needs to go to shareholders.",
+        facilitatorNotes: "This is a governance and culture question. Was this a failure of process (no library auditing) or a failure of investment (understaffed security team)? The answer determines the remediation path.",
+        delayMinutes: 0,
+        isDecisionPoint: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Commission an urgent third-party security audit — pause new feature development",
+            consequence: "Correct call. Dev team frustrated. Audit reveals 3 more critical issues. Remediation roadmap prepared for board. Takes 6 weeks and £400k.",
+          },
+          {
+            key: "B",
+            label: "Internal review only — accelerate patching programme without external audit",
+            consequence: "Faster and cheaper. 8 months later, a second vulnerability is exploited. External audit is then mandated by the board anyway, now under legal scrutiny.",
+          },
+        ],
+        targetRoles: ["CEO", "CTO", "CFO", "CISO"],
+        expectedKeywords: ["audit", "board", "systemic", "remediation", "investment", "governance"],
+        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+        decisionOptions: [],
+      },
+    ],
+  },
 ];

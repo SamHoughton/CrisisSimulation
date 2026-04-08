@@ -1,14 +1,17 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import {
   ChevronLeft, Save, Plus, Trash2, ChevronDown, ChevronUp,
-  GitBranch, AlertCircle, GripVertical,
+  GitBranch, AlertCircle, GripVertical, Image, ArrowRight,
 } from "lucide-react";
 import {
   cn, makeId, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL,
   ROLE_SHORT, ALL_ROLES, ALL_SCENARIO_TYPES,
 } from "@/lib/utils";
-import type { Scenario, Inject, DecisionOption, ScenarioType, Difficulty, ExecRole } from "@/types";
+import type {
+  Scenario, Inject, DecisionOption, InjectBranch,
+  ScenarioType, Difficulty, ExecRole,
+} from "@/types";
 
 const DIFFICULTIES: Difficulty[] = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
@@ -22,6 +25,7 @@ function emptyInject(order: number): Inject {
     delayMinutes: 5,
     isDecisionPoint: false,
     decisionOptions: [],
+    branches: [],
     targetRoles: [],
     expectedKeywords: [],
   };
@@ -105,6 +109,13 @@ export function Builder() {
     });
   };
 
+  const updateBranch = (injectId: string, optionKey: string, nextInjectId: string) => {
+    const inj = scenario.injects.find((i) => i.id === injectId)!;
+    const branches = inj.branches?.filter((b) => b.optionKey !== optionKey) ?? [];
+    if (nextInjectId) branches.push({ optionKey, nextInjectId });
+    updateInject(injectId, { branches });
+  };
+
   const handleSave = () => {
     if (!scenario.title.trim()) { setSaveError("Title required"); return; }
     if (scenario.roles.length === 0) { setSaveError("Select at least one role"); return; }
@@ -145,7 +156,7 @@ export function Builder() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Settings panel */}
-        <div className="w-68 shrink-0 border-r border-rtr-border overflow-y-auto px-5 py-6 space-y-6 bg-rtr-panel" style={{ width: 272 }}>
+        <div className="shrink-0 border-r border-rtr-border overflow-y-auto px-5 py-6 space-y-6 bg-rtr-panel" style={{ width: 272 }}>
           <Field label="Scenario Type">
             <select
               value={scenario.type}
@@ -191,10 +202,26 @@ export function Builder() {
             <textarea
               value={scenario.description ?? ""}
               onChange={(e) => update({ description: e.target.value })}
-              rows={3}
-              placeholder="Brief overview…"
+              rows={3} placeholder="Brief overview…"
               className={textareaCls}
             />
+          </Field>
+
+          <Field label="Cover Image URL">
+            <input
+              value={scenario.imageUrl ?? ""}
+              onChange={(e) => update({ imageUrl: e.target.value })}
+              placeholder="https://…"
+              className={inputCls}
+            />
+            {scenario.imageUrl && (
+              <img
+                src={scenario.imageUrl}
+                alt="cover preview"
+                className="mt-2 w-full h-20 object-cover rounded border border-rtr-border"
+                onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
+              />
+            )}
           </Field>
 
           <Field label="Participant Roles">
@@ -232,12 +259,19 @@ export function Builder() {
         <div className="flex-1 overflow-y-auto px-6 py-6 bg-rtr-base">
           <div className="max-w-2xl">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-sm font-semibold text-rtr-text">
-                Inject Timeline
-                <span className="ml-2 text-xs font-normal text-rtr-muted">
-                  ({scenario.injects.length} injects)
-                </span>
-              </h2>
+              <div>
+                <h2 className="text-sm font-semibold text-rtr-text">
+                  Inject Timeline
+                  <span className="ml-2 text-xs font-normal text-rtr-muted">
+                    ({scenario.injects.length} injects)
+                  </span>
+                </h2>
+                {scenario.injects.some((i) => i.branches?.length) && (
+                  <p className="text-xs text-amber-400 mt-0.5 flex items-center gap-1">
+                    <GitBranch className="w-3 h-3" />This scenario has branching paths
+                  </p>
+                )}
+              </div>
               <button
                 onClick={addInject}
                 className="flex items-center gap-1.5 text-xs text-rtr-green border border-rtr-green/30 hover:bg-rtr-green/8 px-3 py-1.5 rounded transition-colors"
@@ -263,6 +297,7 @@ export function Builder() {
                     total={scenario.injects.length}
                     expanded={expanded === inj.id}
                     roles={scenario.roles as ExecRole[]}
+                    allInjects={scenario.injects}
                     onToggle={() => setExpanded((p) => (p === inj.id ? null : inj.id))}
                     onUpdate={(p) => updateInject(inj.id, p)}
                     onRemove={() => removeInject(inj.id)}
@@ -273,7 +308,11 @@ export function Builder() {
                     onRemoveOption={(k) =>
                       updateInject(inj.id, {
                         decisionOptions: inj.decisionOptions.filter((o) => o.key !== k),
+                        branches: (inj.branches ?? []).filter((b) => b.optionKey !== k),
                       })
+                    }
+                    onUpdateBranch={(optionKey, nextInjectId) =>
+                      updateBranch(inj.id, optionKey, nextInjectId)
                     }
                   />
                 ))}
@@ -306,22 +345,31 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 type InjectCardProps = {
   inject: Inject; index: number; total: number;
   expanded: boolean; roles: ExecRole[];
+  allInjects: Inject[];
   onToggle: () => void; onUpdate: (p: Partial<Inject>) => void;
   onRemove: () => void; onMoveUp: () => void; onMoveDown: () => void;
   onAddOption: () => void;
   onUpdateOption: (k: string, p: Partial<DecisionOption>) => void;
   onRemoveOption: (k: string) => void;
+  onUpdateBranch: (optionKey: string, nextInjectId: string) => void;
 };
 
 function InjectCard({
-  inject, index, total, expanded, roles,
+  inject, index, total, expanded, roles, allInjects,
   onToggle, onUpdate, onRemove, onMoveUp, onMoveDown,
-  onAddOption, onUpdateOption, onRemoveOption,
+  onAddOption, onUpdateOption, onRemoveOption, onUpdateBranch,
 }: InjectCardProps) {
   const inputCls = "w-full text-sm bg-rtr-base border border-rtr-border text-rtr-text rounded px-3 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors";
+  const hasBranches = inject.branches && inject.branches.length > 0;
+
+  // Other injects available as branch targets (exclude self)
+  const otherInjects = allInjects.filter((i) => i.id !== inject.id).sort((a, b) => a.order - b.order);
 
   return (
-    <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden">
+    <div className={cn(
+      "border rounded-xl overflow-hidden transition-colors",
+      hasBranches ? "bg-rtr-panel border-amber-500/25" : "bg-rtr-panel border-rtr-border"
+    )}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
         <GripVertical className="w-4 h-4 text-rtr-dim cursor-grab" />
@@ -336,7 +384,12 @@ function InjectCard({
             <span className="text-xs text-rtr-dim font-mono">T+{inject.delayMinutes}min</span>
             {inject.isDecisionPoint && (
               <span className="flex items-center gap-0.5 text-xs text-amber-400">
-                <GitBranch className="w-3 h-3" />Decision
+                <GitBranch className="w-3 h-3" />{hasBranches ? "Branching" : "Decision"}
+              </span>
+            )}
+            {inject.imageUrl && (
+              <span className="flex items-center gap-0.5 text-xs text-rtr-dim">
+                <Image className="w-3 h-3" />
               </span>
             )}
           </div>
@@ -394,6 +447,18 @@ function InjectCard({
 
           <div>
             <label className="text-xs font-medium text-rtr-dim block mb-1">
+              Inject Image URL <span className="font-normal">(shown on projector)</span>
+            </label>
+            <input
+              value={inject.imageUrl ?? ""}
+              onChange={(e) => onUpdate({ imageUrl: e.target.value })}
+              className={inputCls}
+              placeholder="https://… (optional)"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-rtr-dim block mb-1">
               Facilitator Notes <span className="font-normal">(private — never shown)</span>
             </label>
             <textarea
@@ -437,6 +502,7 @@ function InjectCard({
                 onUpdate({
                   isDecisionPoint: !inject.isDecisionPoint,
                   decisionOptions: inject.isDecisionPoint ? [] : inject.decisionOptions,
+                  branches: inject.isDecisionPoint ? [] : inject.branches,
                 })
               }
               className={cn(
@@ -453,46 +519,86 @@ function InjectCard({
           </div>
 
           {inject.isDecisionPoint && (
-            <div className="bg-amber-500/8 border border-amber-500/20 rounded-lg p-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-amber-400">Decision Options</span>
-                {inject.decisionOptions.length < 4 && (
-                  <button
-                    onClick={onAddOption}
-                    className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1"
-                  >
-                    <Plus className="w-3 h-3" />Add
-                  </button>
+            <>
+              {/* Decision options */}
+              <div className="bg-amber-500/8 border border-amber-500/20 rounded-lg p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-amber-400">Decision Options</span>
+                  {inject.decisionOptions.length < 4 && (
+                    <button
+                      onClick={onAddOption}
+                      className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" />Add
+                    </button>
+                  )}
+                </div>
+                {inject.decisionOptions.map((opt) => (
+                  <div key={opt.key} className="bg-rtr-elevated border border-rtr-border rounded-lg p-3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center shrink-0 font-mono">
+                        {opt.key}
+                      </span>
+                      <input
+                        value={opt.label}
+                        onChange={(e) => onUpdateOption(opt.key, { label: e.target.value })}
+                        className="flex-1 text-sm bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+                        placeholder="Option label shown to participants"
+                      />
+                      <button onClick={() => onRemoveOption(opt.key)} className="text-rtr-dim hover:text-red-400">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <input
+                      value={opt.consequence ?? ""}
+                      onChange={(e) => onUpdateOption(opt.key, { consequence: e.target.value })}
+                      className="w-full text-xs bg-amber-500/5 border border-amber-500/15 text-rtr-muted rounded px-2 py-1 focus:outline-none focus:border-amber-500/40 placeholder:text-rtr-dim"
+                      placeholder="Facilitator note: what does this choice trigger?"
+                    />
+                  </div>
+                ))}
+                {inject.decisionOptions.length === 0 && (
+                  <p className="text-xs text-amber-400/60 text-center py-1">Add at least 2 options</p>
                 )}
               </div>
-              {inject.decisionOptions.map((opt) => (
-                <div key={opt.key} className="bg-rtr-elevated border border-rtr-border rounded-lg p-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center shrink-0 font-mono">
-                      {opt.key}
-                    </span>
-                    <input
-                      value={opt.label}
-                      onChange={(e) => onUpdateOption(opt.key, { label: e.target.value })}
-                      className="flex-1 text-sm bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
-                      placeholder="Option label shown to participants"
-                    />
-                    <button onClick={() => onRemoveOption(opt.key)} className="text-rtr-dim hover:text-red-400">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+
+              {/* Branch editor — only show if there are options and other injects */}
+              {inject.decisionOptions.length > 0 && otherInjects.length > 0 && (
+                <div className="bg-rtr-elevated border border-rtr-border rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <GitBranch className="w-3.5 h-3.5 text-rtr-green" />
+                    <span className="text-xs font-semibold text-rtr-text">Branching Paths</span>
+                    <span className="text-xs text-rtr-dim">(optional — override which inject follows each option)</span>
                   </div>
-                  <input
-                    value={opt.consequence ?? ""}
-                    onChange={(e) => onUpdateOption(opt.key, { consequence: e.target.value })}
-                    className="w-full text-xs bg-amber-500/5 border border-amber-500/15 text-rtr-muted rounded px-2 py-1 focus:outline-none focus:border-amber-500/40 placeholder:text-rtr-dim"
-                    placeholder="Facilitator note: what does this choice trigger?"
-                  />
+                  <div className="space-y-2">
+                    {inject.decisionOptions.map((opt) => {
+                      const branch = inject.branches?.find((b) => b.optionKey === opt.key);
+                      return (
+                        <div key={opt.key} className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center shrink-0 font-mono">
+                            {opt.key}
+                          </span>
+                          <ArrowRight className="w-3.5 h-3.5 text-rtr-dim shrink-0" />
+                          <select
+                            value={branch?.nextInjectId ?? ""}
+                            onChange={(e) => onUpdateBranch(opt.key, e.target.value)}
+                            className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1.5 focus:outline-none focus:border-rtr-green"
+                            style={{ backgroundColor: "#0d0e10" }}
+                          >
+                            <option value="" style={{ background: "#0d0e10" }}>— Follow linear order —</option>
+                            {otherInjects.map((i) => (
+                              <option key={i.id} value={i.id} style={{ background: "#0d0e10" }}>
+                                {i.order + 1}. {i.title || `Inject ${i.order + 1}`}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              ))}
-              {inject.decisionOptions.length === 0 && (
-                <p className="text-xs text-amber-400/60 text-center py-1">Add at least 2 options</p>
               )}
-            </div>
+            </>
           )}
         </div>
       )}

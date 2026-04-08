@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { useStore, getCurrentLiveInject, getNextInject } from "@/store";
+import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, ChevronDown, ChevronUp,
-  GitBranch, Clock, Monitor, Pencil, Check, X,
+  GitBranch, Clock, Monitor, Pencil, Check, X, Eye,
 } from "lucide-react";
 import {
   cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed,
 } from "@/lib/utils";
 import type { ExecRole, ResponseEntry, DecisionEntry } from "@/types";
+
+const OPTION_COLOURS = ["text-blue-400 bg-blue-500/15", "text-emerald-400 bg-emerald-500/15", "text-amber-400 bg-amber-500/15", "text-purple-400 bg-purple-500/15"];
 
 export function Runner() {
   const session          = useStore((s) => s.session);
@@ -18,19 +20,21 @@ export function Runner() {
   const releaseInject    = useStore((s) => s.releaseInject);
   const addResponse      = useStore((s) => s.addResponse);
   const addDecision      = useStore((s) => s.addDecision);
+  const revealVotes      = useStore((s) => s.revealVotes);
   const updateInjectNote = useStore((s) => s.updateInjectNote);
   const addNote          = useStore((s) => s.addNote);
   const setView          = useStore((s) => s.setView);
 
-  const [elapsed, setElapsed]             = useState("00:00");
-  const [noteText, setNoteText]           = useState("");
-  const [adHocText, setAdHocText]         = useState("");
-  const [showAdHoc, setShowAdHoc]         = useState(false);
-  const [presentWindow, setPresentWindow] = useState<Window | null>(null);
+  const [elapsed, setElapsed]   = useState("00:00");
+  const [noteText, setNoteText] = useState("");
+  const [adHocText, setAdHocText] = useState("");
+  const [showAdHoc, setShowAdHoc] = useState(false);
+  const [voteRevealed, setVoteRevealed] = useState<Record<string, boolean>>({});
 
-  const currentLive = getCurrentLiveInject(session);
-  const nextInject  = getNextInject(session);
-  const allReleased = session ? new Set(session.liveInjects.map((l) => l.injectId)) : new Set();
+  const currentLive  = getCurrentLiveInject(session);
+  const nextInject   = getNextInject(session);
+  const allReleased  = session ? new Set(session.liveInjects.map((l) => l.injectId)) : new Set();
+  const reachable    = getReachableInjectIds(session);
 
   useEffect(() => {
     if (session?.status !== "active") return;
@@ -42,23 +46,14 @@ export function Runner() {
 
   useEffect(() => {
     if (!session) return;
-    const w = window.open(`${window.location.href.split("?")[0]}#present`, "crisis-present",
+    const w = window.open(
+      `${window.location.href.split("?")[0]}#present`, "crisis-present",
       "width=1280,height=720,menubar=no,toolbar=no,location=no"
     );
-    if (w) setPresentWindow(w);
     return () => w?.close();
   }, []);
 
-  useEffect(() => {
-    if (!currentLive || !session) return;
-    const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
-    if (inj) {
-      const bc = new BroadcastChannel("crisis-present");
-      bc.postMessage({ type: "inject", inject: inj });
-      bc.close();
-    }
-  }, [currentLive?.injectId]);
-
+  // Broadcast status on change
   useEffect(() => {
     if (!session) return;
     const bc = new BroadcastChannel("crisis-present");
@@ -70,24 +65,18 @@ export function Runner() {
     return (
       <div className="p-8 text-center text-rtr-muted">
         No active session.{" "}
-        <button onClick={() => setView("library")} className="text-rtr-green underline">
-          Pick a scenario
-        </button>
+        <button onClick={() => setView("library")} className="text-rtr-green underline">Pick a scenario</button>
       </div>
     );
   }
 
-  const handleRelease = (injectId: string, adHoc = false) => {
+  const handleRelease = (injectId: string) => {
     releaseInject(injectId);
-    if (adHoc) { setAdHocText(""); setShowAdHoc(false); }
     if (session.status === "setup") launchSession();
   };
 
   const handleEnd = () => {
     if (!confirm("End the session and go to the report?")) return;
-    const bc = new BroadcastChannel("crisis-present");
-    bc.postMessage({ type: "status", status: "ended" });
-    bc.close();
     endSession();
   };
 
@@ -97,11 +86,16 @@ export function Runner() {
     setNoteText("");
   };
 
+  const handleReveal = (injectId: string) => {
+    revealVotes(injectId);
+    setVoteRevealed((v) => ({ ...v, [injectId]: true }));
+  };
+
   const openPresent = () => {
-    const w = window.open(`${window.location.href.split("?")[0]}#present`, "crisis-present",
+    window.open(
+      `${window.location.href.split("?")[0]}#present`, "crisis-present",
       "width=1280,height=720,menubar=no,toolbar=no,location=no"
     );
-    if (w) setPresentWindow(w);
   };
 
   const orderedInjects = [...session.scenario.injects].sort((a, b) => a.order - b.order);
@@ -112,22 +106,15 @@ export function Runner() {
       <div className="flex items-center gap-4 px-5 py-3 border-b border-rtr-border bg-rtr-panel sticky top-0 z-20">
         <div className="flex-1 min-w-0">
           <h1 className="text-sm font-semibold text-rtr-text truncate">{session.scenario.title}</h1>
-          <p className="text-xs text-rtr-dim">
+          <p className="text-xs text-rtr-dim font-mono">
             {session.liveInjects.length}/{orderedInjects.length} injects · {session.participants.length} participants
           </p>
         </div>
-
-        {/* Timer */}
-        <div className={cn(
-          "font-mono text-sm font-medium flex items-center gap-1.5",
-          session.status === "active" ? "text-rtr-text" : "text-rtr-dim"
-        )}>
+        <div className={cn("font-mono text-sm font-medium flex items-center gap-1.5",
+          session.status === "active" ? "text-rtr-text" : "text-rtr-dim")}>
           <Clock className="w-4 h-4" />{elapsed}
         </div>
-
-        {/* Status */}
-        <div className={cn(
-          "text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 font-mono",
+        <div className={cn("text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 font-mono",
           session.status === "active"  && "bg-rtr-red/15 text-rtr-red",
           session.status === "paused"  && "bg-amber-500/15 text-amber-400",
           session.status === "setup"   && "bg-rtr-elevated text-rtr-muted",
@@ -141,35 +128,25 @@ export function Runner() {
           )}
           {session.status.toUpperCase()}
         </div>
-
-        {/* Controls */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={openPresent}
-            className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted"
-          >
+          <button onClick={openPresent}
+            className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted">
             <Monitor className="w-3.5 h-3.5" />Present
           </button>
           {session.status === "active" && (
-            <button
-              onClick={pauseSession}
-              className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors"
-            >
+            <button onClick={pauseSession}
+              className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors">
               <Pause className="w-3.5 h-3.5" />Pause
             </button>
           )}
           {session.status === "paused" && (
-            <button
-              onClick={resumeSession}
-              className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors"
-            >
+            <button onClick={resumeSession}
+              className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors">
               <Play className="w-3.5 h-3.5" />Resume
             </button>
           )}
-          <button
-            onClick={handleEnd}
-            className="flex items-center gap-1.5 text-xs border border-rtr-red/30 text-red-400 px-3 py-1.5 rounded hover:bg-rtr-red/10 transition-colors"
-          >
+          <button onClick={handleEnd}
+            className="flex items-center gap-1.5 text-xs border border-rtr-red/30 text-red-400 px-3 py-1.5 rounded hover:bg-rtr-red/10 transition-colors">
             <Square className="w-3.5 h-3.5" />End
           </button>
         </div>
@@ -183,47 +160,49 @@ export function Runner() {
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {orderedInjects.map((inj, idx) => {
-              const released = allReleased.has(inj.id);
-              const isNext   = inj.id === nextInject?.id;
-              const live     = session.liveInjects.find((l) => l.injectId === inj.id);
+              const released  = allReleased.has(inj.id);
+              const isNext    = inj.id === nextInject?.id;
+              const isLive    = currentLive?.injectId === inj.id;
+              const onPath    = reachable.has(inj.id);
+              const live      = session.liveInjects.find((l) => l.injectId === inj.id);
+              const hasBranch = inj.branches && inj.branches.length > 0;
+
               return (
                 <div
                   key={inj.id}
                   className={cn(
                     "rounded border p-3 text-xs transition-colors",
-                    released ? "border-rtr-green/20 bg-rtr-green/5 opacity-60"
-                    : isNext  ? "border-rtr-red/30 bg-rtr-red/8"
-                    :           "border-rtr-border bg-rtr-elevated"
+                    released && !isLive ? "border-rtr-green/20 bg-rtr-green/5 opacity-60"
+                    : isLive    ? "border-rtr-red/40 bg-rtr-red/8"
+                    : isNext    ? "border-rtr-red/30 bg-rtr-red/5"
+                    : !onPath   ? "border-rtr-border/40 bg-rtr-base opacity-35"
+                    :             "border-rtr-border bg-rtr-elevated"
                   )}
                 >
                   <div className="flex items-start gap-2 mb-1.5">
-                    <span className="font-bold text-rtr-dim font-mono">{idx + 1}</span>
-                    <span className={cn(
-                      "font-medium flex-1 truncate",
-                      released ? "text-rtr-green line-through" : isNext ? "text-rtr-text" : "text-rtr-muted"
+                    <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
+                    <span className={cn("font-medium flex-1 truncate",
+                      released && !isLive ? "text-rtr-green line-through"
+                      : isLive ? "text-rtr-red" : isNext ? "text-rtr-text" : "text-rtr-muted"
                     )}>
                       {inj.title}
                     </span>
+                    {hasBranch && <GitBranch className="w-3 h-3 text-amber-400 shrink-0" />}
                   </div>
                   <div className="flex items-center justify-between">
-                    {released ? (
+                    {released && !isLive ? (
                       <span className="text-rtr-green">
                         ✓ {live?.responses.length ?? 0} response{live?.responses.length !== 1 ? "s" : ""}
                       </span>
-                    ) : isNext ? (
-                      <button
-                        onClick={() => handleRelease(inj.id)}
-                        className="flex items-center gap-1 text-rtr-red font-semibold hover:underline"
-                      >
+                    ) : isNext || (!released && !isLive && orderedInjects[0]?.id === inj.id && session.liveInjects.length === 0) ? (
+                      <button onClick={() => handleRelease(inj.id)}
+                        className="flex items-center gap-1 text-rtr-red font-semibold hover:underline">
                         <Send className="w-3 h-3" />Release
                       </button>
+                    ) : isLive ? (
+                      <span className="text-rtr-red font-mono">LIVE</span>
                     ) : (
-                      <span className="text-rtr-dim">Queued</span>
-                    )}
-                    {inj.isDecisionPoint && (
-                      <span className="flex items-center gap-0.5 text-amber-400">
-                        <GitBranch className="w-3 h-3" />
-                      </span>
+                      <span className="text-rtr-dim">{onPath ? "Queued" : "Off-path"}</span>
                     )}
                   </div>
                 </div>
@@ -249,49 +228,39 @@ export function Runner() {
                       const bc = new BroadcastChannel("crisis-present");
                       bc.postMessage({ type: "adhoc", body: adHocText });
                       bc.close();
-                      setAdHocText("");
-                      setShowAdHoc(false);
+                      setAdHocText(""); setShowAdHoc(false);
                     }}
                     className="flex-1 text-xs bg-amber-500 text-white py-1.5 rounded hover:bg-amber-600"
-                  >
-                    Send
-                  </button>
-                  <button onClick={() => setShowAdHoc(false)} className="text-xs border border-rtr-border px-2 rounded text-rtr-muted hover:text-rtr-text">
+                  >Send</button>
+                  <button onClick={() => setShowAdHoc(false)}
+                    className="text-xs border border-rtr-border px-2 rounded text-rtr-muted hover:text-rtr-text">
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setShowAdHoc(true)}
-                className="w-full flex items-center justify-center gap-1.5 text-xs text-rtr-dim border border-dashed border-rtr-border py-2 rounded hover:border-amber-500/40 hover:text-amber-400 transition-colors"
-              >
+              <button onClick={() => setShowAdHoc(true)}
+                className="w-full flex items-center justify-center gap-1.5 text-xs text-rtr-dim border border-dashed border-rtr-border py-2 rounded hover:border-amber-500/40 hover:text-amber-400 transition-colors">
                 <Plus className="w-3.5 h-3.5" />Ad-hoc inject
               </button>
             )}
           </div>
         </div>
 
-        {/* Centre: current inject + response logging */}
+        {/* Centre: current inject + responses */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {currentLive ? (
             <>
               {/* Current inject */}
               <div className="px-6 py-5 border-b border-rtr-border bg-rtr-panel">
                 <div className="flex items-start justify-between mb-2">
-                  <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
-                    Current Inject
-                  </p>
+                  <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
                   <p className="text-xs text-rtr-dim font-mono">
                     {new Date(currentLive.releasedAt).toLocaleTimeString()}
                   </p>
                 </div>
-                <h2 className="text-base font-semibold text-rtr-text mb-2">
-                  {currentLive.injectTitle}
-                </h2>
-                <p className="text-sm text-rtr-muted leading-relaxed mb-3">
-                  {currentLive.injectBody}
-                </p>
+                <h2 className="text-base font-semibold text-rtr-text mb-2">{currentLive.injectTitle}</h2>
+                <p className="text-sm text-rtr-muted leading-relaxed mb-3">{currentLive.injectBody}</p>
                 {(() => {
                   const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
                   return inj?.facilitatorNotes ? (
@@ -305,14 +274,11 @@ export function Runner() {
               {/* Response logging */}
               <div className="flex-1 overflow-y-auto px-6 py-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
-                    Log Responses
-                  </h3>
+                  <h3 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Log Responses</h3>
                   <span className="text-xs text-rtr-dim font-mono">
                     {currentLive.responses.length} / {session.participants.length}
                   </span>
                 </div>
-
                 <div className="space-y-3">
                   {session.participants.map((p) => (
                     <ResponseRow
@@ -329,18 +295,21 @@ export function Runner() {
                   ))}
                 </div>
 
-                {/* Decision point */}
+                {/* Decision / voting panel */}
                 {(() => {
                   const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
                   if (!inj?.isDecisionPoint) return null;
+                  const revealed = !!voteRevealed[currentLive.injectId];
                   return (
-                    <DecisionPanel
+                    <VotingPanel
                       inject={inj}
                       decisions={currentLive.decisions}
                       participants={session.participants}
+                      revealed={revealed}
                       onDecide={(role, name, optionKey, optionLabel) =>
                         addDecision(currentLive.injectId, { role, name, optionKey, optionLabel })
                       }
+                      onReveal={() => handleReveal(currentLive.injectId)}
                     />
                   );
                 })()}
@@ -369,9 +338,7 @@ export function Runner() {
             {session.notes.map((n, i) => (
               <div key={i} className="bg-amber-500/8 border border-amber-500/20 rounded px-2.5 py-2">
                 <p className="text-xs text-rtr-text">{n.text}</p>
-                <p className="text-xs text-amber-400/60 mt-1 font-mono">
-                  {new Date(n.timestamp).toLocaleTimeString()}
-                </p>
+                <p className="text-xs text-amber-400/60 mt-1 font-mono">{new Date(n.timestamp).toLocaleTimeString()}</p>
               </div>
             ))}
             {session.notes.length === 0 && (
@@ -387,10 +354,7 @@ export function Runner() {
                 placeholder="Observation…"
                 className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2.5 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
               />
-              <button
-                onClick={handleNote}
-                className="bg-rtr-red text-white rounded px-2 hover:bg-[#c0001f]"
-              >
+              <button onClick={handleNote} className="bg-rtr-red text-white rounded px-2 hover:bg-[#c0001f]">
                 <Send className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -400,6 +364,8 @@ export function Runner() {
     </div>
   );
 }
+
+// ─── Response row ─────────────────────────────────────────────────────────────
 
 function ResponseRow({
   participant, response, onSubmit,
@@ -423,6 +389,9 @@ function ResponseRow({
             {participant.name || ROLE_LONG[participant.role]} · {new Date(response.timestamp).toLocaleTimeString()}
           </p>
         </div>
+        <button onClick={() => setEditing(true)} className="text-rtr-dim hover:text-rtr-muted mt-1">
+          <Pencil className="w-3 h-3" />
+        </button>
       </div>
     );
   }
@@ -459,43 +428,103 @@ function ResponseRow({
   );
 }
 
-function DecisionPanel({
-  inject, decisions, participants, onDecide,
+// ─── Voting panel ─────────────────────────────────────────────────────────────
+
+function VotingPanel({
+  inject, decisions, participants, revealed, onDecide, onReveal,
 }: {
   inject: any;
   decisions: DecisionEntry[];
   participants: { role: ExecRole; name: string }[];
+  revealed: boolean;
   onDecide: (role: ExecRole, name: string, key: string, label: string) => void;
+  onReveal: () => void;
 }) {
+  const allVoted = decisions.length >= participants.length;
+  const optColours = ["border-blue-500/30 bg-blue-500/8", "border-emerald-500/30 bg-emerald-500/8", "border-amber-500/30 bg-amber-500/8", "border-purple-500/30 bg-purple-500/8"];
+  const optText = ["text-blue-400", "text-emerald-400", "text-amber-400", "text-purple-400"];
+
+  // Tally votes
+  const counts: Record<string, number> = {};
+  for (const d of decisions) counts[d.optionKey] = (counts[d.optionKey] ?? 0) + 1;
+  const majority = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
+
   return (
     <div className="mt-4 border border-amber-500/25 bg-amber-500/5 rounded-xl p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <GitBranch className="w-4 h-4 text-amber-400" />
-        <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
-          Decision Point — {decisions.length}/{participants.length} decided
-        </p>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <GitBranch className="w-4 h-4 text-amber-400" />
+          <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+            Vote — {decisions.length}/{participants.length} cast
+          </p>
+        </div>
+        {!revealed && (
+          <button
+            onClick={onReveal}
+            className={cn(
+              "flex items-center gap-1.5 text-xs px-3 py-1.5 rounded transition-colors",
+              allVoted
+                ? "bg-amber-500 text-white hover:bg-amber-600 vote-pulse"
+                : "border border-rtr-border text-rtr-dim hover:text-rtr-text"
+            )}
+          >
+            <Eye className="w-3.5 h-3.5" />
+            {allVoted ? "Reveal Results!" : "Reveal early"}
+          </button>
+        )}
       </div>
-      <div className="grid grid-cols-2 gap-2 mb-3">
-        {inject.decisionOptions.map((opt: any) => {
-          const count  = decisions.filter((d) => d.optionKey === opt.key).length;
-          const voters = decisions.filter((d) => d.optionKey === opt.key).map((d) => ROLE_SHORT[d.role]);
+
+      {/* Option tally */}
+      <div className="grid grid-cols-2 gap-2 mb-4">
+        {inject.decisionOptions.map((opt: any, i: number) => {
+          const count  = counts[opt.key] ?? 0;
+          const voters = decisions.filter((d: DecisionEntry) => d.optionKey === opt.key);
+          const isWinner = revealed && opt.key === majority;
           return (
-            <div key={opt.key} className="bg-rtr-elevated border border-rtr-border rounded-lg p-3">
+            <div
+              key={opt.key}
+              className={cn(
+                "border rounded-lg p-3 transition-all",
+                optColours[i] ?? optColours[0],
+                isWinner && "ring-2 ring-amber-400/50 scale-[1.02]"
+              )}
+            >
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-5 h-5 bg-amber-500/20 text-amber-300 text-xs font-bold rounded-full flex items-center justify-center font-mono">
+                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-mono", optText[i] ?? optText[0], "bg-white/10")}>
                   {opt.key}
                 </span>
-                <span className="text-xs font-medium text-rtr-text flex-1 truncate">{opt.label}</span>
-                <span className="text-sm font-bold text-amber-400 font-mono">{count}</span>
+                <span className="text-xs font-medium text-rtr-text flex-1 line-clamp-1">{opt.label}</span>
+                <span className={cn("text-xl font-bold font-mono vote-count", optText[i] ?? optText[0])}>
+                  {count}
+                </span>
+              </div>
+              {/* Vote bar */}
+              <div className="h-1 bg-white/10 rounded-full mb-1.5">
+                <div
+                  className={cn("h-full rounded-full transition-all duration-500", (optText[i] ?? optText[0]).replace("text-", "bg-").replace("-400", "-400"))}
+                  style={{ width: participants.length > 0 ? `${(count / participants.length) * 100}%` : "0%" }}
+                />
               </div>
               {voters.length > 0 && (
-                <p className="text-xs text-rtr-dim">{voters.join(", ")}</p>
+                <div className="flex flex-wrap gap-1">
+                  {voters.map((v: DecisionEntry) => (
+                    <span key={v.role} className={`text-xs font-bold px-1.5 py-0.5 rounded ${ROLE_COLOUR[v.role]}`}>
+                      {ROLE_SHORT[v.role]}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {isWinner && (
+                <div className="mt-1 text-xs font-semibold text-amber-400 font-mono">▲ MAJORITY</div>
               )}
             </div>
           );
         })}
       </div>
-      <div className="space-y-2">
+
+      {/* Log individual votes */}
+      <div className="space-y-2 border-t border-rtr-border pt-3">
+        <p className="text-xs text-rtr-dim mb-2">Cast votes:</p>
         {participants.map((p) => {
           const existing = decisions.find((d) => d.role === p.role);
           if (existing) return null;
@@ -504,13 +533,16 @@ function DecisionPanel({
               <span className={`text-xs font-bold px-1.5 py-0.5 rounded shrink-0 ${ROLE_COLOUR[p.role]}`}>
                 {ROLE_SHORT[p.role]}
               </span>
-              <span className="text-xs text-rtr-dim flex-1">chose:</span>
               <div className="flex gap-1">
-                {inject.decisionOptions.map((opt: any) => (
+                {inject.decisionOptions.map((opt: any, i: number) => (
                   <button
                     key={opt.key}
                     onClick={() => onDecide(p.role, p.name, opt.key, opt.label)}
-                    className="text-xs bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 px-2 py-1 rounded font-semibold transition-colors font-mono"
+                    className={cn(
+                      "text-xs px-2.5 py-1 rounded font-semibold transition-colors font-mono",
+                      optText[i] ?? optText[0],
+                      (optColours[i] ?? optColours[0]).replace("bg-", "hover:bg-").replace("/8", "/20")
+                    )}
                   >
                     {opt.key}
                   </button>
@@ -519,10 +551,18 @@ function DecisionPanel({
             </div>
           );
         })}
+        {decisions.length === participants.length && (
+          <p className="text-xs text-rtr-green flex items-center gap-1 font-mono">
+            <Check className="w-3 h-3" />All votes cast
+            {inject.branches?.length > 0 && !revealed && " — reveal to advance"}
+          </p>
+        )}
       </div>
     </div>
   );
 }
+
+// ─── Inject note editor ───────────────────────────────────────────────────────
 
 function InjectNoteEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [editing, setEditing] = useState(false);

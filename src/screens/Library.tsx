@@ -86,7 +86,18 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
   return (
     <div className="grid grid-cols-2 gap-4">
       {scenarios.map((s) => (
-        <div key={s.id} className="bg-rtr-panel border border-rtr-border rounded-xl p-5 hover:border-rtr-border-light transition-colors">
+        <div key={s.id} className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden hover:border-rtr-border-light transition-colors">
+          {/* Cover */}
+          {(s.imageUrl || s.coverGradient) && (
+            <div className="relative h-28 overflow-hidden"
+              style={{ background: s.coverGradient ? `linear-gradient(${s.coverGradient})` : "#15171a" }}>
+              {s.imageUrl && (
+                <img src={s.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-rtr-panel to-transparent" />
+            </div>
+          )}
+          <div className="p-5">
           <div className="flex items-start gap-2 mb-2">
             <span className={`text-xs font-semibold px-2 py-0.5 rounded ${DIFFICULTY_COLOUR[s.difficulty]}`}>
               {DIFFICULTY_LABEL[s.difficulty]}
@@ -145,6 +156,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
               </button>
             )}
           </div>
+          </div>{/* /p-5 */}
         </div>
       ))}
     </div>

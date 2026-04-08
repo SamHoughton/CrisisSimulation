@@ -18,20 +18,28 @@ export type ExecRole =
   | "COO" | "CTO" | "BOARD_REP" | "HR_LEAD" | "CUSTOM";
 
 export interface DecisionOption {
-  key: string;       // "A", "B", "C"
-  label: string;     // shown to participants
+  key: string;        // "A", "B", "C"
+  label: string;      // shown to participants
   consequence?: string; // facilitator-only note
+}
+
+/** One branch from a decision: if optionKey is chosen, jump to nextInjectId */
+export interface InjectBranch {
+  optionKey: string;
+  nextInjectId: string;
 }
 
 export interface Inject {
   id: string;
   order: number;
   title: string;
-  body: string;                  // what appears on screen
-  facilitatorNotes?: string;     // private — never shown to participants
+  body: string;                   // what appears on screen
+  facilitatorNotes?: string;      // private — never shown to participants
+  imageUrl?: string;              // optional image shown on present screen
   delayMinutes: number;
   isDecisionPoint: boolean;
   decisionOptions: DecisionOption[];
+  branches?: InjectBranch[];      // tree branching: per-option next inject overrides
   targetRoles: ExecRole[];
   expectedKeywords?: string[];
 }
@@ -43,10 +51,12 @@ export interface Scenario {
   type: ScenarioType;
   difficulty: Difficulty;
   durationMin: number;
-  briefing?: string;             // shown before session starts
+  briefing?: string;
   roles: ExecRole[];
   injects: Inject[];
   isTemplate?: boolean;
+  imageUrl?: string;              // cover image for library/cards
+  coverGradient?: string;         // CSS gradient fallback (e.g. "135deg, #1a1a2e, #e8002d")
   createdAt: string;
   updatedAt: string;
 }
@@ -55,7 +65,7 @@ export interface Scenario {
 
 export interface Participant {
   role: ExecRole;
-  name: string;  // can be empty — just shown as role label
+  name: string;
 }
 
 export interface ResponseEntry {
@@ -91,12 +101,12 @@ export interface FacilitatorNote {
 
 export interface Session {
   id: string;
-  scenario: Scenario;            // full snapshot so report works even if scenario is edited
+  scenario: Scenario;
   participants: Participant[];
   startedAt: string;
   endedAt?: string;
   status: SessionStatus;
-  liveInjects: LiveInject[];     // ordered by release time
+  liveInjects: LiveInject[];
   notes: FacilitatorNote[];
   report?: GeneratedReport;
 }
@@ -143,10 +153,19 @@ export type View =
   | "runner"
   | "report"
   | "settings"
-  | "present";   // fullscreen present window (opened separately)
+  | "present";
 
 export interface Settings {
   claudeApiKey: string;
   orgName: string;
   facilitatorName: string;
 }
+
+// ─── BroadcastChannel message types ─────────────────────────────────────────
+
+export type PresentMessage =
+  | { type: "inject"; inject: Inject }
+  | { type: "adhoc"; body: string }
+  | { type: "status"; status: SessionStatus; scenario?: Scenario }
+  | { type: "vote"; role: string; roleName: string; optionKey: string }
+  | { type: "vote-reveal"; decisions: DecisionEntry[] };

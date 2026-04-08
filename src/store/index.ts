@@ -3,33 +3,42 @@ import { persist } from "zustand/middleware";
 import type {
   Scenario, Session, Settings, View,
   Participant, LiveInject, ResponseEntry, DecisionEntry,
-  GeneratedReport, FacilitatorNote,
+  GeneratedReport, FacilitatorNote, PresentMessage,
 } from "@/types";
 import { BUILT_IN_TEMPLATES } from "@/lib/templates";
 
-// ─── Broadcast channel — syncs current inject to the present window ───────────
-let bc: BroadcastChannel | null = null;
-function getChannel() {
-  if (!bc) bc = new BroadcastChannel("crisis-present");
-  return bc;
+// ─── Broadcast channel ────────────────────────────────────────────────────────
+function broadcast(msg: PresentMessage) {
+  const bc = new BroadcastChannel("crisis-present");
+  bc.postMessage(msg);
+  bc.close();
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function makeId() {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+/** Tally decisions and return the winning option key */
+function getMajorityOption(decisions: DecisionEntry[]): string {
+  if (decisions.length === 0) return "A";
+  const counts: Record<string, number> = {};
+  for (const d of decisions) counts[d.optionKey] = (counts[d.optionKey] ?? 0) + 1;
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
 }
 
 // ─── Store ───────────────────────────────────────────────────────────────────
 
 interface AppStore {
-  // Settings (persisted)
   settings: Settings;
   updateSettings: (s: Partial<Settings>) => void;
 
-  // Scenarios (persisted)
   scenarios: Scenario[];
   saveScenario: (s: Scenario) => void;
   deleteScenario: (id: string) => void;
 
-  // Past sessions (persisted, for report access)
   pastSessions: Session[];
 
-  // Active session (persisted so a browser refresh doesn't kill it)
   session: Session | null;
   startSession: (scenario: Scenario, participants: Participant[]) => void;
   launchSession: () => void;
@@ -39,21 +48,17 @@ interface AppStore {
   releaseInject: (injectId: string) => void;
   addResponse: (injectId: string, response: ResponseEntry) => void;
   addDecision: (injectId: string, decision: DecisionEntry) => void;
+  revealVotes: (injectId: string) => void;
   updateInjectNote: (injectId: string, note: string) => void;
   addNote: (text: string) => void;
   setReport: (report: GeneratedReport) => void;
 
-  // Navigation (NOT persisted)
   view: View;
   setView: (v: View) => void;
   editingScenarioId: string | null;
   setEditingScenario: (id: string | null) => void;
   viewingSessionId: string | null;
   setViewingSession: (id: string | null) => void;
-}
-
-function makeId() {
-  return Math.random().toString(36).slice(2, 10);
 }
 
 export const useStore = create<AppStore>()(
@@ -100,23 +105,17 @@ export const useStore = create<AppStore>()(
 
       launchSession: () =>
         set((st) => ({
-          session: st.session
-            ? { ...st.session, status: "active" }
-            : st.session,
+          session: st.session ? { ...st.session, status: "active" } : st.session,
         })),
 
       pauseSession: () =>
         set((st) => ({
-          session: st.session
-            ? { ...st.session, status: "paused" }
-            : st.session,
+          session: st.session ? { ...st.session, status: "paused" } : st.session,
         })),
 
       resumeSession: () =>
         set((st) => ({
-          session: st.session
-            ? { ...st.session, status: "active" }
-            : st.session,
+          session: st.session ? { ...st.session, status: "active" } : st.session,
         })),
 
       endSession: () => {
@@ -127,11 +126,8 @@ export const useStore = create<AppStore>()(
           status: "ended",
           endedAt: new Date().toISOString(),
         };
-        set({
-          session: ended,
-          pastSessions: [ended, ...pastSessions],
-          view: "report",
-        });
+        broadcast({ type: "status", status: "ended" });
+        set({ session: ended, pastSessions: [ended, ...pastSessions], view: "report" });
       },
 
       releaseInject: (injectId) => {
@@ -152,8 +148,8 @@ export const useStore = create<AppStore>()(
             ? { ...st.session, liveInjects: [...st.session.liveInjects, liveInject] }
             : st.session,
         }));
-        // Broadcast to present window
-        getChannel().postMessage({ type: "inject", inject: inj });
+        broadcast({ type: "inject", inject: inj });
+        if (session.status === "setup") get().launchSession();
       },
 
       addResponse: (injectId, response) =>
@@ -170,7 +166,7 @@ export const useStore = create<AppStore>()(
             : st.session,
         })),
 
-      addDecision: (injectId, decision) =>
+      addDecision: (injectId, decision) => {
         set((st) => ({
           session: st.session
             ? {
@@ -182,7 +178,21 @@ export const useStore = create<AppStore>()(
                 ),
               }
             : st.session,
-        })),
+        }));
+        // Broadcast individual vote to present screen
+        broadcast({
+          type: "vote",
+          role: decision.role,
+          roleName: decision.name || decision.role,
+          optionKey: decision.optionKey,
+        });
+      },
+
+      revealVotes: (injectId) => {
+        const { session } = get();
+        const live = session?.liveInjects.find((li) => li.injectId === injectId);
+        broadcast({ type: "vote-reveal", decisions: live?.decisions ?? [] });
+      },
 
       updateInjectNote: (injectId, note) =>
         set((st) => ({
@@ -201,26 +211,20 @@ export const useStore = create<AppStore>()(
           session: st.session
             ? {
                 ...st.session,
-                notes: [
-                  ...st.session.notes,
-                  { text, timestamp: new Date().toISOString() },
-                ],
+                notes: [...st.session.notes, { text, timestamp: new Date().toISOString() }],
               }
             : st.session,
         })),
 
-      setReport: (report) => {
+      setReport: (report) =>
         set((st) => {
           if (!st.session) return {};
           const updated = { ...st.session, report };
           return {
             session: updated,
-            pastSessions: st.pastSessions.map((s) =>
-              s.id === updated.id ? updated : s
-            ),
+            pastSessions: st.pastSessions.map((s) => (s.id === updated.id ? updated : s)),
           };
-        });
-      },
+        }),
 
       // ── Navigation ────────────────────────────────────────────────────────
       view: "home",
@@ -232,7 +236,6 @@ export const useStore = create<AppStore>()(
     }),
     {
       name: "crisis-tabletop",
-      // Don't persist navigation state
       partialize: (st) => ({
         settings: st.settings,
         scenarios: st.scenarios,
@@ -254,10 +257,75 @@ export function getCurrentLiveInject(session: Session | null): LiveInject | null
   return session.liveInjects[session.liveInjects.length - 1];
 }
 
+/**
+ * Returns the next inject to release.
+ * Respects branching: if the current inject has branches and a decision has been made,
+ * follows the winning option's branch. Falls back to linear order.
+ */
 export function getNextInject(session: Session | null) {
   if (!session) return null;
+
   const released = new Set(session.liveInjects.map((li) => li.injectId));
-  return session.scenario.injects
-    .sort((a, b) => a.order - b.order)
-    .find((i) => !released.has(i.id)) ?? null;
+  const sorted   = [...session.scenario.injects].sort((a, b) => a.order - b.order);
+
+  if (session.liveInjects.length === 0) {
+    return sorted.find((i) => !released.has(i.id)) ?? null;
+  }
+
+  const currentLive = getCurrentLiveInject(session);
+  if (!currentLive) return null;
+
+  const currentInject = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+  if (!currentInject) return null;
+
+  // Branch resolution: if current inject has defined branches and a decision was made
+  if (currentInject.branches?.length && currentLive.decisions.length > 0) {
+    const winning = getMajorityOption(currentLive.decisions);
+    const branch  = currentInject.branches.find((b) => b.optionKey === winning);
+    if (branch) {
+      const next = session.scenario.injects.find(
+        (i) => i.id === branch.nextInjectId && !released.has(i.id)
+      );
+      if (next) return next;
+    }
+  }
+
+  // If it's a decision point with no decision yet, hold — don't auto-advance
+  if (currentInject.isDecisionPoint && currentLive.decisions.length === 0) {
+    return null;
+  }
+
+  // Linear fallback: next in order after current
+  return sorted.find((i) => !released.has(i.id) && i.order > currentInject.order) ?? null;
+}
+
+/** Returns all injects reachable from the current position (for queue highlighting) */
+export function getReachableInjectIds(session: Session | null): Set<string> {
+  if (!session) return new Set();
+
+  const released = new Set(session.liveInjects.map((li) => li.injectId));
+  const sorted   = [...session.scenario.injects].sort((a, b) => a.order - b.order);
+  const reachable = new Set<string>(released);
+
+  // Walk forward from current position
+  let cursor = getNextInject(session);
+  const visited = new Set<string>();
+  while (cursor && !visited.has(cursor.id)) {
+    reachable.add(cursor.id);
+    visited.add(cursor.id);
+    // Add all branches as potentially reachable
+    if (cursor.branches) {
+      for (const b of cursor.branches) {
+        const target = session.scenario.injects.find((i) => i.id === b.nextInjectId);
+        if (target && !reachable.has(target.id)) reachable.add(target.id);
+      }
+    }
+    // Linear next
+    const nextLinear = sorted.find(
+      (i) => !reachable.has(i.id) && i.order > cursor!.order
+    );
+    cursor = nextLinear ?? null;
+  }
+
+  return reachable;
 }

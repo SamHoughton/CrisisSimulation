@@ -134,29 +134,42 @@ function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; va
 }
 
 function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void }) {
+  const hasCover = scenario.imageUrl || scenario.coverGradient;
   return (
-    <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 hover:border-rtr-border-light transition-colors">
-      <div className="flex items-start gap-2 mb-2">
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded ${DIFFICULTY_COLOUR[scenario.difficulty]}`}>
-          {DIFFICULTY_LABEL[scenario.difficulty]}
-        </span>
-        <span className="text-xs text-rtr-dim bg-rtr-elevated px-2 py-0.5 rounded">
-          {SCENARIO_TYPE_LABELS[scenario.type]}
-        </span>
-      </div>
-      <p className="text-sm font-semibold text-rtr-text mb-1">{scenario.title}</p>
-      <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{scenario.description}</p>
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-rtr-dim">
-          {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
-        </span>
-        <button
-          onClick={onRun}
-          className="flex items-center gap-1.5 text-xs text-white bg-rtr-red hover:bg-[#c0001f] px-3 py-1.5 rounded transition-colors"
-        >
-          <PlayCircle className="w-3.5 h-3.5" />
-          Run
-        </button>
+    <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden hover:border-rtr-border-light transition-colors">
+      {/* Cover */}
+      {hasCover && (
+        <div className="relative h-24 overflow-hidden"
+          style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}>
+          {scenario.imageUrl && (
+            <img src={scenario.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-rtr-panel to-transparent" />
+        </div>
+      )}
+      <div className="p-4">
+        <div className="flex items-start gap-2 mb-2">
+          <span className={`text-xs font-semibold px-2 py-0.5 rounded ${DIFFICULTY_COLOUR[scenario.difficulty]}`}>
+            {DIFFICULTY_LABEL[scenario.difficulty]}
+          </span>
+          <span className="text-xs text-rtr-dim bg-rtr-elevated px-2 py-0.5 rounded">
+            {SCENARIO_TYPE_LABELS[scenario.type]}
+          </span>
+        </div>
+        <p className="text-sm font-semibold text-rtr-text mb-1">{scenario.title}</p>
+        <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{scenario.description}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-rtr-dim">
+            {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
+          </span>
+          <button
+            onClick={onRun}
+            className="flex items-center gap-1.5 text-xs text-white bg-rtr-red hover:bg-[#c0001f] px-3 py-1.5 rounded transition-colors"
+          >
+            <PlayCircle className="w-3.5 h-3.5" />
+            Run
+          </button>
+        </div>
       </div>
     </div>
   );
