@@ -391,9 +391,6 @@ function GapCard({ gap }: { gap: GapDimension }) {
   );
 }
 
-// Need CheckCircle import
-import { CheckCircle } from "lucide-react";
-
 // ─── Roles tab ────────────────────────────────────────────────────────────────
 
 function RolesTab({ feedback, participants }: { feedback: any; participants: any[] }) {
