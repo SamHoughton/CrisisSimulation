@@ -48,8 +48,8 @@ export const DIFFICULTY_COLOUR: Record<string, string> = {
 };
 
 export const ROLE_SHORT: Record<string, string> = {
-  CEO: "CEO", CFO: "CFO", CISO: "CISO", CLO: "Legal",
-  CCO: "Comms", COO: "COO", CTO: "CTO", BOARD_REP: "Board",
+  CEO: "CEO", CFO: "CFO", CISO: "CISO", CLO: "CLO",
+  CCO: "CCO", COO: "COO", CTO: "CTO", BOARD_REP: "Board",
   HR_LEAD: "HR", CUSTOM: "Custom",
 };
 

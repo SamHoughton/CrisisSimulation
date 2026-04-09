@@ -29,8 +29,8 @@ export function Setup() {
     );
   }
 
-  const update = (role: ExecRole, name: string) =>
-    setParticipants((p) => p.map((x) => (x.role === role ? { ...x, name } : x)));
+  const update = (role: ExecRole, field: "name" | "customTitle", value: string) =>
+    setParticipants((p) => p.map((x) => (x.role === role ? { ...x, [field]: value } : x)));
 
   const handleStart = () => {
     startSession(scenario, participants);
@@ -122,7 +122,7 @@ export function Setup() {
         <div className="px-5 py-3 bg-rtr-elevated border-b border-rtr-border flex items-center gap-2">
           <Users className="w-4 h-4 text-rtr-muted" />
           <h2 className="text-sm font-semibold text-rtr-text">Participants</h2>
-          <span className="text-xs text-rtr-dim ml-1">(names optional — used in the report)</span>
+          <span className="text-xs text-rtr-dim ml-1">(role titles and names optional — click a title to rename)</span>
           {namedCount > 0 && (
             <span className="ml-auto text-xs text-rtr-green font-medium">
               {namedCount}/{participants.length} named
@@ -131,17 +131,20 @@ export function Setup() {
         </div>
         <div className="divide-y divide-rtr-border stagger">
           {participants.map((p) => (
-            <div key={p.role} className="flex items-center gap-4 px-5 py-3.5 fade-in-up group">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${ROLE_COLOUR[p.role]}`}>
+            <div key={p.role} className="flex items-center gap-3 px-5 py-3 fade-in-up group">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 font-mono ${ROLE_COLOUR[p.role]}`}>
                 {ROLE_SHORT[p.role]}
               </div>
-              <span className="text-sm text-rtr-muted w-48 shrink-0">
-                {ROLE_LONG[p.role]}
-              </span>
+              <input
+                value={p.customTitle ?? ROLE_LONG[p.role]}
+                onChange={(e) => update(p.role, "customTitle", e.target.value)}
+                title="Role title (editable)"
+                className="w-52 shrink-0 text-sm bg-transparent border border-transparent text-rtr-muted rounded px-2 py-1.5 focus:outline-none focus:border-rtr-border focus:bg-rtr-elevated placeholder:text-rtr-dim transition-colors hover:border-rtr-border cursor-text"
+              />
               <input
                 value={p.name}
-                onChange={(e) => update(p.role, e.target.value)}
-                placeholder="Name (optional)"
+                onChange={(e) => update(p.role, "name", e.target.value)}
+                placeholder="Participant name (optional)"
                 className="flex-1 text-sm bg-rtr-elevated border border-rtr-border-light text-rtr-text rounded px-3 py-1.5 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors"
               />
             </div>

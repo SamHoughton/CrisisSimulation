@@ -66,9 +66,15 @@ export function Present() {
         setPhase({ phase: "adhoc", body: msg.body });
       } else if (msg.type === "status") {
         if (msg.status === "active" && msg.scenario) {
-          setPhase(msg.scenario.briefing
-            ? { phase: "briefing", scenario: msg.scenario }
-            : { phase: "waiting", scenario: msg.scenario });
+          // Only go to briefing/waiting if we haven't already received an inject.
+          // This prevents the launchSession status broadcast from overriding an
+          // inject that was broadcast immediately before it.
+          setPhase((prev) => {
+            if (prev.phase === "inject" || prev.phase === "adhoc") return prev;
+            return msg.scenario.briefing
+              ? { phase: "briefing", scenario: msg.scenario }
+              : { phase: "waiting", scenario: msg.scenario };
+          });
         } else if (msg.status === "paused") {
           setPhase({ phase: "paused" });
         } else if (msg.status === "ended") {
@@ -331,12 +337,13 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
     );
   }
 
-  if (art.type === "ransomware_note") return <RansomwareNote inject={inject} artifact={art} />;
-  if (art.type === "siem_alert")     return <SiemAlert      inject={inject} artifact={art} />;
-  if (art.type === "tweet")          return <TweetCard       inject={inject} artifact={art} />;
-  if (art.type === "email")          return <EmailCard       inject={inject} artifact={art} />;
-  if (art.type === "legal_letter")   return <LegalLetter     inject={inject} artifact={art} />;
-  if (art.type === "news_headline")  return <NewsHeadline    inject={inject} />;
+  if (art.type === "ransomware_note")  return <RansomwareNote   inject={inject} artifact={art} />;
+  if (art.type === "siem_alert")      return <SiemAlert         inject={inject} artifact={art} />;
+  if (art.type === "tweet")           return <TweetCard          inject={inject} artifact={art} />;
+  if (art.type === "email")           return <EmailCard          inject={inject} artifact={art} />;
+  if (art.type === "legal_letter")    return <LegalLetter        inject={inject} artifact={art} />;
+  if (art.type === "news_headline")   return <NewsHeadline       inject={inject} />;
+  if (art.type === "dark_web_listing") return <DarkWebListing   inject={inject} artifact={art} />;
 
   return (
     <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
@@ -626,6 +633,119 @@ function NewsHeadline({ inject }: { inject: Inject }) {
           <span>·</span>
           <span>{new Date().toLocaleTimeString()}</span>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Dark Web Listing ────────────────────────────────────────────────────────
+
+function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: InjectArtifact }) {
+  const siteName    = artifact.darkWebSiteName    ?? "ALPHV Data Market";
+  const onionUrl    = artifact.darkWebOnionUrl    ?? "http://alphvmmm27o3abo3r2mlmjrpdmzle3rykajqc5xwn4bd3j4lujhpack3ad.onion";
+  const title       = artifact.darkWebTitle       ?? inject.title;
+  const price       = artifact.darkWebPrice       ?? "18 XMR";
+  const recordCount = artifact.darkWebRecordCount ?? "—";
+  const rows        = artifact.darkWebSampleRows  ?? [];
+
+  return (
+    <div className="w-full max-w-3xl rounded-xl overflow-hidden font-mono text-sm"
+      style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", boxShadow: "0 0 40px rgba(0,255,0,0.04)" }}>
+
+      {/* TOR browser chrome */}
+      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#111", borderBottom: "1px solid #1e1e1e" }}>
+        <div className="flex gap-1.5">
+          <div className="w-3 h-3 rounded-full" style={{ background: "#2a2a2a" }} />
+          <div className="w-3 h-3 rounded-full" style={{ background: "#2a2a2a" }} />
+          <div className="w-3 h-3 rounded-full" style={{ background: "#2a2a2a" }} />
+        </div>
+        <div className="flex-1 rounded px-3 py-1 text-xs truncate" style={{ background: "#0d0d0d", color: "#3a7d3a", border: "1px solid #1e3a1e" }}>
+          <span style={{ color: "#2a5a2a" }}>🔒 </span>{onionUrl}
+        </div>
+        <span className="text-xs px-2 py-0.5 rounded" style={{ background: "#1a1a0a", color: "#6a6a20", border: "1px solid #2a2a10" }}>Tor</span>
+      </div>
+
+      {/* Site header */}
+      <div className="px-6 py-4" style={{ background: "#0d0d0d", borderBottom: "1px solid #1a1a1a" }}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded flex items-center justify-center text-lg font-bold" style={{ background: "#1a0000", color: "#ff3333", border: "1px solid #330000" }}>⚠</div>
+            <div>
+              <p className="text-sm font-bold tracking-widest uppercase" style={{ color: "#cc2200" }}>{siteName}</p>
+              <p className="text-xs" style={{ color: "#2a2a2a" }}>Verified leak marketplace — No logs. No KYC.</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs" style={{ color: "#1e3a1e" }}>Active users: <span style={{ color: "#2a6a2a" }}>1,247</span></p>
+            <p className="text-xs mt-0.5" style={{ color: "#1e3a1e" }}>Listings today: <span style={{ color: "#2a6a2a" }}>38</span></p>
+          </div>
+        </div>
+      </div>
+
+      {/* Listing */}
+      <div className="p-6">
+        {/* Listing title */}
+        <div className="mb-5 pb-5" style={{ borderBottom: "1px solid #1a1a1a" }}>
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <div>
+              <span className="text-xs px-2 py-0.5 rounded uppercase tracking-wider font-bold" style={{ background: "#2a0000", color: "#ff4444", border: "1px solid #440000" }}>NEW LISTING</span>
+              <h3 className="text-lg font-bold mt-2 leading-tight" style={{ color: "#e0e0e0" }}>{title}</h3>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-2xl font-bold" style={{ color: "#ffcc00" }}>{price}</p>
+              <p className="text-xs" style={{ color: "#4a4a4a" }}>Monero only</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3 text-xs">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded" style={{ background: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+              📁 <span style={{ color: "#aaa" }}>{recordCount}</span>
+            </span>
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded" style={{ background: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+              📅 <span style={{ color: "#aaa" }}>Posted {new Date().toLocaleDateString("en-GB")}</span>
+            </span>
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded" style={{ background: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+              ✓ <span style={{ color: "#4afe91" }}>Verified by admin</span>
+            </span>
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded" style={{ background: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
+              ⏳ <span style={{ color: "#ff8800" }}>Auction closes 72h</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Data preview */}
+        {rows.length > 0 && (
+          <div>
+            <p className="text-xs uppercase tracking-wider font-bold mb-3" style={{ color: "#444" }}>Sample Data Preview (5 of {recordCount})</p>
+            <div className="rounded overflow-hidden text-xs" style={{ border: "1px solid #1e1e1e" }}>
+              <table className="w-full">
+                <thead>
+                  <tr style={{ background: "#111", borderBottom: "1px solid #1e1e1e" }}>
+                    {["Full Name", "Account No.", "Sort Code", "Email"].map((h) => (
+                      <th key={h} className="text-left px-3 py-2 font-semibold" style={{ color: "#555" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row, i) => (
+                    <tr key={i} style={{ background: i % 2 === 0 ? "#0a0a0a" : "#0d0d0d", borderBottom: "1px solid #141414" }}>
+                      <td className="px-3 py-2" style={{ color: "#cc4444" }}>{row.name}</td>
+                      <td className="px-3 py-2" style={{ color: "#888" }}>{row.account}</td>
+                      <td className="px-3 py-2" style={{ color: "#888" }}>{row.sortCode}</td>
+                      <td className="px-3 py-2" style={{ color: "#666" }}>{row.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs mt-2" style={{ color: "#333" }}>* Full dataset includes names, addresses, account numbers, sort codes, transaction history (24 months), and correspondence.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="px-6 py-3 flex items-center justify-between text-xs" style={{ background: "#080808", borderTop: "1px solid #141414", color: "#2a2a2a" }}>
+        <span>Use escrow. Never direct transfer.</span>
+        <span>PGP key available on profile</span>
       </div>
     </div>
   );

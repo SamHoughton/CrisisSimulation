@@ -38,6 +38,7 @@ export type ArtifactType =
   | "email"
   | "legal_letter"
   | "news_headline"
+  | "dark_web_listing"
   | "default";
 
 export interface InjectArtifact {
@@ -63,6 +64,13 @@ export interface InjectArtifact {
   ransomAmount?: string;
   ransomDeadlineHours?: number;
   ransomWalletAddress?: string;
+  // dark web listing
+  darkWebSiteName?: string;      // e.g. "ALPHV Data Market"
+  darkWebOnionUrl?: string;      // fake .onion address
+  darkWebTitle?: string;         // headline for the listing
+  darkWebPrice?: string;         // e.g. "12 XMR"
+  darkWebRecordCount?: string;   // e.g. "220,000 records"
+  darkWebSampleRows?: Array<{ name: string; account: string; sortCode: string; email: string }>; // fake sample data
 }
 
 export interface Inject {
@@ -105,6 +113,7 @@ export interface Scenario {
 export interface Participant {
   role: ExecRole;
   name: string;
+  customTitle?: string; // overrides ROLE_LONG display name e.g. "General Counsel" instead of "Chief Legal Officer"
 }
 
 export interface ResponseEntry {
