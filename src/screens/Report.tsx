@@ -74,7 +74,10 @@ export function Report() {
     setGenerating(true);
     setGenError("");
     try {
-      const result = await generateReport(session, settings.claudeApiKey);
+      const result = await generateReport(session, settings.claudeApiKey, {
+        orgName: settings.orgName,
+        facilitatorName: settings.facilitatorName,
+      });
       setReport(result);
     } catch (e: any) {
       setGenError(e.message ?? "Generation failed");

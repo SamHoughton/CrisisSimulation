@@ -104,7 +104,8 @@ Return ONLY valid JSON matching this schema exactly:
 
 export async function generateReport(
   session: Session,
-  apiKey: string
+  apiKey: string,
+  opts?: { orgName?: string; facilitatorName?: string }
 ): Promise<GeneratedReport> {
   const duration = session.endedAt
     ? Math.round(

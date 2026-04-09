@@ -15,12 +15,12 @@ import { useState, useEffect, useRef } from "react";
 import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
-  Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw,
+  Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
 } from "lucide-react";
 import {
   cn, ROLE_SHORT, ROLE_COLOUR, formatElapsed,
 } from "@/lib/utils";
-import type { ExecRole, DecisionEntry } from "@/types";
+import type { ExecRole, DecisionEntry, Participant, ResponseEntry } from "@/types";
 
 const OPTION_COLOURS = [
   "text-blue-400 bg-blue-500/15 border-blue-500/30",
@@ -39,6 +39,7 @@ export function Runner() {
   const endSession       = useStore((s) => s.endSession);
   const releaseInject    = useStore((s) => s.releaseInject);
   const addDecision      = useStore((s) => s.addDecision);
+  const addResponse      = useStore((s) => s.addResponse);
   const revealVotes      = useStore((s) => s.revealVotes);
   const updateInjectNote = useStore((s) => s.updateInjectNote);
   const addNote          = useStore((s) => s.addNote);
@@ -382,6 +383,8 @@ export function Runner() {
                       const bc = new BroadcastChannel("crisis-present");
                       bc.postMessage({ type: "adhoc", body: adHocText });
                       bc.close();
+                      // Persist to session so it appears in the report
+                      addNote(`[Ad-hoc inject] ${adHocText}`);
                       setAdHocText(""); setShowAdHoc(false);
                     }}
                     className="flex-1 text-xs bg-amber-500 text-white py-1.5 rounded hover:bg-amber-600"
@@ -443,6 +446,16 @@ export function Runner() {
                     />
                   );
                 })()}
+
+                {/* Response logger — log what each participant says */}
+                <ResponseLogger
+                  injectId={currentLive.injectId}
+                  participants={session.participants}
+                  responses={currentLive.responses}
+                  onLog={(role, name, body) =>
+                    addResponse(currentLive.injectId, { role, name, body, timestamp: new Date().toISOString() })
+                  }
+                />
 
                 <InjectNoteEditor
                   value={currentLive.facilitatorNote ?? ""}
@@ -652,6 +665,85 @@ function InjectNoteEditor({ value, onChange }: { value: string; onChange: (v: st
         <button onClick={() => setEditing(false)} className="text-xs text-rtr-muted hover:text-rtr-text">
           Cancel
         </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Response logger ─────────────────────────────────────────────────────────
+
+function ResponseLogger({
+  injectId, participants, responses, onLog,
+}: {
+  injectId: string;
+  participants: Participant[];
+  responses: ResponseEntry[];
+  onLog: (role: ExecRole, name: string, body: string) => void;
+}) {
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  // Reset drafts when inject changes
+  useEffect(() => { setDrafts({}); }, [injectId]);
+
+  const updateDraft = (role: string, text: string) =>
+    setDrafts((d) => ({ ...d, [role]: text }));
+
+  const submit = (role: ExecRole, name: string) => {
+    const text = drafts[role]?.trim();
+    if (!text) return;
+    onLog(role, name, text);
+    setDrafts((d) => ({ ...d, [role]: "" }));
+  };
+
+  const roleResponses = responses.reduce<Record<string, ResponseEntry[]>>((acc, r) => {
+    (acc[r.role] ??= []).push(r);
+    return acc;
+  }, {});
+
+  return (
+    <div className="border border-rtr-border rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-3">
+        <MessageSquare className="w-4 h-4 text-rtr-green" />
+        <p className="text-xs font-semibold text-rtr-green uppercase tracking-wider">
+          Response Log — {responses.length} recorded
+        </p>
+      </div>
+      <div className="space-y-2">
+        {participants.map((p) => {
+          const logged = roleResponses[p.role] ?? [];
+          return (
+            <div key={p.role}>
+              <div className="flex items-center gap-2">
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded shrink-0 ${ROLE_COLOUR[p.role]}`}>
+                  {ROLE_SHORT[p.role]}
+                </span>
+                <input
+                  value={drafts[p.role] ?? ""}
+                  onChange={(e) => updateDraft(p.role, e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(p.role, p.name); } }}
+                  placeholder={p.name ? `What did ${p.name} say?` : "What did they say?"}
+                  className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2.5 py-1.5 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+                />
+                <button
+                  onClick={() => submit(p.role, p.name)}
+                  className="text-rtr-green hover:opacity-80 transition-opacity shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              {logged.length > 0 && (
+                <div className="ml-8 mt-1 space-y-0.5">
+                  {logged.map((r, i) => (
+                    <p key={i} className="text-xs text-rtr-muted">
+                      <span className="text-rtr-dim font-mono">{new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                      {" "}{r.body}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

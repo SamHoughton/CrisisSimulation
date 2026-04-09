@@ -512,15 +512,40 @@ function InjectCard({
             />
           </div>
 
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="text-xs font-medium text-rtr-dim block mb-1">
+                Inject Image URL <span className="font-normal">(shown on projector)</span>
+              </label>
+              <input
+                value={inject.imageUrl ?? ""}
+                onChange={(e) => onUpdate({ imageUrl: e.target.value })}
+                className={inputCls}
+                placeholder="https://… (optional)"
+              />
+            </div>
+            <div className="w-28">
+              <label className="text-xs font-medium text-rtr-dim block mb-1">Timer (mins)</label>
+              <input
+                type="number" min={1} max={60}
+                value={inject.timerMinutes ?? ""}
+                onChange={(e) => onUpdate({ timerMinutes: e.target.value ? +e.target.value : undefined })}
+                className={inputCls}
+                placeholder="10"
+              />
+            </div>
+          </div>
+
+          {/* Ticker headline */}
           <div>
             <label className="text-xs font-medium text-rtr-dim block mb-1">
-              Inject Image URL <span className="font-normal">(shown on projector)</span>
+              News Ticker Headline <span className="font-normal">(scrolls on present screen)</span>
             </label>
             <input
-              value={inject.imageUrl ?? ""}
-              onChange={(e) => onUpdate({ imageUrl: e.target.value })}
+              value={inject.tickerHeadline ?? ""}
+              onChange={(e) => onUpdate({ tickerHeadline: e.target.value })}
               className={inputCls}
-              placeholder="https://… (optional)"
+              placeholder="BREAKING: … (optional)"
             />
           </div>
 
@@ -534,6 +559,80 @@ function InjectCard({
               rows={2} placeholder="What's really happening behind the scenes…"
               className={`${inputCls} resize-none bg-amber-500/5 border-amber-500/20`}
             />
+          </div>
+
+          {/* Artifact type */}
+          <div>
+            <label className="text-xs font-medium text-rtr-dim block mb-1">Present Screen Artifact</label>
+            <select
+              value={inject.artifact?.type ?? "default"}
+              onChange={(e) => {
+                const t = e.target.value;
+                if (t === "default") { onUpdate({ artifact: undefined }); return; }
+                onUpdate({ artifact: { ...inject.artifact, type: t as any } });
+              }}
+              className={inputCls}
+              style={{ backgroundColor: "#0d0e10" }}
+            >
+              <option value="default" style={{ background: "#0d0e10" }}>Default (plain text)</option>
+              <option value="ransomware_note" style={{ background: "#0d0e10" }}>Ransomware Note</option>
+              <option value="siem_alert" style={{ background: "#0d0e10" }}>SIEM Alert</option>
+              <option value="tweet" style={{ background: "#0d0e10" }}>Tweet / X Post</option>
+              <option value="email" style={{ background: "#0d0e10" }}>Email</option>
+              <option value="legal_letter" style={{ background: "#0d0e10" }}>Legal Letter</option>
+              <option value="news_headline" style={{ background: "#0d0e10" }}>News Headline</option>
+              <option value="dark_web_listing" style={{ background: "#0d0e10" }}>Dark Web Listing</option>
+            </select>
+
+            {/* Conditional artifact fields */}
+            {inject.artifact?.type === "tweet" && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <input value={inject.artifact.tweetHandle ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, tweetHandle: e.target.value } })} className={inputCls} placeholder="@handle" />
+                <input value={inject.artifact.tweetDisplayName ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, tweetDisplayName: e.target.value } })} className={inputCls} placeholder="Display name" />
+              </div>
+            )}
+            {inject.artifact?.type === "email" && (
+              <div className="mt-2 space-y-2">
+                <input value={inject.artifact.emailFrom ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailFrom: e.target.value } })} className={inputCls} placeholder="From: ceo@company.com" />
+                <input value={inject.artifact.emailTo ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailTo: e.target.value } })} className={inputCls} placeholder="To: board@company.com" />
+                <input value={inject.artifact.emailSubject ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSubject: e.target.value } })} className={inputCls} placeholder="Subject: URGENT — …" />
+              </div>
+            )}
+            {inject.artifact?.type === "siem_alert" && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <input value={inject.artifact.siemAlertId ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemAlertId: e.target.value } })} className={inputCls} placeholder="Alert ID (SOC-2024-001)" />
+                <select value={inject.artifact.siemSeverity ?? "HIGH"} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSeverity: e.target.value as any } })} className={inputCls} style={{ backgroundColor: "#0d0e10" }}>
+                  <option value="CRITICAL" style={{ background: "#0d0e10" }}>Critical</option>
+                  <option value="HIGH" style={{ background: "#0d0e10" }}>High</option>
+                  <option value="MEDIUM" style={{ background: "#0d0e10" }}>Medium</option>
+                </select>
+                <input value={inject.artifact.siemSourceIp ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSourceIp: e.target.value } })} className={inputCls} placeholder="Source IP" />
+                <input value={inject.artifact.siemEventType ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemEventType: e.target.value } })} className={inputCls} placeholder="Event type" />
+              </div>
+            )}
+            {inject.artifact?.type === "ransomware_note" && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <input value={inject.artifact.ransomAmount ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, ransomAmount: e.target.value } })} className={inputCls} placeholder="Demand ($4.8M)" />
+                <input type="number" value={inject.artifact.ransomDeadlineHours ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, ransomDeadlineHours: e.target.value ? +e.target.value : undefined } })} className={inputCls} placeholder="Deadline (hours)" />
+                <input value={inject.artifact.ransomWalletAddress ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, ransomWalletAddress: e.target.value } })} className={`${inputCls} col-span-2`} placeholder="BTC wallet address" />
+              </div>
+            )}
+            {inject.artifact?.type === "legal_letter" && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <input value={inject.artifact.legalCaseRef ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, legalCaseRef: e.target.value } })} className={inputCls} placeholder="Case reference" />
+                <input value={inject.artifact.legalAuthority ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, legalAuthority: e.target.value } })} className={inputCls} placeholder="Authority (e.g. ICO)" />
+              </div>
+            )}
+            {inject.artifact?.type === "dark_web_listing" && (
+              <div className="mt-2 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <input value={inject.artifact.darkWebSiteName ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, darkWebSiteName: e.target.value } })} className={inputCls} placeholder="Site name (ALPHV Market)" />
+                  <input value={inject.artifact.darkWebPrice ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, darkWebPrice: e.target.value } })} className={inputCls} placeholder="Price (18 XMR)" />
+                </div>
+                <input value={inject.artifact.darkWebTitle ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, darkWebTitle: e.target.value } })} className={inputCls} placeholder="Listing title" />
+                <input value={inject.artifact.darkWebRecordCount ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, darkWebRecordCount: e.target.value } })} className={inputCls} placeholder="Record count (220,000 records)" />
+              </div>
+            )}
           </div>
 
           {/* Target roles */}

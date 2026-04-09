@@ -72,6 +72,7 @@ interface AppStore {
   setView: (v: View) => void;
   editingScenarioId: string | null;
   setEditingScenario: (id: string | null) => void;
+  /** @deprecated Unused — kept for localStorage compat. */
   viewingSessionId: string | null;
   setViewingSession: (id: string | null) => void;
 }

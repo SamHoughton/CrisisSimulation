@@ -66,6 +66,8 @@ export function Present() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const injectCountRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** Holds the scenario received during splash so we can transition correctly when splash ends. */
+  const pendingScenarioRef = useRef<Scenario | null>(null);
 
   // Track fullscreen state changes (e.g. user presses Escape)
   useEffect(() => {
@@ -99,11 +101,11 @@ export function Present() {
         setPhase({ phase: "adhoc", body: msg.body });
       } else if (msg.type === "status") {
         if (msg.status === "active" && msg.scenario) {
-          // Only go to briefing/waiting if we haven't already received an inject.
-          // This prevents the launchSession status broadcast from overriding an
-          // inject that was broadcast immediately before it.
+          // Store scenario for when splash finishes, and skip phase change if
+          // we're still in splash or already showing an inject/adhoc.
+          pendingScenarioRef.current = msg.scenario;
           setPhase((prev) => {
-            if (prev.phase === "inject" || prev.phase === "adhoc") return prev;
+            if (prev.phase === "inject" || prev.phase === "adhoc" || prev.phase === "splash") return prev;
             return msg.scenario.briefing
               ? { phase: "briefing", scenario: msg.scenario }
               : { phase: "waiting", scenario: msg.scenario };
@@ -210,7 +212,15 @@ export function Present() {
       {/* ── Main content ────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-hidden">
         {phase.phase === "waiting"  && <WaitingScreen scenario={phase.scenario} />}
-        {phase.phase === "splash"   && <SplashScreen scenario={phase.scenario} onDone={() => setPhase({ phase: "waiting", scenario: phase.scenario })} />}
+        {phase.phase === "splash"   && <SplashScreen scenario={phase.scenario} onDone={() => {
+          const sc = pendingScenarioRef.current;
+          setPhase((prev) => {
+            // Only transition if still in splash (an inject may have arrived)
+            if (prev.phase !== "splash") return prev;
+            if (sc?.briefing) return { phase: "briefing", scenario: sc };
+            return { phase: "waiting", scenario: sc };
+          });
+        }} />}
         {phase.phase === "briefing" && <BriefingScreen scenario={phase.scenario} />}
         {phase.phase === "inject"   && <InjectScreen inject={phase.inject} num={phase.num} voteState={voteState} />}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
