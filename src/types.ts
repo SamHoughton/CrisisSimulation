@@ -208,4 +208,5 @@ export type PresentMessage =
   | { type: "status"; status: SessionStatus; scenario?: Scenario }
   | { type: "vote"; role: string; roleName: string; optionKey: string }
   | { type: "vote-reveal"; decisions: DecisionEntry[] }
-  | { type: "timer"; action: "start" | "stop" | "reset"; seconds: number };
+  | { type: "timer"; action: "start" | "stop" | "reset"; seconds: number }
+  | { type: "request-sync" };

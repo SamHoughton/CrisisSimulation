@@ -9,7 +9,7 @@ const BG_HEADLINES = [
   "ICO enforcement action up 42% year-on-year as GDPR scrutiny intensifies",
   "Cyber insurance premiums rise sharply following wave of high-profile incidents",
   "Security researchers warn of new AI-generated phishing and deepfake campaigns",
-  "Global ransomware payments exceeded $1.1 billion last year — record high",
+  "Global ransomware payments exceeded $1.1 billion last year, a record high",
   "FCA confirms increase in market surveillance and enforcement activity",
   "Supply chain attacks targeting financial services sector on the rise",
   "Major breach at third-party SaaS provider exposes millions of customer records",
@@ -48,6 +48,16 @@ export function Present() {
   const [timerRunning, setTimerRunning] = useState(false);
   const injectCountRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // On mount, ask Runner to resend its current state (recovers a reopened Present window)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const bc = new BroadcastChannel("crisis-present");
+      bc.postMessage({ type: "request-sync" });
+      bc.close();
+    }, 250);
+    return () => clearTimeout(t);
+  }, []);
 
   // BroadcastChannel listener
   useEffect(() => {

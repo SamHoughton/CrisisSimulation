@@ -37,6 +37,12 @@ export function Runner() {
   const [showAdHoc, setShowAdHoc]   = useState(false);
   const [voteRevealed, setVoteRevealed] = useState<Record<string, boolean>>({});
 
+  // Refs so the request-sync listener always reads fresh state without re-registering
+  const sessionRef      = useRef(session);
+  const voteRevealedRef = useRef(voteRevealed);
+  const timerSecondsRef = useRef<number>(0);
+  const timerRunningRef = useRef(false);
+
   // Per-inject countdown timer
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [timerRunning, setTimerRunning] = useState(false);
@@ -46,6 +52,10 @@ export function Runner() {
   const nextInject   = getNextInject(session);
   const allReleased  = session ? new Set(session.liveInjects.map((l) => l.injectId)) : new Set();
   const reachable    = getReachableInjectIds(session);
+
+  // Keep refs in sync with latest state for use in the request-sync listener
+  sessionRef.current      = session;
+  voteRevealedRef.current = voteRevealed;
 
   // Session elapsed clock
   useEffect(() => {
@@ -77,20 +87,22 @@ export function Runner() {
   useEffect(() => {
     stopTimer();
     const inj = session?.scenario.injects.find((i) => i.id === currentLive?.injectId);
-    if (inj?.timerMinutes) {
-      setTimerSeconds(inj.timerMinutes * 60);
-    } else {
-      setTimerSeconds(10 * 60); // default 10 min
-    }
+    const secs = inj?.timerMinutes ? inj.timerMinutes * 60 : 10 * 60;
+    setTimerSeconds(secs);
+    timerSecondsRef.current = secs;
+    timerRunningRef.current = false;
   }, [currentLive?.injectId]);
 
   // Timer countdown tick
   useEffect(() => {
+    timerRunningRef.current = timerRunning;
     if (!timerRunning) return;
     timerRef.current = setInterval(() => {
       setTimerSeconds((s) => {
-        if (s <= 1) { stopTimer(); return 0; }
-        return s - 1;
+        const next = s <= 1 ? 0 : s - 1;
+        timerSecondsRef.current = next;
+        if (s <= 1) stopTimer();
+        return next;
       });
     }, 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
@@ -106,6 +118,52 @@ export function Runner() {
     bc.postMessage({ type: "timer", action, seconds });
     bc.close();
   }
+
+  // Listen for request-sync from a reopened Present window and replay current state
+  useEffect(() => {
+    const bc = new BroadcastChannel("crisis-present");
+    bc.onmessage = (e) => {
+      if (e.data?.type !== "request-sync") return;
+      const sess = sessionRef.current;
+      if (!sess) return;
+
+      const rb = new BroadcastChannel("crisis-present");
+
+      if (sess.status === "ended" || sess.status === "paused") {
+        rb.postMessage({ type: "status", status: sess.status, scenario: sess.scenario });
+      } else {
+        const live = sess.liveInjects[sess.liveInjects.length - 1];
+        if (live) {
+          const inj = sess.scenario.injects.find((i) => i.id === live.injectId);
+          if (inj) {
+            rb.postMessage({
+              type: "inject",
+              inject: inj,
+              injectNum: sess.liveInjects.length,
+              totalInjects: sess.scenario.injects.length,
+            });
+            if (voteRevealedRef.current[live.injectId]) {
+              rb.postMessage({ type: "vote-reveal", decisions: live.decisions });
+            } else {
+              for (const d of live.decisions) {
+                rb.postMessage({ type: "vote", role: d.role, roleName: d.name || d.role, optionKey: d.optionKey });
+              }
+            }
+          }
+        } else {
+          rb.postMessage({ type: "status", status: sess.status, scenario: sess.scenario });
+        }
+      }
+
+      rb.postMessage({
+        type: "timer",
+        action: timerRunningRef.current ? "start" : "stop",
+        seconds: timerSecondsRef.current,
+      });
+      rb.close();
+    };
+    return () => bc.close();
+  }, []);
 
   function handleStartTimer() {
     setTimerRunning(true);
@@ -486,7 +544,7 @@ function VotingPanel({
         <div className="flex items-center gap-2">
           <GitBranch className="w-4 h-4 text-amber-400" />
           <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
-            Vote — {decisions.length}/{participants.length} cast
+            Vote: {decisions.length}/{participants.length} cast
           </p>
         </div>
         {!revealed && (
@@ -574,7 +632,7 @@ function VotingPanel({
         {decisions.length === participants.length && (
           <p className="text-xs text-rtr-green flex items-center gap-1 font-mono">
             <Check className="w-3 h-3" />All votes cast
-            {inject.branches?.length > 0 && !revealed && " — reveal to advance"}
+            {inject.branches?.length > 0 && !revealed && ": reveal to advance"}
           </p>
         )}
       </div>

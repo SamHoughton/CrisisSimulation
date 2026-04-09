@@ -118,7 +118,7 @@ export function Report() {
                 className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors"
               >
                 <TrendingUp className="w-4 h-4" />
-                Generate AI Report
+                Generate Report
               </button>
             )}
             {generating && (
@@ -238,7 +238,7 @@ function NoReportState({ onGenerate, hasApiKey }: { onGenerate: () => void; hasA
           <AlertCircle className="w-6 h-6 text-amber-400 mx-auto mb-2" />
           <p className="text-sm font-medium text-rtr-text mb-1">API key required</p>
           <p className="text-xs text-rtr-muted mb-3">
-            Add your Anthropic API key in Settings to generate the AI gap analysis.
+            Add your Anthropic API key in Settings to generate the gap analysis.
           </p>
           <button onClick={() => setView("settings")} className="text-sm text-rtr-green hover:underline">
             Go to Settings →
@@ -250,7 +250,7 @@ function NoReportState({ onGenerate, hasApiKey }: { onGenerate: () => void; hasA
           className="w-full flex items-center justify-center gap-2 bg-rtr-red text-white py-3 rounded-xl text-sm font-medium hover:bg-[#c0001f] transition-colors"
         >
           <TrendingUp className="w-4 h-4" />
-          Generate AI Gap Analysis
+          Generate Gap Analysis
         </button>
       )}
     </div>

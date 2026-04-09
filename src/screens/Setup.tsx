@@ -108,7 +108,7 @@ export function Setup() {
         <div className="px-5 py-3 bg-rtr-elevated border-b border-rtr-border flex items-center gap-2">
           <Users className="w-4 h-4 text-rtr-muted" />
           <h2 className="text-sm font-semibold text-rtr-text">Participants</h2>
-          <span className="text-xs text-rtr-dim ml-1">(names optional — used in the report)</span>
+          <span className="text-xs text-rtr-dim ml-1">(names optional, used in the report)</span>
           {namedCount > 0 && (
             <span className="ml-auto text-xs text-rtr-green font-medium">
               {namedCount}/{participants.length} named
@@ -141,7 +141,7 @@ export function Setup() {
         <p className="text-xs text-rtr-muted leading-relaxed">
           When you launch, a <strong className="text-rtr-text">Present window</strong> will open in a new browser tab.
           Put that tab full-screen on your shared display or projector.
-          Keep this window on your laptop for controls — it will never be visible to participants.
+          Keep this window on your laptop for controls: it will never be visible to participants.
         </p>
       </div>
 

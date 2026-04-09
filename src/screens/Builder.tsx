@@ -459,7 +459,7 @@ function InjectCard({
 
           <div>
             <label className="text-xs font-medium text-rtr-dim block mb-1">
-              Facilitator Notes <span className="font-normal">(private — never shown)</span>
+              Facilitator Notes <span className="font-normal">(private, never shown)</span>
             </label>
             <textarea
               value={inject.facilitatorNotes ?? ""}
