@@ -1,4 +1,4 @@
-# VIGIL — Executive Crisis Training
+# VIGIL - Executive Crisis Training
 
 A browser-based tabletop crisis simulation platform for executive teams. No server, no database, no accounts. Runs entirely in one browser with `localStorage` persistence and a second-screen projector view synced via the `BroadcastChannel` API.
 
@@ -9,19 +9,19 @@ Built for facilitators who need to run realistic, high-pressure crisis exercises
 **Scenario Engine**
 - Two built-in 2-hour scenarios (Ransomware + Deepfake CEO) with deep branching decision trees
 - Custom scenario builder with drag-and-drop inject ordering
-- Decision points with majority-vote branching — choices lead to genuinely different paths
+- Decision points with majority-vote branching - choices lead to genuinely different paths
 - Per-inject countdown timers, facilitator notes, and expected keyword tracking
 
 **Immersive Present Screen**
 - Standalone projector view with VIGIL splash intro, live news ticker, and crisis escalation bar
 - Styled artifacts: ransomware notes, SIEM alerts, tweets, emails, legal letters, dark web listings
-- Scenario briefing cards — fake encrypted file explorer (ransomware) or blurred viral deepfake video
+- Scenario briefing cards - fake encrypted file explorer (ransomware) or blurred viral deepfake video
 - Real-time vote visualisation with animated reveal
 
 **AI-Powered Analysis** (optional, requires Anthropic API key)
 - Claude Haiku suggests inject body text while building scenarios
 - Claude Sonnet generates structured post-exercise reports: gap analysis, role feedback, recommendations, overall score
-- Direct browser-to-API — no proxy server needed
+- Direct browser-to-API - no proxy server needed
 
 **Facilitator Tools**
 - Live session control panel with inject queue, voting panel, and observation notes
@@ -54,19 +54,19 @@ To enable AI features (inject suggestions + post-exercise reports), paste your [
 
 ## How It Works
 
-1. **Pick or build a scenario** — two full templates included. Fully editable, duplicatable.
-2. **Set up the session** — assign participants to executive roles (CEO, CISO, CLO, etc.). Role titles are customisable.
-3. **Launch** — a present window opens automatically. Put it on the projector or share screen. Fullscreen button included.
-4. **Run** — release injects one by one from the facilitator panel. Participants discuss and decide. Log responses, cast votes, take facilitator notes.
-5. **Decide** — at decision points, each role votes. Majority wins. The scenario branches accordingly.
-6. **End → Report** — Claude analyses the full transcript and produces a structured gap analysis with scores, strengths, and recommendations.
-7. **Export** — download as JSON or print to PDF.
+1. **Pick or build a scenario** - two full templates included. Fully editable, duplicatable.
+2. **Set up the session** - assign participants to executive roles (CEO, CISO, CLO, etc.). Role titles are customisable.
+3. **Launch** - a present window opens automatically. Put it on the projector or share screen. Fullscreen button included.
+4. **Run** - release injects one by one from the facilitator panel. Participants discuss and decide. Log responses, cast votes, take facilitator notes.
+5. **Decide** - at decision points, each role votes. Majority wins. The scenario branches accordingly.
+6. **End → Report** - Claude analyses the full transcript and produces a structured gap analysis with scores, strengths, and recommendations.
+7. **Export** - download as JSON or print to PDF.
 
 ## Architecture
 
 ```
 src/
-├── App.tsx                 Root — view routing, #present hash detection
+├── App.tsx                 Root - view routing, #present hash detection
 ├── main.tsx                Entry point
 ├── types.ts                All TypeScript interfaces and type definitions
 ├── index.css               Tailwind base + custom animations + print styles
@@ -97,13 +97,13 @@ src/
 
 ## Key Design Decisions
 
-**No backend** — Everything runs client-side. The Claude API is called directly from the browser (with `anthropic-dangerous-direct-browser-access` header). State persists in `localStorage` under key `crisis-tabletop`.
+**No backend** - Everything runs client-side. The Claude API is called directly from the browser (with `anthropic-dangerous-direct-browser-access` header). State persists in `localStorage` under key `crisis-tabletop`.
 
-**BroadcastChannel for sync** — The facilitator's Runner screen and the Present screen communicate via `BroadcastChannel("crisis-present")`. Messages include inject releases, vote broadcasts, timer sync, and session status changes. Works across browser tabs on the same origin — no WebSocket server needed.
+**BroadcastChannel for sync** - The facilitator's Runner screen and the Present screen communicate via `BroadcastChannel("crisis-present")`. Messages include inject releases, vote broadcasts, timer sync, and session status changes. Works across browser tabs on the same origin - no WebSocket server needed.
 
-**Branching decision trees** — Each inject can define `branches: InjectBranch[]` mapping decision option keys to `nextInjectId`. When votes are revealed, the store follows the majority vote's branch. The inject queue dims off-path injects and highlights reachable ones.
+**Branching decision trees** - Each inject can define `branches: InjectBranch[]` mapping decision option keys to `nextInjectId`. When votes are revealed, the store follows the majority vote's branch. The inject queue dims off-path injects and highlights reachable ones.
 
-**Artifact system** — Injects can carry typed artifacts (`ransomware_note`, `tweet`, `siem_alert`, `email`, `legal_letter`, `dark_web_listing`, `news_headline`) that render as styled components on the present screen — no images required, pure CSS/HTML.
+**Artifact system** - Injects can carry typed artifacts (`ransomware_note`, `tweet`, `siem_alert`, `email`, `legal_letter`, `dark_web_listing`, `news_headline`) that render as styled components on the present screen - no images required, pure CSS/HTML.
 
 ## Built-in Scenarios
 
@@ -129,7 +129,7 @@ Built for Netlify (or any static host):
 npm run build    # outputs to dist/
 ```
 
-The `dist/` folder is a static SPA — deploy to Netlify, Vercel, Cloudflare Pages, or any static file server. No server-side code.
+The `dist/` folder is a static SPA - deploy to Netlify, Vercel, Cloudflare Pages, or any static file server. No server-side code.
 
 ## Licence
 

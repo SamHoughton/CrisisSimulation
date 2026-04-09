@@ -1,8 +1,8 @@
 /**
- * Present.tsx — Standalone full-screen projector view.
+ * Present.tsx -Standalone full-screen projector view.
  *
  * Opened as a separate browser window by Runner.tsx. Receives all data via
- * BroadcastChannel("crisis-present") — no direct access to the Zustand store.
+ * BroadcastChannel("crisis-present") -no direct access to the Zustand store.
  *
  * Phases: splash → waiting → briefing → inject (repeating) → ended
  *
@@ -25,7 +25,7 @@ const BG_HEADLINES = [
   "ICO enforcement action up 42% year-on-year as GDPR scrutiny intensifies",
   "Cyber insurance premiums rise sharply following wave of high-profile incidents",
   "Security researchers warn of new AI-generated phishing and deepfake campaigns",
-  "Global ransomware payments exceeded $1.1 billion last year — record high",
+  "Global ransomware payments exceeded $1.1 billion last year -record high",
   "FCA confirms increase in market surveillance and enforcement activity",
   "Supply chain attacks targeting financial services sector on the rise",
   "Major breach at third-party SaaS provider exposes millions of customer records",
@@ -99,7 +99,7 @@ export function Present() {
           setHeadlines((h) => [msg.inject.tickerHeadline, ...h]);
         }
         // If we're still in splash or briefing, queue the inject instead of
-        // immediately overriding — let the splash/briefing finish first.
+        // immediately overriding -let the splash/briefing finish first.
         setPhase((prev) => {
           if (prev.phase === "splash" || prev.phase === "briefing") {
             pendingInjectRef.current = { inject: msg.inject, num: injectNum, totalInjects: msg.totalInjects };
@@ -419,7 +419,7 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
   );
 }
 
-// Ransomware briefing — fake encrypted file explorer
+// Ransomware briefing -fake encrypted file explorer
 function RansomwareBriefingArtifact() {
   const files = [
     { name: "Q4_Financial_Report_2024.xlsx.locked",    size: "2.4 MB",  icon: "📊" },
@@ -441,7 +441,7 @@ function RansomwareBriefingArtifact() {
         <span className="w-3 h-3 rounded-full bg-red-600" />
         <span className="w-3 h-3 rounded-full" style={{ background: "#333" }} />
         <span className="w-3 h-3 rounded-full" style={{ background: "#333" }} />
-        <span className="ml-3 text-xs" style={{ color: "#cc2200" }}>C:\Users\MFS_Admin\Documents — File Explorer</span>
+        <span className="ml-3 text-xs" style={{ color: "#cc2200" }}>C:\Users\MFS_Admin\Documents -File Explorer</span>
       </div>
 
       {/* Toolbar */}
@@ -479,7 +479,7 @@ function RansomwareBriefingArtifact() {
   );
 }
 
-// Deepfake briefing — blurred viral video frame
+// Deepfake briefing -blurred viral video frame
 function DeepfakeBriefingArtifact() {
   return (
     <div className="w-[460px] shrink-0 rounded-xl overflow-hidden shadow-2xl"
@@ -517,7 +517,7 @@ function DeepfakeBriefingArtifact() {
         {/* APEX DYNAMICS watermark */}
         <div className="absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold font-mono"
           style={{ background: "rgba(0,0,0,0.6)", color: "#9ca3af", border: "1px solid rgba(255,255,255,0.1)" }}>
-          APEX DYNAMICS — ALL STAFF
+          APEX DYNAMICS -ALL STAFF
         </div>
         {/* Play button */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -953,7 +953,7 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
             <div className="w-8 h-8 rounded flex items-center justify-center text-lg font-bold" style={{ background: "#1a0000", color: "#ff3333", border: "1px solid #330000" }}>⚠</div>
             <div>
               <p className="text-sm font-bold tracking-widest uppercase" style={{ color: "#cc2200" }}>{siteName}</p>
-              <p className="text-xs" style={{ color: "#2a2a2a" }}>Verified leak marketplace — No logs. No KYC.</p>
+              <p className="text-xs" style={{ color: "#2a2a2a" }}>Verified leak marketplace -No logs. No KYC.</p>
             </div>
           </div>
           <div className="text-right">

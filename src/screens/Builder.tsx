@@ -1,5 +1,5 @@
 /**
- * Builder.tsx — Scenario editor.
+ * Builder.tsx -Scenario editor.
  *
  * Two-panel layout: left panel for scenario metadata (type, difficulty, duration,
  * description, cover image, roles, briefing) and right panel for the inject
@@ -551,7 +551,7 @@ function InjectCard({
 
           <div>
             <label className="text-xs font-medium text-rtr-dim block mb-1">
-              Facilitator Notes <span className="font-normal">(private — never shown)</span>
+              Facilitator Notes <span className="font-normal">(private -never shown)</span>
             </label>
             <textarea
               value={inject.facilitatorNotes ?? ""}
@@ -595,7 +595,7 @@ function InjectCard({
               <div className="mt-2 space-y-2">
                 <input value={inject.artifact.emailFrom ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailFrom: e.target.value } })} className={inputCls} placeholder="From: ceo@company.com" />
                 <input value={inject.artifact.emailTo ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailTo: e.target.value } })} className={inputCls} placeholder="To: board@company.com" />
-                <input value={inject.artifact.emailSubject ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSubject: e.target.value } })} className={inputCls} placeholder="Subject: URGENT — …" />
+                <input value={inject.artifact.emailSubject ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSubject: e.target.value } })} className={inputCls} placeholder="Subject: URGENT -…" />
               </div>
             )}
             {inject.artifact?.type === "siem_alert" && (
@@ -728,13 +728,13 @@ function InjectCard({
                 )}
               </div>
 
-              {/* Branch editor — only show if there are options and other injects */}
+              {/* Branch editor -only show if there are options and other injects */}
               {inject.decisionOptions.length > 0 && otherInjects.length > 0 && (
                 <div className="bg-rtr-elevated border border-rtr-border rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <GitBranch className="w-3.5 h-3.5 text-rtr-green" />
                     <span className="text-xs font-semibold text-rtr-text">Branching Paths</span>
-                    <span className="text-xs text-rtr-dim">(optional — override which inject follows each option)</span>
+                    <span className="text-xs text-rtr-dim">(optional -override which inject follows each option)</span>
                   </div>
                   <div className="space-y-2">
                     {inject.decisionOptions.map((opt) => {

@@ -1,5 +1,5 @@
 /**
- * types.ts — All TypeScript type definitions for the VIGIL platform.
+ * types.ts -All TypeScript type definitions for the VIGIL platform.
  *
  * Organised into sections: Scenario (templates + injects), Session (live exercise
  * state), Report (AI-generated analysis), App state (navigation + settings), and
@@ -86,7 +86,7 @@ export interface Inject {
   order: number;
   title: string;
   body: string;                   // what appears on screen
-  facilitatorNotes?: string;      // private — never shown to participants
+  facilitatorNotes?: string;      // private -never shown to participants
   imageUrl?: string;              // optional image shown on present screen
   delayMinutes: number;
   isDecisionPoint: boolean;

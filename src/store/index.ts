@@ -1,5 +1,5 @@
 /**
- * store/index.ts — Central Zustand store with localStorage persistence.
+ * store/index.ts -Central Zustand store with localStorage persistence.
  *
  * Manages all application state: settings, scenarios, sessions, navigation.
  * Broadcasts inject/vote/timer events to the Present screen via BroadcastChannel.
@@ -72,7 +72,7 @@ interface AppStore {
   setView: (v: View) => void;
   editingScenarioId: string | null;
   setEditingScenario: (id: string | null) => void;
-  /** @deprecated Unused — kept for localStorage compat. */
+  /** @deprecated Unused -kept for localStorage compat. */
   viewingSessionId: string | null;
   setViewingSession: (id: string | null) => void;
 }
@@ -150,7 +150,7 @@ export const useStore = create<AppStore>()(
        * Release an inject: add it to liveInjects, broadcast to Present screen,
        * and auto-launch the session if this is the first inject (status "setup").
        * The broadcast fires BEFORE launchSession so the Present screen receives
-       * the inject message first — the status broadcast follows via Runner's useEffect.
+       * the inject message first -the status broadcast follows via Runner's useEffect.
        */
       releaseInject: (injectId) => {
         const { session } = get();
@@ -273,7 +273,7 @@ export const useStore = create<AppStore>()(
 // ─── Derived helpers ──────────────────────────────────────────────────────────
 // These are pure functions (not store actions) that derive state from the session.
 // They're exported separately so components can call them without subscribing to
-// the full store — just pass in the current session object.
+// the full store -just pass in the current session object.
 
 /** Merge built-in templates with user-created scenarios. */
 export function getAllScenarios(store: AppStore): Scenario[] {
@@ -292,7 +292,7 @@ export function getCurrentLiveInject(session: Session | null): LiveInject | null
  * Logic:
  * 1. If the current inject has branches AND votes have been cast, follow the
  *    majority vote's branch to the specified nextInjectId.
- * 2. If it's a decision point but no votes yet, return null (hold — don't auto-advance).
+ * 2. If it's a decision point but no votes yet, return null (hold -don't auto-advance).
  * 3. Otherwise fall back to linear order (next unreleased inject with higher order).
  */
 export function getNextInject(session: Session | null) {
@@ -323,7 +323,7 @@ export function getNextInject(session: Session | null) {
     }
   }
 
-  // If it's a decision point with no decision yet, hold — don't auto-advance
+  // If it's a decision point with no decision yet, hold -don't auto-advance
   if (currentInject.isDecisionPoint && currentLive.decisions.length === 0) {
     return null;
   }

@@ -1,5 +1,5 @@
 /*
- * index.css — Global styles, custom animations, and print rules.
+ * index.css -Global styles, custom animations, and print rules.
  *
  * All animations are hand-written CSS (no animation libraries).
  * Organised into: base layer, brand styling, inject/vote/ticker animations,
@@ -213,7 +213,7 @@ select.input, select {
   /* Make the main content area overflow-visible so all content prints */
   main { overflow: visible !important; height: auto !important; }
 
-  /* Remove dark backgrounds on cards — let browser use black text on white */
+  /* Remove dark backgrounds on cards -let browser use black text on white */
   .bg-rtr-panel, .bg-rtr-elevated, .bg-rtr-base {
     background: #fff !important;
     color: #111 !important;

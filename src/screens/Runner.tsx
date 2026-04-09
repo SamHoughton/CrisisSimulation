@@ -1,5 +1,5 @@
 /**
- * Runner.tsx — Live session facilitator control panel.
+ * Runner.tsx -Live session facilitator control panel.
  *
  * Three-panel layout:
  * - Left: inject queue with release buttons, branch indicators, off-path dimming
@@ -447,7 +447,7 @@ export function Runner() {
                   );
                 })()}
 
-                {/* Response logger — log what each participant says */}
+                {/* Response logger -log what each participant says */}
                 <ResponseLogger
                   injectId={currentLive.injectId}
                   participants={session.participants}
@@ -533,7 +533,7 @@ function VotingPanel({
         <div className="flex items-center gap-2">
           <GitBranch className="w-4 h-4 text-amber-400" />
           <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
-            Vote — {decisions.length}/{participants.length} cast
+            Vote -{decisions.length}/{participants.length} cast
           </p>
         </div>
         {!revealed && (
@@ -621,7 +621,7 @@ function VotingPanel({
         {decisions.length === participants.length && (
           <p className="text-xs text-rtr-green flex items-center gap-1 font-mono">
             <Check className="w-3 h-3" />All votes cast
-            {inject.branches?.length > 0 && !revealed && " — reveal to advance"}
+            {inject.branches?.length > 0 && !revealed && " -reveal to advance"}
           </p>
         )}
       </div>
@@ -705,7 +705,7 @@ function ResponseLogger({
       <div className="flex items-center gap-2 mb-3">
         <MessageSquare className="w-4 h-4 text-rtr-green" />
         <p className="text-xs font-semibold text-rtr-green uppercase tracking-wider">
-          Response Log — {responses.length} recorded
+          Response Log -{responses.length} recorded
         </p>
       </div>
       <div className="space-y-2">

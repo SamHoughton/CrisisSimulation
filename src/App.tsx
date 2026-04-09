@@ -1,9 +1,9 @@
 /**
- * App.tsx — Root component and view router.
+ * App.tsx -Root component and view router.
  *
  * If the URL hash is #present, renders the standalone Present screen (projector view).
  * Otherwise wraps the current view in the Layout sidebar shell.
- * View state is managed by Zustand — no React Router needed.
+ * View state is managed by Zustand -no React Router needed.
  */
 
 import { useEffect } from "react";

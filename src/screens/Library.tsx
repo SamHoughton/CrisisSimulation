@@ -1,5 +1,5 @@
 /**
- * Library.tsx — Scenario browser and manager.
+ * Library.tsx -Scenario browser and manager.
  *
  * Displays all scenarios (built-in templates + user-created) in a responsive grid.
  * Supports search by title/description, type filtering, and actions per card:
@@ -15,7 +15,7 @@ import {
 } from "@/lib/utils";
 import type { Scenario } from "@/types";
 
-// Exclude "CUSTOM" — it's a meta-type for user scenarios, not a meaningful crisis category filter
+// Exclude "CUSTOM" -it's a meta-type for user scenarios, not a meaningful crisis category filter
 const ALL_TYPES = (Object.entries(SCENARIO_TYPE_LABELS) as [string, string][]).filter(
   ([type]) => type !== "CUSTOM"
 );
