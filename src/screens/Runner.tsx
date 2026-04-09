@@ -365,27 +365,20 @@ export function Runner() {
         <div className="flex-1 flex flex-col overflow-hidden">
           {currentLive ? (
             <>
-              <div className="px-6 py-5 border-b border-rtr-border bg-rtr-panel">
-                <div className="flex items-start justify-between mb-2">
+              {/* Minimal fixed header — title + timestamp only */}
+              <div className="px-6 py-3 border-b border-rtr-border bg-rtr-panel shrink-0">
+                <div className="flex items-center justify-between">
                   <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
                   <p className="text-xs text-rtr-dim font-mono">
                     {new Date(currentLive.releasedAt).toLocaleTimeString()}
                   </p>
                 </div>
-                <h2 className="text-base font-semibold text-rtr-text mb-2">{currentLive.injectTitle}</h2>
-                <p className="text-sm text-rtr-muted leading-relaxed mb-3">{currentLive.injectBody}</p>
-                {(() => {
-                  const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
-                  return inj?.facilitatorNotes ? (
-                    <div className="bg-amber-500/8 border border-amber-500/20 rounded px-3 py-2 text-xs text-amber-300">
-                      <span className="font-semibold">Facilitator: </span>{inj.facilitatorNotes}
-                    </div>
-                  ) : null;
-                })()}
+                <h2 className="text-base font-semibold text-rtr-text mt-1 leading-snug">{currentLive.injectTitle}</h2>
               </div>
 
+              {/* Scrollable body — voting panel FIRST so it's never hidden */}
               <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-                {/* Voting panel for decision points */}
+                {/* Voting panel for decision points — rendered before body so it stays near top */}
                 {(() => {
                   const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
                   if (!inj?.isDecisionPoint) return null;
@@ -402,6 +395,19 @@ export function Runner() {
                       onReveal={() => handleReveal(currentLive.injectId)}
                     />
                   );
+                })()}
+
+                {/* Inject body + facilitator notes */}
+                <div className="bg-rtr-elevated border border-rtr-border rounded-xl p-4 text-sm text-rtr-muted leading-relaxed">
+                  {currentLive.injectBody}
+                </div>
+                {(() => {
+                  const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+                  return inj?.facilitatorNotes ? (
+                    <div className="bg-amber-500/8 border border-amber-500/20 rounded px-3 py-2 text-xs text-amber-300">
+                      <span className="font-semibold">Facilitator: </span>{inj.facilitatorNotes}
+                    </div>
+                  ) : null;
                 })()}
 
                 <InjectNoteEditor
@@ -515,7 +521,7 @@ function VotingPanel({
                   OPTION_TEXT[i] ?? OPTION_TEXT[0])}>
                   {opt.key}
                 </span>
-                <span className="text-xs font-medium text-rtr-text flex-1 line-clamp-1">{opt.label}</span>
+                <span className="text-xs font-medium text-rtr-text flex-1 line-clamp-2 leading-snug">{opt.label}</span>
                 <span className={cn("text-xl font-bold font-mono vote-count", OPTION_TEXT[i] ?? OPTION_TEXT[0])}>
                   {count}
                 </span>

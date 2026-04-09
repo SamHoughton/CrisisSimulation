@@ -76,7 +76,7 @@ export function Home() {
                 Session {session.status} · {session.liveInjects.length}/{session.scenario.injects.length} injects released
               </p>
             </div>
-            <span className="text-xs font-semibold text-rtr-red bg-rtr-red/15 px-2 py-0.5 rounded-full font-mono pulse-dot">
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full font-mono ${session.status === "active" ? "text-rtr-red bg-rtr-red/15 pulse-dot" : "text-amber-400 bg-amber-500/15"}`}>
               {session.status === "active" ? "LIVE" : session.status.toUpperCase()}
             </span>
             <ChevronRight className="w-4 h-4 text-rtr-dim group-hover:translate-x-0.5 transition-transform" />

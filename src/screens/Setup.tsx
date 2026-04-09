@@ -121,7 +121,7 @@ export function Setup() {
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${ROLE_COLOUR[p.role]}`}>
                 {ROLE_SHORT[p.role]}
               </div>
-              <span className="text-sm text-rtr-muted w-48 shrink-0">
+              <span className="text-sm text-rtr-muted w-56 shrink-0">
                 {ROLE_LONG[p.role]}
               </span>
               <input

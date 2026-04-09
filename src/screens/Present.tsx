@@ -267,12 +267,12 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
 function InjectScreen({ inject, num, voteState }: {
   inject: Inject; num: number; voteState: VoteState;
 }) {
-  const showVoting = inject.isDecisionPoint && inject.decisionOptions.length > 0;
+  const showVoting = inject.isDecisionPoint && (inject.decisionOptions?.length ?? 0) > 0;
 
   return (
-    <div className="h-full flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-auto">
+    <div className="h-full flex flex-col px-10 py-6 max-w-7xl mx-auto w-full inject-arrive overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 shrink-0">
+      <div className="flex items-center justify-between mb-4 shrink-0">
         <div className="flex items-center gap-3">
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#e8002d" }} />
@@ -288,11 +288,15 @@ function InjectScreen({ inject, num, voteState }: {
         </span>
       </div>
 
-      {/* Body layout */}
-      <div className={cn("flex gap-8 flex-1 min-h-0", showVoting ? "items-start" : "flex-col")}>
-        {/* Left / main: artifact */}
-        <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
-          <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
+      {/* Inject title — constrained to 2 lines max */}
+      <h2 className="text-3xl font-bold shrink-0 mb-4 line-clamp-2 break-words leading-tight" style={{ color: "#e8eaf0" }}>
+        {inject.title}
+      </h2>
+
+      {/* Body layout — scrollable */}
+      <div className={cn("flex gap-8 flex-1 min-h-0 overflow-hidden", showVoting ? "items-start" : "flex-col")}>
+        {/* Left / main: artifact (scrollable) */}
+        <div className={cn("flex flex-col gap-4 min-h-0 overflow-y-auto", showVoting ? "flex-1" : "w-full")}>
           <ArtifactDisplay inject={inject} />
           {inject.targetRoles.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
@@ -322,7 +326,7 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
 
   if (!art || art.type === "default") {
     return (
-      <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
+      <div className="rounded-2xl p-8 overflow-auto" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
         {inject.imageUrl && (
           <img src={inject.imageUrl} alt="" className="w-full h-40 object-cover rounded-xl mb-5 opacity-70" />
         )}
@@ -630,7 +634,7 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
         </span>
       </div>
 
-      {inject.decisionOptions.map((option) => {
+      {(inject.decisionOptions ?? []).map((option) => {
         const c       = opt(option.key);
         const count   = counts[option.key] ?? 0;
         const pct     = votes.length === 0 ? 0 : Math.round((count / votes.length) * 100);
