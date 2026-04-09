@@ -31,7 +31,7 @@ interface VoteState  { votes: VoteRecord[]; revealed: boolean; winner: string | 
 
 type PresentPhase =
   | { phase: "waiting";  scenario: Scenario | null }
-  | { phase: "splash";   scenario: Scenario }
+  | { phase: "splash";   scenario: Scenario | null }
   | { phase: "briefing"; scenario: Scenario }
   | { phase: "inject";   inject: Inject; num: number }
   | { phase: "adhoc";    body: string }
@@ -41,7 +41,7 @@ type PresentPhase =
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
 export function Present() {
-  const [phase, setPhase]       = useState<PresentPhase>({ phase: "waiting", scenario: null });
+  const [phase, setPhase]       = useState<PresentPhase>({ phase: "splash", scenario: null });
   const [voteState, setVoteState] = useState<VoteState>({ votes: [], revealed: false, winner: null });
   const [crisisLevel, setCrisisLevel] = useState(0);   // 0–100
   const [headlines, setHeadlines]     = useState<string[]>(BG_HEADLINES);
@@ -88,8 +88,9 @@ export function Present() {
           // inject that was broadcast immediately before it.
           setPhase((prev) => {
             if (prev.phase === "inject" || prev.phase === "adhoc") return prev;
-            // Show a 2.5s VIGIL splash, then advance to briefing/waiting
-            return { phase: "splash", scenario: msg.scenario };
+            return msg.scenario.briefing
+              ? { phase: "briefing", scenario: msg.scenario }
+              : { phase: "waiting", scenario: msg.scenario };
           });
         } else if (msg.status === "paused") {
           setPhase({ phase: "paused" });
@@ -193,7 +194,7 @@ export function Present() {
       {/* ── Main content ────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-hidden">
         {phase.phase === "waiting"  && <WaitingScreen scenario={phase.scenario} />}
-        {phase.phase === "splash"   && <SplashScreen scenario={phase.scenario} onDone={() => setPhase(phase.scenario.briefing ? { phase: "briefing", scenario: phase.scenario } : { phase: "waiting", scenario: phase.scenario })} />}
+        {phase.phase === "splash"   && <SplashScreen scenario={phase.scenario} onDone={() => setPhase({ phase: "waiting", scenario: phase.scenario })} />}
         {phase.phase === "briefing" && <BriefingScreen scenario={phase.scenario} />}
         {phase.phase === "inject"   && <InjectScreen inject={phase.inject} num={phase.num} voteState={voteState} />}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
@@ -233,7 +234,7 @@ function LiveClock() {
 
 // ─── Splash screen ───────────────────────────────────────────────────────────
 
-function SplashScreen({ scenario, onDone }: { scenario: Scenario; onDone: () => void }) {
+function SplashScreen({ scenario, onDone }: { scenario: Scenario | null; onDone: () => void }) {
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
 
@@ -263,10 +264,12 @@ function SplashScreen({ scenario, onDone }: { scenario: Scenario; onDone: () => 
       </p>
 
       {/* Scenario pill */}
-      <div className="px-5 py-2.5 rounded-full text-sm font-medium"
-        style={{ background: "rgba(232,0,45,0.08)", border: "1px solid rgba(232,0,45,0.2)", color: "#c5c8d8" }}>
-        {scenario.title}
-      </div>
+      {scenario && (
+        <div className="px-5 py-2.5 rounded-full text-sm font-medium"
+          style={{ background: "rgba(232,0,45,0.08)", border: "1px solid rgba(232,0,45,0.2)", color: "#c5c8d8" }}>
+          {scenario.title}
+        </div>
+      )}
 
       {/* Loading bar */}
       <div className="mt-10 w-48 h-0.5 rounded-full overflow-hidden" style={{ background: "#1c1f24" }}>
