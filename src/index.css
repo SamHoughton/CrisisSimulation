@@ -1,3 +1,11 @@
+/*
+ * index.css — Global styles, custom animations, and print rules.
+ *
+ * All animations are hand-written CSS (no animation libraries).
+ * Organised into: base layer, brand styling, inject/vote/ticker animations,
+ * form utilities, card effects, entrance animations, and @media print overrides.
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

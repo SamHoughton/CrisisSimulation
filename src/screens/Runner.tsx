@@ -1,3 +1,16 @@
+/**
+ * Runner.tsx — Live session facilitator control panel.
+ *
+ * Three-panel layout:
+ * - Left: inject queue with release buttons, branch indicators, off-path dimming
+ * - Centre: current inject display, voting panel, facilitator note editor
+ * - Right: session observation notes (hidden on mobile)
+ *
+ * Opens a Present screen on mount via window.open (with popup-blocked detection).
+ * Broadcasts inject releases, votes, and timer events via BroadcastChannel.
+ * Timer syncs with the Present screen for countdown visibility.
+ */
+
 import { useState, useEffect, useRef } from "react";
 import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } from "@/store";
 import {

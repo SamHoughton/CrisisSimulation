@@ -1,6 +1,17 @@
+/**
+ * utils.ts — Shared utility functions and lookup tables.
+ *
+ * Contains:
+ * - cn(): Tailwind class merging (clsx + tailwind-merge)
+ * - makeId(): Random ID generation for scenarios/sessions
+ * - formatElapsed/formatDuration: Time formatting helpers
+ * - Label maps: scenario types, difficulties, roles → display names and colours
+ */
+
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+/** Merge Tailwind classes with conflict resolution (e.g. "p-2" + "p-4" → "p-4"). */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

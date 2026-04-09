@@ -1,63 +1,136 @@
-# CrisisTabletop
+# VIGIL — Executive Crisis Training
 
-Browser-only tabletop crisis exercise platform. No server, no database, no accounts.
-Runs entirely in the browser with localStorage persistence.
+A browser-based tabletop crisis simulation platform for executive teams. No server, no database, no accounts. Runs entirely in one browser with `localStorage` persistence and a second-screen projector view synced via the `BroadcastChannel` API.
+
+Built for facilitators who need to run realistic, high-pressure crisis exercises without enterprise infrastructure.
+
+## Features
+
+**Scenario Engine**
+- Two built-in 2-hour scenarios (Ransomware + Deepfake CEO) with deep branching decision trees
+- Custom scenario builder with drag-and-drop inject ordering
+- Decision points with majority-vote branching — choices lead to genuinely different paths
+- Per-inject countdown timers, facilitator notes, and expected keyword tracking
+
+**Immersive Present Screen**
+- Standalone projector view with VIGIL splash intro, live news ticker, and crisis escalation bar
+- Styled artifacts: ransomware notes, SIEM alerts, tweets, emails, legal letters, dark web listings
+- Scenario briefing cards — fake encrypted file explorer (ransomware) or blurred viral deepfake video
+- Real-time vote visualisation with animated reveal
+
+**AI-Powered Analysis** (optional, requires Anthropic API key)
+- Claude Haiku suggests inject body text while building scenarios
+- Claude Sonnet generates structured post-exercise reports: gap analysis, role feedback, recommendations, overall score
+- Direct browser-to-API — no proxy server needed
+
+**Facilitator Tools**
+- Live session control panel with inject queue, voting panel, and observation notes
+- Pause/resume, ad-hoc injects, per-inject timer with present-screen sync
+- Decision log, reputation dashboard, and exportable JSON transcript
+- Print-optimised report view for PDF export
 
 ## Stack
 
-| | |
+| Layer | Technology |
 |---|---|
-| Framework | Vite + React + TypeScript |
-| State | Zustand (persisted to localStorage) |
-| Styling | Tailwind CSS |
-| AI | Anthropic Claude API (called directly from browser) |
-| Real-time | BroadcastChannel API (present window sync) |
+| Framework | Vite + React 19 + TypeScript |
+| State | Zustand with `localStorage` persistence |
+| Styling | Tailwind CSS (custom dark theme) |
+| AI | Anthropic Claude API (Haiku + Sonnet) |
+| Real-time | BroadcastChannel API (facilitator ↔ present screen) |
+| Icons | Lucide React |
+| Dates | date-fns |
 
-## Getting started
+## Getting Started
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000 — no setup, no env vars, no accounts.
+Open [http://localhost:5173](http://localhost:5173). No environment variables, no setup, no accounts.
 
-To enable the AI gap analysis, add your Anthropic API key in **Settings**.
+To enable AI features (inject suggestions + post-exercise reports), paste your [Anthropic API key](https://console.anthropic.com/) into **Settings**.
 
-## How it works
+## How It Works
 
-- **No backend.** All state lives in `localStorage`.
-- **Single laptop.** One person runs the session; participants watch a shared screen.
-- **Present window.** When you start a session, a second browser tab opens automatically. Put that tab full-screen on your projector. Injects are pushed to it instantly via the `BroadcastChannel` API.
-- **AI report.** After the session ends, Claude analyses the full transcript (responses you logged, decisions, notes) and produces a structured gap analysis with scores, role feedback, and recommendations.
+1. **Pick or build a scenario** — two full templates included. Fully editable, duplicatable.
+2. **Set up the session** — assign participants to executive roles (CEO, CISO, CLO, etc.). Role titles are customisable.
+3. **Launch** — a present window opens automatically. Put it on the projector or share screen. Fullscreen button included.
+4. **Run** — release injects one by one from the facilitator panel. Participants discuss and decide. Log responses, cast votes, take facilitator notes.
+5. **Decide** — at decision points, each role votes. Majority wins. The scenario branches accordingly.
+6. **End → Report** — Claude analyses the full transcript and produces a structured gap analysis with scores, strengths, and recommendations.
+7. **Export** — download as JSON or print to PDF.
 
-## Workflow
-
-1. **Pick or build a scenario** — 4 templates included (Ransomware, Third-Party Breach, Dawn Raid, Social Media Crisis). Fully editable.
-2. **Set up the session** — enter participant names (optional) per role.
-3. **Launch** — a present window opens automatically. Put it on the projector.
-4. **Run the session** — release injects one by one. Log what each participant says. Mark decision choices.
-5. **End session** → **Generate report** — Claude analyses the transcript and produces the gap analysis.
-6. **Export** — download as JSON for record keeping.
-
-## Project structure
+## Architecture
 
 ```
 src/
-├── screens/
-│   ├── Home.tsx          Dashboard
-│   ├── Library.tsx       Scenario library
-│   ├── Builder.tsx       Scenario editor
-│   ├── Setup.tsx         Session participant setup
-│   ├── Runner.tsx        Live facilitator control panel
-│   ├── Present.tsx       Standalone present window (projector view)
-│   ├── Report.tsx        Post-exercise report + AI analysis
-│   └── Settings.tsx      API key + profile
+├── App.tsx                 Root — view routing, #present hash detection
+├── main.tsx                Entry point
+├── types.ts                All TypeScript interfaces and type definitions
+├── index.css               Tailwind base + custom animations + print styles
+│
 ├── store/
-│   └── index.ts          Zustand store with localStorage persistence
+│   └── index.ts            Zustand store: state, actions, branching logic,
+│                           BroadcastChannel dispatch, localStorage persistence
+│
 ├── lib/
-│   ├── claude.ts         Claude API call + system prompt
-│   ├── templates.ts      4 built-in scenario templates
-│   └── utils.ts          Labels, colours, formatters
-└── types.ts              All TypeScript types
+│   ├── claude.ts           Claude API: inject suggestions (Haiku) + report generation (Sonnet)
+│   ├── templates.ts        Built-in scenarios: Ransomware (11 injects, 4 branches),
+│   │                       Deepfake CEO (10 injects, 3 branches)
+│   └── utils.ts            Formatters, role/scenario label maps, colour constants
+│
+├── components/
+│   └── Layout.tsx          Sidebar navigation + VIGIL logo
+│
+└── screens/
+    ├── Home.tsx            Dashboard: stats, active session banner, quick start cards
+    ├── Library.tsx         Scenario browser: search, filter, duplicate, run
+    ├── Builder.tsx         Scenario editor: metadata, inject timeline, decision trees
+    ├── Setup.tsx           Pre-session: participant names, role titles, timeline preview
+    ├── Runner.tsx          Facilitator control panel: inject queue, voting, timer, notes
+    ├── Present.tsx         Projector screen: splash, briefing, artifacts, voting, ticker
+    ├── Report.tsx          Post-exercise: AI report, decision log, dashboard, PDF export
+    └── Settings.tsx        API key, facilitator profile, data management
 ```
+
+## Key Design Decisions
+
+**No backend** — Everything runs client-side. The Claude API is called directly from the browser (with `anthropic-dangerous-direct-browser-access` header). State persists in `localStorage` under key `crisis-tabletop`.
+
+**BroadcastChannel for sync** — The facilitator's Runner screen and the Present screen communicate via `BroadcastChannel("crisis-present")`. Messages include inject releases, vote broadcasts, timer sync, and session status changes. Works across browser tabs on the same origin — no WebSocket server needed.
+
+**Branching decision trees** — Each inject can define `branches: InjectBranch[]` mapping decision option keys to `nextInjectId`. When votes are revealed, the store follows the majority vote's branch. The inject queue dims off-path injects and highlights reachable ones.
+
+**Artifact system** — Injects can carry typed artifacts (`ransomware_note`, `tweet`, `siem_alert`, `email`, `legal_letter`, `dark_web_listing`, `news_headline`) that render as styled components on the present screen — no images required, pure CSS/HTML.
+
+## Built-in Scenarios
+
+### Ransomware with Data Exfiltration
+- **Company:** Meridian Financial Services (3,200 employees, 1.4M customers, London)
+- **Duration:** ~120 minutes
+- **Injects:** 14 with 4 branching paths
+- **Artifacts:** SIEM alerts, ransomware note, dark web data listing, emails, legal letters, news headlines
+- **Key decisions:** Containment strategy, ransom negotiation, regulatory notification, board escalation
+
+### The Deepfake CEO
+- **Company:** Apex Dynamics (FTSE 250, 8,000 employees)
+- **Duration:** ~120 minutes
+- **Injects:** 10 with 3 branching paths
+- **Artifacts:** Viral tweet, blurred video still, legal letters, news headlines
+- **Key decisions:** Public response strategy, forensic investigation, FCA engagement, AI policy
+
+## Deployment
+
+Built for Netlify (or any static host):
+
+```bash
+npm run build    # outputs to dist/
+```
+
+The `dist/` folder is a static SPA — deploy to Netlify, Vercel, Cloudflare Pages, or any static file server. No server-side code.
+
+## Licence
+
+Private project. Not currently open-source.

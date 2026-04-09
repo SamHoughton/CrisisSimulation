@@ -1,7 +1,25 @@
+/**
+ * templates.ts — Built-in scenario templates.
+ *
+ * Two full 2-hour scenarios with deep branching decision trees:
+ *
+ * 1. Ransomware with Data Exfiltration (tpl-ransomware-001)
+ *    - Fake company: Meridian Financial Services (London, 3,200 employees, 1.4M customers)
+ *    - 14 injects across 4 branching paths (aggressive/selective containment, ransom/refuse)
+ *    - Artifacts: SIEM alerts, ransomware note, dark web listing, emails, legal letters
+ *
+ * 2. The Deepfake CEO (tpl-deepfake-001)
+ *    - Fake company: Apex Dynamics (FTSE 250, 8,000 employees)
+ *    - 10 injects across 3 branching paths (deny/silence/hold)
+ *    - Artifacts: viral tweets, news headlines, legal letters
+ *
+ * Template IDs are stable strings (not random) so they persist correctly across
+ * app restarts and don't duplicate in the library.
+ */
+
 import type { Scenario } from "@/types";
 import { makeId } from "@/lib/utils";
 
-// IDs are stable so they don't change between sessions
 export const BUILT_IN_TEMPLATES: Scenario[] = [
 
   // ─── SCENARIO 1: RANSOMWARE WITH DATA EXFILTRATION ───────────────────────────

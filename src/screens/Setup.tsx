@@ -1,3 +1,12 @@
+/**
+ * Setup.tsx — Pre-session configuration screen.
+ *
+ * Shows scenario metadata (inject count, duration, difficulty), a timeline preview
+ * with colour-coded dots for decision points, the pre-session briefing, and a
+ * participant grid where facilitators assign names and optionally customise role
+ * titles (e.g. "General Counsel" instead of "Chief Legal Officer").
+ */
+
 import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert } from "lucide-react";

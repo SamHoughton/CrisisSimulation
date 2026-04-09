@@ -1,3 +1,19 @@
+/**
+ * Present.tsx — Standalone full-screen projector view.
+ *
+ * Opened as a separate browser window by Runner.tsx. Receives all data via
+ * BroadcastChannel("crisis-present") — no direct access to the Zustand store.
+ *
+ * Phases: splash → waiting → briefing → inject (repeating) → ended
+ *
+ * Features:
+ * - VIGIL splash intro (2.6s animated logo + loading bar)
+ * - Scenario briefing with immersive artifacts (ransomware desktop, deepfake video)
+ * - Inject display with typed artifacts (ransomware note, tweet, email, SIEM, etc.)
+ * - Real-time vote visualisation with animated reveal and winner glow
+ * - News ticker, crisis escalation bar, countdown timer, fullscreen toggle
+ */
+
 import { useState, useEffect, useRef } from "react";
 import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
 import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";

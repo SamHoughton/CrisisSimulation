@@ -1,3 +1,12 @@
+/**
+ * Library.tsx — Scenario browser and manager.
+ *
+ * Displays all scenarios (built-in templates + user-created) in a responsive grid.
+ * Supports search by title/description, type filtering, and actions per card:
+ * edit, duplicate, run (→ setup), delete. Templates cannot be edited directly
+ * but can be duplicated into user-owned copies.
+ */
+
 import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import { Plus, Pencil, PlayCircle, Trash2, Copy, Clock, Users, Search, X } from "lucide-react";

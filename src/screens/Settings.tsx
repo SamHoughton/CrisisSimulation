@@ -1,3 +1,10 @@
+/**
+ * Settings.tsx — Configuration screen.
+ *
+ * Sections: facilitator profile (name, org), Anthropic API key (with visibility
+ * toggle), and local storage management (exercise count, clear all data).
+ */
+
 import { useState } from "react";
 import { useStore } from "@/store";
 import { Save, Eye, EyeOff, CheckCircle, Trash2 } from "lucide-react";

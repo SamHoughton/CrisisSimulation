@@ -1,6 +1,22 @@
+/**
+ * claude.ts — Anthropic Claude API integration.
+ *
+ * Two functions:
+ * 1. suggestInjectText() — Uses Claude Haiku to generate realistic inject body text
+ *    while building scenarios in the Builder screen. Fast and cheap (~$0.001/call).
+ *
+ * 2. generateReport() — Uses Claude Sonnet to analyse a completed session transcript
+ *    and produce a structured gap analysis report with scores, role feedback, and
+ *    recommendations. Takes 20–40 seconds; costs ~$0.05–0.15/report.
+ *
+ * Both call the Anthropic Messages API directly from the browser (no proxy).
+ * Requires "anthropic-dangerous-direct-browser-access": "true" header.
+ */
+
 import type { Session, GeneratedReport } from "@/types";
 import { ROLE_SHORT, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
 
+/** Generate a realistic inject body using Claude Haiku. */
 export async function suggestInjectText(
   opts: {
     scenarioType: string;

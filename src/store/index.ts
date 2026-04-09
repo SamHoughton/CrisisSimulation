@@ -1,3 +1,12 @@
+/**
+ * store/index.ts — Central Zustand store with localStorage persistence.
+ *
+ * Manages all application state: settings, scenarios, sessions, navigation.
+ * Broadcasts inject/vote/timer events to the Present screen via BroadcastChannel.
+ * Persists settings, scenarios, past sessions, and the active session to localStorage
+ * under the key "crisis-tabletop".
+ */
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
@@ -8,6 +17,12 @@ import type {
 import { BUILT_IN_TEMPLATES } from "@/lib/templates";
 
 // ─── Broadcast channel ────────────────────────────────────────────────────────
+
+/**
+ * Send a typed message to the Present screen via BroadcastChannel.
+ * Opens a new channel, posts the message, and closes immediately.
+ * The Present screen has a persistent listener on the same channel name.
+ */
 function broadcast(msg: PresentMessage) {
   const bc = new BroadcastChannel("crisis-present");
   bc.postMessage(msg);
@@ -19,7 +34,7 @@ function makeId() {
   return Math.random().toString(36).slice(2, 10);
 }
 
-/** Tally decisions and return the winning option key */
+/** Tally decisions and return the winning option key (most votes wins). */
 function getMajorityOption(decisions: DecisionEntry[]): string {
   if (decisions.length === 0) return "A";
   const counts: Record<string, number> = {};
@@ -130,6 +145,12 @@ export const useStore = create<AppStore>()(
         set({ session: ended, pastSessions: [ended, ...pastSessions], view: "report" });
       },
 
+      /**
+       * Release an inject: add it to liveInjects, broadcast to Present screen,
+       * and auto-launch the session if this is the first inject (status "setup").
+       * The broadcast fires BEFORE launchSession so the Present screen receives
+       * the inject message first — the status broadcast follows via Runner's useEffect.
+       */
       releaseInject: (injectId) => {
         const { session } = get();
         if (!session) return;
@@ -249,20 +270,29 @@ export const useStore = create<AppStore>()(
 );
 
 // ─── Derived helpers ──────────────────────────────────────────────────────────
+// These are pure functions (not store actions) that derive state from the session.
+// They're exported separately so components can call them without subscribing to
+// the full store — just pass in the current session object.
 
+/** Merge built-in templates with user-created scenarios. */
 export function getAllScenarios(store: AppStore): Scenario[] {
   return [...BUILT_IN_TEMPLATES, ...store.scenarios];
 }
 
+/** Get the most recently released inject (the one currently "live"). */
 export function getCurrentLiveInject(session: Session | null): LiveInject | null {
   if (!session || session.liveInjects.length === 0) return null;
   return session.liveInjects[session.liveInjects.length - 1];
 }
 
 /**
- * Returns the next inject to release.
- * Respects branching: if the current inject has branches and a decision has been made,
- * follows the winning option's branch. Falls back to linear order.
+ * Determine the next inject to release, respecting the decision tree.
+ *
+ * Logic:
+ * 1. If the current inject has branches AND votes have been cast, follow the
+ *    majority vote's branch to the specified nextInjectId.
+ * 2. If it's a decision point but no votes yet, return null (hold — don't auto-advance).
+ * 3. Otherwise fall back to linear order (next unreleased inject with higher order).
  */
 export function getNextInject(session: Session | null) {
   if (!session) return null;

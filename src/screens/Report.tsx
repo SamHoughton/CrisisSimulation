@@ -1,3 +1,17 @@
+/**
+ * Report.tsx — Post-exercise analysis and AI report dashboard.
+ *
+ * Tabs:
+ * - Decision Log: timestamped record of all injects, responses, and decisions
+ * - Dashboard: summary stats (reputation chart, inject breakdown)
+ * - Summary, Timeline, Gap Analysis, Role Feedback, Recommendations: AI-generated
+ *   (require Claude API key and report generation)
+ *
+ * Report generation calls generateReport() from claude.ts (Claude Sonnet).
+ * Results are stored in session.report and persisted to localStorage.
+ * Print-optimised via @media print CSS rules.
+ */
+
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store";
 import {

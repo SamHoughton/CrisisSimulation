@@ -1,3 +1,11 @@
+/**
+ * Home.tsx — Dashboard screen.
+ *
+ * Shows key stats (scenarios available, exercises run, hours simulated),
+ * an active session banner if one is running, quick-start template cards,
+ * and a list of recent completed exercises with report scores.
+ */
+
 import { useEffect, useRef, useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import { Plus, PlayCircle, FileText, BookOpen, ChevronRight, Clock, AlertTriangle, Zap } from "lucide-react";

@@ -1,3 +1,11 @@
+/**
+ * types.ts — All TypeScript type definitions for the VIGIL platform.
+ *
+ * Organised into sections: Scenario (templates + injects), Session (live exercise
+ * state), Report (AI-generated analysis), App state (navigation + settings), and
+ * BroadcastChannel message types (facilitator ↔ present screen communication).
+ */
+
 // ─── Scenario ────────────────────────────────────────────────────────────────
 
 export type ScenarioType =

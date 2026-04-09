@@ -1,3 +1,14 @@
+/**
+ * Builder.tsx — Scenario editor.
+ *
+ * Two-panel layout: left panel for scenario metadata (type, difficulty, duration,
+ * description, cover image, roles, briefing) and right panel for the inject
+ * timeline. Each inject card expands to edit title, body, facilitator notes,
+ * target roles, decision options, branch routing, timer, and artifacts.
+ *
+ * AI Suggest button (requires API key) calls Claude Haiku to generate inject body text.
+ */
+
 import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import {
