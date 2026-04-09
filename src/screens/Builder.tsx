@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import {
   ChevronLeft, Save, Plus, Trash2, ChevronDown, ChevronUp,
-  GitBranch, AlertCircle, GripVertical, Image, ArrowRight,
+  GitBranch, AlertCircle, GripVertical, Image, ArrowRight, Wand2,
 } from "lucide-react";
+import { suggestInjectText } from "@/lib/claude";
 import {
   cn, makeId, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL,
   ROLE_SHORT, ALL_ROLES, ALL_SCENARIO_TYPES,
@@ -298,6 +299,9 @@ export function Builder() {
                     expanded={expanded === inj.id}
                     roles={scenario.roles as ExecRole[]}
                     allInjects={scenario.injects}
+                    scenarioType={scenario.type}
+                    scenarioTitle={scenario.title}
+                    difficulty={scenario.difficulty}
                     onToggle={() => setExpanded((p) => (p === inj.id ? null : inj.id))}
                     onUpdate={(p) => updateInject(inj.id, p)}
                     onRemove={() => removeInject(inj.id)}
@@ -346,6 +350,7 @@ type InjectCardProps = {
   inject: Inject; index: number; total: number;
   expanded: boolean; roles: ExecRole[];
   allInjects: Inject[];
+  scenarioType: string; scenarioTitle: string; difficulty: string;
   onToggle: () => void; onUpdate: (p: Partial<Inject>) => void;
   onRemove: () => void; onMoveUp: () => void; onMoveDown: () => void;
   onAddOption: () => void;
@@ -356,9 +361,44 @@ type InjectCardProps = {
 
 function InjectCard({
   inject, index, total, expanded, roles, allInjects,
+  scenarioType, scenarioTitle, difficulty,
   onToggle, onUpdate, onRemove, onMoveUp, onMoveDown,
   onAddOption, onUpdateOption, onRemoveOption, onUpdateBranch,
 }: InjectCardProps) {
+  const apiKey = useStore((s) => s.settings.claudeApiKey);
+  const [suggesting, setSuggesting] = useState(false);
+  const [suggestError, setSuggestError] = useState("");
+
+  const handleSuggest = async () => {
+    if (!apiKey) return;
+    setSuggesting(true);
+    setSuggestError("");
+    try {
+      const sorted = [...allInjects].sort((a, b) => a.order - b.order);
+      const previousInjects = sorted
+        .filter((i) => i.order < inject.order)
+        .map((i) => ({ title: i.title, body: i.body }));
+      const text = await suggestInjectText(
+        {
+          scenarioType,
+          scenarioTitle,
+          difficulty,
+          injectIndex: index,
+          totalInjects: total,
+          injectTitle: inject.title,
+          targetRoles: inject.targetRoles,
+          previousInjects,
+        },
+        apiKey
+      );
+      onUpdate({ body: text });
+    } catch (e) {
+      setSuggestError(e instanceof Error ? e.message : "Suggestion failed");
+    } finally {
+      setSuggesting(false);
+    }
+  };
+
   const inputCls = "w-full text-sm bg-rtr-base border border-rtr-border text-rtr-text rounded px-3 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors";
   const hasBranches = inject.branches && inject.branches.length > 0;
 
@@ -434,9 +474,25 @@ function InjectCard({
           </div>
 
           <div>
-            <label className="text-xs font-medium text-rtr-dim block mb-1">
-              Inject Text <span className="font-normal text-rtr-dim">(shown on screen)</span>
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-medium text-rtr-dim">
+                Inject Text <span className="font-normal">(shown on screen)</span>
+              </label>
+              {apiKey && (
+                <button
+                  onClick={handleSuggest}
+                  disabled={suggesting}
+                  className="flex items-center gap-1 text-xs text-rtr-green hover:text-rtr-green/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  title="Generate inject text with AI"
+                >
+                  <Wand2 className={`w-3 h-3 ${suggesting ? "animate-pulse" : ""}`} />
+                  {suggesting ? "Generating…" : "AI Suggest"}
+                </button>
+              )}
+            </div>
+            {suggestError && (
+              <p className="text-xs text-red-400 mb-1">{suggestError}</p>
+            )}
             <textarea
               value={inject.body}
               onChange={(e) => onUpdate({ body: e.target.value })}
