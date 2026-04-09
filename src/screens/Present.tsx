@@ -68,6 +68,8 @@ export function Present() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   /** Holds the scenario received during splash so we can transition correctly when splash ends. */
   const pendingScenarioRef = useRef<Scenario | null>(null);
+  /** Queued inject that arrived while briefing was still showing. */
+  const pendingInjectRef = useRef<{ inject: Inject; num: number; totalInjects: number } | null>(null);
 
   // Track fullscreen state changes (e.g. user presses Escape)
   useEffect(() => {
@@ -91,19 +93,28 @@ export function Present() {
       const msg = e.data;
       if (msg.type === "inject") {
         injectCountRef.current += 1;
-        setPhase({ phase: "inject", inject: msg.inject, num: injectCountRef.current });
-        setVoteState({ votes: [], revealed: false, winner: null });
+        const injectNum = injectCountRef.current;
         setCrisisLevel(Math.round((msg.injectNum / msg.totalInjects) * 100));
         if (msg.inject.tickerHeadline) {
           setHeadlines((h) => [msg.inject.tickerHeadline, ...h]);
         }
+        // If we're still in splash or briefing, queue the inject instead of
+        // immediately overriding — let the splash/briefing finish first.
+        setPhase((prev) => {
+          if (prev.phase === "splash" || prev.phase === "briefing") {
+            pendingInjectRef.current = { inject: msg.inject, num: injectNum, totalInjects: msg.totalInjects };
+            return prev;
+          }
+          setVoteState({ votes: [], revealed: false, winner: null });
+          return { phase: "inject", inject: msg.inject, num: injectNum };
+        });
       } else if (msg.type === "adhoc") {
         setPhase({ phase: "adhoc", body: msg.body });
       } else if (msg.type === "status") {
-        if (msg.status === "active" && msg.scenario) {
-          // Store scenario for when splash finishes, and skip phase change if
-          // we're still in splash or already showing an inject/adhoc.
-          pendingScenarioRef.current = msg.scenario;
+        // Always stash the scenario so splash → briefing works
+        if (msg.scenario) pendingScenarioRef.current = msg.scenario;
+
+        if ((msg.status === "active" || msg.status === "setup") && msg.scenario) {
           setPhase((prev) => {
             if (prev.phase === "inject" || prev.phase === "adhoc" || prev.phase === "splash") return prev;
             return msg.scenario.briefing
@@ -157,6 +168,42 @@ export function Present() {
     }, 1000);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [timerRunning]);
+
+  // Auto-advance from briefing to queued inject.
+  // Shows briefing for at least 8 seconds, then advances once an inject is queued.
+  // If inject arrives before 8s, we hold the briefing until the timer elapses.
+  const briefingReadyRef = useRef(false);
+  useEffect(() => {
+    if (phase.phase !== "briefing") {
+      briefingReadyRef.current = false;
+      return;
+    }
+
+    // After minimum display time, check if an inject is already queued
+    const minTimer = setTimeout(() => {
+      briefingReadyRef.current = true;
+      const pending = pendingInjectRef.current;
+      if (pending) {
+        pendingInjectRef.current = null;
+        setVoteState({ votes: [], revealed: false, winner: null });
+        setPhase({ phase: "inject", inject: pending.inject, num: pending.num });
+      }
+    }, 8000);
+
+    // Also poll in case inject arrives after the min timer
+    const poll = setInterval(() => {
+      if (!briefingReadyRef.current) return;
+      const pending = pendingInjectRef.current;
+      if (pending) {
+        pendingInjectRef.current = null;
+        setVoteState({ votes: [], revealed: false, winner: null });
+        setPhase({ phase: "inject", inject: pending.inject, num: pending.num });
+        clearInterval(poll);
+      }
+    }, 500);
+
+    return () => { clearTimeout(minTimer); clearInterval(poll); };
+  }, [phase.phase]);
 
   const timerUrgent = timerSeconds !== null && timerSeconds <= 60 && timerSeconds > 0;
   const timerLabel  = timerSeconds !== null
