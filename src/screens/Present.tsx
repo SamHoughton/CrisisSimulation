@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ShieldAlert, GitBranch, CheckCircle2, Wifi } from "lucide-react";
+import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
 import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
 import type { DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
 
@@ -31,6 +31,7 @@ interface VoteState  { votes: VoteRecord[]; revealed: boolean; winner: string | 
 
 type PresentPhase =
   | { phase: "waiting";  scenario: Scenario | null }
+  | { phase: "splash";   scenario: Scenario }
   | { phase: "briefing"; scenario: Scenario }
   | { phase: "inject";   inject: Inject; num: number }
   | { phase: "adhoc";    body: string }
@@ -46,8 +47,24 @@ export function Present() {
   const [headlines, setHeadlines]     = useState<string[]>(BG_HEADLINES);
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const injectCountRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Track fullscreen state changes (e.g. user presses Escape)
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
+    }
+  };
 
   // BroadcastChannel listener
   useEffect(() => {
@@ -71,9 +88,8 @@ export function Present() {
           // inject that was broadcast immediately before it.
           setPhase((prev) => {
             if (prev.phase === "inject" || prev.phase === "adhoc") return prev;
-            return msg.scenario.briefing
-              ? { phase: "briefing", scenario: msg.scenario }
-              : { phase: "waiting", scenario: msg.scenario };
+            // Show a 2.5s VIGIL splash, then advance to briefing/waiting
+            return { phase: "splash", scenario: msg.scenario };
           });
         } else if (msg.status === "paused") {
           setPhase({ phase: "paused" });
@@ -141,7 +157,7 @@ export function Present() {
         </div>
         <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: "#1e2128" }}>
           <div className="flex items-center gap-4">
-            <span className="brand-glow text-sm tracking-widest font-bold">VIGIL</span>
+            <span className="brand-glow text-base tracking-[0.3em] font-bold">VIGIL</span>
             {crisisLevel > 0 && (
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-32 rounded-full" style={{ background: "#1c1f24" }}>
@@ -163,6 +179,13 @@ export function Present() {
               </div>
             )}
             <LiveClock />
+            <button
+              onClick={toggleFullscreen}
+              title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+              className="text-rtr-dim hover:text-rtr-muted transition-colors"
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
           </div>
         </div>
       </div>
@@ -170,6 +193,7 @@ export function Present() {
       {/* ── Main content ────────────────────────────────────────────────────── */}
       <div className="flex-1 overflow-hidden">
         {phase.phase === "waiting"  && <WaitingScreen scenario={phase.scenario} />}
+        {phase.phase === "splash"   && <SplashScreen scenario={phase.scenario} onDone={() => setPhase(phase.scenario.briefing ? { phase: "briefing", scenario: phase.scenario } : { phase: "waiting", scenario: phase.scenario })} />}
         {phase.phase === "briefing" && <BriefingScreen scenario={phase.scenario} />}
         {phase.phase === "inject"   && <InjectScreen inject={phase.inject} num={phase.num} voteState={voteState} />}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
@@ -205,6 +229,46 @@ function LiveClock() {
     return () => clearInterval(t);
   }, []);
   return <span className="text-xs font-mono" style={{ color: "#4a4f65" }}>{time}</span>;
+}
+
+// ─── Splash screen ───────────────────────────────────────────────────────────
+
+function SplashScreen({ scenario, onDone }: { scenario: Scenario; onDone: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 2600);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div className="h-full flex flex-col items-center justify-center" style={{ background: "#080a0d" }}>
+      {/* Animated red ring */}
+      <div className="relative flex items-center justify-center mb-10">
+        <div className="absolute w-36 h-36 rounded-full animate-ping opacity-10" style={{ background: "#e8002d" }} />
+        <div className="absolute w-28 h-28 rounded-full animate-ping opacity-15 [animation-delay:0.3s]" style={{ background: "#e8002d" }} />
+        <div className="relative w-20 h-20 rounded-2xl flex items-center justify-center"
+          style={{ background: "rgba(232,0,45,0.15)", border: "1px solid rgba(232,0,45,0.4)" }}>
+          <ShieldAlert className="w-10 h-10" style={{ color: "#e8002d" }} />
+        </div>
+      </div>
+
+      {/* Wordmark */}
+      <p className="brand-glow text-5xl tracking-[0.4em] font-bold mb-3">VIGIL</p>
+      <p className="text-xs tracking-[0.25em] uppercase font-mono mb-10" style={{ color: "#4a4f65" }}>
+        Executive Crisis Training
+      </p>
+
+      {/* Scenario pill */}
+      <div className="px-5 py-2.5 rounded-full text-sm font-medium"
+        style={{ background: "rgba(232,0,45,0.08)", border: "1px solid rgba(232,0,45,0.2)", color: "#c5c8d8" }}>
+        {scenario.title}
+      </div>
+
+      {/* Loading bar */}
+      <div className="mt-10 w-48 h-0.5 rounded-full overflow-hidden" style={{ background: "#1c1f24" }}>
+        <div className="h-full rounded-full" style={{ background: "#e8002d", animation: "splash-fill 2.4s ease forwards" }} />
+      </div>
+    </div>
+  );
 }
 
 // ─── Waiting screen ───────────────────────────────────────────────────────────
@@ -455,8 +519,8 @@ function SiemAlert({ inject, artifact: art }: { inject: Inject; artifact: Inject
 // ── Tweet card ─────────────────────────────────────────────────────────────────
 
 function TweetCard({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
-  const [likes, setLikes] = useState(art.tweetLikes ?? Math.floor(Math.random() * 50000) + 5000);
-  const [rts,   setRts]   = useState(art.tweetRetweets ?? Math.floor(Math.random() * 20000) + 2000);
+  const [likes, setLikes] = useState(art.tweetLikes ?? 18_400);
+  const [rts,   setRts]   = useState(art.tweetRetweets ?? 7_200);
   const [showMore, setShowMore] = useState(false);
 
   // Slowly increment engagement for drama

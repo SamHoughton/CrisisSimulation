@@ -182,6 +182,12 @@ select.input, select {
   to   { transform: scale(1);   opacity: 1; }
 }
 
+/* ── Present splash fill ──────────────────────────────────────────────────── */
+@keyframes splash-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
 /* ── Print styles ─────────────────────────────────────────────────────────── */
 @media print {
   /* Hide app chrome */

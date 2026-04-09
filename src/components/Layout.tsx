@@ -39,7 +39,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <VigilLogo className="w-7 h-7 shrink-0" />
           <div className="hidden md:flex flex-col leading-tight">
             <span className="brand-glow text-sm tracking-widest font-bold">VIGIL</span>
-            <span className="text-[9px] text-rtr-dim tracking-wider uppercase">Crisis Simulation</span>
+            <span className="text-[9px] text-rtr-dim tracking-wider uppercase">Executive Crisis Training</span>
           </div>
         </div>
 

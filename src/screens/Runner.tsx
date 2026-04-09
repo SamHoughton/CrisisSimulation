@@ -35,7 +35,8 @@ export function Runner() {
   const [noteText, setNoteText]     = useState("");
   const [adHocText, setAdHocText]   = useState("");
   const [showAdHoc, setShowAdHoc]   = useState(false);
-  const [voteRevealed, setVoteRevealed] = useState<Record<string, boolean>>({});
+  const [voteRevealed, setVoteRevealed]     = useState<Record<string, boolean>>({});
+  const [presentBlocked, setPresentBlocked] = useState(false);
 
   // Per-inject countdown timer
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
@@ -59,10 +60,11 @@ export function Runner() {
   // Open present window on mount
   useEffect(() => {
     if (!session) return;
-    window.open(
+    const w = window.open(
       `${window.location.href.split("?")[0]}#present`, "crisis-present",
       "width=1280,height=720,menubar=no,toolbar=no,location=no"
     );
+    if (!w) setPresentBlocked(true);
   }, []);
 
   // Broadcast session status changes
@@ -138,7 +140,6 @@ export function Runner() {
 
   const handleRelease = (injectId: string) => {
     releaseInject(injectId);
-    if (session.status === "setup") launchSession();
   };
 
   const handleEnd = () => {
@@ -158,10 +159,12 @@ export function Runner() {
   };
 
   const openPresent = () => {
-    window.open(
+    const w = window.open(
       `${window.location.href.split("?")[0]}#present`, "crisis-present",
       "width=1280,height=720,menubar=no,toolbar=no,location=no"
     );
+    if (w) setPresentBlocked(false);
+    else setPresentBlocked(true);
   };
 
   const orderedInjects = [...session.scenario.injects].sort((a, b) => a.order - b.order);
@@ -203,7 +206,20 @@ export function Runner() {
             }}
           />
         </div>
-        <div className="flex items-center gap-4 px-5 py-3">
+        {presentBlocked && (
+        <div className="flex items-center justify-between px-5 py-2 text-xs bg-amber-500/10 border-b border-amber-500/20">
+          <span className="text-amber-400">
+            Present window was blocked by your browser.
+          </span>
+          <button
+            onClick={openPresent}
+            className="text-amber-300 font-semibold underline hover:no-underline"
+          >
+            Open Present screen
+          </button>
+        </div>
+      )}
+      <div className="flex items-center gap-4 px-5 py-3">
           <div className="flex-1 min-w-0">
             <h1 className="text-sm font-semibold text-rtr-text truncate">{session.scenario.title}</h1>
             <p className="text-xs text-rtr-dim font-mono">

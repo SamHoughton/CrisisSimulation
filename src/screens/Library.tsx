@@ -166,7 +166,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
   owned?: boolean;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-4 stagger">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 stagger">
       {scenarios.map((s) => (
         <div key={s.id} className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden card-lift group fade-in-up">
           {/* Cover */}

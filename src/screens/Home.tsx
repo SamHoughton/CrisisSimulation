@@ -40,7 +40,7 @@ export function Home() {
         <div>
           <h1 className="text-2xl font-semibold text-rtr-text">Dashboard</h1>
           <p className="text-rtr-muted text-sm mt-0.5">
-            Run tabletop crisis exercises with your executive team
+            Prepare. Respond. Recover.
           </p>
         </div>
         <button
@@ -56,7 +56,7 @@ export function Home() {
       <div className="grid grid-cols-3 gap-4 mb-8 stagger">
         <Stat icon={<BookOpen className="w-4 h-4 text-rtr-green" />} label="Scenarios available" value={allScenarios.length} />
         <Stat icon={<FileText className="w-4 h-4 text-rtr-green" />} label="Exercises run"       value={pastSessions.length} />
-        <Stat icon={<Clock className="w-4 h-4 text-rtr-muted" />}   label="Hours simulated"     value={Math.round(pastSessions.length * 1.5)} suffix="h" />
+        <Stat icon={<Clock className="w-4 h-4 text-rtr-muted" />}   label="Hours simulated"     value={Math.round(pastSessions.reduce((sum, s) => sum + (s.endedAt ? (new Date(s.endedAt).getTime() - new Date(s.startedAt).getTime()) / 3600000 : s.scenario.durationMin / 60), 0))} suffix="h" />
       </div>
 
       {/* Active session banner */}
