@@ -234,17 +234,22 @@ function LiveClock() {
 // ─── Splash screen ───────────────────────────────────────────────────────────
 
 function SplashScreen({ scenario, onDone }: { scenario: Scenario; onDone: () => void }) {
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
   useEffect(() => {
-    const t = setTimeout(onDone, 2600);
+    // Empty deps: run once on mount only. Use ref so we always call the latest callback
+    // without adding it as a dependency (which would reset the timer on every parent render).
+    const t = setTimeout(() => onDoneRef.current(), 2600);
     return () => clearTimeout(t);
-  }, [onDone]);
+  }, []);
 
   return (
     <div className="h-full flex flex-col items-center justify-center" style={{ background: "#080a0d" }}>
       {/* Animated red ring */}
       <div className="relative flex items-center justify-center mb-10">
         <div className="absolute w-36 h-36 rounded-full animate-ping opacity-10" style={{ background: "#e8002d" }} />
-        <div className="absolute w-28 h-28 rounded-full animate-ping opacity-15 [animation-delay:0.3s]" style={{ background: "#e8002d" }} />
+        <div className="absolute w-28 h-28 rounded-full animate-ping opacity-15" style={{ background: "#e8002d", animationDelay: "0.3s" }} />
         <div className="relative w-20 h-20 rounded-2xl flex items-center justify-center"
           style={{ background: "rgba(232,0,45,0.15)", border: "1px solid rgba(232,0,45,0.4)" }}>
           <ShieldAlert className="w-10 h-10" style={{ color: "#e8002d" }} />
