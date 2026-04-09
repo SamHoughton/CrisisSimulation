@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store";
 import {
   Download, Loader2, CheckCircle, AlertCircle, ChevronDown, ChevronUp,
-  Minus, TrendingUp, AlertTriangle,
+  Minus, TrendingUp, AlertTriangle, Printer, ClipboardList, BarChart2,
 } from "lucide-react";
 import {
   cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG,
@@ -10,9 +10,9 @@ import {
 } from "@/lib/utils";
 import { generateReport } from "@/lib/claude";
 import { format } from "date-fns";
-import type { GapDimension } from "@/types";
+import type { GapDimension, Session } from "@/types";
 
-type Tab = "summary" | "timeline" | "gaps" | "roles" | "recommendations";
+type Tab = "summary" | "timeline" | "gaps" | "roles" | "recommendations" | "log" | "dashboard";
 
 /** Counts up from 0 to target over `duration` ms */
 function useCountUp(target: number, duration = 900) {
@@ -41,7 +41,7 @@ export function Report() {
 
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError]     = useState("");
-  const [activeTab, setActiveTab]   = useState<Tab>("summary");
+  const [activeTab, setActiveTab]   = useState<Tab>("log");
 
   if (!session) {
     return <div className="p-8 text-center text-rtr-muted">No session to report on.</div>;
@@ -86,12 +86,23 @@ export function Report() {
     ? "text-amber-400 bg-amber-500/10 border-amber-500/30"
     : "text-red-400 bg-red-500/10 border-red-500/30";
 
-  const TABS: { id: Tab; label: string }[] = [
-    { id: "summary",         label: "Summary" },
-    { id: "timeline",        label: "Timeline" },
-    { id: "gaps",            label: "Gap Analysis" },
-    { id: "roles",           label: "Role Feedback" },
-    { id: "recommendations", label: "Recommendations" },
+  // Switch to summary when report first loads
+  const prevReport = useRef(report);
+  useEffect(() => {
+    if (!prevReport.current && report) setActiveTab("summary");
+    prevReport.current = report;
+  }, [report]);
+
+  const handlePrint = () => window.print();
+
+  const TABS: { id: Tab; label: string; requiresReport: boolean }[] = [
+    { id: "log",             label: "Decision Log",   requiresReport: false },
+    { id: "dashboard",       label: "Dashboard",      requiresReport: false },
+    { id: "summary",         label: "Summary",        requiresReport: true  },
+    { id: "timeline",        label: "Timeline",       requiresReport: true  },
+    { id: "gaps",            label: "Gap Analysis",   requiresReport: true  },
+    { id: "roles",           label: "Role Feedback",  requiresReport: true  },
+    { id: "recommendations", label: "Recommendations",requiresReport: true  },
   ];
 
   return (
@@ -110,7 +121,7 @@ export function Report() {
               {session.participants.length} participants
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 print:hidden">
             {report && <AnimatedScoreBadge score={score} scoreColour={scoreColour} />}
             {!report && !generating && (
               <button
@@ -136,6 +147,13 @@ export function Report() {
               </button>
             )}
             <button
+              onClick={handlePrint}
+              className="flex items-center gap-1.5 text-sm border border-rtr-border px-3 py-2 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted"
+              title="Print / Save as PDF"
+            >
+              <Printer className="w-4 h-4" />Print
+            </button>
+            <button
               onClick={handleExport}
               className="flex items-center gap-1.5 text-sm border border-rtr-border px-3 py-2 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted"
             >
@@ -150,24 +168,28 @@ export function Report() {
           </div>
         )}
 
-        {report && (
-          <div className="max-w-5xl mx-auto mt-4 flex gap-1">
-            {TABS.map((t) => (
+        <div className="max-w-5xl mx-auto mt-4 flex gap-1 flex-wrap print:hidden">
+          {TABS.map((t) => {
+            const disabled = t.requiresReport && !report;
+            return (
               <button
                 key={t.id}
-                onClick={() => setActiveTab(t.id)}
+                onClick={() => !disabled && setActiveTab(t.id)}
+                disabled={disabled}
                 className={cn(
                   "px-4 py-2 text-xs rounded transition-colors",
                   activeTab === t.id
                     ? "bg-rtr-red text-white font-medium"
+                    : disabled
+                    ? "text-rtr-dim opacity-40 cursor-not-allowed"
                     : "text-rtr-muted hover:bg-rtr-elevated"
                 )}
               >
                 {t.label}
               </button>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-8 py-8">
@@ -185,6 +207,8 @@ export function Report() {
             </div>
           )}
 
+          {activeTab === "log"             && <DecisionLogTab session={session} />}
+          {activeTab === "dashboard"       && <DashboardTab session={session} />}
           {report && activeTab === "summary"         && <SummaryTab report={report} />}
           {report && activeTab === "timeline"        && <TimelineTab session={session} />}
           {report && activeTab === "gaps"            && <GapsTab gaps={report.gapAnalysis} />}
@@ -504,6 +528,227 @@ function RoleCard({ role, fb, participants }: { role: string; fb: any; participa
           </ul>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Decision log tab ─────────────────────────────────────────────────────────
+
+function DecisionLogTab({ session }: { session: Session }) {
+  const allDecisions = session.liveInjects.flatMap((li) =>
+    li.decisions.map((d) => ({
+      ...d,
+      injectTitle: li.injectTitle,
+      releasedAt:  li.releasedAt,
+    }))
+  );
+
+  if (allDecisions.length === 0) {
+    return (
+      <div className="text-center py-16 fade-in-up">
+        <ClipboardList className="w-10 h-10 text-rtr-dim mx-auto mb-3" />
+        <p className="text-sm text-rtr-muted">No decisions recorded in this session.</p>
+        <p className="text-xs text-rtr-dim mt-1">Decisions appear when participants vote at decision-point injects.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fade-in-up space-y-4">
+      <p className="text-xs text-rtr-dim">{allDecisions.length} decision{allDecisions.length !== 1 ? "s" : ""} recorded across {session.liveInjects.filter((li) => li.decisions.length > 0).length} inject{session.liveInjects.filter((li) => li.decisions.length > 0).length !== 1 ? "s" : ""}</p>
+      <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-rtr-border text-xs text-rtr-dim uppercase tracking-wider">
+              <th className="px-4 py-3 text-left font-semibold">Time</th>
+              <th className="px-4 py-3 text-left font-semibold">Inject</th>
+              <th className="px-4 py-3 text-left font-semibold">Role</th>
+              <th className="px-4 py-3 text-left font-semibold">Name</th>
+              <th className="px-4 py-3 text-left font-semibold">Decision</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allDecisions.map((d, i) => (
+              <tr key={i} className={cn("border-b border-rtr-border last:border-0", i % 2 === 0 ? "" : "bg-rtr-elevated/30")}>
+                <td className="px-4 py-3 text-xs text-rtr-dim font-mono whitespace-nowrap">
+                  {format(new Date(d.releasedAt), "HH:mm:ss")}
+                </td>
+                <td className="px-4 py-3 text-xs text-rtr-muted max-w-[180px] truncate">{d.injectTitle}</td>
+                <td className="px-4 py-3">
+                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${ROLE_COLOUR[d.role]}`}>
+                    {ROLE_SHORT[d.role] ?? d.role}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-xs text-rtr-muted">{d.name || "—"}</td>
+                <td className="px-4 py-3">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center font-mono">{d.optionKey}</span>
+                    <span className="text-xs text-rtr-text">{d.optionLabel}</span>
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ── Dashboard / reputation chart tab ─────────────────────────────────────────
+
+function DashboardTab({ session }: { session: Session }) {
+  // Rule-based reputation score: starts at 100, each inject chips it down;
+  // responses and decisions partially offset the damage.
+  const points = session.liveInjects.map((li, i) => {
+    const baseDamage   = -8;
+    const responseGain = Math.min(li.responses.length * 3, 12);
+    const decisionGain = Math.min(li.decisions.length * 4, 8);
+    const prev = i === 0 ? 100 : 0; // accumulation handled below
+    return { label: li.injectTitle, delta: baseDamage + responseGain + decisionGain, responses: li.responses.length, decisions: li.decisions.length };
+  });
+
+  // Build cumulative score series
+  let running = 100;
+  const series: { label: string; score: number; responses: number; decisions: number }[] = [
+    { label: "Start", score: 100, responses: 0, decisions: 0 },
+  ];
+  for (const p of points) {
+    running = Math.max(0, Math.min(100, running + p.delta));
+    series.push({ label: p.label, score: Math.round(running), responses: p.responses, decisions: p.decisions });
+  }
+
+  if (series.length < 2) {
+    return (
+      <div className="text-center py-16 fade-in-up">
+        <BarChart2 className="w-10 h-10 text-rtr-dim mx-auto mb-3" />
+        <p className="text-sm text-rtr-muted">No injects released yet — dashboard will populate as the session runs.</p>
+      </div>
+    );
+  }
+
+  // SVG chart dimensions
+  const W = 680; const H = 240; const PAD = { top: 20, right: 20, bottom: 48, left: 44 };
+  const chartW = W - PAD.left - PAD.right;
+  const chartH = H - PAD.top  - PAD.bottom;
+  const n = series.length;
+  const xPos = (i: number) => PAD.left + (i / (n - 1)) * chartW;
+  const yPos = (score: number) => PAD.top + (1 - score / 100) * chartH;
+
+  // Build polyline points
+  const linePoints = series.map((s, i) => `${xPos(i)},${yPos(s.score)}`).join(" ");
+
+  // Colour of final score
+  const finalScore = series[series.length - 1].score;
+  const lineColor  = finalScore >= 70 ? "#4afe91" : finalScore >= 45 ? "#f59e0b" : "#e8002d";
+
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  return (
+    <div className="fade-in-up space-y-6">
+      {/* Score cards */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold font-mono" style={{ color: lineColor }}>{finalScore}</p>
+          <p className="text-xs text-rtr-muted mt-1">Reputation Score</p>
+        </div>
+        <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold font-mono text-rtr-text">
+            {session.liveInjects.reduce((n, li) => n + li.responses.length, 0)}
+          </p>
+          <p className="text-xs text-rtr-muted mt-1">Total Responses</p>
+        </div>
+        <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 text-center">
+          <p className="text-2xl font-bold font-mono text-amber-400">
+            {session.liveInjects.reduce((n, li) => n + li.decisions.length, 0)}
+          </p>
+          <p className="text-xs text-rtr-muted mt-1">Decisions Made</p>
+        </div>
+      </div>
+
+      {/* Line chart */}
+      <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5">
+        <h3 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-4">Reputation Over Session</h3>
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 280 }}>
+          {/* Grid lines */}
+          {[0, 25, 50, 75, 100].map((v) => (
+            <g key={v}>
+              <line
+                x1={PAD.left} y1={yPos(v)} x2={PAD.left + chartW} y2={yPos(v)}
+                stroke="#1e2128" strokeWidth="1"
+              />
+              <text x={PAD.left - 6} y={yPos(v) + 4} textAnchor="end" fontSize="9" fill="#4a4f65">{v}</text>
+            </g>
+          ))}
+
+          {/* Gradient fill under line */}
+          <defs>
+            <linearGradient id="rep-gradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor={lineColor} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <polygon
+            points={`${xPos(0)},${yPos(0)} ${linePoints} ${xPos(n - 1)},${PAD.top + chartH} ${xPos(0)},${PAD.top + chartH}`}
+            fill="url(#rep-gradient)"
+          />
+
+          {/* Line */}
+          <polyline points={linePoints} fill="none" stroke={lineColor} strokeWidth="2" strokeLinejoin="round" />
+
+          {/* Data points + hover targets */}
+          {series.map((s, i) => (
+            <g key={i} onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}>
+              <circle cx={xPos(i)} cy={yPos(s.score)} r={hovered === i ? 6 : 4} fill={lineColor} stroke="#0d0e10" strokeWidth="2" style={{ cursor: "pointer" }} />
+              {hovered === i && (
+                <g>
+                  <rect
+                    x={Math.min(xPos(i) - 48, W - 120)} y={yPos(s.score) - 54}
+                    width="110" height="48" rx="4"
+                    fill="#15171a" stroke="#2a2e3a"
+                  />
+                  <text x={Math.min(xPos(i) - 48, W - 120) + 8} y={yPos(s.score) - 36} fontSize="9" fill="#e8eaf0" fontWeight="bold">{s.score} rep</text>
+                  <text x={Math.min(xPos(i) - 48, W - 120) + 8} y={yPos(s.score) - 24} fontSize="8" fill="#8b8fa8">{s.responses} responses</text>
+                  <text x={Math.min(xPos(i) - 48, W - 120) + 8} y={yPos(s.score) - 13} fontSize="8" fill="#8b8fa8">{s.decisions} decisions</text>
+                </g>
+              )}
+              {/* X-axis label */}
+              <text
+                x={xPos(i)} y={H - 8}
+                textAnchor="middle" fontSize="8" fill="#4a4f65"
+                style={{ maxWidth: chartW / n }}
+              >
+                {i === 0 ? "Start" : `#${i}`}
+              </text>
+            </g>
+          ))}
+        </svg>
+        <p className="text-xs text-rtr-dim mt-2">Score: starts at 100, −8 per inject, +3 per response, +4 per decision. Hover points for detail.</p>
+      </div>
+
+      {/* Per-inject breakdown */}
+      <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-rtr-border">
+          <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Inject Breakdown</p>
+        </div>
+        <div className="divide-y divide-rtr-border">
+          {session.liveInjects.map((li, i) => {
+            const s = series[i + 1];
+            const delta = s.score - series[i].score;
+            return (
+              <div key={li.injectId} className="flex items-center gap-4 px-4 py-3">
+                <span className="w-6 h-6 rounded-full bg-rtr-red/15 text-rtr-red text-xs font-bold flex items-center justify-center font-mono shrink-0">{i + 1}</span>
+                <span className="flex-1 text-xs text-rtr-text truncate">{li.injectTitle}</span>
+                <span className="text-xs text-rtr-muted">{li.responses.length} resp · {li.decisions.length} dec</span>
+                <span className={cn("text-xs font-mono font-semibold w-12 text-right", delta >= 0 ? "text-rtr-green" : "text-red-400")}>
+                  {delta >= 0 ? "+" : ""}{delta}
+                </span>
+                <span className="text-xs font-mono text-rtr-text w-8 text-right">{s.score}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

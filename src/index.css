@@ -181,3 +181,37 @@ select.input, select {
   from { transform: scale(0.5); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
 }
+
+/* ── Print styles ─────────────────────────────────────────────────────────── */
+@media print {
+  /* Hide app chrome */
+  aside,
+  .print\:hidden { display: none !important; }
+
+  /* Reset layout so report fills the page */
+  html, body, #root {
+    height: auto;
+    overflow: visible;
+    background: #fff;
+    color: #111;
+  }
+
+  /* Make the main content area overflow-visible so all content prints */
+  main { overflow: visible !important; height: auto !important; }
+
+  /* Remove dark backgrounds on cards — let browser use black text on white */
+  .bg-rtr-panel, .bg-rtr-elevated, .bg-rtr-base {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  /* Ensure tables and content don't get clipped */
+  table { page-break-inside: auto; }
+  tr    { page-break-inside: avoid; }
+
+  /* Widen content area to full page */
+  .max-w-5xl { max-width: 100% !important; }
+
+  /* Remove box shadows */
+  * { box-shadow: none !important; }
+}

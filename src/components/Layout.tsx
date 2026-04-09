@@ -22,13 +22,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen overflow-hidden bg-rtr-base">
       {/* Sidebar */}
-      <aside className="w-56 flex flex-col bg-rtr-sidebar border-r border-rtr-border shrink-0">
+      <aside className="w-14 md:w-56 flex flex-col bg-rtr-sidebar border-r border-rtr-border shrink-0">
         {/* Logo */}
         <div className="flex items-center gap-2.5 px-5 py-5 border-b border-rtr-border" style={{ borderTop: "1px solid rgba(74,254,145,0.2)" }}>
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rtr-red/15">
             <ShieldAlert className="w-4 h-4 text-rtr-red" />
           </div>
-          <span className="brand-glow text-sm tracking-wide">CrisisTabletop</span>
+          <span className="brand-glow text-sm tracking-wide hidden md:inline">CrisisTabletop</span>
         </div>
 
         {/* Nav */}
@@ -48,7 +48,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 )}
               >
                 <Icon className="w-4 h-4 shrink-0" />
-                {label}
+                <span className="hidden md:inline">{label}</span>
                 {hasLive && (
                   <span className="ml-auto flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-rtr-red opacity-75" />
@@ -65,8 +65,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Session status pill */}
         {session && session.status !== "ended" && (
-          <div className="px-4 py-3 border-t border-rtr-border">
-            <button onClick={() => setView("runner")} className="w-full text-left">
+          <div className="px-2 md:px-4 py-3 border-t border-rtr-border">
+            <button onClick={() => setView("runner")} className="w-full text-left hidden md:block">
               <div className="flex items-center gap-2 mb-1">
                 {session.status === "active" && (
                   <span className="relative flex h-2 w-2 shrink-0">

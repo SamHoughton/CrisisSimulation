@@ -450,6 +450,7 @@ function SiemAlert({ inject, artifact: art }: { inject: Inject; artifact: Inject
 function TweetCard({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
   const [likes, setLikes] = useState(art.tweetLikes ?? Math.floor(Math.random() * 50000) + 5000);
   const [rts,   setRts]   = useState(art.tweetRetweets ?? Math.floor(Math.random() * 20000) + 2000);
+  const [showMore, setShowMore] = useState(false);
 
   // Slowly increment engagement for drama
   useEffect(() => {
@@ -491,7 +492,27 @@ function TweetCard({ inject, artifact: art }: { inject: Inject; artifact: Inject
           </div>
         </div>
         {/* Tweet body */}
-        <p className="text-xl leading-relaxed mb-5" style={{ color: "#e8eaf0" }}>{inject.body}</p>
+        {(() => {
+          const LIMIT = 280;
+          const text = inject.body;
+          const truncated = text.length > LIMIT && !showMore;
+          return (
+            <>
+              <p className="text-xl leading-relaxed mb-2" style={{ color: "#e8eaf0" }}>
+                {truncated ? text.slice(0, LIMIT) + "…" : text}
+              </p>
+              {text.length > LIMIT && (
+                <button
+                  onClick={() => setShowMore((v) => !v)}
+                  className="text-sm mb-3 hover:underline"
+                  style={{ color: "#1d9bf0" }}
+                >
+                  {showMore ? "Show less" : `Show more (${text.length - LIMIT} more chars)`}
+                </button>
+              )}
+            </>
+          );
+        })()}
         {/* Timestamp */}
         <p className="text-sm mb-4" style={{ color: "#8b8fa8" }}>
           {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {new Date().toLocaleDateString([], { day: "numeric", month: "short", year: "numeric" })}

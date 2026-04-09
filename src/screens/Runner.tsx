@@ -177,7 +177,18 @@ export function Runner() {
   return (
     <div className="flex h-full flex-col bg-rtr-base">
       {/* ── Control bar ─────────────────────────────────────────────────────── */}
-      <div className="flex flex-col border-b border-rtr-border bg-rtr-panel sticky top-0 z-20">
+      <div
+        className="flex flex-col bg-rtr-panel sticky top-0 z-20"
+        style={{
+          borderBottom: `1px solid ${crisisPct < 40 ? "#1e2128" : crisisPct < 70 ? "rgba(245,158,11,0.35)" : "rgba(232,0,45,0.45)"}`,
+          boxShadow: crisisPct >= 70
+            ? "0 2px 24px rgba(232,0,45,0.1)"
+            : crisisPct >= 40
+            ? "0 2px 16px rgba(245,158,11,0.06)"
+            : "none",
+          transition: "border-color 0.8s ease, box-shadow 0.8s ease",
+        }}
+      >
         {/* Crisis escalation bar */}
         <div className="h-1 w-full bg-rtr-elevated overflow-hidden">
           <div
@@ -271,7 +282,7 @@ export function Runner() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* ── Left: inject queue ───────────────────────────────────────────── */}
-        <div className="w-64 border-r border-rtr-border flex flex-col overflow-hidden shrink-0 bg-rtr-panel">
+        <div className="w-48 md:w-56 lg:w-64 border-r border-rtr-border flex flex-col overflow-hidden shrink-0 bg-rtr-panel">
           <div className="px-4 py-2.5 border-b border-rtr-border">
             <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Inject Queue</p>
           </div>
@@ -420,7 +431,7 @@ export function Runner() {
         </div>
 
         {/* ── Right: session notes ─────────────────────────────────────────── */}
-        <div className="w-56 border-l border-rtr-border flex flex-col overflow-hidden shrink-0 bg-rtr-panel">
+        <div className="hidden md:flex md:w-48 lg:w-56 border-l border-rtr-border flex-col overflow-hidden shrink-0 bg-rtr-panel">
           <div className="px-4 py-2.5 border-b border-rtr-border">
             <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Session Notes</p>
           </div>
