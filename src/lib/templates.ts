@@ -14,6 +14,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",
+    coverGradient: "135deg, #0a0000 0%, #1f000a 40%, #e8002d 100%",
     roles: ["CEO", "CISO", "CFO", "CLO", "CCO", "COO"],
     briefing:
       "You are the executive leadership team of a mid-sized financial services organisation. It is Tuesday morning and you have each just arrived at the office. You will receive a series of escalating developments. Respond as you would in a real crisis — in character, under time pressure.",
@@ -110,6 +111,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           "The VPN vulnerability WAS on the pen test exceptions list — deprioritised 8 months ago. This creates significant governance exposure and potential D&O liability.",
         delayMinutes: 30,
         isDecisionPoint: true,
+        tickerHeadline: "Shareholders demand answers as breached firm's board holds emergency meeting",
         targetRoles: ["CEO", "CFO", "CLO"],
         expectedKeywords: ["board", "D&O", "insurance", "disclosure", "liability"],
         timerMinutes: 12,
@@ -170,6 +172,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",
+    coverGradient: "135deg, #000a14 0%, #001e3c 50%, #0057b8 100%",
     roles: ["CEO", "CISO", "CLO", "CFO", "CCO"],
     briefing:
       "Your organisation processes payments for approximately 2 million customers across Europe and the US. You share customer data with several third-party vendors under data processing agreements. This morning you received a notification from one of those vendors.",
@@ -247,6 +250,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     durationMin: 90,
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
+    coverGradient: "135deg, #0a0800 0%, #1a1300 50%, #8b6200 100%",
     updatedAt: "2024-01-01T00:00:00Z",
     roles: ["CEO", "CLO", "CISO", "CFO", "COO"],
     briefing:
@@ -327,6 +331,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",
+    coverGradient: "135deg, #08000f 0%, #18002e 50%, #7209b7 100%",
     roles: ["CEO", "CLO", "CCO", "HR_LEAD", "CFO"],
     briefing:
       "It is a Friday afternoon. A post made last night by one of your Managing Directors on their personal social media account is gaining traction online. By morning it has been screenshotted, shared widely, and the hashtag carrying your company name is trending.",
