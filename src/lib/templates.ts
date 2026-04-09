@@ -3,11 +3,16 @@ import { makeId } from "@/lib/utils";
 
 // IDs are stable so they don't change between sessions
 export const BUILT_IN_TEMPLATES: Scenario[] = [
+
+  // ─── SCENARIO 1: RANSOMWARE WITH DATA EXFILTRATION ───────────────────────────
+  // Full 2-hour arc. 12 main-path injects + 4 branch injects.
+  // Major decision trees at: containment approach, ransom response,
+  // GDPR notification, board disclosure, threat actor deadline, backdoor handling.
   {
     id: "tpl-ransomware-001",
     title: "Ransomware with Data Exfiltration",
     description:
-      "Sophisticated ransomware encrypts core systems. Evidence of prior data exfiltration. Attribution to a known threat actor group.",
+      "Sophisticated ransomware encrypts core systems while evidence emerges of prior data theft. Attribution to a known threat actor group. Regulatory, media, board and operational pressures escalate simultaneously over two hours.",
     type: "RANSOMWARE",
     difficulty: "HIGH",
     durationMin: 120,
@@ -17,680 +22,555 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     coverGradient: "135deg, #0a0000 0%, #1f000a 40%, #e8002d 100%",
     roles: ["CEO", "CISO", "CFO", "CLO", "CCO", "COO"],
     briefing:
-      "You are the executive leadership team of a mid-sized financial services organisation. It is Tuesday morning and you have each just arrived at the office. You will receive a series of escalating developments. Respond as you would in a real crisis — in character, under time pressure.",
+      "You are the executive leadership team of Meridian Financial Services — a mid-sized financial services organisation with 3,200 employees and 1.4 million customers across the UK and EU. It is Tuesday morning and you have each just arrived at the office. At 07:43 your CISO's phone rings. You will receive a series of escalating developments over the next two hours. Respond as you would in a real crisis — in character, under time pressure. The facilitator controls the pace.",
+
     injects: [
+
+      // ── INJECT 1: T+0 — Initial alert ─────────────────────────────────────
       {
-        id: "tpl-r-i1",
+        id: "rw-i1",
         order: 0,
-        title: "Initial SOC Alert",
-        body: "07:43 — Your CISO receives an automated alert: multiple servers in the primary data centre are showing unusual encryption activity. The SOC has isolated three servers but the activity is spreading. One analyst has identified what appears to be a ransom note on an affected endpoint.",
+        title: "SOC Alert: Mass Encryption Activity",
+        body: "07:43 — Your CISO receives an automated alert: multiple servers in the primary data centre are showing unusual encryption activity. The SOC has isolated three servers but the activity is spreading rapidly. One analyst has identified what appears to be a ransom note on an affected endpoint. 47 endpoints flagged in the last 8 minutes.",
         facilitatorNotes:
-          "BlackCat/ALPHV variant. Exfiltration occurred 48–72 hours ago via compromised VPN credentials. Without containment, backup systems will be hit in 4–6 hours.",
+          "BlackCat/ALPHV variant. Exfiltration occurred 48–72 hours ago via compromised VPN credentials. Without containment, backup systems will be hit in 4–6 hours. The correct initial response is aggressive isolation even at the cost of business disruption. Watch how quickly the CISO takes charge — or doesn't.",
         delayMinutes: 0,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CISO", "COO"],
-        expectedKeywords: ["isolate", "contain", "IR", "incident response"],
-        timerMinutes: 8,
+        isDecisionPoint: true,
+        timerMinutes: 10,
         tickerHeadline: "DEVELOPING: Reports of major cyber incident at UK financial services firm",
         artifact: {
           type: "siem_alert",
           siemAlertId: "SOC-2024-8847",
           siemSeverity: "CRITICAL",
           siemSourceIp: "10.14.22.187 (INTERNAL)",
-          siemEventType: "Mass File Encryption — 147 endpoints affected",
+          siemEventType: "Mass File Encryption — 47 endpoints affected and rising",
         },
+        targetRoles: ["CISO", "COO", "CEO"],
+        expectedKeywords: ["isolate", "contain", "IR", "incident response", "shutdown"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Aggressive isolation — take all affected network segments offline immediately",
+            consequence:
+              "Spread halted within 20 minutes. 40% of IT infrastructure offline. Trading platform goes dark. Customers cannot access accounts. IR firm engaged. Business continuity plan needed urgently.",
+          },
+          {
+            key: "B",
+            label: "Selective isolation — keep core customer-facing systems up while IR team assesses",
+            consequence:
+              "Customer access maintained for 45 minutes longer. But encryption spreads to backup systems during the window. Recovery timeline extends from 5 days to 9 days.",
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "rw-i2a" },
+          { optionKey: "B", nextInjectId: "rw-i2b" },
+        ],
       },
+
+      // ── INJECT 2a: Path A — Aggressive isolation consequences ────────────
       {
-        id: "tpl-r-i2",
-        order: 1,
-        title: "Scope Confirmed — Critical Systems Affected",
-        body: "08:15 — The IR team confirms: payroll systems, customer database, and two production trading platforms are encrypted. ~40% of IT infrastructure affected. Ransom note demands $4.2M in Bitcoin within 72 hours. Your head of IT has also found evidence of data being accessed and downloaded 3 days ago.",
+        id: "rw-i2a",
+        order: 10,
+        title: "Path A: Systems Dark — Business Impact Escalates",
+        body: "08:05 — The aggressive isolation has stopped the spread. But three major consequences: (1) your customer portal is completely offline — 14,000 customers attempted login in the last 10 minutes and hit an error page. (2) Your trading desk is down — estimated £2.1M in delayed settlements. (3) Your external IR firm, Mandiant, is en route and will arrive in 90 minutes. Your COO is asking: do we activate the business continuity plan now, or wait for IR to assess?",
         facilitatorNotes:
-          "The exfiltration included ~180,000 customer records (names, account numbers, partial card data). GDPR Art. 33 notification window is now running — 72 hours from when you became aware.",
-        delayMinutes: 30,
+          "The correct answer is to activate BCP now — waiting for IR adds another 90 minutes of uncoordinated response. The customer-facing outage is already generating social media noise. The trading desk disruption may trigger regulatory reporting obligations under MAR.",
+        delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Major financial services platform offline — thousands of customers unable to access accounts",
+        artifact: {
+          type: "email",
+          emailFrom: "bcp@meridianfs.com",
+          emailTo: "coo@meridianfs.com",
+          emailSubject: "BCP Activation Request — IT incident — authorisation required",
+        },
         isDecisionPoint: true,
-        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
-        expectedKeywords: ["GDPR", "notify", "regulator", "ICO", "legal"],
-        timerMinutes: 12,
-        tickerHeadline: "Financial services firm reportedly hit by $4.2M ransomware demand — sources",
+        targetRoles: ["COO", "CEO", "CISO"],
+        expectedKeywords: ["BCP", "business continuity", "MAR", "trading", "customer comms"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Activate BCP immediately — switch to manual processing for critical operations",
+            consequence: "Operations team mobilised. Manual processing begins. Adds cost and error risk but keeps critical functions moving. Mandiant arrives to a structured response.",
+          },
+          {
+            key: "B",
+            label: "Hold BCP activation — wait for Mandiant assessment before committing",
+            consequence: "90-minute vacuum. Settlement failures accumulate. Customer complaints triple. Mandiant arrive and recommend immediate BCP — now delayed by 90 minutes.",
+          },
+        ],
+      },
+
+      // ── INJECT 2b: Path B — Delayed isolation, spread to backups ─────────
+      {
+        id: "rw-i2b",
+        order: 10,
+        title: "Path B: Backups Hit — Recovery Extended",
+        body: "08:20 — Selective isolation has failed. The ransomware has reached your primary backup servers. Your CISO delivers the news: the 5-day recovery estimate has just become 9 days. Two customer-facing systems that were kept live to 'protect customer experience' are now also encrypted. You are now in the same position as aggressive isolation, but 45 minutes later and with significantly more damage. Mandiant are now en route.",
+        facilitatorNotes:
+          "This is the consequence of the wrong call at inject 1. Use this to drive home the cost of delay in containment decisions. The group should feel the weight of that choice. The discussion should naturally move to: what do we tell the board, and when?",
+        delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Financial services firm's backup systems hit in ransomware attack — recovery timeline now 9 days",
+        artifact: {
+          type: "siem_alert",
+          siemAlertId: "SOC-2024-8849",
+          siemSeverity: "CRITICAL",
+          siemSourceIp: "10.14.22.187 (INTERNAL → BACKUP SEGMENT)",
+          siemEventType: "Backup System Encryption — Recovery Timeline Extended",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CISO", "COO", "CEO"],
+        expectedKeywords: ["backup", "recovery", "9 days", "Mandiant", "BCP"],
+      },
+
+      // ── INJECT 3: T+45 — Both paths converge — Scope + exfiltration ──────
+      {
+        id: "rw-i3",
+        order: 20,
+        title: "Scope Confirmed — Exfiltration Evidence Found",
+        body: "08:30 — Mandiant's initial assessment is in. Encrypted: payroll, customer database, two production trading platforms — approximately 55% of IT infrastructure. The ransom note demands $4.8M in Bitcoin within 72 hours. Critically: Mandiant have found evidence of data being staged and exfiltrated approximately 60–72 hours ago. An estimated 220,000 customer records — names, account numbers, partial card data — may have been taken. The GDPR 72-hour notification clock started when you became aware of this potential breach.",
+        facilitatorNotes:
+          "This is the pivot point of the exercise. The team now faces simultaneous crises: operational recovery AND a potential data breach. The GDPR clock: 72 hours from now is Thursday 08:30. No notification = fines up to 4% of global annual turnover. The ransom decision and the GDPR decision are linked but separate. Push the group: what's the priority order?",
+        delayMinutes: 0,
+        timerMinutes: 15,
+        tickerHeadline: "Financial services firm reportedly hit by $4.8M ransomware demand — customer data potentially exposed",
         artifact: {
           type: "ransomware_note",
-          ransomAmount: "$4.2M",
+          ransomAmount: "$4.8M",
           ransomDeadlineHours: 72,
           ransomWalletAddress: "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
         },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
+        expectedKeywords: ["GDPR", "notify", "ICO", "72 hours", "ransom", "legal", "exfiltration"],
         decisionOptions: [
           {
             key: "A",
-            label: "Engage ransom negotiators and begin payment process",
+            label: "Refuse ransom — full IR response, restore from backup, notify ICO immediately",
             consequence:
-              "Negotiators engaged. FBI/NCA make contact warning against payment. Insurance queries coverage exclusions.",
+              "IR firm engaged on full response. ICO notified — they acknowledge and request further detail within 72 hours. Recovery begins. Estimated 5–9 days to full restoration.",
           },
           {
             key: "B",
-            label: "Refuse payment — full IR response and restore from backup",
+            label: "Open negotiations with threat actor while assessing options — delay ICO notification",
             consequence:
-              "IR firm engaged. Backup restoration begins, 5–7 days. Trading platforms offline. Business continuity plan activated.",
+              "Negotiators engaged. Threat actor responds quickly — they know about the exfiltration and are threatening to publish data. GDPR notification clock continues to run. ICO notification window narrows.",
           },
           {
             key: "C",
-            label: "Stall — open communication with threat actor while assessing options",
+            label: "Pay the ransom — obtain decryption key, assess data situation after",
             consequence:
-              "Threat actor sets hard deadline. A journalist calls. Stock price starts moving.",
+              "Payment processed via negotiators. FBI/NCA make contact warning against payment. Insurer queries policy exclusions. Decryption key received but is slow — some files don't decrypt. Data may still be published regardless.",
           },
         ],
+        branches: [
+          { optionKey: "A", nextInjectId: "rw-i4" },
+          { optionKey: "B", nextInjectId: "rw-i4b" },
+          { optionKey: "C", nextInjectId: "rw-i4c" },
+        ],
       },
+
+      // ── INJECT 4: Main path — Media + regulatory pressure ────────────────
       {
-        id: "tpl-r-i3",
-        order: 2,
-        title: "Media and Regulatory Pressure",
-        body: "10:30 — A Financial Times journalist has called your Head of Comms asking for comment on a 'significant cyber incident affecting customer data'. Separately, the ICO has received an anonymous tip and made contact requesting information on any potential data breach. Your stock price is down 3.2% on unusual volume.",
+        id: "rw-i4",
+        order: 30,
+        title: "Media Calls — ICO Acknowledges — Stock Moves",
+        body: "09:15 — Three things simultaneously: (1) A Financial Times journalist calls your Head of Comms with specific details about the incident — details that haven't been made public. Someone is leaking. (2) The ICO has acknowledged your notification and requests a follow-up call within 24 hours, with a full timeline and data mapping. (3) Your stock price is down 4.7% on unusual volume. The LSE has not halted trading but your investor relations team is fielding calls.",
         facilitatorNotes:
-          "GDPR 72-hour clock started at inject 2. Approx. 48 hours remain. No notification = fines up to 4% of global annual turnover.",
-        delayMinutes: 45,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CLO", "CCO", "CFO"],
-        expectedKeywords: ["holding statement", "ICO", "notification", "counsel", "no comment"],
-        timerMinutes: 10,
-        tickerHeadline: "FT sources: major financial firm refuses comment on 'significant' data breach",
+          "The leak is significant — it suggests either an employee or someone within the IR process. The FT journalist has details about the $4.8M demand and the 220,000 records. The CCO needs to decide: engage the FT (risk of confirming details) or no comment (risk of looking evasive). The ICO call needs a lawyer on the line — not just the CISO.",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "FT sources: major financial firm hit by $4.8M ransom demand — 220,000 customer records potentially exposed",
         artifact: {
           type: "email",
           emailFrom: "j.hartley@ft.com",
-          emailTo: "press@yourcompany.com",
-          emailSubject: "FT: Request for comment — cyber incident affecting customer data",
+          emailTo: "press@meridianfs.com",
+          emailSubject: "FT: Request for comment — ransomware incident affecting 220,000 customers",
         },
-      },
-      {
-        id: "tpl-r-i4",
-        order: 3,
-        title: "Board Escalation",
-        body: "13:00 — Your Chairman calls. Three NEDs have been contacted by major shareholders. A board briefing is demanded within 2 hours. Your cyber insurer is querying whether the exploited VPN vulnerability was on the exceptions list from your last penetration test.",
-        facilitatorNotes:
-          "The VPN vulnerability WAS on the pen test exceptions list — deprioritised 8 months ago. This creates significant governance exposure and potential D&O liability.",
-        delayMinutes: 30,
         isDecisionPoint: true,
-        tickerHeadline: "Shareholders demand answers as breached firm's board holds emergency meeting",
-        targetRoles: ["CEO", "CFO", "CLO"],
-        expectedKeywords: ["board", "D&O", "insurance", "disclosure", "liability"],
-        timerMinutes: 12,
-        artifact: {
-          type: "email",
-          emailFrom: "r.whitmore@company-board.com",
-          emailTo: "ceo@yourcompany.com",
-          emailSubject: "URGENT — Emergency board briefing required within 2 hours",
-        },
+        targetRoles: ["CEO", "CLO", "CCO", "CFO"],
+        expectedKeywords: ["holding statement", "ICO", "legal", "leak", "stock", "no comment"],
         decisionOptions: [
           {
             key: "A",
-            label: "Full transparent board briefing — including the pen test finding",
+            label: "Issue a holding statement confirming a cyber incident — no financial details",
             consequence:
-              "Board informed. Legal begins privileged investigation. D&O insurers notified. Chairman concerned but supportive.",
+              "FT runs a story with your holding statement. Narrative is partially controlled. Stock price stabilises at -5.1%. ICO notes the proactive communication positively.",
           },
           {
             key: "B",
-            label: "Brief the board on the incident without surfacing the pen test issue yet",
+            label: "No comment to FT — brief major shareholders directly before media breaks",
             consequence:
-              "Short-term breathing space. Legal later flags serious D&O exposure if the pen test finding emerges.",
+              "FT runs the story without your comment. 'Company refuses to comment' becomes part of the headline. Two institutional shareholders call IR demanding answers.",
           },
         ],
       },
+
+      // ── INJECT 4b: Path B — Negotiations backfire ─────────────────────────
       {
-        id: "tpl-r-i5",
-        order: 4,
-        title: "Backdoor Discovered",
-        body: "Day 2, 09:00 — Recovery is progressing. Your head of technology has found a second, dormant backdoor in the network. The threat actor may still have access. Customer notification emails must go out today per GDPR. Your PR agency is pushing for a proactive press release.",
+        id: "rw-i4b",
+        order: 30,
+        title: "Path B: Threat Actor Publishes Sample Data",
+        body: "09:00 — The threat actor has posted a sample of 1,200 customer records on a dark web forum as proof of exfiltration. The sample includes full names, account numbers, sort codes, and partial card data. A security researcher has found it and posted about it on X. GDPR notification window: 63 hours remain. The threat actor's message: 'You have 48 hours to pay before we publish everything. Non-negotiable.' Mandiant advise the negotiation window has closed.",
         facilitatorNotes:
-          "Critical: the backdoor means the incident is not contained. All recovery progress could be undermined. A specialist threat-hunting team is needed before full recovery.",
+          "The negotiation gamble has failed. The team is now in a worse position: GDPR clock running, data already published, and they've lost 30 minutes of response time. The group should now pivot to: refuse further engagement, notify ICO immediately, begin customer notification planning. The published sample means customers may find out before the company notifies them.",
         delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "BREAKING: Dark web post shows customer data from financial services breach — security researchers alarmed",
+        artifact: {
+          type: "tweet",
+          tweetHandle: "@SecurityResearch247",
+          tweetDisplayName: "Security Research 247",
+          tweetLikes: 18400,
+          tweetRetweets: 7200,
+        },
         isDecisionPoint: false,
         decisionOptions: [],
-        targetRoles: ["CISO", "CEO", "CLO", "CCO"],
-        expectedKeywords: ["threat hunt", "contain", "customer notification", "backdoor"],
+        targetRoles: ["CEO", "CISO", "CLO", "CCO"],
+        expectedKeywords: ["ICO", "notify", "customer notification", "dark web", "published"],
+      },
+
+      // ── INJECT 4c: Path C — Ransom paid, complications ───────────────────
+      {
+        id: "rw-i4c",
+        order: 30,
+        title: "Path C: Payment Made — New Complications",
+        body: "09:45 — Ransom paid via negotiators. Decryption keys received. But: (1) FBI/NCA have made contact — they are aware of the payment and are treating it as potential sanctions violation (threat actor linked to sanctioned entity). (2) Your insurer has formally put the claim 'under review' — policy exclusions for payments to sanctioned entities may void coverage. (3) Decryption is working on only 60% of files — the rest may be permanently damaged. The data exfiltration threat remains unresolved.",
+        facilitatorNotes:
+          "This is the consequence of paying. The sanctions issue is a real risk — the US OFAC has published guidance that paying ransomware actors linked to sanctioned entities can itself be a sanctions violation, regardless of intent. The insurance void is a financial shock. The partial decryption means recovery is still needed. Push the group: what do you tell the board about why you paid?",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "Sources: financial firm paid ransomware demand — FBI involvement reported",
+        artifact: {
+          type: "email",
+          emailFrom: "enforcement@fbi.gov",
+          emailTo: "legal@meridianfs.com",
+          emailSubject: "NOTICE: Ransomware payment — potential sanctions implications — mandatory cooperation required",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CLO", "CFO", "CISO"],
+        expectedKeywords: ["sanctions", "OFAC", "FBI", "insurance", "decryption", "board"],
+      },
+
+      // ── INJECT 5: T+75 — Insurance and legal exposure ────────────────────
+      {
+        id: "rw-i5",
+        order: 40,
+        title: "Insurance Dispute and Legal Exposure",
+        body: "10:00 — Your cyber insurer, Beazley, has sent a formal letter. They are querying whether the exploited VPN vulnerability was on your last penetration test's exceptions list. Your CISO confirms: it was flagged 8 months ago, deprioritised due to resource constraints, and never remediated. If the vulnerability was a known risk, the insurer may deny the claim — approximately £12M in coverage. Separately, a data protection law firm has sent a letter before claim on behalf of 340 affected customers they identified from the dark web posting.",
+        facilitatorNotes:
+          "The VPN vulnerability on the pen test is the governance failure that underpins everything. It creates: (1) insurance denial risk, (2) D&O liability, (3) regulatory aggravation. This is where the CEO and CLO should be having a very uncomfortable conversation about what the board knew. The 340-customer legal letter will grow — class action risk is real.",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "Law firm launches action on behalf of data breach victims — group litigation expected",
+        artifact: {
+          type: "legal_letter",
+          legalCaseRef: "BEZ-2024-POL-9847",
+          legalAuthority: "Beazley Insurance — Cyber Claims Division",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CLO", "CFO", "CEO", "CISO"],
+        expectedKeywords: ["pen test", "insurance", "D&O", "class action", "remediation", "disclosure"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Disclose the pen test finding to insurers proactively — engage external coverage counsel",
+            consequence:
+              "Insurer acknowledges the disclosure. Coverage counsel advises the exclusion may not apply — the vulnerability was known but not exploited until now. Expensive legal process begins but claim stays alive.",
+          },
+          {
+            key: "B",
+            label: "Contest the insurer's query — argue the pen test exception was within acceptable risk tolerance",
+            consequence:
+              "Insurer initiates formal coverage dispute. Mandiant's report surfaces the pen test finding independently. Legal costs escalate. The dispute becomes public in regulatory filings.",
+          },
+        ],
+      },
+
+      // ── INJECT 6: T+90 — Board escalation ────────────────────────────────
+      {
+        id: "rw-i6",
+        order: 50,
+        title: "Board Escalation — Chairman Calls",
+        body: "10:30 — Your Chairman calls. Three NEDs have been contacted by major institutional shareholders. An emergency board briefing is demanded within 90 minutes. The Chairman has one direct question: 'Did the board know about any security vulnerabilities that were not remediated?' Two NEDs reviewed and signed off the IT risk register 6 months ago — a register that included the VPN vulnerability as 'medium risk, remediation deferred'. Your stock is now down 6.8%. Trading has been flagged as potentially disorderly by the LSE.",
+        facilitatorNotes:
+          "This is the D&O moment. Two NEDs may have personal liability. The CEO's answer to the Chairman will define the governance narrative for the next 12 months. The correct answer is full disclosure — but it's personally difficult for the NEDs. Watch whether the group protects individuals or takes a transparent position. The LSE 'disorderly trading' flag means a public announcement may be required.",
+        delayMinutes: 0,
+        timerMinutes: 15,
+        tickerHeadline: "LSE flags disorderly trading in Meridian Financial shares as breach details emerge",
+        artifact: {
+          type: "email",
+          emailFrom: "r.whitmore@meridian-board.com",
+          emailTo: "ceo@meridianfs.com",
+          emailSubject: "URGENT — Emergency board briefing required within 90 minutes — D&O questions",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CFO", "CLO"],
+        expectedKeywords: ["board", "D&O", "NED", "disclosure", "LSE", "liability", "risk register"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Full transparent board briefing — including the pen test and risk register finding",
+            consequence:
+              "Board informed. Two NEDs voluntarily step aside pending review. D&O insurers notified. Chairman concerned but supportive of transparency. LSE notified of material development.",
+          },
+          {
+            key: "B",
+            label: "Brief the board on the incident without surfacing the risk register issue yet",
+            consequence:
+              "Buys 48 hours. Legal later flags serious D&O exposure when the risk register is disclosed in regulatory proceedings. The omission becomes part of the ICO investigation.",
+          },
+        ],
+      },
+
+      // ── INJECT 7: T+105 — Threat actor deadline approaching ──────────────
+      {
+        id: "rw-i7",
+        order: 60,
+        title: "48-Hour Mark — Threat Actor Ultimatum",
+        body: "11:00 — 24 hours have passed since the ransom note. The threat actor has sent a new message: they are publishing a second, larger sample of 8,000 customer records in 4 hours unless payment negotiations begin. Mandiant confirm the threat actor is ALPHV/BlackCat — currently under FBI disruption but still operational. Your recovery team reports core systems will be partially restored in 36 hours. The FCA has made contact — they are aware of the incident and are treating it as a potential operational resilience failure under PS21/3.",
+        facilitatorNotes:
+          "The FCA angle is serious — PS21/3 (operational resilience policy) requires firms to be able to remain within impact tolerances during severe but plausible scenarios. A 9-day outage almost certainly breaches this. The threat actor's second sample is a pressure tactic. The group must decide: engage or hold? This is also where the CEO needs to make the call on customer notification — waiting any longer risks customers finding out from the dark web before the company.",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "FCA confirms investigation into Meridian Financial operational resilience failures",
+        artifact: {
+          type: "email",
+          emailFrom: "supervisory@fca.org.uk",
+          emailTo: "ceo@meridianfs.com",
+          emailSubject: "FCA — Operational Resilience — PS21/3 — Supervisory Engagement Required",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CISO", "CLO", "CCO"],
+        expectedKeywords: ["customer notification", "FCA", "PS21/3", "ALPHV", "publish", "engage"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Begin customer notification now — do not engage the threat actor further",
+            consequence:
+              "Customer notifications go out. Call centre overwhelmed within 2 hours — 22,000 calls in first hour. Dark web sample becomes less damaging as customers are already informed. FCA notes the proactive notification.",
+          },
+          {
+            key: "B",
+            label: "Hold customer notification — attempt to negotiate takedown of the second sample",
+            consequence:
+              "Negotiators reach the threat actor. They agree to delay the second posting for 12 hours for £500k. A security blogger discovers the second sample independently 6 hours later — before customer notification goes out.",
+          },
+        ],
+      },
+
+      // ── INJECT 8: T+120 — Staff and operational HR crisis ────────────────
+      {
+        id: "rw-i8",
+        order: 70,
+        title: "Staff Revolt — Payroll at Risk",
+        body: "11:30 — HR has a critical update: payroll systems are among the encrypted servers. 3,200 employees are due to be paid on Friday — 72 hours away. Manual payroll processing would take 5 days minimum. Your HR Director has fielded 140 employee queries. Three union representatives have requested an urgent meeting. Separately: two members of the IT team have been identified as potential sources of the FT leak — both are currently in the building.",
+        facilitatorNotes:
+          "The payroll failure is a direct employee relations crisis that the HR lead must own. There are legal obligations — employees must be paid on time or the company is in breach of contract. Options: emergency manual payroll (expensive, error-prone), short-term advance payments, or banking on recovery within 72 hours (optimistic). The leak investigation: care needed — if the company acts punitively on a suspicion, it creates whistleblowing protection risk.",
+        delayMinutes: 0,
         timerMinutes: 10,
-        tickerHeadline: "Cyber firm: second backdoor found at breached financial institution — recovery halted",
+        tickerHeadline: "Staff at breached firm face Friday payroll uncertainty as systems remain down",
+        artifact: {
+          type: "email",
+          emailFrom: "hr@meridianfs.com",
+          emailTo: "coo@meridianfs.com",
+          emailSubject: "URGENT: Payroll systems encrypted — Friday pay at risk — union contact made",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["COO", "CFO", "CEO"],
+        expectedKeywords: ["payroll", "union", "employees", "manual", "advance", "leak investigation"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Authorise emergency payroll advances — brief staff with an all-hands communication",
+            consequence:
+              "Bank agrees to advance payroll funding. Emergency payments processed. Staff all-hands reduces panic. Union representatives satisfied. Cost: £340k in emergency processing fees.",
+          },
+          {
+            key: "B",
+            label: "Communicate that payroll may be delayed — request staff patience",
+            consequence:
+              "Union formally threatens industrial action. Employment tribunal complaint filed within 24 hours. Story becomes 'company won't pay staff' alongside the breach story. Significant reputational and legal escalation.",
+          },
+        ],
+      },
+
+      // ── INJECT 9: T+135 — Backdoor discovered ────────────────────────────
+      {
+        id: "rw-i9",
+        order: 80,
+        title: "Backdoor Discovered — Recovery Halted",
+        body: "Day 2, 09:00 — Recovery is progressing. But your head of technology has found a second, dormant backdoor in the network — the threat actor may still have access. All recovery progress could be undermined if the backdoor is active. Mandiant recommend halting all recovery activity until the backdoor is fully eradicated — adding 24–48 hours. Customer notification emails went out yesterday and generated 31,000 customer contacts. Three national news channels are running the story as their lead business item.",
+        facilitatorNotes:
+          "The backdoor is the technical sting in the tail. The group needs to authorise the recovery halt — which has real cost — against the pressure to restore service as fast as possible. This is the CISO's call but the CEO needs to back it. The customer contact volume (31,000) is the human reality of the breach — the group should be asked: are you satisfied with how the customer notification was handled?",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "Second backdoor halts Meridian Financial recovery — customers furious as outage enters day two",
         artifact: {
           type: "siem_alert",
           siemAlertId: "SOC-2024-8851",
           siemSeverity: "CRITICAL",
           siemSourceIp: "185.220.101.47 (TOR EXIT NODE)",
-          siemEventType: "Dormant C2 Beacon — Active Exfiltration Resumed",
+          siemEventType: "Dormant C2 Beacon — Active Exfiltration Channel Identified",
         },
+        isDecisionPoint: true,
+        targetRoles: ["CISO", "CEO", "COO"],
+        expectedKeywords: ["threat hunt", "halt recovery", "backdoor", "Mandiant", "eradicate", "C2"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Halt all recovery — engage specialist threat hunting team to eradicate backdoor first",
+            consequence:
+              "Correct call. 36-hour delay. Backdoor eradicated. Recovery resumes on clean infrastructure. FCA notes the methodical approach positively in their eventual report.",
+          },
+          {
+            key: "B",
+            label: "Continue recovery on unaffected segments — monitor the backdoor while restoring",
+            consequence:
+              "Threat actor activates the backdoor 18 hours later. Second encryption event — partial — adds 4 more days to recovery. Mandiant later state this was avoidable.",
+          },
+        ],
       },
-    ],
-  },
 
-  {
-    id: "tpl-breach-001",
-    title: "Third-Party Data Breach Notification",
-    description:
-      "A critical SaaS vendor notifies you they suffered a breach affecting data you shared under a data processing agreement. You have no direct control over the incident.",
-    type: "DATA_BREACH",
-    difficulty: "MEDIUM",
-    durationMin: 120,
-    isTemplate: true,
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-    coverGradient: "135deg, #000a14 0%, #001e3c 50%, #0057b8 100%",
-    roles: ["CEO", "CISO", "CLO", "CFO", "CCO"],
-    briefing:
-      "Your organisation processes payments for approximately 2 million customers across Europe and the US. You share customer data with several third-party vendors under data processing agreements. This morning you received a notification from one of those vendors.",
-    injects: [
+      // ── INJECT 10: Day 2 — Regulatory enforcement signals ────────────────
       {
-        id: "tpl-b-i1",
-        order: 0,
-        title: "Vendor Notification Received",
-        body: "You receive an email from CloudProcess Ltd, a customer analytics vendor used for 3 years. They report a 'security incident' between 15–22 March affecting 'some customer data'. They are 'still investigating' and will 'provide further details'. The email was sent to your IT security team's generic inbox — and was only spotted today, 5 days after it was sent.",
-        timerMinutes: 10,
-        tickerHeadline: "CloudProcess Ltd under scrutiny over reported data security incident",
-        artifact: { type: "email", emailFrom: "security-incident@cloudprocess.io", emailTo: "itsecurity@yourcompany.com", emailSubject: "Important: Security Incident Notification — Customer Data Affected" },
+        id: "rw-i10",
+        order: 90,
+        title: "ICO and FCA Signal Enforcement Intent",
+        body: "Day 2, 13:00 — Two regulatory signals arrive simultaneously. The ICO has sent a formal information notice requiring full documentation of the data breach within 14 days — failure to comply carries criminal liability for senior officers. The FCA has formally classified the incident as a 'major operational incident' and is opening an investigation into PS21/3 compliance. Your external legal team estimates potential combined regulatory fines of £18–32M. Credit rating agency Moody's has placed Meridian on 'review for downgrade'.",
         facilitatorNotes:
-          "CloudProcess hold ~450,000 of your customer records: names, emails, and behavioural data. The 72-hour GDPR notification clock likely started when the processor became aware, not today — legal opinion needed urgently.",
+          "This is the long tail of the crisis becoming real. The group needs to decide: do you fight both regulators, cooperate fully, or try to negotiate? The credit downgrade will affect the cost of capital. The combined fines would be painful but survivable — what's less survivable is a prolonged enforcement battle that keeps the story alive. This is also the moment to discuss: who is accountable? Has anyone been held responsible internally?",
         delayMinutes: 0,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CISO", "CLO"],
-        expectedKeywords: ["DPA", "data processing agreement", "controller", "processor", "GDPR"],
-      },
-      {
-        id: "tpl-b-i2",
-        order: 1,
-        title: "Scope of Data Confirmed",
-        body: "CloudProcess confirm: 450,000 customer records accessed — names, emails, and browsing/purchase history. No financial data taken. Attacker had access for 7 days. CloudProcess say they have 'notified the relevant authorities' in Ireland but have not confirmed whether they have specifically notified the UK ICO.",
-        timerMinutes: 10,
-        tickerHeadline: "450,000 customers affected in third-party data breach — ICO notification status unclear",
-        artifact: { type: "email", emailFrom: "dpo@cloudprocess.io", emailTo: "legal@yourcompany.com", emailSubject: "Updated Incident Report — 450,000 customer records confirmed affected" },
-        facilitatorNotes:
-          "As data controller, YOUR organisation has independent ICO notification obligations regardless of what the processor does. The processor's Irish DPA notification does not discharge your duty.",
-        delayMinutes: 20,
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CISO", "CEO"],
-        expectedKeywords: ["ICO", "controller", "72 hours", "notification", "obligation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Notify ICO immediately and begin customer notification",
-            consequence:
-              "ICO acknowledges. Notes the delay since vendor notification and requests explanation. Customer notification process begins.",
-          },
-          {
-            key: "B",
-            label: "Gather more information from CloudProcess before notifying",
-            consequence:
-              "72-hour window passes. ICO receives a complaint from a customer alerted by a third party. Enforcement investigation begins.",
-          },
-        ],
-      },
-      {
-        id: "tpl-b-i3",
-        order: 2,
-        title: "Contractual and Commercial Exposure",
-        body: "Legal has reviewed the DPA with CloudProcess. Their 5-day notification delay is a material breach. Their cyber insurance appears inadequate for your potential losses. Additionally, a competitor is now running targeted ads at 'customers of data-exposed financial platforms'.",
-        timerMinutes: 12,
-        artifact: { type: "legal_letter", legalCaseRef: "ICO-2024-CS-1847", legalAuthority: "Information Commissioner's Office" },
-        facilitatorNotes:
-          "Decision point: pursue CloudProcess for damages (expensive, uncertain) vs prioritise customer trust and regulatory relationship. The competitor angle is a reputational crisis layered on top.",
-        delayMinutes: 25,
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CFO", "CEO", "CCO"],
-        expectedKeywords: ["indemnity", "liability", "contractual breach", "customer trust", "remediation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Issue a formal legal claim against CloudProcess for breach of DPA",
-            consequence: "Signals seriousness to regulators and board. Process will take 12–18 months and cost £200–400k in legal fees. CloudProcess immediately goes into defensive mode and stops cooperating on the investigation.",
-          },
-          {
-            key: "B",
-            label: "Negotiate a remediation settlement privately — prioritise cooperation",
-            consequence: "CloudProcess agree to fund customer notification costs and credit monitoring. ICO notes the collaborative approach favourably. No precedent set for other vendors.",
-          },
-        ],
-      },
-      {
-        id: "tpl-b-i4",
-        order: 3,
-        title: "ICO Opens Formal Investigation",
-        body: "Three days after your notification, the ICO write formally. They are treating this as a 'serious incident' requiring investigation into your oversight of data processors and your own data retention practices. They want a full timeline, copies of your DPA with CloudProcess, and your data mapping records within 14 days. Separately: a data protection law firm has written to you threatening a group litigation on behalf of 2,400 affected customers.",
-        timerMinutes: 12,
-        tickerHeadline: "ICO opens formal investigation into third-party data breach — group litigation threatened",
-        artifact: { type: "legal_letter", legalCaseRef: "ICO-2024-ENF-0293", legalAuthority: "Information Commissioner's Office — Enforcement Division" },
-        facilitatorNotes:
-          "The ICO will focus on two things: (1) whether the controller's vendor oversight was adequate, and (2) whether your own data was being retained longer than necessary. The data mapping request is a test of whether you have a record of processing activities as required by GDPR Art. 30.",
-        delayMinutes: 20,
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CISO", "CEO"],
-        expectedKeywords: ["ICO", "Art. 30", "ROPA", "data mapping", "processor oversight", "litigation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Full cooperation — provide all documents, appoint a lead regulatory counsel",
-            consequence: "ICO notes the cooperative posture. Investigation expected to take 6 months. External counsel bills £80k in first month. Good chance of reduced fine.",
-          },
-          {
-            key: "B",
-            label: "Provide only what is strictly required — protect commercial sensitivity",
-            consequence: "ICO notes the narrow disclosure and escalates to a formal information notice. Failure to comply with an information notice can result in criminal prosecution.",
-          },
-        ],
-      },
-      {
-        id: "tpl-b-i5",
-        order: 4,
-        title: "Customer Backlash and Media Exposure",
-        body: "Your customer notification emails are out. Within 6 hours: 14,000 customers have called your support line (it was overwhelmed in under an hour), a BBC journalist is running a piece on 'how this breach was handled', and a personal finance influencer with 800k followers has published a thread titled 'How [Company] failed me — and what to do if you're affected'. Your NPS has dropped 22 points in 48 hours.",
-        timerMinutes: 10,
-        tickerHeadline: "BBC investigation: customers furious as 450,000 affected by third-party data breach",
-        artifact: { type: "tweet", tweetHandle: "@MoneyProtect_UK", tweetDisplayName: "Money Protect UK", tweetLikes: 62000, tweetRetweets: 24000 },
-        facilitatorNotes:
-          "The support line collapse is a secondary crisis — customers who can't get through become significantly more likely to complain to the ICO, switch provider, and join the group litigation. The influencer thread is actually providing better advice than your customer notification email, which is a problem.",
-        delayMinutes: 15,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CCO", "COO", "CFO"],
-        expectedKeywords: ["support", "customer", "NPS", "churn", "influencer", "media", "communication"],
-      },
-      {
-        id: "tpl-b-i6",
-        order: 5,
-        title: "Board Demands Systemic Review",
-        body: "The board has met. Three NEDs are concerned about their personal liability. Your cyber insurer is querying whether vendor oversight failures constitute a policy exclusion. The CFO presents: £2.4M in estimated costs so far (legal, support, notification, credit monitoring), with ICO fines of up to £17.5M possible. The Chairman wants a systemic review of every third-party data processor you use — you have 47 of them.",
         timerMinutes: 15,
-        tickerHeadline: "Board liability fears mount as data breach costs projected to exceed £20M",
-        artifact: { type: "email", emailFrom: "chairman@company-board.com", emailTo: "ceo@yourcompany.com", emailSubject: "Board resolution: full processor audit required — NED liability concerns" },
-        facilitatorNotes:
-          "This is the systemic governance question that the breach has exposed. The 47 processors is not unusual — most mid-sized organisations have far more. The question is whether there was a structured programme to oversee them. The D&O angle: NEDs can face personal liability if they failed to exercise adequate oversight.",
-        delayMinutes: 20,
+        tickerHeadline: "Moody's places Meridian Financial on downgrade watch as dual regulatory investigations confirmed",
+        artifact: {
+          type: "legal_letter",
+          legalCaseRef: "ICO-2024-ENF-0441 / FCA-PS21/3-2024-0093",
+          legalAuthority: "Information Commissioner's Office and Financial Conduct Authority",
+        },
         isDecisionPoint: true,
-        targetRoles: ["CEO", "CLO", "CISO", "CFO"],
-        expectedKeywords: ["D&O", "NED", "processor audit", "governance", "insurance", "systemic"],
+        targetRoles: ["CEO", "CLO", "CFO", "CISO"],
+        expectedKeywords: ["cooperate", "enforce", "fines", "Moody's", "accountability", "remediation roadmap"],
         decisionOptions: [
           {
             key: "A",
-            label: "Commission an immediate external audit of all 47 processors — pause non-critical data sharing",
-            consequence: "Board satisfied. Insurance notified — policy may still respond. Operational disruption while 12 processors are paused for review. Cost: £150k and 8 weeks.",
+            label: "Full cooperation with both regulators — appoint dedicated regulatory liaison team",
+            consequence:
+              "ICO and FCA both note the cooperative posture. Investigation timeline: 9–12 months. Fine likely in lower range (£8–14M combined). No criminal referral for officers.",
           },
           {
             key: "B",
-            label: "Internal prioritisation — audit top 10 highest-risk processors first",
-            consequence: "Pragmatic but ICO notes in their investigation that no systematic review was completed. Used as evidence of inadequate oversight culture.",
+            label: "Contest the FCA classification — challenge PS21/3 application as unprecedented",
+            consequence:
+              "FCA escalates to formal enforcement proceedings. Legal costs mount. Story remains live. ICO investigation unaffected. Fine likely in upper range and proceedings extend to 18 months.",
           },
         ],
       },
-    ],
-  },
 
-  {
-    id: "tpl-regulatory-001",
-    title: "Regulatory Dawn Raid",
-    description:
-      "Regulators arrive unannounced. Tests legal preparedness, document handling, employee rights, and communication under extreme time pressure.",
-    type: "REGULATORY_INVESTIGATION",
-    difficulty: "HIGH",
-    durationMin: 135,
-    isTemplate: true,
-    createdAt: "2024-01-01T00:00:00Z",
-    coverGradient: "135deg, #0a0800 0%, #1a1300 50%, #8b6200 100%",
-    updatedAt: "2024-01-01T00:00:00Z",
-    roles: ["CEO", "CLO", "CISO", "CFO", "COO"],
-    briefing:
-      "Your organisation is a retail bank. It is 07:30 on a Wednesday morning. Several executives are already in the building. Without warning, a group of officials arrives at your main office reception.",
-    injects: [
+      // ── INJECT 11: Day 2 — Lessons, accountability, and future ───────────
       {
-        id: "tpl-reg-i1",
-        order: 0,
-        title: "Officials Arrive at Reception",
-        body: "07:31 — Your head of reception calls: eight individuals have arrived identifying themselves as FCA officials with a warrant. They hand over a 'Notice of Entry and Search' and ask to be taken immediately to your Head of Compliance. They intend to image servers and seize documents related to a specific trading desk.",
-        timerMinutes: 8,
-        tickerHeadline: "BREAKING: FCA enforcement officials arrive at major London bank — sources",
-        artifact: { type: "legal_letter", legalCaseRef: "FCA/ENF/2024/0847", legalAuthority: "Financial Conduct Authority — Enforcement Division" },
+        id: "rw-i11",
+        order: 100,
+        title: "The Accountability Question",
+        body: "Day 3, 09:00 — Systems are coming back online. The immediate crisis is passing. But the board has convened and has a list of questions: (1) Who is accountable for the unpatched VPN vulnerability? (2) Should the CISO's position be reviewed? (3) What does a credible remediation programme look like for investors and regulators? (4) What do we say to the 1,200 customers whose data has already been published publicly? The CFO presents: total estimated cost of the incident — £28–44M.",
         facilitatorNotes:
-          "The warrant relates to suspected market manipulation on the fixed income desk — a whistleblower complaint 6 months ago. The CEO may not be aware of the underlying investigation.",
+          "This is the debrief inject — the wrap-up question set. The facilitator should use this to draw out the group's reflections on their own decisions across the session. Key questions to pose: what was the single decision that made the biggest difference? What would you do differently? Who in the organisation needs to change? This is where the AI report will be most valuable — it will have scored each decision and roleplay.",
         delayMinutes: 0,
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CEO"],
-        expectedKeywords: ["legal counsel", "warrant", "cooperate", "privilege", "legal professional privilege"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Cooperate immediately — admit officials and alert legal counsel simultaneously",
-            consequence:
-              "Legal counsel arrives within 40 minutes. Officials are cooperative. Privilege claims made correctly over specific documents.",
-          },
-          {
-            key: "B",
-            label: "Delay admission until legal counsel is physically present",
-            consequence:
-              "FCA notes the 12-minute delay. Treat it as obstruction. Enforcement aggravation factor added.",
-          },
-        ],
-      },
-      {
-        id: "tpl-reg-i2",
-        order: 1,
-        title: "Employees Begin to Panic",
-        body: "08:15 — Two traders from the fixed income desk are asking if they should delete files as 'routine housekeeping'. A PA has sent a message to a senior trader warning them. HR has received a call from a trader asking if they need their own legal representation. The story is already circulating on a financial markets Slack channel.",
-        timerMinutes: 10,
-        tickerHeadline: "Sources: employees at raided bank asked to delete files — legal implications unclear",
-        artifact: { type: "tweet", tweetHandle: "@FinancialMarketNews", tweetDisplayName: "Financial Market News", tweetLikes: 8400, tweetRetweets: 3200 },
-        facilitatorNotes:
-          "Document destruction = obstruction of justice (criminal). The PA's message could be characterised as tipping off. HR must accurately advise traders they are entitled to independent legal advice.",
-        delayMinutes: 30,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CLO", "CEO", "COO"],
-        expectedKeywords: ["preserve", "no deletion", "independent counsel", "HR", "comms lockdown"],
-      },
-      {
-        id: "tpl-reg-i3",
-        order: 2,
-        title: "Media, Investors, and Encryption Keys",
-        body: "09:45 — Reuters have called asking for comment on 'enforcement activity at your HQ'. Two institutional investors have called investor relations. Your Chairman has called. FCA officials have reached the server room and are requesting encryption keys for archived communications.",
-        timerMinutes: 10,
-        tickerHeadline: "Reuters: FCA enforcement raid at City bank entering second hour — investors alarmed",
-        artifact: { type: "news_headline" },
-        facilitatorNotes:
-          "FCA can compel encryption keys under RIPA — refusal is contempt. Any statement to Reuters must be accurate. A narrow no-comment holding statement is appropriate here.",
-        delayMinutes: 20,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CLO", "CCO", "CISO"],
-        expectedKeywords: ["no comment", "holding statement", "RIPA", "compel", "privilege", "board"],
-      },
-      {
-        id: "tpl-reg-i4",
-        order: 3,
-        title: "FCA Requests Compelled Interviews",
-        body: "11:30 — FCA officials formally notify you that they intend to conduct compelled interviews under s.165 FSMA with the Head of Fixed Income and your Chief Risk Officer. Both individuals are now in the building. Their personal solicitors have been called but won't arrive for 90 minutes. The FCA says they are prepared to begin interviews now. Both employees are visibly distressed.",
-        timerMinutes: 12,
-        tickerHeadline: "Sources: FCA conducting compelled interviews with senior bank staff under FSMA powers",
-        artifact: { type: "email", emailFrom: "enforcement@fca.org.uk", emailTo: "legal@yourcompany.com", emailSubject: "Notice of Compelled Interview — s.165 FSMA — Head of Fixed Income and CRO" },
-        facilitatorNotes:
-          "s.165 FSMA compelled interviews: individuals must answer (privilege against self-incrimination is limited — answers cannot be used directly in criminal proceedings against them, but can be used in regulatory action). The 90-minute delay is technically permissible but the FCA may characterise it as obstruction. HR's role: ensure employees know they may have their own legal representation, separate from the company's counsel.",
-        delayMinutes: 25,
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CEO", "COO"],
-        expectedKeywords: ["s.165 FSMA", "legal representation", "compelled", "privilege", "HR", "independent counsel"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Begin interviews now — company counsel present, personal solicitors join by phone",
-            consequence: "FCA notes the cooperation positively. Interviews proceed. Company counsel later flags one answer that requires a follow-up clarification letter — normal process.",
-          },
-          {
-            key: "B",
-            label: "Wait for personal solicitors — 90-minute delay",
-            consequence: "FCA formally notes the delay as non-cooperation in their investigation report. This becomes an aggravating factor in any eventual enforcement action.",
-          },
-        ],
-      },
-      {
-        id: "tpl-reg-i5",
-        order: 4,
-        title: "Board Emergency Convenes — Directors' Liability",
-        body: "14:00 — The board has assembled. The investigation relates to trades made over 8 months — trades that were flagged in a compliance report that two NEDs reviewed and signed off. The Chairman asks a direct question: did any board member know about the whistleblower complaint before today? Your D&O insurer has called asking for a briefing. Share price is down 8.4% and trading has been temporarily halted.",
-        timerMinutes: 12,
-        tickerHeadline: "Trading halted: bank share price drops 8% as FCA investigation deepens — board convenes",
-        artifact: { type: "email", emailFrom: "chairman@company-board.com", emailTo: "board@yourcompany.com", emailSubject: "URGENT: Emergency board meeting — 14:00 — Directors' duties and liability briefing required" },
-        facilitatorNotes:
-          "Two NEDs reviewed and signed off the compliance report — this creates personal exposure. If they failed to escalate a risk they should have identified, they may face FCA enforcement personally. The D&O insurance call is significant — insurers will want to establish whether this falls within the policy scope or constitutes a known risk exclusion.",
-        delayMinutes: 20,
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CLO", "CFO"],
-        expectedKeywords: ["D&O", "NED", "directors' duties", "insurance", "trading halt", "disclosure"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Full board disclosure — each director confirms what they knew and when",
-            consequence: "Two NEDs voluntarily step aside pending investigation. Board retains credibility with FCA. D&O insurer begins coverage assessment — the disclosure may actually protect the policy.",
-          },
-          {
-            key: "B",
-            label: "Restrict disclosure — wait for legal advice before board members say anything",
-            consequence: "Legally prudent but FCA later discovers the compliance report was circulated to NEDs. Failure to disclose this in the board meeting becomes a separate concern.",
-          },
-        ],
-      },
-      {
-        id: "tpl-reg-i6",
-        order: 5,
-        title: "FCA Issues Formal Notice of Investigation",
-        body: "Day 2, 09:00 — The FCA have departed the premises. They leave a Formal Notice of Investigation and a list of 340 documents they are seizing or requiring copies of. Their press office has issued a brief statement confirming an investigation is underway — the first public confirmation. Your stock opens down 11.2%. A major credit rating agency has placed you on 'watch negative'. Three senior traders have submitted resignation notices.",
         timerMinutes: 15,
-        tickerHeadline: "FCA confirms formal market misconduct investigation — bank shares drop 11%, credit outlook negative",
-        artifact: { type: "legal_letter", legalCaseRef: "FCA/ENF/2024/0847-B", legalAuthority: "Financial Conduct Authority — Formal Notice of Investigation" },
-        facilitatorNotes:
-          "This is the transition from the acute crisis to the long investigation phase. The exercise should close here with a debrief on: what went wrong, what was handled well, and what the next 6 months look like. The resignation of senior traders may indicate wider knowledge of the underlying misconduct — or simply reputational flight. Worth asking the group which they think it is.",
-        delayMinutes: 0,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CLO", "CFO", "CCO"],
-        expectedKeywords: ["credit rating", "morale", "talent retention", "public statement", "long investigation", "remediation"],
-      },
-    ],
-  },
-
-  {
-    id: "tpl-social-001",
-    title: "Public Social Media Crisis",
-    description:
-      "A senior employee's social media post goes viral and is interpreted as discriminatory. Media, staff, and investors react simultaneously.",
-    type: "SOCIAL_MEDIA_CRISIS",
-    difficulty: "MEDIUM",
-    durationMin: 120,
-    isTemplate: true,
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-    coverGradient: "135deg, #08000f 0%, #18002e 50%, #7209b7 100%",
-    roles: ["CEO", "CLO", "CCO", "HR_LEAD", "CFO"],
-    briefing:
-      "It is a Friday afternoon. A post made last night by one of your Managing Directors on their personal social media account is gaining traction online. By morning it has been screenshotted, shared widely, and the hashtag carrying your company name is trending.",
-    injects: [
-      {
-        id: "tpl-s-i1",
-        order: 0,
-        title: "Post Goes Viral",
-        body: "09:15 — The MD's post — a comment on a political topic, since deleted — has been shared 40,000 times. Several major news outlets have reached out. Your social media team is reporting a surge of negative comments on all company channels. Three members of staff have emailed HR saying they feel 'unsafe' following the post.",
-        timerMinutes: 8,
-        tickerHeadline: "TRENDING: Senior exec's controversial post sparks company boycott calls",
-        artifact: { type: "tweet", tweetHandle: "@CorporateWatchdog", tweetDisplayName: "Corporate Watchdog", tweetLikes: 41000, tweetRetweets: 18000 },
-        facilitatorNotes:
-          "The post, while deleted, is still circulating in screenshots. The MD is currently travelling internationally and is not reachable. Their personal account has no disclaimer separating personal views from the company.",
-        delayMinutes: 0,
+        tickerHeadline: "Meridian Financial total breach cost estimated at £28–44M — board accountability review underway",
+        artifact: {
+          type: "email",
+          emailFrom: "chairman@meridian-board.com",
+          emailTo: "board@meridianfs.com",
+          emailSubject: "Board resolution: accountability review, remediation programme, and investor communication required",
+        },
         isDecisionPoint: true,
-        targetRoles: ["CEO", "CCO", "HR_LEAD", "CLO"],
+        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
+        expectedKeywords: ["accountability", "CISO", "remediation", "investor", "programme", "culture"],
         decisionOptions: [
           {
             key: "A",
-            label: "Issue an immediate company statement distancing from the MD's views",
+            label: "Commission an independent post-incident review — results to be shared with regulators",
             consequence:
-              "Statement reduces immediate media pressure but the MD's lawyer calls within the hour citing potential defamation and employment law implications.",
+              "Regulators view this as best practice. External review firm engaged. Findings are uncomfortable but credible. Remediation roadmap accepted by ICO as mitigation evidence.",
           },
           {
             key: "B",
-            label: "Hold — wait until the MD is reached before making any public statement",
+            label: "Internal review only — protect commercially sensitive findings",
             consequence:
-              "Media fills the vacuum with speculation. A second journalist calls with a quote from an anonymous employee calling the company's response 'deafening silence'.",
-          },
-        ],
-      },
-      {
-        id: "tpl-s-i2",
-        order: 1,
-        title: "Staff and Investor Reaction",
-        body: "11:30 — An internal Slack post by a junior employee, calling the MD's comments 'unacceptable', has received 200 reactions and 40 supportive replies. Your largest institutional shareholder has emailed your CEO asking for a call. A major client has put a contract renewal 'on hold pending clarity on company values'.",
-        timerMinutes: 10,
-        tickerHeadline: "Institutional investors demand clarity from firm at centre of exec social media row",
-        artifact: { type: "email", emailFrom: "portfolio@institutionalfund.com", emailTo: "ceo@yourcompany.com", emailSubject: "Request for urgent call — governance and values concerns" },
-        facilitatorNotes:
-          "The internal Slack response represents a significant employee relations issue regardless of the external story. The client contract is worth £4M annually.",
-        delayMinutes: 45,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "HR_LEAD", "CFO", "CCO"],
-        expectedKeywords: ["internal comms", "all-hands", "client", "shareholder", "values"],
-      },
-      {
-        id: "tpl-s-i3",
-        order: 2,
-        title: "MD Makes Contact — Disciplinary Decision Required",
-        body: "14:00 — The MD is now reachable. They insist the post was 'taken out of context' and are refusing to issue a personal apology. They are threatening to resign if 'scapegoated'. A national broadcaster has confirmed they are running the story on the evening news.",
-        timerMinutes: 10,
-        tickerHeadline: "Breaking: national broadcaster to run exec social media story on tonight's evening news",
-        artifact: { type: "news_headline" },
-        facilitatorNotes:
-          "Employment law constraints on discipline vs speed of reputational response is the core tension here. Any disciplinary action must follow correct HR process or creates constructive dismissal risk.",
-        delayMinutes: 30,
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "HR_LEAD", "CLO", "CCO"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Suspend the MD pending formal investigation — issue a firm public statement",
-            consequence:
-              "Media pressure reduces. MD's lawyer issues a statement. Process risk but narrative is controlled.",
-          },
-          {
-            key: "B",
-            label: "Negotiate a joint statement with the MD — no disciplinary action yet",
-            consequence:
-              "MD agrees to a personal apology. Statement lands poorly — seen as corporate-speak. The story runs a second day.",
-          },
-        ],
-        branches: [
-          { optionKey: "A", nextInjectId: "tpl-s-i4a" },
-          { optionKey: "B", nextInjectId: "tpl-s-i4b" },
-        ],
-      },
-      {
-        id: "tpl-s-i4a",
-        order: 30,
-        title: "Path A: MD's Legal Team Strikes Back",
-        body: "16:30 — The MD's solicitors have issued a letter before claim alleging unfair suspension and potential defamation in the public statement. They are also threatening to disclose private board communications 'relevant to the company's culture'. HR flags that the suspension letter was sent before a formal investigation was opened — a procedural error. The evening news piece runs anyway.",
-        timerMinutes: 12,
-        tickerHeadline: "Suspended MD's lawyers threaten defamation claim and board leak — employment dispute escalates",
-        artifact: { type: "legal_letter", legalCaseRef: "PLD-2024-0441", legalAuthority: "Kingsley Napley LLP — Employment Department" },
-        facilitatorNotes:
-          "The procedural error in the suspension letter is significant — it potentially invalidates the suspension and creates constructive dismissal risk. This is a classic HR process failure under time pressure. The threat to leak board communications is high-stakes: it suggests the MD has something on the company's culture.",
-        delayMinutes: 0,
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CEO", "HR_LEAD"],
-        expectedKeywords: ["constructive dismissal", "procedure", "settlement", "culture", "legal privilege"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Open without-prejudice settlement negotiations immediately",
-            consequence: "MD agrees to a confidential exit. Settlement costs £320k plus a non-disparagement clause. Story dies within 48 hours. Internal culture question remains unresolved.",
-          },
-          {
-            key: "B",
-            label: "Stand firm — reissue the suspension on correct procedural grounds",
-            consequence: "Legally defensible. MD's lawyers file an employment tribunal claim. Story runs for another 5 days. The board communications threat later proves to be a bluff.",
-          },
-        ],
-      },
-      {
-        id: "tpl-s-i4b",
-        order: 30,
-        title: "Path B: Joint Statement Backfires",
-        body: "15:30 — The joint statement has been widely criticised as 'corporate damage control'. The Guardian has published an editorial titled 'When companies protect executives over employees'. Two senior employees — including one director — have forwarded the editorial internally with supportive comments. Your largest client, a FTSE 50 company with a strong ESG mandate, has sent a letter formally requesting a meeting about 'recent events'.",
-        timerMinutes: 12,
-        tickerHeadline: "Guardian editorial: 'How [Company] chose reputation over responsibility' — staff revolt grows",
-        artifact: { type: "email", emailFrom: "sustainability@ftse50client.com", emailTo: "ceo@yourcompany.com", emailSubject: "Request for urgent meeting — ESG obligations and recent events" },
-        facilitatorNotes:
-          "The ESG client letter is commercially serious — losing this client would cost £8M ARR. The director who forwarded the Guardian piece is a protected disclosure risk if disciplined. The joint statement route has given up moral authority without gaining legal safety.",
-        delayMinutes: 0,
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CCO", "CFO", "HR_LEAD"],
-        expectedKeywords: ["ESG", "client", "values", "whistleblowing", "protected disclosure", "remediation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Move to suspend the MD now — accept this reversal publicly",
-            consequence: "Media calls it a U-turn but public sentiment shifts positive. ESG client meeting is rescheduled rather than cancelled. HR must restart process correctly.",
-          },
-          {
-            key: "B",
-            label: "Hold the joint statement position — manage the ESG client privately",
-            consequence: "ESG client meeting happens. They give a 30-day 'values review' window. Internal trust continues to erode. A second employee posts publicly.",
-          },
-        ],
-      },
-      {
-        id: "tpl-s-i5",
-        order: 40,
-        title: "Culture Audit Demanded — Systemic Questions Surface",
-        body: "Day 2, 10:00 — Whatever path you took: an employment law firm has written to you on behalf of six current and former employees alleging a broader pattern of discriminatory behaviour by the MD spanning 18 months. HR has found two prior complaints that were 'informally resolved' without formal process. The board has received a letter from a major pension fund investor requesting a full culture audit.",
-        timerMinutes: 15,
-        tickerHeadline: "Six employees allege broader pattern of discrimination — board faces culture audit demand",
-        artifact: { type: "email", emailFrom: "employment@claimsfirm.co.uk", emailTo: "hr@yourcompany.com", emailSubject: "Letter Before Claim — Group Employment Action — Six Claimants" },
-        facilitatorNotes:
-          "This is the systemic failure surfacing. The prior complaints that were 'informally resolved' create significant liability — informal resolution of formal discrimination complaints is a well-known HR failure mode that compounds original liability. The pension fund letter signals ESG investor pressure is mainstream now, not a niche concern.",
-        delayMinutes: 20,
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "HR_LEAD", "CLO", "CFO"],
-        expectedKeywords: ["culture audit", "prior complaints", "systemic", "pension fund", "ESG", "remediation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Commission an independent culture audit — pause all senior hiring",
-            consequence: "Pension fund investor is satisfied. Audit takes 8 weeks and costs £180k. Findings are uncomfortable but the transparency protects the company legally.",
-          },
-          {
-            key: "B",
-            label: "Internal HR review — resist external audit as admission of fault",
-            consequence: "Pension fund escalates to public statement. Employment tribunal for original claimants proceeds without confidential settlement. Legal costs mount.",
+              "Regulators specifically request the review findings. Failure to provide them is noted. ICO uses the absence of external review as evidence of inadequate governance culture.",
           },
         ],
       },
     ],
   },
 
-  // ─── NEW: The Deepfake CEO ────────────────────────────────────────────────────
+
+  // ─── SCENARIO 2: THE DEEPFAKE CEO ────────────────────────────────────────────
+  // Full 2-hour arc. 3-way branch at inject 1, all paths converge at inject 5.
+  // Then 6 more injects through corporate espionage discovery, regulatory scrutiny,
+  // board fallout, and long-term resilience decisions.
   {
     id: "tpl-deepfake-001",
     title: "The Deepfake CEO",
     description:
-      "A hyper-realistic AI-generated video of your CEO making inflammatory statements goes viral at 6am. Tests crisis comms, legal, and identity verification protocols under extreme social media pressure.",
+      "A hyper-realistic AI-generated video of your CEO making inflammatory statements goes viral at 6am. Tests crisis comms, legal, identity verification, market integrity, and board governance across a full two-hour arc.",
     type: "SOCIAL_MEDIA_CRISIS",
     difficulty: "CRITICAL",
-    durationMin: 75,
+    durationMin: 120,
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2024-01-01T00:00:00Z",
-    imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80",
     coverGradient: "135deg, #1a0a2e 0%, #4a0080 50%, #e8002d 100%",
-    roles: ["CEO", "CCO", "CLO", "CISO", "HR_LEAD"],
+    roles: ["CEO", "CCO", "CLO", "CISO", "CFO", "HR_LEAD"],
     briefing:
-      "It is 06:04 on a Monday morning. Your social media listening tool fires an automated alert. A 47-second video of your CEO — posted from an account called @CEOLeaks — is going viral. In it, the CEO appears to make openly racist remarks and threatens to fire half the workforce. Your CEO is asleep and their phone is off.",
+      "You are the senior leadership team of Apex Dynamics — a FTSE 250 technology and professional services company with 8,000 employees globally. It is 06:04 on a Monday morning. Your social media listening tool fires an automated alert. A 47-second video of your CEO — posted from an account called @ApexLeaks — is going viral on X. In it, the CEO appears to make openly racist remarks and threatens to fire half the workforce. Your CEO is asleep and their phone is off. Their EA has been woken and is trying to reach them. You have minutes before this becomes uncontrollable.",
+
     injects: [
+
+      // ── INJECT 1: T+0 — Video goes viral — 3-way decision ────────────────
       {
         id: "df-i1",
         order: 0,
         title: "The Video Goes Viral",
-        body: "06:04 — The video now has 280,000 views and is trending on X under #[YourCompany]CEO. Media outlets are running 'developing story' banners. Three FTSE 100 investors have emailed your IR team. Your CEO's personal email is being flooded. The video is forensically convincing — standard filters can't detect it as fake.",
-        facilitatorNotes: "This IS a deepfake. The CEO has been impersonated. The challenge: how quickly can the team establish that, and how do they communicate under uncertainty?",
+        body: "06:04 — The video now has 340,000 views in 22 minutes and is trending #1 on X under #ApexCEO. Media outlets are running 'developing story' banners. Three FTSE 100 investors have emailed IR. Your CEO's personal email is being flooded. The video is forensically convincing — standard AI detection filters show inconclusive results. Your CEO is still unreachable. You have three paths.",
+        facilitatorNotes:
+          "This IS a deepfake. The CEO has been impersonated as part of a coordinated corporate espionage and short-selling operation. The challenge: the team doesn't know this yet. The correct instinct is Option C (holding statement) — it buys time without lying. Option A risks being wrong. Option B creates a dangerous vacuum. Key coaching question: what's the cost of being wrong in each direction?",
         delayMinutes: 0,
-        timerMinutes: 8,
-        tickerHeadline: "VIRAL: Video purportedly showing CEO making racist remarks amasses 280K views in hours",
-        artifact: { type: "tweet", tweetHandle: "@CEOLeaks", tweetDisplayName: "CEO Leaks", tweetLikes: 142000, tweetRetweets: 28400 },
+        timerMinutes: 10,
+        tickerHeadline: "VIRAL: Video purportedly showing Apex Dynamics CEO making racist remarks — 340K views in 20 minutes",
+        artifact: {
+          type: "tweet",
+          tweetHandle: "@ApexLeaks",
+          tweetDisplayName: "Apex Leaks",
+          tweetLikes: 186000,
+          tweetRetweets: 41200,
+        },
         isDecisionPoint: true,
+        imageUrl: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80",
+        targetRoles: ["CEO", "CCO", "CLO"],
+        expectedKeywords: ["deepfake", "verify", "statement", "legal", "forensic", "holding"],
         decisionOptions: [
           {
             key: "A",
-            label: "Issue an immediate denial — 'This video is fake' — before forensic confirmation",
-            consequence: "Statement goes out in 12 minutes. Media runs with it. If the video were real, this would be catastrophic. Forensics later confirms it IS fake — credibility saved, but narrow escape.",
+            label: "Issue an immediate denial — 'This video is fabricated' — before forensic confirmation",
+            consequence:
+              "Statement out in 11 minutes. If it were real, this would be catastrophic. Forensics later confirms it IS fake — credibility preserved, but it was a gamble. A second video surfaces of the CFO making fake acquisition statements.",
           },
           {
             key: "B",
-            label: "Hold all public statements — forensic verification first (est. 2–3 hours)",
-            consequence: "Vacuum filled by speculation. Two major clients call to ask for reassurance. Share price drops 6% at open. Forensic confirmation arrives at 08:45.",
+            label: "Hold all public statements — forensic verification first (estimated 2–3 hours)",
+            consequence:
+              "Vacuum filled by speculation. Two major clients call to suspend contracts pending clarity. Share price opens down 8.4% at 08:00. Forensic confirmation arrives at 09:15. Staff are in crisis.",
           },
           {
             key: "C",
-            label: "Issue holding statement: 'We are aware and urgently investigating'",
-            consequence: "Buys time without committing. Media pressure builds but no major factual errors made. Forensic confirmation arrives at 08:30.",
+            label: "Issue a holding statement: 'We are aware and urgently investigating authenticity'",
+            consequence:
+              "Buys time. Media covers the uncertainty angle. Pressure builds but no major errors made. Forensic firm engaged immediately. CEO reached at 07:20.",
           },
         ],
         branches: [
@@ -698,290 +578,324 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           { optionKey: "B", nextInjectId: "df-i2b" },
           { optionKey: "C", nextInjectId: "df-i2c" },
         ],
-        imageUrl: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80",
-        targetRoles: ["CEO", "CCO", "CLO"],
-        expectedKeywords: ["deepfake", "verify", "statement", "legal", "forensic"],
       },
 
-      // Branch A — immediate denial
+      // ── INJECT 2a: Path A — Denial issued, second video surfaces ─────────
       {
         id: "df-i2a",
         order: 10,
-        title: "Path A: Denial Backfires — Scope Escalates",
-        body: "07:15 — Your immediate denial is now being questioned. A tech journalist has enhanced the audio and claims 'it sounds too real to be AI'. The account that posted the video has disappeared, but not before sending it to 14 journalists. Your stock is down 4.1%. A second, unrelated video surfaces — this one showing the CFO making comments about a competitor. QUESTION: Is this a coordinated attack?",
-        timerMinutes: 10,
-        tickerHeadline: "Tech journalist challenges company denial on CEO video: 'audio is too convincing'",
-        artifact: { type: "tweet", tweetHandle: "@TechInvestigates", tweetDisplayName: "Tech Investigates", tweetLikes: 54000, tweetRetweets: 21000 },
-        facilitatorNotes: "The CFO video is also fake — same threat actor. This is a targeted disinformation campaign. The team now has to deal with two simultaneous deepfakes AND the fact their first denial is being questioned.",
+        title: "Path A: Denial Questioned — Second Video Emerges",
+        body: "07:00 — Your denial is being challenged. A tech journalist has enhanced the audio and says it 'passes every test I know of'. The @ApexLeaks account has vanished — but not before sending the video to 22 journalists. Your stock is down 5.9% at open. Then: a second video surfaces on a financial forum — this one shows your CFO announcing a fake £2.4B acquisition of a competitor. Markets briefly spike on the fake announcement before algorithms flag it. The FCA has called.",
+        facilitatorNotes:
+          "The CFO video is also a deepfake by the same actor. This is now clearly a coordinated attack. The FCA call is about potential market manipulation — the fake acquisition video caused a real market move. The team now faces: two simultaneous deepfakes, a questioned denial, an FCA inquiry, and a stock in freefall. This is the maximum pressure point of Path A.",
         delayMinutes: 0,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CCO", "CLO", "CISO"],
-        expectedKeywords: ["forensic", "coordinated", "threat actor", "law enforcement", "two videos"],
+        timerMinutes: 12,
+        tickerHeadline: "Second deepfake video causes brief market spike — CFO impersonated in fake £2.4B acquisition announcement",
+        artifact: {
+          type: "siem_alert",
+          siemAlertId: "THREAT-2024-DF-02",
+          siemSeverity: "HIGH",
+          siemEventType: "Second AI Deepfake Detected — Same Threat Infrastructure — Market Impact Confirmed",
+          siemSourceIp: "185.220.xxx.xxx (TOR)",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CCO", "CLO", "CISO", "CFO"],
+        expectedKeywords: ["FCA", "market manipulation", "coordinated", "two videos", "forensic", "law enforcement"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Immediately notify FCA formally and engage law enforcement — joint statement on both videos",
+            consequence:
+              "FCA acknowledges proactive engagement. Law enforcement opens investigation. Joint statement on both deepfakes neutralises the CFO video. Market partially recovers.",
+          },
+          {
+            key: "B",
+            label: "Focus on the CEO video denial first — address the CFO video separately",
+            consequence:
+              "Fragmented response. Media treats them as two separate stories, doubling coverage. FCA sends a formal information notice within the hour.",
+          },
+        ],
       },
 
-      // Branch B — waited too long
+      // ── INJECT 2b: Path B — Silence costs dearly ─────────────────────────
       {
         id: "df-i2b",
         order: 10,
         title: "Path B: The Silence Costs You",
-        body: "08:00 — Two hours of silence has been read as confirmation. Your largest retail partner has paused co-marketing. 140 staff have emailed HR asking for emergency all-hands. A Sunday Times journalist publishes a piece titled 'Company refuses to comment on CEO racism video'. Your CEO is now awake and incandescent — they want to make a personal live video immediately.",
-        timerMinutes: 10,
-        tickerHeadline: "Sunday Times: company silent for two hours as CEO deepfake video spreads unchecked",
-        artifact: { type: "news_headline" },
-        facilitatorNotes: "The CEO going live unplanned is high risk — exhausted, emotional, no briefing. But staying silent is also costly. The team must manage the CEO as much as the crisis.",
+        body: "08:00 — Two hours of silence has been read by the market as confirmation. Your largest retail partner has suspended co-marketing. 240 staff have emailed HR asking for emergency all-hands. The Sunday Times website publishes: 'Apex Dynamics refuses to comment as CEO racism video spreads'. Share price opens down 9.7%. Your CEO is now awake and incandescent — they want to make a personal live video immediately, without a brief.",
+        facilitatorNotes:
+          "The CEO going live unplanned and emotional is high risk. But two hours of silence has already done serious damage. This is a test of whether the group can manage the CEO as an asset or a liability. The HR crisis (240 emails) is real — employees need to hear something. The CCO and HR lead should be pushing for an internal communication at minimum, even if the external position is still 'investigating'.",
         delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Apex Dynamics silent for two hours as CEO deepfake video spreads — share price -9.7%",
+        artifact: { type: "news_headline" },
         isDecisionPoint: true,
+        targetRoles: ["CEO", "CCO", "HR_LEAD"],
+        expectedKeywords: ["CEO", "live", "brief", "all-hands", "employees", "internal communication"],
         decisionOptions: [
           {
             key: "A",
-            label: "Let CEO go live immediately on LinkedIn",
-            consequence: "CEO is emotional but convincing. Video gets 800k views. Authenticity wins. But one journalist asks about the CFO video that surfaces 20 minutes later.",
+            label: "Let CEO go live immediately on LinkedIn — authentic, unscripted response",
+            consequence:
+              "CEO is emotional but convincing — video gets 1.2M views. Authenticity works. Share price recovers partially. But CEO's fatigue shows, and 20 minutes later the CFO deepfake surfaces.",
           },
           {
             key: "B",
-            label: "Brief CEO first — 30-minute delay for prep",
-            consequence: "CEO goes live with a clear, calm rebuttal. Timing is tight — forensics not yet back — but CEO's authenticity and the prepared messaging lands well.",
+            label: "30-minute brief first — then CEO goes live with prepared key messages",
+            consequence:
+              "CEO goes live with a calm, clear rebuttal. Forensics not yet back but CEO's personal authenticity carries the message. Share price stabilises. CFO video appears as CEO finishes.",
           },
         ],
         branches: [
           { optionKey: "A", nextInjectId: "df-i3" },
           { optionKey: "B", nextInjectId: "df-i3" },
         ],
-        targetRoles: ["CEO", "CCO", "HR_LEAD"],
-        expectedKeywords: ["CEO", "live", "brief", "all-hands", "reputational"],
       },
 
-      // Branch C — holding statement
+      // ── INJECT 2c: Path C — Holding statement buys time ──────────────────
       {
         id: "df-i2c",
         order: 10,
         title: "Path C: The Window Holds — Forensics Race",
-        body: "07:30 — Your holding statement is working. Media are covering the uncertainty angle: 'Company investigates viral CEO video — authenticity questioned'. Your CISO has engaged a specialist deepfake detection firm. Early indicators suggest AI-generated audio artefacts. However, a campaigning journalist has published a thread calling the holding statement 'a cover-up playbook'. Employees are getting nervous.",
-        timerMinutes: 10,
-        artifact: { type: "email", emailFrom: "forensics@deepdetect.ai", emailTo: "ciso@yourcompany.com", emailSubject: "URGENT: Preliminary findings — AI-generated audio artefacts detected" },
-        facilitatorNotes: "This path is the most defensible legally but creates internal tension. HR needs to act on employee comms while the investigation continues.",
+        body: "07:20 — Your holding statement is working. Media are covering the uncertainty angle: 'Company investigates viral CEO video'. CEO reached — they are calm and cooperative. Your CISO has engaged DeepDetect AI — a specialist forensic firm. They've found early AI-generated audio artefacts. ETA for confirmation: 75 minutes. Meanwhile: a campaigning journalist has published a thread calling the holding statement 'a cover-up playbook'. 180 staff have emailed HR. The CFO deepfake has just appeared on a financial forum.",
+        facilitatorNotes:
+          "Path C is the most defensible legally and reputationally. The group is doing well. The challenge now is internal — employees need something. The CFO video is a complication that the group now has to absorb mid-investigation. The journalist's 'cover-up' narrative is dangerous — the CCO needs a proactive media strategy, not just reactive holding statements.",
         delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Apex Dynamics investigation underway — authenticity of CEO video disputed — CFO video appears",
+        artifact: {
+          type: "email",
+          emailFrom: "forensics@deepdetect.ai",
+          emailTo: "ciso@apexdynamics.com",
+          emailSubject: "URGENT: Preliminary findings — AI-generated audio artefacts detected in CEO video",
+        },
         isDecisionPoint: false,
         decisionOptions: [],
         targetRoles: ["CISO", "CLO", "CCO", "HR_LEAD"],
-        expectedKeywords: ["forensic", "employee comms", "investigation", "cover-up narrative"],
+        expectedKeywords: ["forensic", "employee comms", "CFO video", "internal communication", "cover-up narrative"],
       },
 
-      // Convergence inject — all paths lead here
+      // ── INJECT 3: ALL PATHS CONVERGE — CEO reached, staff crisis ─────────
       {
         id: "df-i3",
         order: 20,
-        title: "Forensic Confirmation: It's a Deepfake",
-        body: "09:15 — Your specialist forensic firm confirms: the video is AI-generated. Voice synthesis, facial mapping. They provide a technical report you can publish. The threat actor is linked to an offshore account — likely corporate espionage or activist sabotage. Now the question is: how do you communicate the confirmation, and do you go public with the forensic evidence?",
-        timerMinutes: 12,
-        tickerHeadline: "CONFIRMED: Viral CEO video determined to be AI-generated deepfake — forensic report",
-        artifact: { type: "email", emailFrom: "report@deepdetect.ai", emailTo: "ciso@yourcompany.com", emailSubject: "Final Forensic Report — AI Deepfake Confirmed — Publishable" },
-        facilitatorNotes: "This is now a 'win' moment but it has to be handled carefully. Publishing the forensic report may invite counter-arguments. Not publishing it leaves lingering doubt. There's also a law enforcement decision to make.",
+        title: "All Hands: Staff Crisis and Market Open",
+        body: "08:15 — Whatever path you took, three simultaneous crises: (1) 340 staff members have sent emails or Slack messages asking what's happening — your Head of HR says morale is in freefall. (2) Share price at market open: -7.2%. Three major institutional investors are demanding a call with the Chairman before midday. (3) A national broadcaster has announced they are running the story on the morning news at 09:00. Your CEO is now fully briefed and operational. The forensic firm ETA for confirmation is 45 minutes.",
+        facilitatorNotes:
+          "This is the convergence point. Regardless of path, the group now faces the same set of simultaneous pressures. The key question: what order do you tackle these in? The internal crisis (staff) is underweighted in most crisis response frameworks — but it matters enormously for long-term recovery. The institutional investor calls should go through the Chairman, not the CEO directly.",
         delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "Apex Dynamics shares fall 7.2% at open — institutional investors demand chairman call",
+        artifact: {
+          type: "tweet",
+          tweetHandle: "@BBCBusinessNews",
+          tweetDisplayName: "BBC Business News",
+          tweetLikes: 28000,
+          tweetRetweets: 12400,
+        },
         isDecisionPoint: true,
+        targetRoles: ["CEO", "HR_LEAD", "CFO", "CCO"],
+        expectedKeywords: ["all-hands", "investors", "chairman", "BBC", "priority", "internal"],
         decisionOptions: [
           {
             key: "A",
-            label: "Publish the full forensic report publicly and file a police report",
-            consequence: "Maximum transparency. Media pivot to 'company vindicated' narrative. Law enforcement involvement signals seriousness. Risk: draws attention to the attack methodology.",
+            label: "Prioritise internal: all-hands message from CEO first, then investor calls",
+            consequence:
+              "Staff morale stabilises. Three union reps who were about to send a press statement hold off. Investor calls are brief but manage to prevent panic selling. Share price holds at -7.2%.",
           },
           {
             key: "B",
-            label: "Brief media off-record and publish a summary statement only",
-            consequence: "Controls the narrative tightly. Some journalists feel misled. Story dies within 24 hours. No law enforcement trail — attacker may repeat.",
+            label: "Prioritise external: investor calls and BBC response first, internal comms after",
+            consequence:
+              "Investors reassured. BBC story runs with a company statement. But a union rep sends a press statement citing 'leadership silence on staff welfare'. This becomes a secondary story.",
           },
         ],
-        targetRoles: ["CEO", "CLO", "CCO", "CISO"],
-        expectedKeywords: ["publish", "forensic", "police", "law enforcement", "narrative"],
-        imageUrl: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
       },
 
+      // ── INJECT 4: T+120 — Forensic confirmation ───────────────────────────
       {
         id: "df-i4",
         order: 30,
-        title: "The Copycat",
-        body: "Day 2, 14:00 — A competitor's PR firm has reached out to ask 'how you handled it so well'. But simultaneously: a second deepfake — this time of your CFO announcing a fake acquisition — appears on a financial forum. Markets briefly spike on the fake news before trading algorithms flag it. Your CISO believes the same threat actor is behind both. You now have to decide: was this espionage, a short seller, or an activist?",
-        timerMinutes: 10,
-        tickerHeadline: "ALERT: Second deepfake video causes brief market spike — CFO impersonated in fake acquisition announcement",
-        artifact: { type: "siem_alert", siemAlertId: "THREAT-2024-DF-02", siemSeverity: "HIGH", siemEventType: "Second AI Deepfake Detected — Same Threat Actor", siemSourceIp: "185.220.xxx.xxx (TOR)" },
-        facilitatorNotes: "End the session here or extend. The short-seller angle is the most legally interesting — market manipulation using AI-generated disinformation is a novel regulatory frontier.",
+        title: "Forensic Confirmation: Both Videos Are Deepfakes",
+        body: "09:15 — DeepDetect AI confirm both videos are AI-generated. Voice synthesis, facial mapping, identical infrastructure. Technical report publishable. The threat actor is traced to an offshore server cluster with known links to a corporate intelligence firm — suggesting a coordinated disinformation attack, possibly linked to a short-selling position. FCA trading data shows 840,000 Apex Dynamics put options were purchased in the 48 hours before the videos were released. Now: how do you use this confirmation?",
+        facilitatorNotes:
+          "This is the vindication moment — but it has to be handled carefully. The short-selling link is potentially criminal — publishing it prematurely could compromise an FCA/SFO investigation. The forensic report itself is publishable and should be. The question of whether to go public on the short-selling theory is genuinely difficult — it's explosive but not yet proven. Push the group on the difference between what they know and what they can say.",
         delayMinutes: 0,
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CLO", "CISO", "CFO"],
-        expectedKeywords: ["short seller", "market manipulation", "FCA", "threat intelligence", "repeat attack"],
-      },
-    ],
-  },
-
-  // ─── NEW: Black Friday Zero-Day ───────────────────────────────────────────────
-  {
-    id: "tpl-blackfriday-001",
-    title: "Black Friday Zero-Day",
-    description:
-      "A critical zero-day vulnerability in your e-commerce platform is disclosed publicly at 11pm on Thanksgiving. Your biggest trading day starts in 8 hours. Pay the ransom, patch and go dark, or gamble on a hotfix?",
-    type: "RANSOMWARE",
-    difficulty: "CRITICAL",
-    durationMin: 90,
-    isTemplate: true,
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-    imageUrl: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80",
-    coverGradient: "135deg, #0a0a0a 0%, #1a1a00 50%, #e8002d 100%",
-    roles: ["CEO", "CISO", "CFO", "CTO", "CLO", "CCO"],
-    briefing:
-      "It is 23:07 on Thanksgiving Thursday. You are a senior leader at a major e-commerce retailer. Black Friday — your single biggest trading day, worth £180M in projected revenue — starts in less than 9 hours. A security researcher has just published a proof-of-concept exploit for a critical SQL injection vulnerability in the open-source checkout library you use. There are already signs of active exploitation in the wild.",
-    injects: [
-      {
-        id: "bf-i1",
-        order: 0,
-        title: "Zero-Day Goes Public",
-        body: "23:07 — The vulnerability (CVSSv3: 9.8 CRITICAL) allows unauthenticated attackers to dump your entire customer database via your checkout flow. The researcher published the full exploit code. Your CISO estimates you have 30–90 minutes before automated scanners hit every retailer running this library. You have three options.",
-        facilitatorNotes: "There is no perfect option. Option A protects customers but kills revenue. Option B is a gamble. Option C buys time but is a form of deliberate concealment. Watch how the team handles the moral dimensions alongside the technical ones.",
-        delayMinutes: 0,
-        timerMinutes: 10,
-        tickerHeadline: "BREAKING: Security researcher publishes full exploit for critical checkout vulnerability — retailers at risk",
-        artifact: { type: "siem_alert", siemAlertId: "SOC-2024-BF-001", siemSeverity: "CRITICAL", siemSourceIp: "0.0.0.0/0 (INTERNET WIDE)", siemEventType: "Zero-Day Exploit Published — Active Scanning Detected" },
+        timerMinutes: 12,
+        tickerHeadline: "CONFIRMED: Both Apex Dynamics videos determined to be AI deepfakes — forensic report published",
+        artifact: {
+          type: "email",
+          emailFrom: "report@deepdetect.ai",
+          emailTo: "ciso@apexdynamics.com",
+          emailSubject: "Final Forensic Report — CEO and CFO Videos — AI Deepfake Confirmed — Publishable",
+        },
         isDecisionPoint: true,
+        targetRoles: ["CEO", "CLO", "CCO", "CISO"],
+        expectedKeywords: ["publish", "forensic", "short selling", "FCA", "law enforcement", "narrative"],
         decisionOptions: [
           {
             key: "A",
-            label: "Take the platform offline — emergency maintenance window until patched",
-            consequence: "Platform goes dark at 23:45. All Black Friday traffic gets a maintenance page. No breach. Revenue loss: £180M. Media: 'Retailer ruins Black Friday'. Board emergency call at 06:00.",
+            label: "Publish forensic report and allege publicly that this may be a short-selling attack",
+            consequence:
+              "Maximum transparency — media pivot to 'company vindicated, attack exposed'. FCA contacts you asking you to stop public speculation as it may compromise their investigation. Tense.",
           },
           {
             key: "B",
-            label: "Apply emergency WAF rules and rate-limiting — stay live, patch in background",
-            consequence: "Platform stays up. WAF rules block known exploit patterns but not zero-days by definition. At 02:40, SIEM detects 4 successful exploitations. 22,000 card records compromised.",
+            label: "Publish forensic report only — give the short-selling evidence to FCA privately",
+            consequence:
+              "FCA grateful for cooperation. Investigation proceeds. Media story: 'Company vindicated'. Controlled narrative. Attacker doesn't know investigators are closing in.",
           },
           {
             key: "C",
-            label: "Go live as planned — quietly disable the affected checkout feature and route via legacy path",
-            consequence: "Revenue continues. 'Legacy path' has its own issues — 3x slower, causes £12M in abandoned carts. At 04:15, a security blogger notices the silent feature flag and tweets about it.",
+            label: "Brief the forensic report to major media off-record first — then publish",
+            consequence:
+              "Journalists publish their own analysis alongside the report. Narrative strongly favourable. FCA investigates whether the off-record briefing itself constitutes selective disclosure.",
           },
         ],
-        branches: [
-          { optionKey: "A", nextInjectId: "bf-i2a" },
-          { optionKey: "B", nextInjectId: "bf-i2b" },
-          { optionKey: "C", nextInjectId: "bf-i2c" },
-        ],
-        imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80",
-        targetRoles: ["CEO", "CISO", "CTO", "CFO"],
-        expectedKeywords: ["patch", "offline", "WAF", "breach", "revenue", "GDPR"],
       },
 
-      // Branch A — went offline
+      // ── INJECT 5: T+140 — The short-selling investigation opens ───────────
       {
-        id: "bf-i2a",
-        order: 10,
-        title: "Path A: Dark — The Backlash Arrives",
-        body: "07:30 — Patch deployed. Platform coming back up. But Twitter is a warzone: customers are furious, 'BlackFridayFail' is trending #1, and a rival has run emergency ads targeting your customers. Three national papers have 'Why did [Company] go dark on Black Friday?' as their lead business story. Your board has called an emergency 09:00. Key question: was this the right call, and how do you communicate it?",
-        timerMinutes: 10,
-        tickerHeadline: "#BlackFridayFail trending as major retailer goes dark — rival brands capitalise",
-        artifact: { type: "tweet", tweetHandle: "@BlackFridayFail", tweetDisplayName: "Black Friday Fail", tweetLikes: 87000, tweetRetweets: 42000 },
-        facilitatorNotes: "This is where the RIGHT decision looks wrong in the short term. The team need to articulate WHY this was correct — protecting customer data — without revealing technical details that would confirm the severity of the vulnerability.",
+        id: "df-i5",
+        order: 40,
+        title: "FCA Opens Market Manipulation Investigation",
+        body: "10:30 — The FCA formally opens a market manipulation investigation under the Market Abuse Regulation. They confirm 840,000 put options — worth approximately £18M — were purchased in the 48 hours prior. They are requesting all company communications since last Monday and want a senior officer available for voluntary interview within 48 hours. Your own internal review has found that the deepfake videos were created using footage from a recent investor day — footage that was shared with 14 external parties including two hedge funds.",
+        facilitatorNotes:
+          "The investor day footage link is significant — the attacker had access to high-quality video material, which means someone either leaked it or it was obtained through a breach. The 14 external parties list needs immediate review. The CISO should be running a parallel investigation. The voluntary FCA interview should be handled carefully — 'voluntary' doesn't mean unimportant. The CLO should be advising on the correct legal approach.",
         delayMinutes: 0,
-        isDecisionPoint: true,
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Full transparency — publish a post-incident report explaining the vulnerability",
-            consequence: "Security community praises the decision. Media story pivots to 'Company puts customers first'. Competitor copy-cat patch kicks in 6 hours later. Long-term credibility gain.",
-          },
-          {
-            key: "B",
-            label: "Minimal disclosure — 'planned maintenance' narrative",
-            consequence: "Works until the security researcher tweets that the outage was related to their disclosure. Story becomes about the cover-up, not the original decision.",
-          },
-        ],
-        targetRoles: ["CEO", "CCO", "CLO"],
-        expectedKeywords: ["transparency", "narrative", "maintenance", "board", "customer trust"],
-      },
-
-      // Branch B — stayed live, breach happened
-      {
-        id: "bf-i2b",
-        order: 10,
-        title: "Path B: Breach Confirmed — 22,000 Cards",
-        body: "02:40 — SIEM alert: 22,000 card records exfiltrated via the zero-day. Attacker IP traced to a Tor exit node. Your payment processor has been notified. GDPR 72-hour clock starts NOW. Black Friday is in 5 hours — the platform is technically still running. Do you keep trading or shut down?",
-        timerMinutes: 10,
-        tickerHeadline: "URGENT: Major retailer confirms card data breach — GDPR 72-hour clock ticking",
-        artifact: { type: "siem_alert", siemAlertId: "SOC-2024-BF-009", siemSeverity: "CRITICAL", siemSourceIp: "185.220.xxx.xxx (TOR EXIT)", siemEventType: "22,000 Card Records Exfiltrated — Active Exfiltration Ongoing" },
-        facilitatorNotes: "This is now a combined breach + Black Friday crisis. The GDPR clock is ticking. The team made the wrong call at inject 1 — this is the consequence. Shutting down NOW after a breach is worse optics than pre-emptive maintenance.",
-        delayMinutes: 0,
-        isDecisionPoint: true,
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Shut down immediately and notify affected customers before Black Friday starts",
-            consequence: "Painful but correct. ICO acknowledges the swift notification. Forensics engaged. Platform back up at 11:00 — late but recoverable.",
-          },
-          {
-            key: "B",
-            label: "Continue trading — patch running — only notify after Black Friday ends",
-            consequence: "Revenue saved. A journalist receives a tip at 14:30. Story breaks mid-Black Friday: 'Company knew about breach and kept trading'. ICO investigation, maximum fine likely.",
-          },
-        ],
-        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
-        expectedKeywords: ["GDPR", "notification", "ICO", "shut down", "72 hours", "customer notification"],
-      },
-
-      // Branch C — silent feature flag
-      {
-        id: "bf-i2c",
-        order: 10,
-        title: "Path C: The Blogger Knows",
-        body: "04:15 — @SecurityResearch247 has 80,000 followers and just tweeted: 'Interesting: [Company] silently disabled their checkout V2 at 23:30 last night. Correlated with last night's zero-day disclosure. No announcement made. Thread incoming.' The tweet already has 4,000 RTs. You have approximately 20 minutes before this goes mainstream.",
-        timerMinutes: 8,
-        tickerHeadline: "@SecurityResearch247: retailer silently patched zero-day without disclosure — thread going viral",
-        artifact: { type: "tweet", tweetHandle: "@SecurityResearch247", tweetDisplayName: "Security Research 247", tweetLikes: 9800, tweetRetweets: 4100 },
-        facilitatorNotes: "The 'quiet fix' approach has failed. The team now has a second crisis layered on top: the appearance of concealment. How quickly can they get ahead of this narrative?",
-        delayMinutes: 0,
-        isDecisionPoint: true,
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Get ahead of it — immediate statement: 'We acted swiftly to protect customers'",
-            consequence: "Narrative partially recovers. Security community broadly supportive. Revenue continues. ICO makes enquiries about GDPR notification obligations.",
-          },
-          {
-            key: "B",
-            label: "Ignore the tweet — hope it doesn't go viral",
-            consequence: "Three national journalists pick it up by 05:30. 'Secret cyber cover-up during Black Friday' is the morning headline. Board meeting called for 07:00.",
-          },
-        ],
-        targetRoles: ["CEO", "CCO", "CLO"],
-        expectedKeywords: ["blogger", "narrative", "statement", "ahead of", "concealment"],
-      },
-
-      // Convergence
-      {
-        id: "bf-i3",
-        order: 20,
-        title: "Post-Black Friday: The Board Wants Answers",
-        body: "Saturday 09:00 — Whatever path you took, the board has convened. The Finance Director has circulated a P&L impact analysis. The question on everyone's lips: was this a one-off or systemic? Your CTO has discovered that 11 other open-source libraries you depend on have similar potential vulnerabilities — never audited. The board is asking whether this needs to go to shareholders.",
         timerMinutes: 12,
-        tickerHeadline: "Retailer board convenes emergency Saturday session following Black Friday cyber incident",
-        artifact: { type: "email", emailFrom: "finance@company-board.com", emailTo: "ceo@yourcompany.com", emailSubject: "Board P&L Analysis — Black Friday incident — shareholder disclosure required?" },
-        facilitatorNotes: "This is a governance and culture question. Was this a failure of process (no library auditing) or a failure of investment (understaffed security team)? The answer determines the remediation path.",
-        delayMinutes: 0,
+        tickerHeadline: "FCA opens market manipulation investigation — 840,000 put options purchased before deepfake attack",
+        artifact: {
+          type: "legal_letter",
+          legalCaseRef: "FCA/MAR/2024/1094",
+          legalAuthority: "Financial Conduct Authority — Market Oversight Division",
+        },
         isDecisionPoint: true,
+        targetRoles: ["CLO", "CISO", "CEO", "CFO"],
+        expectedKeywords: ["MAR", "market manipulation", "investor day", "put options", "FCA interview", "leak"],
         decisionOptions: [
           {
             key: "A",
-            label: "Commission an urgent third-party security audit — pause new feature development",
-            consequence: "Correct call. Dev team frustrated. Audit reveals 3 more critical issues. Remediation roadmap prepared for board. Takes 6 weeks and £400k.",
+            label: "Full cooperation — provide all communications, identify the investor day footage recipients",
+            consequence:
+              "FCA moves quickly. Two hedge funds flagged. SFO briefed. One fund freezes its position. Company is treated as a victim and cooperating witness — protected from regulatory action.",
           },
           {
             key: "B",
-            label: "Internal review only — accelerate patching programme without external audit",
-            consequence: "Faster and cheaper. 8 months later, a second vulnerability is exploited. External audit is then mandated by the board anyway, now under legal scrutiny.",
+            label: "Provide only what is strictly required — take legal advice on each document before disclosure",
+            consequence:
+              "FCA issues a formal information notice. Legal privilege review takes 3 weeks. By then, the attacker has closed their short position. Investigation stalls without the early evidence.",
           },
         ],
-        targetRoles: ["CEO", "CTO", "CFO", "CISO"],
-        expectedKeywords: ["audit", "board", "systemic", "remediation", "investment", "governance"],
-        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+      },
+
+      // ── INJECT 6: T+155 — Internal leak investigation surfaces ────────────
+      {
+        id: "df-i6",
+        order: 50,
+        title: "Internal Source Identified — HR and Legal Crisis",
+        body: "11:00 — Your CISO's investigation has identified the source of the investor day footage leak. It traces to the personal laptop of a senior communications manager — access logs show the footage was copied to an encrypted drive 10 days ago. The individual is currently in the office. HR and Legal need to decide: confront immediately, or preserve evidence and coordinate with law enforcement first? Additionally: two major enterprise clients have each emailed asking for reassurance calls about data security following the breach revelations.",
+        facilitatorNotes:
+          "This is a genuinely difficult HR-legal-investigation intersection. Confronting the employee immediately risks: evidence destruction, a hostile reaction, and potential whistleblowing claims if the process is mishandled. Coordinating with law enforcement first is the right instinct — but it takes longer and the individual may suspect something. The client reassurance calls are important commercially — the CISO should lead them, not the CEO.",
+        delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Apex Dynamics investigates internal source of deepfake footage leak",
+        artifact: {
+          type: "siem_alert",
+          siemAlertId: "THREAT-2024-INT-01",
+          siemSeverity: "HIGH",
+          siemEventType: "Data Exfiltration — Investor Day Footage — Internal Source Identified",
+          siemSourceIp: "INTERNAL — COMMS DEPT DEVICE — Personal encrypted drive",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CLO", "HR_LEAD", "CISO", "CEO"],
+        expectedKeywords: ["evidence", "law enforcement", "HR process", "preserve", "client", "investigation"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Preserve evidence and brief law enforcement — do not confront the employee yet",
+            consequence:
+              "Police Economic Crime Unit briefed. Employee's devices preserved remotely. Formal interview conducted 48 hours later with police present. Strongest evidential position.",
+          },
+          {
+            key: "B",
+            label: "Suspend the employee immediately and interview under company HR process",
+            consequence:
+              "Employee's personal devices leave the building that evening. Company process legally valid but the police later note the missed opportunity to seize personal devices with evidence.",
+          },
+        ],
+      },
+
+      // ── INJECT 7: T+170 — Board governance and accountability ─────────────
+      {
+        id: "df-i7",
+        order: 60,
+        title: "Board Governance: Who Is Accountable?",
+        body: "Day 2, 09:00 — Share price has recovered to -3.1% from the worst point. The narrative is moving in Apex's favour. But the board has convened with hard questions: (1) How did a communications manager have unsupervised access to high-quality executive footage? (2) Was there a failure of media security policy? (3) Should the CISO have detected the data exfiltration from the comms device earlier? (4) Investors want a formal board statement on what has changed. A FTSE governance advisory firm has contacted your Chairman suggesting a 'board resilience review'.",
+        facilitatorNotes:
+          "This is the systemic governance question. The correct answer involves: improved access controls, a media asset management policy, enhanced endpoint monitoring, and probably an independent security review. The CISO accountability question is nuanced — they were the victim of a sophisticated attack, but internal data exfiltration is within their remit. The board review: advisable to accept it rather than resist — signals maturity.",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "Board convenes governance review — investors demand formal response to deepfake attack",
+        artifact: {
+          type: "email",
+          emailFrom: "governance@ftseadvisory.co.uk",
+          emailTo: "chairman@apexdynamics.com",
+          emailSubject: "Board Resilience Review — Deepfake Attack — Governance Advisory",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
+        expectedKeywords: ["access controls", "media policy", "CISO accountability", "board review", "resilience", "governance"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Accept the board resilience review — commission independently with results to shareholders",
+            consequence:
+              "Investors satisfied. Review takes 6 weeks and costs £120k. Findings lead to a new media security policy, access review, and CISO resource increase. Strong ESG signal.",
+          },
+          {
+            key: "B",
+            label: "Resist the external review — conduct internal review and publish a remediation summary",
+            consequence:
+              "Two institutional investors publicly state they consider the internal review inadequate. Proxy advisory firm recommends voting against the CISO's continued board-level reporting at AGM.",
+          },
+        ],
+      },
+
+      // ── INJECT 8: T+180 — Long-term: AI threat doctrine ──────────────────
+      {
+        id: "df-i8",
+        order: 70,
+        title: "The Industry Moment — Setting a Precedent",
+        body: "Day 3, 11:00 — The Apex Dynamics case has become a landmark. The government's AI Safety Institute has asked your CEO to contribute to a new code of practice on AI-generated disinformation in financial markets. Three peer companies have privately asked to adopt your incident playbook. Your law firm advises that this is a chance to shape the regulatory environment before it shapes you. But your CFO notes that public engagement on AI policy will bring fresh media scrutiny to what happened. How does Apex want to be remembered for this?",
+        facilitatorNotes:
+          "This is the final inject — forward-looking and reflective. It gives the group an opportunity to think beyond the crisis to the organisational identity question: are you a company that hides from hard moments, or one that uses them to build credibility? The AI Safety Institute angle is real — regulators are actively looking for business input. This is also a natural debrief trigger: what would you do differently? What did this crisis reveal about your team?",
+        delayMinutes: 0,
+        timerMinutes: 15,
+        tickerHeadline: "Apex Dynamics case becomes landmark AI disinformation test — government seeks input on new code of practice",
+        artifact: {
+          type: "email",
+          emailFrom: "engagement@ai-safety-institute.gov.uk",
+          emailTo: "ceo@apexdynamics.com",
+          emailSubject: "AI Safety Institute — Invitation: Code of Practice on AI Disinformation in Financial Markets",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CLO", "CCO", "CISO"],
+        expectedKeywords: ["AI policy", "precedent", "industry", "resilience", "code of practice", "reputation"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Accept — Apex leads the working group, publishes a public incident account",
+            consequence:
+              "CEO becomes a recognised voice on AI disinformation. Media narrative shifts from 'attacked' to 'leader'. Share price recovers to +1.2% within 30 days. Reputational long game won.",
+          },
+          {
+            key: "B",
+            label: "Decline — keep a low profile while legal proceedings continue",
+            consequence:
+              "Legally cautious. Another company leads the working group. Apex remains defined by the attack rather than the response. Institutional investors note the missed opportunity in ESG assessment.",
+          },
+        ],
       },
     ],
   },
