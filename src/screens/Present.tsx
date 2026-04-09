@@ -308,34 +308,170 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
 // ─── Briefing screen ──────────────────────────────────────────────────────────
 
 function BriefingScreen({ scenario }: { scenario: Scenario }) {
+  const hasArtifact = scenario.type === "RANSOMWARE" || scenario.type === "SOCIAL_MEDIA_CRISIS";
+
   return (
-    <div className="h-full flex flex-col items-center justify-center px-16 max-w-5xl mx-auto w-full">
-      {(scenario.imageUrl || scenario.coverGradient) && (
-        <div className="w-full h-36 rounded-2xl overflow-hidden mb-8"
-          style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}>
-          {scenario.imageUrl && (
-            <img src={scenario.imageUrl} alt="" className="w-full h-full object-cover opacity-60" />
+    <div className="h-full flex items-center justify-center px-10 py-8 overflow-auto">
+      <div className={cn("w-full max-w-7xl flex gap-10 items-center", hasArtifact ? "flex-row" : "flex-col max-w-4xl")}>
+
+        {/* ── Left: text ── */}
+        <div className={cn("flex flex-col", hasArtifact ? "flex-1 min-w-0" : "items-center text-center w-full")}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3 font-mono" style={{ color: "#4afe91" }}>
+            Scenario Briefing
+          </p>
+          <h1 className={cn("font-bold mb-6 leading-tight", hasArtifact ? "text-4xl" : "text-5xl")}>
+            {scenario.title}
+          </h1>
+          <div className="rounded-2xl p-7 mb-6 w-full" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
+            <p className={cn("leading-relaxed", hasArtifact ? "text-base" : "text-xl text-center")} style={{ color: "#c5c8d8" }}>
+              {scenario.briefing}
+            </p>
+          </div>
+          {scenario.roles.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {scenario.roles.map((r) => (
+                <span key={r} className={`text-xs font-bold px-3 py-1.5 rounded-lg ${ROLE_COLOUR[r]}`}>
+                  {ROLE_SHORT[r]}
+                </span>
+              ))}
+            </div>
           )}
         </div>
-      )}
-      <p className="text-xs font-semibold uppercase tracking-widest mb-4 font-mono" style={{ color: "#4afe91" }}>
-        Scenario Briefing
-      </p>
-      <h1 className="text-5xl font-bold mb-10 text-center leading-tight">{scenario.title}</h1>
-      <div className="w-full rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
-        <p className="text-xl leading-relaxed text-center" style={{ color: "#c5c8d8" }}>
-          {scenario.briefing}
+
+        {/* ── Right: scenario artifact ── */}
+        {scenario.type === "RANSOMWARE" && <RansomwareBriefingArtifact />}
+        {scenario.type === "SOCIAL_MEDIA_CRISIS" && <DeepfakeBriefingArtifact />}
+      </div>
+    </div>
+  );
+}
+
+// Ransomware briefing — fake encrypted file explorer
+function RansomwareBriefingArtifact() {
+  const files = [
+    { name: "Q4_Financial_Report_2024.xlsx.locked",    size: "2.4 MB",  icon: "📊" },
+    { name: "CustomerDatabase_Export.csv.locked",       size: "847 MB",  icon: "🗃️" },
+    { name: "CEO_Strategy_Presentation.pptx.locked",    size: "18.2 MB", icon: "📑" },
+    { name: "HR_Payroll_November.xlsx.locked",          size: "3.1 MB",  icon: "💰" },
+    { name: "MFS_CustomerRecords_2023.db.locked",       size: "2.1 GB",  icon: "🔒" },
+    { name: "AuditTrail_SOX_Compliance.pdf.locked",     size: "44 MB",   icon: "📋" },
+    { name: "BackupArchive_Full_20241105.tar.locked",   size: "12.8 GB", icon: "🔒" },
+    { name: "ITInfrastructure_Diagram.vsd.locked",      size: "6.7 MB",  icon: "🔒" },
+  ];
+
+  return (
+    <div className="w-[480px] shrink-0 rounded-xl overflow-hidden font-mono text-xs shadow-2xl"
+      style={{ border: "1px solid rgba(232,0,45,0.4)", boxShadow: "0 0 60px rgba(232,0,45,0.12)" }}>
+
+      {/* Windows title bar */}
+      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#1a0000", borderBottom: "1px solid #330000" }}>
+        <span className="w-3 h-3 rounded-full bg-red-600" />
+        <span className="w-3 h-3 rounded-full" style={{ background: "#333" }} />
+        <span className="w-3 h-3 rounded-full" style={{ background: "#333" }} />
+        <span className="ml-3 text-xs" style={{ color: "#cc2200" }}>C:\Users\MFS_Admin\Documents — File Explorer</span>
+      </div>
+
+      {/* Toolbar */}
+      <div className="px-4 py-2 flex items-center gap-4 text-xs" style={{ background: "#110000", borderBottom: "1px solid #220000", color: "#662200" }}>
+        <span>File</span><span>Edit</span><span>View</span>
+        <span className="ml-auto" style={{ color: "#441100" }}>Sort: Name ▼</span>
+      </div>
+
+      {/* File list */}
+      <div style={{ background: "#0a0000" }}>
+        {files.map((f, i) => (
+          <div key={i} className="flex items-center gap-3 px-4 py-2.5"
+            style={{ borderBottom: "1px solid #150000", background: i % 2 === 0 ? "#0a0000" : "#0d0000" }}>
+            <span className="text-base shrink-0">{f.icon}</span>
+            <span className="flex-1 truncate" style={{ color: "#cc3300" }}>{f.name}</span>
+            <span className="shrink-0 text-xs" style={{ color: "#441100" }}>{f.size}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Ransom popup overlay */}
+      <div className="px-4 py-4" style={{ background: "#0d0000", borderTop: "2px solid #e8002d" }}>
+        <div className="rounded-lg p-4" style={{ background: "#150000", border: "1px solid rgba(232,0,45,0.5)" }}>
+          <p className="text-sm font-bold text-center mb-2" style={{ color: "#ff2200" }}>
+            ⚠ YOUR FILES HAVE BEEN ENCRYPTED ⚠
+          </p>
+          <p className="text-xs text-center leading-relaxed" style={{ color: "#882200" }}>
+            All data on this device is encrypted with AES-256.<br />
+            Contact: <span style={{ color: "#ff4400" }}>support@blackcat-recovery.onion</span><br />
+            <span className="font-bold" style={{ color: "#ff2200" }}>Deadline: 72 hours · Demand: $4.8M BTC</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Deepfake briefing — blurred viral video frame
+function DeepfakeBriefingArtifact() {
+  return (
+    <div className="w-[460px] shrink-0 rounded-xl overflow-hidden shadow-2xl"
+      style={{ border: "1px solid rgba(139,92,246,0.4)", boxShadow: "0 0 60px rgba(139,92,246,0.12)" }}>
+
+      {/* "X / Twitter" chrome */}
+      <div className="flex items-center justify-between px-4 py-2.5 text-xs font-mono"
+        style={{ background: "#0a0a0f", borderBottom: "1px solid #1a1a2e" }}>
+        <div className="flex items-center gap-2">
+          <span className="font-bold" style={{ color: "#e8eaf0" }}>✕</span>
+          <span style={{ color: "#6b7280" }}>@ApexLeaks · 47s video · trending</span>
+        </div>
+        <div className="flex items-center gap-3" style={{ color: "#6b7280" }}>
+          <span>🔁 <span style={{ color: "#e8eaf0" }}>284K</span></span>
+          <span>♥ <span style={{ color: "#e8002d" }}>891K</span></span>
+        </div>
+      </div>
+
+      {/* Video frame */}
+      <div className="relative" style={{ background: "#080810", aspectRatio: "16/9" }}>
+        {/* Blurred "video" using CSS gradients to simulate a blurred face/room */}
+        <div className="absolute inset-0" style={{
+          background: "radial-gradient(ellipse 40% 55% at 48% 42%, #3a2a5a 0%, #1a1035 40%, #0d0820 100%)",
+          filter: "blur(18px)",
+        }} />
+        {/* Conference room suggestion */}
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(180deg, transparent 0%, rgba(8,8,16,0.4) 100%)",
+        }} />
+        {/* Face silhouette */}
+        <div className="absolute" style={{ top: "15%", left: "50%", transform: "translateX(-50%)", filter: "blur(14px)", opacity: 0.7 }}>
+          <div className="w-20 h-20 rounded-full" style={{ background: "#5a3a7a" }} />
+          <div className="w-28 h-16 rounded-t-full mx-auto mt-1" style={{ background: "#4a2a6a", marginLeft: "-16px" }} />
+        </div>
+        {/* APEX DYNAMICS watermark */}
+        <div className="absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold font-mono"
+          style={{ background: "rgba(0,0,0,0.6)", color: "#9ca3af", border: "1px solid rgba(255,255,255,0.1)" }}>
+          APEX DYNAMICS — ALL STAFF
+        </div>
+        {/* Play button */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center"
+            style={{ background: "rgba(0,0,0,0.65)", border: "2px solid rgba(255,255,255,0.3)" }}>
+            <div className="ml-1" style={{ width: 0, height: 0, borderTop: "12px solid transparent", borderBottom: "12px solid transparent", borderLeft: "20px solid rgba(255,255,255,0.9)" }} />
+          </div>
+        </div>
+        {/* Authenticity warning banner */}
+        <div className="absolute bottom-0 left-0 right-0 px-4 py-3"
+          style={{ background: "linear-gradient(transparent, rgba(220,38,38,0.85))" }}>
+          <div className="flex items-center gap-2">
+            <span className="text-white font-bold text-xs font-mono">⚠ AUTHENTICITY UNVERIFIED</span>
+            <span className="ml-auto text-xs font-mono" style={{ color: "rgba(255,255,255,0.7)" }}>06:04 AM</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Tweet body */}
+      <div className="px-4 py-4" style={{ background: "#0a0a0f" }}>
+        <p className="text-sm leading-relaxed mb-3" style={{ color: "#e8eaf0" }}>
+          "I have decided to terminate 50% of our workforce immediately. These people are a liability. This company needs to be cleansed."
+        </p>
+        <p className="text-xs" style={{ color: "#6b7280" }}>
+          Posted via web · <span style={{ color: "#8b5cf6" }}>⚡ Trending: #ApexCEO #AIDeepfake #ApexDynamics</span>
         </p>
       </div>
-      {scenario.roles.length > 0 && (
-        <div className="flex flex-wrap gap-3 mt-8 justify-center">
-          {scenario.roles.map((r) => (
-            <span key={r} className={`text-sm font-bold px-4 py-2 rounded-xl ${ROLE_COLOUR[r]}`}>
-              {ROLE_SHORT[r]}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
