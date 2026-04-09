@@ -78,8 +78,8 @@ export function Library() {
       </div>
 
       {/* Search + filter bar */}
-      <div className="flex items-center gap-3 mb-6 fade-in-up">
-        <div className="relative flex-1 max-w-xs">
+      <div className="mb-6 fade-in-up space-y-3">
+        <div className="relative max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-rtr-dim pointer-events-none" />
           <input
             value={query}

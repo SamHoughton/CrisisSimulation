@@ -135,7 +135,7 @@ export function Present() {
         </div>
         <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: "#1e2128" }}>
           <div className="flex items-center gap-4">
-            <span className="brand-glow text-sm">CrisisTabletop</span>
+            <span className="brand-glow text-sm tracking-widest font-bold">VIGIL</span>
             {crisisLevel > 0 && (
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-32 rounded-full" style={{ background: "#1c1f24" }}>
@@ -210,7 +210,7 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
         style={{ background: "rgba(232,0,45,0.1)", border: "1px solid rgba(232,0,45,0.25)" }}>
         <ShieldAlert className="w-10 h-10" style={{ color: "#e8002d" }} />
       </div>
-      <h1 className="text-4xl font-bold mb-3">{scenario?.title ?? "CrisisTabletop"}</h1>
+      <h1 className="text-4xl font-bold mb-3">{scenario?.title ?? "VIGIL"}</h1>
       {scenario && (
         <div className="flex items-center gap-3 mb-6">
           <span className="text-sm" style={{ color: "#8b8fa8" }}>{SCENARIO_TYPE_LABELS[scenario.type]}</span>

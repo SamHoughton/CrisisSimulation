@@ -1,10 +1,21 @@
 import { useStore } from "@/store";
 import {
   LayoutDashboard, BookOpen, PlayCircle, FileText,
-  Settings, ShieldAlert,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { View } from "@/types";
+
+function VigilLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="6" fill="#e8002d" />
+      <polygon points="16,6 6,26 26,26" fill="none" stroke="white" strokeWidth="2.5" strokeLinejoin="round" />
+      <line x1="16" y1="14" x2="16" y2="20" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="16" cy="23" r="1.2" fill="white" />
+    </svg>
+  );
+}
 
 const NAV: { view: View; label: string; icon: React.ElementType }[] = [
   { view: "home",     label: "Dashboard",   icon: LayoutDashboard },
@@ -24,11 +35,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="w-14 md:w-56 flex flex-col bg-rtr-sidebar border-r border-rtr-border shrink-0">
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-rtr-border" style={{ borderTop: "1px solid rgba(74,254,145,0.2)" }}>
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rtr-red/15">
-            <ShieldAlert className="w-4 h-4 text-rtr-red" />
+        <div className="flex items-center gap-2.5 px-4 py-4 border-b border-rtr-border">
+          <VigilLogo className="w-7 h-7 shrink-0" />
+          <div className="hidden md:flex flex-col leading-tight">
+            <span className="brand-glow text-sm tracking-widest font-bold">VIGIL</span>
+            <span className="text-[9px] text-rtr-dim tracking-wider uppercase">Crisis Simulation</span>
           </div>
-          <span className="brand-glow text-sm tracking-wide hidden md:inline">CrisisTabletop</span>
         </div>
 
         {/* Nav */}

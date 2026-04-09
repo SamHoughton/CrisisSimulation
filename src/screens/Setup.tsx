@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert } from "lucide-react";
-import { ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration } from "@/lib/utils";
+import { cn, ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration } from "@/lib/utils";
 import type { Participant, ExecRole } from "@/types";
 
 export function Setup() {
@@ -69,19 +69,33 @@ export function Setup() {
       <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 mb-6 fade-in-up">
         <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-3">Inject Timeline Preview</p>
         <div className="flex flex-wrap gap-1.5">
-          {scenario.injects.map((inj: any, i: number) => (
+          {[...scenario.injects].sort((a: any, b: any) => a.order - b.order).map((inj: any, i: number) => (
             <div
               key={inj.id}
-              title={inj.title}
-              className="w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono text-rtr-dim border border-rtr-border hover:border-rtr-red hover:text-rtr-red transition-colors cursor-default"
-              style={{ animationDelay: `${i * 30}ms` }}
+              title={`${inj.title}${inj.isDecisionPoint ? " (decision point)" : ""}`}
+              className={cn(
+                "w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono border transition-colors cursor-default",
+                inj.isDecisionPoint
+                  ? "border-amber-500/50 bg-amber-500/15 text-amber-400"
+                  : "border-rtr-border text-rtr-dim hover:border-rtr-green/40 hover:text-rtr-green"
+              )}
             >
               {i + 1}
             </div>
           ))}
         </div>
+        <div className="flex items-center gap-4 mt-2.5">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded border border-rtr-border bg-transparent" />
+            <span className="text-xs text-rtr-dim">Inject</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded border border-amber-500/50 bg-amber-500/15" />
+            <span className="text-xs text-amber-400/80">Decision point</span>
+          </div>
+        </div>
         {scenario.injects.filter((inj: any) => inj.isDecisionPoint).length > 0 && (
-          <p className="text-xs text-rtr-muted mt-2.5">
+          <p className="text-xs text-rtr-muted mt-1.5">
             <span className="text-amber-400 font-medium">
               {scenario.injects.filter((inj: any) => inj.isDecisionPoint).length} decision point{scenario.injects.filter((inj: any) => inj.isDecisionPoint).length !== 1 ? "s" : ""}
             </span>{" "}
@@ -172,7 +186,11 @@ function MetaStat({
         {icon}
         <span className="text-xs uppercase tracking-wider font-semibold text-rtr-dim">{label}</span>
       </div>
-      <p className={`text-base font-bold font-mono ${valueClass ?? "text-rtr-text"}`}>{value}</p>
+      {valueClass ? (
+        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-sm font-bold font-mono ${valueClass}`}>{value}</span>
+      ) : (
+        <p className="text-base font-bold font-mono text-rtr-text">{value}</p>
+      )}
     </div>
   );
 }
