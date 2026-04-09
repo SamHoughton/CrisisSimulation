@@ -6,7 +6,10 @@ import {
 } from "@/lib/utils";
 import type { Scenario } from "@/types";
 
-const ALL_TYPES = Object.entries(SCENARIO_TYPE_LABELS) as [string, string][];
+// Exclude "CUSTOM" — it's a meta-type for user scenarios, not a meaningful crisis category filter
+const ALL_TYPES = (Object.entries(SCENARIO_TYPE_LABELS) as [string, string][]).filter(
+  ([type]) => type !== "CUSTOM"
+);
 
 export function Library() {
   const store          = useStore();

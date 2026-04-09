@@ -25,12 +25,12 @@ export function Settings() {
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      <div className="mb-8">
+      <div className="mb-8 fade-in-up">
         <h1 className="text-2xl font-semibold text-rtr-text">Settings</h1>
         <p className="text-rtr-muted text-sm mt-0.5">Configure your facilitator profile and API access</p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-6 stagger">
         {/* Profile */}
         <Card title="Facilitator Profile">
           <Field label="Your Name">
@@ -111,10 +111,10 @@ export function Settings() {
         </Card>
       </div>
 
-      <div className="flex justify-end mt-8">
+      <div className="flex justify-end mt-8 fade-in-up">
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-rtr-red text-white px-5 py-2 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors"
+          className="flex items-center gap-2 bg-rtr-red text-white px-5 py-2 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors hover:shadow-lg hover:shadow-rtr-red/20"
         >
           {saved ? (
             <><CheckCircle className="w-4 h-4" />Saved!</>
@@ -129,7 +129,7 @@ export function Settings() {
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden">
+    <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden fade-in-up">
       <div className="px-5 py-3.5 bg-rtr-elevated border-b border-rtr-border">
         <h2 className="text-xs font-semibold text-rtr-muted uppercase tracking-wider">{title}</h2>
       </div>
