@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store";
 import {
   Download, Loader2, CheckCircle, AlertCircle, ChevronDown, ChevronUp,
@@ -13,6 +13,26 @@ import { format } from "date-fns";
 import type { GapDimension } from "@/types";
 
 type Tab = "summary" | "timeline" | "gaps" | "roles" | "recommendations";
+
+/** Counts up from 0 to target over `duration` ms */
+function useCountUp(target: number, duration = 900) {
+  const [value, setValue] = useState(0);
+  const prev = useRef(0);
+  useEffect(() => {
+    if (target === prev.current) return;
+    prev.current = target;
+    if (target === 0) { setValue(0); return; }
+    const start = performance.now();
+    const frame = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(Math.round(eased * target));
+      if (t < 1) requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }, [target, duration]);
+  return value;
+}
 
 export function Report() {
   const session   = useStore((s) => s.session);
@@ -91,12 +111,7 @@ export function Report() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {report && (
-              <div className={`flex flex-col items-center justify-center w-16 h-16 rounded-xl border text-2xl font-bold font-mono ${scoreColour}`}>
-                {score}
-                <span className="text-xs font-normal">/ 100</span>
-              </div>
-            )}
+            {report && <AnimatedScoreBadge score={score} scoreColour={scoreColour} />}
             {!report && !generating && (
               <button
                 onClick={handleGenerate}
@@ -181,12 +196,23 @@ export function Report() {
   );
 }
 
+/** Score badge that pops in and counts up */
+function AnimatedScoreBadge({ score, scoreColour }: { score: number; scoreColour: string }) {
+  const displayed = useCountUp(score);
+  return (
+    <div className={`score-reveal flex flex-col items-center justify-center w-16 h-16 rounded-xl border text-2xl font-bold font-mono ${scoreColour}`}>
+      {displayed}
+      <span className="text-xs font-normal">/ 100</span>
+    </div>
+  );
+}
+
 function NoReportState({ onGenerate, hasApiKey }: { onGenerate: () => void; hasApiKey: boolean }) {
   const setView = useStore((s) => s.setView);
   const session = useStore((s) => s.session);
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto fade-in-up">
       <div className="bg-rtr-panel border border-rtr-border rounded-xl p-6 mb-6">
         <h2 className="text-sm font-semibold text-rtr-text mb-4">Session Summary</h2>
         <div className="grid grid-cols-3 gap-4 text-center mb-4">
@@ -233,17 +259,21 @@ function NoReportState({ onGenerate, hasApiKey }: { onGenerate: () => void; hasA
 
 function SummaryTab({ report }: { report: any }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 fade-in-up">
       <div className="bg-rtr-panel border border-rtr-border rounded-xl p-6">
         <h2 className="text-sm font-semibold text-rtr-text mb-3">Executive Summary</h2>
         <p className="text-sm text-rtr-muted leading-relaxed whitespace-pre-wrap">
           {report.executiveSummary}
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {report.gapAnalysis.slice(0, 6).map((g: GapDimension) => (
-          <ScoreCard key={g.dimension} gap={g} />
-        ))}
+      {/* Radar-style score overview */}
+      <div>
+        <h3 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-3">Performance Overview</h3>
+        <div className="grid grid-cols-3 gap-4 stagger">
+          {report.gapAnalysis.slice(0, 6).map((g: GapDimension) => (
+            <ScoreCard key={g.dimension} gap={g} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -272,14 +302,22 @@ function scoreStyle(score: number) {
 
 function ScoreCard({ gap }: { gap: GapDimension }) {
   const s = scoreStyle(gap.score);
+  const [width, setWidth] = useState(0);
+
+  // Animate bar in on mount
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(gap.score), 80);
+    return () => clearTimeout(t);
+  }, [gap.score]);
+
   return (
-    <div className={`border rounded-xl p-4 ${s.card}`}>
+    <div className={`border rounded-xl p-4 fade-in-up ${s.card}`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold text-rtr-text">{gap.dimension}</span>
         <span className={`text-xl font-bold font-mono ${s.text}`}>{gap.score}</span>
       </div>
       <div className={`h-1.5 rounded-full mb-2 ${s.track}`}>
-        <div className={`h-full rounded-full ${s.bar}`} style={{ width: `${gap.score}%` }} />
+        <div className={`h-full rounded-full bar-animate ${s.bar}`} style={{ width: `${width}%` }} />
       </div>
       <p className="text-xs text-rtr-muted line-clamp-2">{gap.observations[0]}</p>
     </div>
@@ -288,7 +326,7 @@ function ScoreCard({ gap }: { gap: GapDimension }) {
 
 function TimelineTab({ session }: { session: any }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 fade-in-up">
       {session.liveInjects.map((li: any, i: number) => (
         <div key={li.injectId} className="relative flex gap-4">
           {i < session.liveInjects.length - 1 && (
@@ -339,7 +377,7 @@ function TimelineTab({ session }: { session: any }) {
 
 function GapsTab({ gaps }: { gaps: GapDimension[] }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 fade-in-up">
       {gaps.map((gap) => <GapCard key={gap.dimension} gap={gap} />)}
     </div>
   );
@@ -347,11 +385,17 @@ function GapsTab({ gaps }: { gaps: GapDimension[] }) {
 
 function GapCard({ gap }: { gap: GapDimension }) {
   const [open, setOpen] = useState(false);
+  const [width, setWidth] = useState(0);
   const s = scoreStyle(gap.score);
+
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(gap.score), 100);
+    return () => clearTimeout(t);
+  }, [gap.score]);
 
   return (
     <div className={`border rounded-xl overflow-hidden ${s.card}`}>
-      <button onClick={() => setOpen((v) => !v)} className="w-full flex items-center gap-4 px-5 py-4">
+      <button onClick={() => setOpen((v) => !v)} className="w-full flex items-center gap-4 px-5 py-4 group">
         <div className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 ${s.track}`}>
           <span className={`text-xl font-bold font-mono ${s.text}`}>{gap.score}</span>
         </div>
@@ -360,12 +404,12 @@ function GapCard({ gap }: { gap: GapDimension }) {
           <p className="text-xs text-rtr-muted mt-0.5 line-clamp-1">{gap.observations[0]}</p>
         </div>
         <div className={`w-24 h-2 rounded-full mr-4 ${s.track}`}>
-          <div className={`h-full rounded-full ${s.bar}`} style={{ width: `${gap.score}%` }} />
+          <div className={`h-full rounded-full bar-animate ${s.bar}`} style={{ width: `${width}%` }} />
         </div>
-        {open ? <ChevronUp className="w-4 h-4 text-rtr-dim" /> : <ChevronDown className="w-4 h-4 text-rtr-dim" />}
+        {open ? <ChevronUp className="w-4 h-4 text-rtr-dim" /> : <ChevronDown className="w-4 h-4 text-rtr-dim group-hover:translate-y-0.5 transition-transform" />}
       </button>
       {open && (
-        <div className="px-5 pb-5 border-t border-rtr-border pt-4 grid grid-cols-2 gap-6">
+        <div className="px-5 pb-5 border-t border-rtr-border pt-4 grid grid-cols-2 gap-6 fade-in-up">
           <div>
             <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-2">Observations</p>
             <ul className="space-y-1.5">
@@ -396,53 +440,70 @@ function GapCard({ gap }: { gap: GapDimension }) {
 
 function RolesTab({ feedback, participants }: { feedback: any; participants: any[] }) {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4 stagger fade-in-up">
       {Object.entries(feedback).map(([role, fb]: [string, any]) => (
-        <div key={role} className="bg-rtr-panel border border-rtr-border rounded-xl p-5">
-          <div className="flex items-center gap-2.5 mb-4">
-            <span className={`text-xs font-bold px-2 py-1 rounded ${ROLE_COLOUR[role]}`}>
-              {ROLE_SHORT[role]}
-            </span>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-rtr-text">{ROLE_LONG[role]}</p>
-              {participants.find((p: any) => p.role === role)?.name && (
-                <p className="text-xs text-rtr-dim">
-                  {participants.find((p: any) => p.role === role).name}
-                </p>
-              )}
-            </div>
-            <span className={cn(
-              "text-lg font-bold font-mono",
-              fb.score >= 75 ? "text-rtr-green" : fb.score >= 50 ? "text-amber-400" : "text-red-400"
-            )}>{fb.score}</span>
-          </div>
-          <p className="text-xs text-rtr-muted leading-relaxed mb-3">{fb.summary}</p>
-          {fb.strengths.length > 0 && (
-            <div className="mb-2">
-              <p className="text-xs font-semibold text-rtr-green mb-1">Strengths</p>
-              <ul className="space-y-1">
-                {fb.strengths.map((str: string, i: number) => (
-                  <li key={i} className="flex gap-1.5 text-xs text-rtr-muted">
-                    <CheckCircle className="w-3 h-3 shrink-0 mt-0.5 text-rtr-green" />{str}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {fb.gaps.length > 0 && (
-            <div>
-              <p className="text-xs font-semibold text-red-400 mb-1">Gaps</p>
-              <ul className="space-y-1">
-                {fb.gaps.map((g: string, i: number) => (
-                  <li key={i} className="flex gap-1.5 text-xs text-rtr-muted">
-                    <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5 text-red-400" />{g}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <RoleCard key={role} role={role} fb={fb} participants={participants} />
+      ))}
+    </div>
+  );
+}
+
+function RoleCard({ role, fb, participants }: { role: string; fb: any; participants: any[] }) {
+  const [barWidth, setBarWidth] = useState(0);
+  const scoreColor = fb.score >= 75 ? "text-rtr-green" : fb.score >= 50 ? "text-amber-400" : "text-red-400";
+  const barColor   = fb.score >= 75 ? "bg-rtr-green"  : fb.score >= 50 ? "bg-amber-400"    : "bg-red-400";
+  const trackColor = fb.score >= 75 ? "bg-rtr-green/20" : fb.score >= 50 ? "bg-amber-500/20" : "bg-red-500/20";
+
+  useEffect(() => {
+    const t = setTimeout(() => setBarWidth(fb.score), 150);
+    return () => clearTimeout(t);
+  }, [fb.score]);
+
+  return (
+    <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5 fade-in-up">
+      <div className="flex items-center gap-2.5 mb-3">
+        <span className={`text-xs font-bold px-2 py-1 rounded ${ROLE_COLOUR[role]}`}>
+          {ROLE_SHORT[role]}
+        </span>
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-rtr-text">{ROLE_LONG[role]}</p>
+          {participants.find((p: any) => p.role === role)?.name && (
+            <p className="text-xs text-rtr-dim">
+              {participants.find((p: any) => p.role === role).name}
+            </p>
           )}
         </div>
-      ))}
+        <span className={cn("text-lg font-bold font-mono", scoreColor)}>{fb.score}</span>
+      </div>
+      {/* Score bar */}
+      <div className={`h-1 rounded-full mb-3 ${trackColor}`}>
+        <div className={`h-full rounded-full bar-animate ${barColor}`} style={{ width: `${barWidth}%` }} />
+      </div>
+      <p className="text-xs text-rtr-muted leading-relaxed mb-3">{fb.summary}</p>
+      {fb.strengths.length > 0 && (
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-rtr-green mb-1">Strengths</p>
+          <ul className="space-y-1">
+            {fb.strengths.map((str: string, i: number) => (
+              <li key={i} className="flex gap-1.5 text-xs text-rtr-muted">
+                <CheckCircle className="w-3 h-3 shrink-0 mt-0.5 text-rtr-green" />{str}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {fb.gaps.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold text-red-400 mb-1">Gaps</p>
+          <ul className="space-y-1">
+            {fb.gaps.map((g: string, i: number) => (
+              <li key={i} className="flex gap-1.5 text-xs text-rtr-muted">
+                <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5 text-red-400" />{g}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -458,9 +519,9 @@ function RecsTab({ recs }: { recs: any[] }) {
   } as Record<string, string>;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger fade-in-up">
       {sorted.map((r, i) => (
-        <div key={i} className="bg-rtr-panel border border-rtr-border rounded-xl p-5 flex gap-4">
+        <div key={i} className="bg-rtr-panel border border-rtr-border rounded-xl p-5 flex gap-4 fade-in-up card-lift">
           <span className={`text-xs font-semibold px-2 py-0.5 rounded border self-start h-fit font-mono ${badge[r.priority]}`}>
             {r.priority}
           </span>
