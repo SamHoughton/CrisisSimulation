@@ -245,3 +245,50 @@ export type PresentMessage =
   | { type: "vote-reveal"; decisions: DecisionEntry[] }
   | { type: "timer"; action: "start" | "stop" | "reset"; seconds: number }
   | { type: "request-state" };
+
+// ─── Remote (QR) participant session ─────────────────────────────────────────
+//
+// When the facilitator enables "participant devices" the Runner mints a short
+// session code and publishes the current inject + collected votes to a
+// Netlify Blob. Participants visit /#join/CODE on their phones, pick a role,
+// and vote from there. Facilitator polls the blob for incoming votes.
+//
+// Source of truth is still the facilitator's local Zustand session - the
+// remote blob is a publish target, not the canonical state.
+
+export interface RemoteParticipant {
+  id: string;          // server-assigned UUID
+  name: string;
+  role: ExecRole;
+  customTitle?: string;
+  joinedAt: string;
+}
+
+export interface RemoteVote {
+  participantId: string;
+  optionKey: string;
+  castAt: string;
+}
+
+export interface RemoteInject {
+  injectId: string;
+  title: string;
+  body: string;
+  isDecisionPoint: boolean;
+  options: DecisionOption[];
+  releasedAt: string;
+  revealed: boolean;
+  winningOptionKey?: string;
+}
+
+export interface RemoteSessionState {
+  code: string;                       // 6-char session code
+  createdAt: string;
+  expiresAt: string;                  // 24h from creation
+  scenarioTitle: string;
+  availableRoles: ExecRole[];         // roles the facilitator allows
+  participants: RemoteParticipant[];
+  currentInject: RemoteInject | null;
+  votes: RemoteVote[];                // votes for the *current* inject only
+  status: "waiting" | "active" | "ended";
+}

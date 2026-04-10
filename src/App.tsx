@@ -1,12 +1,13 @@
 /**
  * App.tsx - Root component and view router.
  *
- * If the URL hash is #present, renders the standalone Present screen (projector view).
- * Otherwise wraps the current view in the Layout sidebar shell.
- * View state is managed by Zustand - no React Router needed.
+ * URL hash routing (no React Router):
+ * - #present       -> standalone projector screen
+ * - #join/CODE     -> participant join flow (mobile entry point for QR voting)
+ * - anything else  -> facilitator app (Layout sidebar shell + active view)
  */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { Layout } from "@/components/Layout";
 import { Home } from "@/screens/Home";
@@ -17,19 +18,47 @@ import { Runner } from "@/screens/Runner";
 import { Report } from "@/screens/Report";
 import { Settings } from "@/screens/Settings";
 import { Present } from "@/screens/Present";
+import { Join } from "@/screens/Join";
+import { Participant } from "@/screens/Participant";
+
+type HashRoute =
+  | { kind: "present" }
+  | { kind: "join"; code: string }
+  | { kind: "participant"; code: string }
+  | { kind: "app" };
+
+function parseHash(): HashRoute {
+  const hash = window.location.hash;
+  if (hash === "#present") return { kind: "present" };
+  const joinMatch = hash.match(/^#join\/([A-Z0-9]+)$/i);
+  if (joinMatch) return { kind: "join", code: joinMatch[1].toUpperCase() };
+  const partMatch = hash.match(/^#participant\/([A-Z0-9]+)$/i);
+  if (partMatch) return { kind: "participant", code: partMatch[1].toUpperCase() };
+  return { kind: "app" };
+}
 
 export function App() {
   const view = useStore((s) => s.view);
   const setView = useStore((s) => s.setView);
 
-  // If the URL hash is #present, render the standalone present window
+  const [route, setRoute] = useState<HashRoute>(() => parseHash());
+
   useEffect(() => {
-    if (window.location.hash === "#present") {
-      setView("present");
-    }
+    const onHash = () => setRoute(parseHash());
+    window.addEventListener("hashchange", onHash);
+    // Also re-evaluate once on mount
+    onHash();
+    return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  if (view === "present") return <Present />;
+  // Sync the present view into Zustand for the existing flow
+  useEffect(() => {
+    if (route.kind === "present") setView("present");
+  }, [route.kind, setView]);
+
+  if (route.kind === "present" || view === "present") return <Present />;
+  if (route.kind === "join") return <Join code={route.code} />;
+  if (route.kind === "participant") return <Participant code={route.code} />;
 
   return (
     <Layout>

@@ -16,11 +16,21 @@ import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } 
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
   Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
+  Smartphone, QrCode, Copy, X,
 } from "lucide-react";
+import QRCode from "qrcode";
 import {
-  cn, ROLE_SHORT, ROLE_COLOUR, formatElapsed,
+  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed,
 } from "@/lib/utils";
-import type { ExecRole, DecisionEntry, Participant, ResponseEntry } from "@/types";
+import type { ExecRole, DecisionEntry, Participant, ResponseEntry, RemoteSessionState } from "@/types";
+import {
+  createRemoteSession,
+  updateRemoteSession,
+  endRemoteSession,
+  getRemoteSession,
+  toRemoteInject,
+  buildJoinUrl,
+} from "@/lib/remoteSession";
 
 const OPTION_COLOURS = [
   "text-blue-400 bg-blue-500/15 border-blue-500/30",
@@ -51,6 +61,16 @@ export function Runner() {
   const [showAdHoc, setShowAdHoc]   = useState(false);
   const [voteRevealed, setVoteRevealed]     = useState<Record<string, boolean>>({});
   const [presentBlocked, setPresentBlocked] = useState(false);
+
+  // Remote participant devices (QR voting)
+  const [remoteSession, setRemoteSession] = useState<RemoteSessionState | null>(null);
+  const [remoteQrDataUrl, setRemoteQrDataUrl] = useState<string>("");
+  const [remoteError, setRemoteError] = useState<string>("");
+  const [remoteBusy, setRemoteBusy] = useState(false);
+  const [showRemotePanel, setShowRemotePanel] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState<string>("");
+  const remoteSessionRef = useRef<RemoteSessionState | null>(null);
+  remoteSessionRef.current = remoteSession;
 
   // Per-inject countdown timer
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
@@ -137,6 +157,94 @@ export function Runner() {
     }
   }, [currentLive?.injectId]);
 
+  // ─── Push current inject to remote blob whenever it changes ──────────────
+  // Runs on inject change AND on voteRevealed change so phones see the reveal.
+  useEffect(() => {
+    const rs = remoteSessionRef.current;
+    if (!rs || !session) return;
+    const code = rs.code;
+    (async () => {
+      try {
+        if (!currentLive) {
+          await updateRemoteSession(code, { currentInject: null });
+          return;
+        }
+        const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+        if (!inj) return;
+        const revealed = !!voteRevealed[inj.id];
+        const remoteInj = toRemoteInject(inj, revealed);
+        // When revealed, include the winner so phones can display it
+        if (revealed) {
+          const counts: Record<string, number> = {};
+          for (const d of currentLive.decisions) {
+            counts[d.optionKey] = (counts[d.optionKey] ?? 0) + 1;
+          }
+          const winner = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
+          if (winner) remoteInj.winningOptionKey = winner;
+        }
+        await updateRemoteSession(code, { currentInject: remoteInj });
+      } catch {
+        /* best-effort push; failures shouldn't disrupt the local session */
+      }
+    })();
+  }, [currentLive?.injectId, voteRevealed, remoteSession?.code]);
+
+  // ─── Poll remote blob for votes and apply them to local session ──────────
+  useEffect(() => {
+    if (!remoteSession) return;
+    const code = remoteSession.code;
+    let cancelled = false;
+
+    const tick = async () => {
+      try {
+        const latest = await getRemoteSession(code);
+        if (cancelled) return;
+        setRemoteSession(latest);
+
+        // Apply any remote votes that aren't already in local decisions
+        const sess = sessionRef.current;
+        if (!sess) return;
+        const live = sess.liveInjects[sess.liveInjects.length - 1];
+        if (!live) return;
+        if (!latest.currentInject || latest.currentInject.injectId !== live.injectId) return;
+
+        const localInject = sess.scenario.injects.find((i) => i.id === live.injectId);
+        if (!localInject?.isDecisionPoint) return;
+
+        for (const vote of latest.votes) {
+          const participant = latest.participants.find((p) => p.id === vote.participantId);
+          if (!participant) continue;
+          // Skip if this role has already voted locally
+          if (live.decisions.some((d) => d.role === participant.role)) continue;
+          const option = localInject.decisionOptions?.find((o) => o.key === vote.optionKey);
+          if (!option) continue;
+          addDecision(live.injectId, {
+            role: participant.role,
+            name: participant.name,
+            optionKey: option.key,
+            optionLabel: option.label,
+          });
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setRemoteError(err instanceof Error ? err.message : "Connection lost");
+        }
+      }
+    };
+
+    tick();
+    const id = window.setInterval(tick, 1500);
+    return () => { cancelled = true; window.clearInterval(id); };
+  }, [remoteSession?.code, addDecision]);
+
+  // ─── End remote session when local session ends ──────────────────────────
+  useEffect(() => {
+    if (session?.status !== "ended") return;
+    const rs = remoteSessionRef.current;
+    if (!rs) return;
+    endRemoteSession(rs.code).catch(() => undefined);
+  }, [session?.status]);
+
   // Timer countdown tick
   useEffect(() => {
     if (!timerRunning) return;
@@ -176,6 +284,80 @@ export function Runner() {
     const secs = (inj?.timerMinutes ?? 10) * 60;
     setTimerSeconds(secs);
     broadcastTimer("reset", secs);
+  }
+
+  // ─── Remote participant devices ───────────────────────────────────────────
+  async function handleEnableParticipantDevices() {
+    if (!session) return;
+    setRemoteBusy(true);
+    setRemoteError("");
+    try {
+      const availableRoles = session.participants.length > 0
+        ? session.participants.map((p) => p.role)
+        : (Object.keys(ROLE_LONG) as ExecRole[]).filter((r) => r !== "CUSTOM");
+      const created = await createRemoteSession({
+        scenarioTitle: session.scenario.title,
+        availableRoles,
+      });
+      setRemoteSession(created);
+      setShowRemotePanel(true);
+      // Pre-generate a QR for the join URL
+      const joinUrl = buildJoinUrl(created.code);
+      try {
+        const dataUrl = await QRCode.toDataURL(joinUrl, {
+          margin: 1,
+          width: 280,
+          color: { dark: "#0b0d12", light: "#ffffff" },
+        });
+        setRemoteQrDataUrl(dataUrl);
+      } catch {
+        /* QR render failure is non-fatal - code + URL are still shown */
+      }
+      // Immediately push current inject if one is live, otherwise mark active
+      if (currentLive) {
+        const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+        if (inj) {
+          await updateRemoteSession(created.code, {
+            currentInject: toRemoteInject(inj, !!voteRevealed[inj.id]),
+            status: "active",
+          });
+        }
+      } else {
+        await updateRemoteSession(created.code, { status: "active" });
+      }
+    } catch (err) {
+      setRemoteError(err instanceof Error ? err.message : "Could not create session");
+    } finally {
+      setRemoteBusy(false);
+    }
+  }
+
+  async function handleDisableParticipantDevices() {
+    const rs = remoteSessionRef.current;
+    if (!rs) return;
+    if (!confirm("Disable participant devices? Joined phones will be disconnected.")) return;
+    try {
+      await endRemoteSession(rs.code);
+    } catch {
+      /* best effort */
+    }
+    setRemoteSession(null);
+    setRemoteQrDataUrl("");
+    setShowRemotePanel(false);
+  }
+
+  async function handleCopyJoinUrl() {
+    const rs = remoteSessionRef.current;
+    if (!rs) return;
+    const url = buildJoinUrl(rs.code);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopyFeedback("Link copied");
+      setTimeout(() => setCopyFeedback(""), 1500);
+    } catch {
+      setCopyFeedback("Copy failed");
+      setTimeout(() => setCopyFeedback(""), 1500);
+    }
   }
 
   if (!session) {
@@ -327,6 +509,29 @@ export function Runner() {
               className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted">
               <Monitor className="w-3.5 h-3.5" />Present
             </button>
+            {!remoteSession ? (
+              <button
+                onClick={handleEnableParticipantDevices}
+                disabled={remoteBusy}
+                className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted disabled:opacity-50"
+                title="Enable participant devices (QR voting)"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                {remoteBusy ? "..." : "Devices"}
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowRemotePanel((v) => !v)}
+                className="flex items-center gap-1.5 text-xs border border-rtr-green/30 bg-rtr-green/10 text-rtr-green px-3 py-1.5 rounded hover:bg-rtr-green/15 transition-colors font-mono"
+                title={`Participant code ${remoteSession.code}`}
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+                {remoteSession.code}
+                <span className="text-[10px] text-rtr-green/80">
+                  ({remoteSession.participants.length})
+                </span>
+              </button>
+            )}
             {session.status === "active" && (
               <button onClick={pauseSession}
                 className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors">
@@ -345,7 +550,91 @@ export function Runner() {
             </button>
           </div>
         </div>
+        {remoteError && (
+          <div className="px-5 py-1.5 text-xs bg-amber-500/10 border-t border-amber-500/20 text-amber-300">
+            Remote sync: {remoteError}
+          </div>
+        )}
       </div>
+
+      {/* ── Participant devices panel ───────────────────────────────────── */}
+      {showRemotePanel && remoteSession && (
+        <div className="border-b border-rtr-border bg-rtr-panel px-5 py-4">
+          <div className="flex gap-5 items-start">
+            <div className="shrink-0">
+              {remoteQrDataUrl ? (
+                <img
+                  src={remoteQrDataUrl}
+                  alt={`Join QR for code ${remoteSession.code}`}
+                  className="w-36 h-36 rounded-lg border border-rtr-border bg-white"
+                />
+              ) : (
+                <div className="w-36 h-36 rounded-lg border border-rtr-border bg-rtr-elevated flex items-center justify-center">
+                  <QrCode className="w-8 h-8 text-rtr-dim" />
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className="text-[10px] font-semibold text-rtr-dim uppercase tracking-widest mb-1">
+                    Participant join code
+                  </p>
+                  <p className="font-mono text-2xl font-bold text-rtr-green tracking-widest">
+                    {remoteSession.code}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowRemotePanel(false)}
+                  className="text-rtr-dim hover:text-rtr-text transition-colors"
+                  title="Hide panel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="text-xs text-rtr-muted mb-2 font-mono truncate">
+                {buildJoinUrl(remoteSession.code)}
+              </p>
+              <div className="flex items-center gap-2 mb-3">
+                <button
+                  onClick={handleCopyJoinUrl}
+                  className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-2.5 py-1 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted"
+                >
+                  <Copy className="w-3 h-3" />
+                  {copyFeedback || "Copy link"}
+                </button>
+                <button
+                  onClick={handleDisableParticipantDevices}
+                  className="flex items-center gap-1.5 text-xs border border-rtr-red/30 text-red-400 px-2.5 py-1 rounded hover:bg-rtr-red/10 transition-colors"
+                >
+                  Stop devices
+                </button>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold text-rtr-dim uppercase tracking-widest mb-1">
+                  Joined ({remoteSession.participants.length})
+                </p>
+                {remoteSession.participants.length === 0 ? (
+                  <p className="text-xs text-rtr-dim">
+                    Waiting for participants to scan and join...
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-1.5">
+                    {remoteSession.participants.map((p) => (
+                      <span
+                        key={p.id}
+                        className={`text-xs px-2 py-0.5 rounded ${ROLE_COLOUR[p.role] ?? "bg-rtr-elevated text-rtr-muted"}`}
+                      >
+                        {p.name} <span className="opacity-70">· {ROLE_SHORT[p.role] ?? p.role}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-1 overflow-hidden">
         {/* ── Left: inject queue ───────────────────────────────────────────── */}
