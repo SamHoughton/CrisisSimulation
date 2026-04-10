@@ -1,5 +1,5 @@
 /**
- * Builder.tsx -Scenario editor.
+ * Builder.tsx - Scenario editor.
  *
  * Two-panel layout: left panel for scenario metadata (type, difficulty, duration,
  * description, cover image, roles, briefing) and right panel for the inject
@@ -551,7 +551,7 @@ function InjectCard({
 
           <div>
             <label className="text-xs font-medium text-rtr-dim block mb-1">
-              Facilitator Notes <span className="font-normal">(private -never shown)</span>
+              Facilitator Notes <span className="font-normal">(private - never shown)</span>
             </label>
             <textarea
               value={inject.facilitatorNotes ?? ""}
@@ -582,6 +582,9 @@ function InjectCard({
               <option value="legal_letter" style={{ background: "#0d0e10" }}>Legal Letter</option>
               <option value="news_headline" style={{ background: "#0d0e10" }}>News Headline</option>
               <option value="dark_web_listing" style={{ background: "#0d0e10" }}>Dark Web Listing</option>
+              <option value="stock_chart" style={{ background: "#0d0e10" }}>Stock Chart (Bloomberg)</option>
+              <option value="slack_thread" style={{ background: "#0d0e10" }}>Slack Thread</option>
+              <option value="tv_broadcast" style={{ background: "#0d0e10" }}>TV Broadcast (Breaking News)</option>
             </select>
 
             {/* Conditional artifact fields */}
@@ -631,6 +634,52 @@ function InjectCard({
                 </div>
                 <input value={inject.artifact.darkWebTitle ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, darkWebTitle: e.target.value } })} className={inputCls} placeholder="Listing title" />
                 <input value={inject.artifact.darkWebRecordCount ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, darkWebRecordCount: e.target.value } })} className={inputCls} placeholder="Record count (220,000 records)" />
+              </div>
+            )}
+            {inject.artifact?.type === "stock_chart" && (
+              <div className="mt-2 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <input value={inject.artifact.stockTicker ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, stockTicker: e.target.value } })} className={inputCls} placeholder="Ticker (MRDN)" />
+                  <input value={inject.artifact.stockCompanyName ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, stockCompanyName: e.target.value } })} className={inputCls} placeholder="Company name" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input type="number" step="0.01" value={inject.artifact.stockOpenPrice ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, stockOpenPrice: e.target.value ? +e.target.value : undefined } })} className={inputCls} placeholder="Open price (24.18)" />
+                  <input type="number" step="0.01" value={inject.artifact.stockCurrentPrice ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, stockCurrentPrice: e.target.value ? +e.target.value : undefined } })} className={inputCls} placeholder="Current price (22.76)" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input type="number" step="0.01" value={inject.artifact.stockChangePercent ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, stockChangePercent: e.target.value ? +e.target.value : undefined } })} className={inputCls} placeholder="Change % (-5.89)" />
+                  <input value={inject.artifact.stockVolume ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, stockVolume: e.target.value } })} className={inputCls} placeholder="Volume (18.4M)" />
+                </div>
+              </div>
+            )}
+            {inject.artifact?.type === "slack_thread" && (
+              <div className="mt-2 space-y-2">
+                <input value={inject.artifact.slackChannel ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, slackChannel: e.target.value } })} className={inputCls} placeholder="Channel (#incident-response)" />
+                <textarea
+                  value={inject.artifact.slackMessages ? JSON.stringify(inject.artifact.slackMessages, null, 2) : ""}
+                  onChange={(e) => {
+                    try {
+                      const parsed = e.target.value.trim() ? JSON.parse(e.target.value) : undefined;
+                      onUpdate({ artifact: { ...inject.artifact!, slackMessages: parsed } });
+                    } catch {
+                      // Invalid JSON, swallow
+                    }
+                  }}
+                  rows={6}
+                  className={`${inputCls} font-mono text-[11px]`}
+                  placeholder='[{"author":"Priya","role":"Eng Lead","time":"06:42","text":"Did anyone else see this?"}]'
+                />
+                <p className="text-[10px] text-rtr-dim">Messages as JSON array. Fields: author, role, time, text, avatar.</p>
+              </div>
+            )}
+            {inject.artifact?.type === "tv_broadcast" && (
+              <div className="mt-2 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <input value={inject.artifact.tvNetwork ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, tvNetwork: e.target.value } })} className={inputCls} placeholder="Network (SKY NEWS)" />
+                  <input value={inject.artifact.tvReporter ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, tvReporter: e.target.value } })} className={inputCls} placeholder="Reporter name" />
+                </div>
+                <input value={inject.artifact.tvHeadline ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, tvHeadline: e.target.value } })} className={inputCls} placeholder="Headline (lower-third)" />
+                <input value={inject.artifact.tvTicker ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, tvTicker: e.target.value } })} className={inputCls} placeholder="Ticker text (rolling bottom)" />
               </div>
             )}
           </div>
@@ -728,13 +777,13 @@ function InjectCard({
                 )}
               </div>
 
-              {/* Branch editor -only show if there are options and other injects */}
+              {/* Branch editor - only show if there are options and other injects */}
               {inject.decisionOptions.length > 0 && otherInjects.length > 0 && (
                 <div className="bg-rtr-elevated border border-rtr-border rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <GitBranch className="w-3.5 h-3.5 text-rtr-green" />
                     <span className="text-xs font-semibold text-rtr-text">Branching Paths</span>
-                    <span className="text-xs text-rtr-dim">(optional -override which inject follows each option)</span>
+                    <span className="text-xs text-rtr-dim">(optional - override which inject follows each option)</span>
                   </div>
                   <div className="space-y-2">
                     {inject.decisionOptions.map((opt) => {

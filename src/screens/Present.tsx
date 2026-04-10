@@ -1,8 +1,8 @@
 /**
- * Present.tsx -Standalone full-screen projector view.
+ * Present.tsx - Standalone full-screen projector view.
  *
  * Opened as a separate browser window by Runner.tsx. Receives all data via
- * BroadcastChannel("crisis-present") -no direct access to the Zustand store.
+ * BroadcastChannel("crisis-present") - no direct access to the Zustand store.
  *
  * Phases: splash → waiting → briefing → inject (repeating) → ended
  *
@@ -25,7 +25,7 @@ const BG_HEADLINES = [
   "ICO enforcement action up 42% year-on-year as GDPR scrutiny intensifies",
   "Cyber insurance premiums rise sharply following wave of high-profile incidents",
   "Security researchers warn of new AI-generated phishing and deepfake campaigns",
-  "Global ransomware payments exceeded $1.1 billion last year -record high",
+  "Global ransomware payments exceeded $1.1 billion last year - record high",
   "FCA confirms increase in market surveillance and enforcement activity",
   "Supply chain attacks targeting financial services sector on the rise",
   "Major breach at third-party SaaS provider exposes millions of customer records",
@@ -99,7 +99,7 @@ export function Present() {
           setHeadlines((h) => [msg.inject.tickerHeadline, ...h]);
         }
         // If we're still in splash or briefing, queue the inject instead of
-        // immediately overriding -let the splash/briefing finish first.
+        // immediately overriding - let the splash/briefing finish first.
         setPhase((prev) => {
           if (prev.phase === "splash" || prev.phase === "briefing") {
             pendingInjectRef.current = { inject: msg.inject, num: injectNum, totalInjects: msg.totalInjects };
@@ -431,7 +431,7 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
   );
 }
 
-// Ransomware briefing -fake encrypted file explorer
+// Ransomware briefing - fake encrypted file explorer
 function RansomwareBriefingArtifact() {
   const files = [
     { name: "Q4_Financial_Report_2024.xlsx.locked",    size: "2.4 MB",  icon: "📊" },
@@ -453,7 +453,7 @@ function RansomwareBriefingArtifact() {
         <span className="w-3 h-3 rounded-full bg-red-600" />
         <span className="w-3 h-3 rounded-full" style={{ background: "#333" }} />
         <span className="w-3 h-3 rounded-full" style={{ background: "#333" }} />
-        <span className="ml-3 text-xs" style={{ color: "#cc2200" }}>C:\Users\MFS_Admin\Documents -File Explorer</span>
+        <span className="ml-3 text-xs" style={{ color: "#cc2200" }}>C:\Users\MFS_Admin\Documents - File Explorer</span>
       </div>
 
       {/* Toolbar */}
@@ -491,7 +491,7 @@ function RansomwareBriefingArtifact() {
   );
 }
 
-// Deepfake briefing -blurred viral video frame
+// Deepfake briefing - blurred viral video frame
 function DeepfakeBriefingArtifact() {
   return (
     <div className="w-[460px] shrink-0 rounded-xl overflow-hidden shadow-2xl"
@@ -529,7 +529,7 @@ function DeepfakeBriefingArtifact() {
         {/* APEX DYNAMICS watermark */}
         <div className="absolute top-3 left-3 px-2 py-1 rounded text-xs font-bold font-mono"
           style={{ background: "rgba(0,0,0,0.6)", color: "#9ca3af", border: "1px solid rgba(255,255,255,0.1)" }}>
-          APEX DYNAMICS -ALL STAFF
+          APEX DYNAMICS - ALL STAFF
         </div>
         {/* Play button */}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -637,6 +637,9 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
   if (art.type === "legal_letter")    return <LegalLetter        inject={inject} artifact={art} />;
   if (art.type === "news_headline")   return <NewsHeadline       inject={inject} />;
   if (art.type === "dark_web_listing") return <DarkWebListing   inject={inject} artifact={art} />;
+  if (art.type === "stock_chart")     return <StockChart         inject={inject} artifact={art} />;
+  if (art.type === "slack_thread")    return <SlackThread        inject={inject} artifact={art} />;
+  if (art.type === "tv_broadcast")    return <TvBroadcast        inject={inject} artifact={art} />;
 
   return (
     <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
@@ -965,7 +968,7 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
             <div className="w-8 h-8 rounded flex items-center justify-center text-lg font-bold" style={{ background: "#1a0000", color: "#ff3333", border: "1px solid #330000" }}>⚠</div>
             <div>
               <p className="text-sm font-bold tracking-widest uppercase" style={{ color: "#cc2200" }}>{siteName}</p>
-              <p className="text-xs" style={{ color: "#2a2a2a" }}>Verified leak marketplace -No logs. No KYC.</p>
+              <p className="text-xs" style={{ color: "#2a2a2a" }}>Verified leak marketplace - No logs. No KYC.</p>
             </div>
           </div>
           <div className="text-right">
@@ -1039,6 +1042,230 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
       <div className="px-6 py-3 flex items-center justify-between text-xs" style={{ background: "#080808", borderTop: "1px solid #141414", color: "#2a2a2a" }}>
         <span>Use escrow. Never direct transfer.</span>
         <span>PGP key available on profile</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Stock chart (animated share price) ──────────────────────────────────────
+
+function StockChart({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const ticker    = art.stockTicker        ?? "APEX.L";
+  const company   = art.stockCompanyName   ?? "Apex Dynamics plc";
+  const open      = art.stockOpenPrice     ?? 482.4;
+  const current   = art.stockCurrentPrice  ?? 447.7;
+  const changePct = art.stockChangePercent ?? -7.2;
+  const volume    = art.stockVolume        ?? "14.2M";
+  const isDown    = changePct < 0;
+
+  // Generate a jagged downward-trending SVG path to animate the price line.
+  // 24 points across a 600-wide viewBox. Start high, drift down with noise.
+  const points = Array.from({ length: 24 }, (_, i) => {
+    const x = (i / 23) * 600;
+    const trend = 40 + (i / 23) * 90;      // drifts from 40 to 130
+    const noise = Math.sin(i * 1.9) * 8 + Math.cos(i * 0.7) * 5;
+    return `${x.toFixed(1)},${(trend + noise).toFixed(1)}`;
+  });
+  const linePath = `M ${points.join(" L ")}`;
+  const areaPath = `${linePath} L 600,180 L 0,180 Z`;
+  const lineColour = isDown ? "#ef4444" : "#4afe91";
+  const fillColour = isDown ? "rgba(239,68,68,0.15)" : "rgba(74,254,145,0.15)";
+
+  return (
+    <div className="w-full max-w-3xl rounded-xl overflow-hidden font-mono"
+      style={{ background: "#0b0e14", border: "1px solid #1a1f2e", boxShadow: "0 0 30px rgba(0,0,0,0.5)" }}>
+      {/* Terminal header */}
+      <div className="px-5 py-3 flex items-center justify-between" style={{ background: "#070a0f", borderBottom: "1px solid #1a1f2e" }}>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded" style={{ background: "#1a0f2e", color: "#f59e0b", border: "1px solid #3a2f1e" }}>
+            LSE LIVE
+          </span>
+          <span className="text-xs" style={{ color: "#6b7280" }}>Bloomberg Terminal - Market Data</span>
+        </div>
+        <span className="text-xs" style={{ color: "#4a4f65" }}>{new Date().toLocaleTimeString("en-GB")}</span>
+      </div>
+
+      {/* Price header */}
+      <div className="px-6 py-5 flex items-start justify-between gap-6" style={{ background: "#0d1117" }}>
+        <div>
+          <p className="text-2xl font-bold tracking-tight" style={{ color: "#e8eaf0" }}>{ticker}</p>
+          <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>{company}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-4xl font-bold tabular-nums" style={{ color: lineColour }}>{current.toFixed(2)}<span className="text-base ml-1" style={{ color: "#6b7280" }}>GBX</span></p>
+          <p className="text-sm font-bold tabular-nums mt-0.5" style={{ color: lineColour }}>
+            {isDown ? "▼" : "▲"} {(current - open).toFixed(2)} ({changePct.toFixed(2)}%)
+          </p>
+        </div>
+      </div>
+
+      {/* Chart */}
+      <div className="px-6 py-4" style={{ background: "#0b0e14" }}>
+        <svg viewBox="0 0 600 180" className="w-full h-48">
+          {/* Gridlines */}
+          {[0, 1, 2, 3].map((i) => (
+            <line key={i} x1="0" y1={i * 45 + 15} x2="600" y2={i * 45 + 15} stroke="#1a1f2e" strokeWidth="0.5" strokeDasharray="2,4" />
+          ))}
+          {/* Open price line */}
+          <line x1="0" y1="40" x2="600" y2="40" stroke="#4a4f65" strokeWidth="0.8" strokeDasharray="4,3" />
+          <text x="598" y="36" fill="#6b7280" fontSize="9" textAnchor="end" fontFamily="monospace">OPEN {open.toFixed(2)}</text>
+          {/* Area fill */}
+          <path d={areaPath} fill={fillColour} className="chart-draw" />
+          {/* Line */}
+          <path d={linePath} fill="none" stroke={lineColour} strokeWidth="2" strokeLinejoin="round" className="chart-draw" />
+          {/* End dot */}
+          <circle cx="600" cy={points[points.length - 1].split(",")[1]} r="4" fill={lineColour}>
+            <animate attributeName="opacity" from="1" to="0.3" dur="1.2s" repeatCount="indefinite" />
+          </circle>
+        </svg>
+      </div>
+
+      {/* Stats strip */}
+      <div className="grid grid-cols-4 gap-px" style={{ background: "#1a1f2e", borderTop: "1px solid #1a1f2e" }}>
+        {[
+          { label: "OPEN", value: open.toFixed(2) },
+          { label: "LOW", value: current.toFixed(2) },
+          { label: "CHG %", value: `${changePct.toFixed(2)}%`, colour: lineColour },
+          { label: "VOL", value: volume },
+        ].map((s) => (
+          <div key={s.label} className="px-4 py-2.5" style={{ background: "#0b0e14" }}>
+            <p className="text-xs" style={{ color: "#4a4f65" }}>{s.label}</p>
+            <p className="text-sm font-bold tabular-nums mt-0.5" style={{ color: s.colour ?? "#e8eaf0" }}>{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Body text */}
+      <div className="px-6 py-4" style={{ background: "#0d1117", borderTop: "1px solid #1a1f2e" }}>
+        <p className="text-sm leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Slack thread (internal staff panic) ─────────────────────────────────────
+
+function SlackThread({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const channel  = art.slackChannel ?? "#all-hands";
+  const messages = art.slackMessages ?? [];
+  const colours  = ["#e11d48", "#f59e0b", "#8b5cf6", "#06b6d4", "#10b981", "#ec4899"];
+
+  return (
+    <div className="w-full max-w-3xl rounded-xl overflow-hidden"
+      style={{ background: "#1a1d21", border: "1px solid #2c2f33", boxShadow: "0 0 30px rgba(0,0,0,0.5)" }}>
+      {/* Slack top bar */}
+      <div className="px-5 py-3 flex items-center gap-3" style={{ background: "#19171d", borderBottom: "1px solid #2c2f33" }}>
+        <div className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold" style={{ background: "#611f69", color: "#fff" }}>A</div>
+        <div className="flex-1">
+          <p className="text-sm font-bold" style={{ color: "#e8eaf0" }}>{channel}</p>
+          <p className="text-xs" style={{ color: "#9aa0a6" }}>{messages.length} messages - {new Set(messages.map((m) => m.author)).size} participants</p>
+        </div>
+        <span className="text-xs px-2 py-0.5 rounded flex items-center gap-1.5" style={{ background: "#2a0f0f", color: "#f87171", border: "1px solid #4a1f1f" }}>
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#f87171" }} /> ACTIVE
+        </span>
+      </div>
+
+      {/* Messages */}
+      <div className="px-5 py-4 space-y-4 max-h-[500px] overflow-y-auto" style={{ background: "#1a1d21" }}>
+        {messages.length === 0 ? (
+          <p className="text-sm italic" style={{ color: "#6b7280" }}>No messages yet.</p>
+        ) : messages.map((m, i) => {
+          const colour = colours[i % colours.length];
+          const initials = m.author.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
+          return (
+            <div key={i} className="flex gap-3">
+              <div className="w-9 h-9 rounded flex items-center justify-center text-xs font-bold shrink-0" style={{ background: colour, color: "#fff" }}>
+                {initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-2 mb-0.5">
+                  <span className="text-sm font-bold" style={{ color: "#e8eaf0" }}>{m.author}</span>
+                  {m.role && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "#2a2d33", color: "#9aa0a6" }}>{m.role}</span>}
+                  <span className="text-xs" style={{ color: "#6b7280" }}>{m.time}</span>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: "#d1d5db" }}>{m.text}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Typing indicator */}
+      <div className="px-5 py-3 flex items-center gap-2 text-xs" style={{ background: "#19171d", borderTop: "1px solid #2c2f33", color: "#6b7280" }}>
+        <span className="flex gap-1">
+          <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#6b7280" }} />
+          <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#6b7280", animationDelay: "0.15s" }} />
+          <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: "#6b7280", animationDelay: "0.3s" }} />
+        </span>
+        <span>several people are typing…</span>
+      </div>
+
+      {/* Body text */}
+      <div className="px-6 py-4" style={{ background: "#15171a", borderTop: "1px solid #2c2f33" }}>
+        <p className="text-sm leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── TV broadcast (breaking news lower-third) ────────────────────────────────
+
+function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const network  = art.tvNetwork  ?? "BBC NEWS";
+  const headline = art.tvHeadline ?? inject.title.toUpperCase();
+  const ticker   = art.tvTicker   ?? inject.tickerHeadline ?? "BREAKING NEWS";
+  const reporter = art.tvReporter ?? "LIVE - LONDON";
+
+  return (
+    <div className="w-full max-w-4xl rounded-xl overflow-hidden"
+      style={{ background: "#000", border: "1px solid #1a1a1a", boxShadow: "0 0 40px rgba(232,0,45,0.15)" }}>
+      {/* Fake studio frame */}
+      <div className="relative aspect-video" style={{ background: "linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 40%, #2a0a0a 100%)" }}>
+        {/* Blurred studio silhouette */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 40%, rgba(80,80,120,0.3) 0%, transparent 60%)", filter: "blur(20px)" }} />
+        <div className="absolute" style={{ left: "30%", top: "25%", width: "40%", height: "55%", background: "linear-gradient(180deg, rgba(100,100,130,0.5) 0%, rgba(20,20,30,0.8) 100%)", borderRadius: "50% 50% 20% 20%", filter: "blur(8px)" }} />
+
+        {/* LIVE indicator top-right */}
+        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded" style={{ background: "rgba(232,0,45,0.9)" }}>
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#fff" }} />
+          <span className="text-xs font-bold text-white tracking-widest">LIVE</span>
+        </div>
+
+        {/* Network logo top-left */}
+        <div className="absolute top-4 left-4 px-3 py-1.5 rounded" style={{ background: "rgba(0,0,0,0.7)", border: "1px solid rgba(232,0,45,0.5)" }}>
+          <span className="text-sm font-bold tracking-wider" style={{ color: "#e8002d" }}>{network}</span>
+        </div>
+
+        {/* Time / location top-right (below LIVE) */}
+        <div className="absolute top-14 right-4 text-xs font-mono" style={{ color: "#aaa" }}>
+          {new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} GMT
+        </div>
+
+        {/* Lower-third chyron */}
+        <div className="absolute bottom-10 left-0 right-0">
+          {/* Red BREAKING NEWS strip */}
+          <div className="px-5 py-2 flex items-center gap-3" style={{ background: "#e8002d" }}>
+            <span className="text-xs font-bold tracking-[0.2em] text-white">▶ BREAKING NEWS</span>
+            <span className="text-xs text-white/80">{reporter}</span>
+          </div>
+          {/* Headline strip */}
+          <div className="px-5 py-3" style={{ background: "rgba(0,0,0,0.9)", borderTop: "1px solid #e8002d" }}>
+            <p className="text-lg font-bold leading-tight text-white">{headline}</p>
+          </div>
+        </div>
+
+        {/* Bottom ticker bar */}
+        <div className="absolute bottom-0 left-0 right-0 py-2 overflow-hidden" style={{ background: "#0a0a0a", borderTop: "1px solid #2a2a2a" }}>
+          <div className="flex items-center gap-3 whitespace-nowrap px-4">
+            <span className="text-xs font-bold tracking-widest shrink-0" style={{ color: "#e8002d" }}>■ LIVE</span>
+            <span className="text-xs font-mono text-white/70 truncate">{ticker}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Body text */}
+      <div className="px-6 py-4" style={{ background: "#0d0d0d", borderTop: "1px solid #1a1a1a" }}>
+        <p className="text-sm leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
       </div>
     </div>
   );

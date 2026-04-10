@@ -1,5 +1,5 @@
 /**
- * types.ts -All TypeScript type definitions for the VIGIL platform.
+ * types.ts - All TypeScript type definitions for the VIGIL platform.
  *
  * Organised into sections: Scenario (templates + injects), Session (live exercise
  * state), Report (AI-generated analysis), App state (navigation + settings), and
@@ -47,6 +47,9 @@ export type ArtifactType =
   | "legal_letter"
   | "news_headline"
   | "dark_web_listing"
+  | "stock_chart"
+  | "slack_thread"
+  | "tv_broadcast"
   | "default";
 
 export interface InjectArtifact {
@@ -79,6 +82,21 @@ export interface InjectArtifact {
   darkWebPrice?: string;         // e.g. "12 XMR"
   darkWebRecordCount?: string;   // e.g. "220,000 records"
   darkWebSampleRows?: Array<{ name: string; account: string; sortCode: string; email: string }>; // fake sample data
+  // stock chart (animated price ticker)
+  stockTicker?: string;          // e.g. "APEX.L"
+  stockCompanyName?: string;     // e.g. "Apex Dynamics plc"
+  stockOpenPrice?: number;       // opening price in pence/cents
+  stockCurrentPrice?: number;    // current/low price
+  stockChangePercent?: number;   // e.g. -7.2
+  stockVolume?: string;          // e.g. "14.2M"
+  // slack thread (internal chat panic)
+  slackChannel?: string;         // e.g. "#all-hands"
+  slackMessages?: Array<{ author: string; role?: string; time: string; text: string; avatar?: string }>;
+  // tv broadcast (breaking news lower-third + headline)
+  tvNetwork?: string;            // e.g. "BBC NEWS"
+  tvHeadline?: string;           // main chyron headline
+  tvTicker?: string;             // scrolling bottom ticker
+  tvReporter?: string;           // reporter name / location
 }
 
 export interface Inject {
@@ -86,7 +104,7 @@ export interface Inject {
   order: number;
   title: string;
   body: string;                   // what appears on screen
-  facilitatorNotes?: string;      // private -never shown to participants
+  facilitatorNotes?: string;      // private - never shown to participants
   imageUrl?: string;              // optional image shown on present screen
   delayMinutes: number;
   isDecisionPoint: boolean;

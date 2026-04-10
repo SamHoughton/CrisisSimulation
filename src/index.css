@@ -1,5 +1,5 @@
 /*
- * index.css -Global styles, custom animations, and print rules.
+ * index.css - Global styles, custom animations, and print rules.
  *
  * All animations are hand-written CSS (no animation libraries).
  * Organised into: base layer, brand styling, inject/vote/ticker animations,
@@ -14,7 +14,7 @@
   *, *::before, *::after { box-sizing: border-box; }
   html, body, #root { height: 100%; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-family: - apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     font-size: 13px;
     background: #0d0e10;
     color: #e8eaf0;
@@ -196,6 +196,15 @@ select.input, select {
   to   { width: 100%; }
 }
 
+/* ── Stock chart line draw animation ──────────────────────────────────────── */
+@keyframes chart-draw-in {
+  from { stroke-dasharray: 2000; stroke-dashoffset: 2000; opacity: 0; }
+  to   { stroke-dasharray: 2000; stroke-dashoffset: 0;    opacity: 1; }
+}
+.chart-draw {
+  animation: chart-draw-in 1.8s ease-out forwards;
+}
+
 /* ── Print styles ─────────────────────────────────────────────────────────── */
 @media print {
   /* Hide app chrome */
@@ -213,7 +222,7 @@ select.input, select {
   /* Make the main content area overflow-visible so all content prints */
   main { overflow: visible !important; height: auto !important; }
 
-  /* Remove dark backgrounds on cards -let browser use black text on white */
+  /* Remove dark backgrounds on cards - let browser use black text on white */
   .bg-rtr-panel, .bg-rtr-elevated, .bg-rtr-base {
     background: #fff !important;
     color: #111 !important;
