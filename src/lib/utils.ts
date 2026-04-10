@@ -1,5 +1,5 @@
 /**
- * utils.ts -Shared utility functions and lookup tables.
+ * utils.ts - Shared utility functions and lookup tables.
  *
  * Contains:
  * - cn(): Tailwind class merging (clsx + tailwind-merge)

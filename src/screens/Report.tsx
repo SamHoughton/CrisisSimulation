@@ -1,5 +1,5 @@
 /**
- * Report.tsx -Post-exercise analysis and AI report dashboard.
+ * Report.tsx - Post-exercise analysis and AI report dashboard.
  *
  * Tabs:
  * - Decision Log: timestamped record of all injects, responses, and decisions
@@ -639,7 +639,7 @@ function DashboardTab({ session }: { session: Session }) {
     return (
       <div className="text-center py-16 fade-in-up">
         <BarChart2 className="w-10 h-10 text-rtr-dim mx-auto mb-3" />
-        <p className="text-sm text-rtr-muted">No injects released yet -dashboard will populate as the session runs.</p>
+        <p className="text-sm text-rtr-muted">No injects released yet - dashboard will populate as the session runs.</p>
       </div>
     );
   }

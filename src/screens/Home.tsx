@@ -1,5 +1,5 @@
 /**
- * Home.tsx -Dashboard screen.
+ * Home.tsx - Dashboard screen.
  *
  * Shows key stats (scenarios available, exercises run, hours simulated),
  * an active session banner if one is running, quick-start template cards,
@@ -96,7 +96,7 @@ export function Home() {
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3 fade-in-up">
           <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
-            Quick Start -Scenario Templates
+            Quick Start - Scenario Templates
           </h2>
           <button onClick={() => setView("library")} className="text-xs text-rtr-green hover:underline flex items-center gap-1">
             View all <ChevronRight className="w-3 h-3" />

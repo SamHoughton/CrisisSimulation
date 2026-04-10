@@ -1,11 +1,11 @@
 /**
- * claude.ts -Anthropic Claude API integration.
+ * claude.ts - Anthropic Claude API integration.
  *
  * Two functions:
- * 1. suggestInjectText() -Uses Claude Haiku to generate realistic inject body text
+ * 1. suggestInjectText() - Uses Claude Haiku to generate realistic inject body text
  *    while building scenarios in the Builder screen. Fast and cheap (~$0.001/call).
  *
- * 2. generateReport() -Uses Claude Sonnet to analyse a completed session transcript
+ * 2. generateReport() - Uses Claude Sonnet to analyse a completed session transcript
  *    and produce a structured gap analysis report with scores, role feedback, and
  *    recommendations. Takes 20–40 seconds; costs ~$0.05–0.15/report.
  *
@@ -82,12 +82,12 @@ Return ONLY the inject text, no preamble or explanation.`;
 const SYSTEM_PROMPT = `You are an expert crisis management consultant evaluating a completed tabletop exercise.
 
 Analyse the transcript and produce a structured post-exercise report. Assessment dimensions:
-1. Speed of escalation -was escalation prompt and appropriate?
-2. Communication clarity -clear, accurate, well-targeted messaging?
-3. Legal & regulatory awareness -notification obligations, compliance, D&O risks?
-4. Technical accuracy -grounded technical assessments?
-5. Stakeholder management -internal/external stakeholders handled well?
-6. Decision quality -decisions sound, proportionate, well-reasoned?
+1. Speed of escalation - was escalation prompt and appropriate?
+2. Communication clarity - clear, accurate, well-targeted messaging?
+3. Legal & regulatory awareness - notification obligations, compliance, D&O risks?
+4. Technical accuracy - grounded technical assessments?
+5. Stakeholder management - internal/external stakeholders handled well?
+6. Decision quality - decisions sound, proportionate, well-reasoned?
 
 Scoring: 0–100 per dimension. Be direct. Executives benefit from honest, specific feedback.
 Ground all feedback in actual transcript moments.

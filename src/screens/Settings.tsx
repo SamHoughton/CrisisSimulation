@@ -1,5 +1,5 @@
 /**
- * Settings.tsx -Configuration screen.
+ * Settings.tsx - Configuration screen.
  *
  * Sections: facilitator profile (name, org), Anthropic API key (with visibility
  * toggle), and local storage management (exercise count, clear all data).
@@ -62,7 +62,7 @@ export function Settings() {
         <Card title="Anthropic API Key">
           <p className="text-xs text-rtr-muted mb-4 leading-relaxed">
             Required for the AI gap analysis in post-exercise reports. Your key is stored
-            only in this browser's localStorage -it is never sent anywhere except directly
+            only in this browser's localStorage - it is never sent anywhere except directly
             to the Anthropic API.{" "}
             <a
               href="https://console.anthropic.com/"

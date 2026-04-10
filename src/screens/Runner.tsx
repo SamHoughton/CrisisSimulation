@@ -1,5 +1,5 @@
 /**
- * Runner.tsx -Live session facilitator control panel.
+ * Runner.tsx - Live session facilitator control panel.
  *
  * Three-panel layout:
  * - Left: inject queue with release buttons, branch indicators, off-path dimming
@@ -484,7 +484,7 @@ export function Runner() {
                   );
                 })()}
 
-                {/* Response logger -log what each participant says */}
+                {/* Response logger - log what each participant says */}
                 <ResponseLogger
                   injectId={currentLive.injectId}
                   participants={session.participants}
@@ -658,7 +658,7 @@ function VotingPanel({
         {decisions.length === participants.length && (
           <p className="text-xs text-rtr-green flex items-center gap-1 font-mono">
             <Check className="w-3 h-3" />All votes cast
-            {inject.branches?.length > 0 && !revealed && " -reveal to advance"}
+            {inject.branches?.length > 0 && !revealed && " - reveal to advance"}
           </p>
         )}
       </div>

@@ -1,5 +1,5 @@
 /**
- * Layout.tsx -App shell with collapsible sidebar navigation.
+ * Layout.tsx - App shell with collapsible sidebar navigation.
  *
  * Renders the VIGIL logo, nav buttons (Dashboard, Scenarios, Live Session, Report,
  * Settings), a pulsing red indicator for active sessions, and a session status pill.
