@@ -381,7 +381,6 @@ function InjectCard({
   const [suggestError, setSuggestError] = useState("");
 
   const handleSuggest = async () => {
-    if (!apiKey) return;
     setSuggesting(true);
     setSuggestError("");
     try {
@@ -400,7 +399,7 @@ function InjectCard({
           targetRoles: inject.targetRoles,
           previousInjects,
         },
-        apiKey
+        apiKey || undefined
       );
       onUpdate({ body: text });
     } catch (e) {
@@ -489,17 +488,15 @@ function InjectCard({
               <label className="text-xs font-medium text-rtr-dim">
                 Inject Text <span className="font-normal">(shown on screen)</span>
               </label>
-              {apiKey && (
-                <button
-                  onClick={handleSuggest}
-                  disabled={suggesting}
-                  className="flex items-center gap-1 text-xs text-rtr-green hover:text-rtr-green/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  title="Generate inject text with AI"
-                >
-                  <Wand2 className={`w-3 h-3 ${suggesting ? "animate-pulse" : ""}`} />
-                  {suggesting ? "Generating…" : "AI Suggest"}
-                </button>
-              )}
+              <button
+                onClick={handleSuggest}
+                disabled={suggesting}
+                className="flex items-center gap-1 text-xs text-rtr-green hover:text-rtr-green/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title={apiKey ? "Generate inject text with your API key" : "Generate inject text via hosted proxy"}
+              >
+                <Wand2 className={`w-3 h-3 ${suggesting ? "animate-pulse" : ""}`} />
+                {suggesting ? "Generating…" : "AI Suggest"}
+              </button>
             </div>
             {suggestError && (
               <p className="text-xs text-red-400 mb-1">{suggestError}</p>

@@ -59,11 +59,14 @@ export function Settings() {
         </Card>
 
         {/* Claude API */}
-        <Card title="Anthropic API Key">
+        <Card title="Anthropic API Key (optional)">
           <p className="text-xs text-rtr-muted mb-4 leading-relaxed">
-            Required for the AI gap analysis in post-exercise reports. Your key is stored
-            only in this browser's localStorage - it is never sent anywhere except directly
-            to the Anthropic API.{" "}
+            By default, AI features (inject suggestions and post-exercise reports) run
+            through our hosted proxy with usage limits. You only need to add a key if
+            you want to use your own Anthropic account, bypass rate limits, or run the
+            app entirely offline from us. Your key is stored only in this browser's
+            localStorage and is sent directly to the Anthropic API, never to our
+            servers.{" "}
             <a
               href="https://console.anthropic.com/"
               target="_blank"
@@ -79,7 +82,7 @@ export function Settings() {
                 value={draft.claudeApiKey}
                 onChange={(e) => setDraft({ ...draft, claudeApiKey: e.target.value })}
                 type={showKey ? "text" : "password"}
-                placeholder="sk-ant-…"
+                placeholder="sk-ant-… (leave blank to use the hosted proxy)"
                 className="input pr-10"
               />
               <button
@@ -90,9 +93,13 @@ export function Settings() {
               </button>
             </div>
           </Field>
-          {draft.claudeApiKey && (
+          {draft.claudeApiKey ? (
             <p className="text-xs text-rtr-green flex items-center gap-1 mt-2">
-              <CheckCircle className="w-3.5 h-3.5" />Key configured
+              <CheckCircle className="w-3.5 h-3.5" />Using your personal API key
+            </p>
+          ) : (
+            <p className="text-xs text-rtr-dim flex items-center gap-1 mt-2">
+              <CheckCircle className="w-3.5 h-3.5" />Using hosted proxy
             </p>
           )}
         </Card>

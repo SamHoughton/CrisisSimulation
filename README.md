@@ -18,10 +18,10 @@ Built for facilitators who need to run realistic, high-pressure crisis exercises
 - Scenario briefing cards - fake encrypted file explorer (ransomware) or blurred viral deepfake video
 - Real-time vote visualisation with animated reveal
 
-**AI-Powered Analysis** (optional, requires Anthropic API key)
+**AI-Powered Analysis**
 - Claude Haiku suggests inject body text while building scenarios
 - Claude Sonnet generates structured post-exercise reports: gap analysis, role feedback, recommendations, overall score
-- Direct browser-to-API - no proxy server needed
+- Calls route through a Netlify Function proxy by default (server-side API key); users can optionally paste their own key in Settings to use their own Anthropic account
 
 **Facilitator Tools**
 - Live session control panel with inject queue, voting panel, and observation notes
@@ -48,9 +48,13 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). No environment variables, no setup, no accounts.
+Open [http://localhost:5173](http://localhost:5173). No accounts needed.
 
-To enable AI features (inject suggestions + post-exercise reports), paste your [Anthropic API key](https://console.anthropic.com/) into **Settings**.
+**For AI features in local dev:** the Vite dev server doesn't run Netlify Functions. Either:
+- Run `netlify dev` instead of `npm run dev` (requires `npm i -g netlify-cli`) to get the proxy locally, with `ANTHROPIC_API_KEY` set in a `.env` file, **or**
+- Paste your own [Anthropic API key](https://console.anthropic.com/) into **Settings** to call the API directly from the browser.
+
+In production (deployed to Netlify), the proxy is always available, so the in-app key field stays optional.
 
 ## How It Works
 
@@ -97,7 +101,7 @@ src/
 
 ## Key Design Decisions
 
-**No backend** - Everything runs client-side. The Claude API is called directly from the browser (with `anthropic-dangerous-direct-browser-access` header). State persists in `localStorage` under key `crisis-tabletop`.
+**Almost no backend** - The app is a static SPA. All session state, scenarios, and reports persist in `localStorage` under key `crisis-tabletop`. The only server-side code is a single Netlify Function (`netlify/functions/claude.ts`, ~100 lines) that proxies Anthropic API calls so the API key stays on the server. Users can optionally bypass the proxy by supplying their own key, in which case the browser calls the Anthropic API directly with the `anthropic-dangerous-direct-browser-access` header.
 
 **BroadcastChannel for sync** - The facilitator's Runner screen and the Present screen communicate via `BroadcastChannel("crisis-present")`. Messages include inject releases, vote broadcasts, timer sync, and session status changes. Works across browser tabs on the same origin - no WebSocket server needed.
 
@@ -123,13 +127,21 @@ src/
 
 ## Deployment
 
-Built for Netlify (or any static host):
+Built for Netlify. Both the static SPA and the Claude proxy function deploy from the same repo:
 
 ```bash
 npm run build    # outputs to dist/
 ```
 
-The `dist/` folder is a static SPA - deploy to Netlify, Vercel, Cloudflare Pages, or any static file server. No server-side code.
+**Required Netlify environment variable** (Site settings → Environment variables):
+
+| Key | Value |
+|---|---|
+| `ANTHROPIC_API_KEY` | Your Anthropic API key (used by `netlify/functions/claude.ts`) |
+
+The function endpoint is `/.netlify/functions/claude`. If `ANTHROPIC_API_KEY` is unset, the proxy returns a 500 and the app falls back to the user-supplied key from Settings (if any).
+
+The app also runs on Vercel, Cloudflare Pages, or any static host, but you'll need to port the proxy function to that host's serverless format (or rely on user-supplied keys only).
 
 ## Licence
 

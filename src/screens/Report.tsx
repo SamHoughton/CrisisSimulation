@@ -67,14 +67,10 @@ export function Report() {
     : session.scenario.durationMin;
 
   const handleGenerate = async () => {
-    if (!settings.claudeApiKey) {
-      setGenError("Add your Anthropic API key in Settings first.");
-      return;
-    }
     setGenerating(true);
     setGenError("");
     try {
-      const result = await generateReport(session, settings.claudeApiKey, {
+      const result = await generateReport(session, settings.claudeApiKey || undefined, {
         orgName: settings.orgName,
         facilitatorName: settings.facilitatorName,
       });
@@ -212,7 +208,7 @@ export function Report() {
       <div className="flex-1 overflow-y-auto px-8 py-8">
         <div className="max-w-5xl mx-auto">
           {!report && !generating && (
-            <NoReportState onGenerate={handleGenerate} hasApiKey={!!settings.claudeApiKey} />
+            <NoReportState onGenerate={handleGenerate} />
           )}
           {generating && (
             <div className="flex items-center justify-center py-24">
@@ -248,8 +244,7 @@ function AnimatedScoreBadge({ score, scoreColour }: { score: number; scoreColour
   );
 }
 
-function NoReportState({ onGenerate, hasApiKey }: { onGenerate: () => void; hasApiKey: boolean }) {
-  const setView = useStore((s) => s.setView);
+function NoReportState({ onGenerate }: { onGenerate: () => void }) {
   const session = useStore((s) => s.session);
 
   return (
@@ -274,26 +269,13 @@ function NoReportState({ onGenerate, hasApiKey }: { onGenerate: () => void; hasA
         </div>
       </div>
 
-      {!hasApiKey ? (
-        <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl p-5 text-center">
-          <AlertCircle className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-          <p className="text-sm font-medium text-rtr-text mb-1">API key required</p>
-          <p className="text-xs text-rtr-muted mb-3">
-            Add your Anthropic API key in Settings to generate the AI gap analysis.
-          </p>
-          <button onClick={() => setView("settings")} className="text-sm text-rtr-green hover:underline">
-            Go to Settings →
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={onGenerate}
-          className="w-full flex items-center justify-center gap-2 bg-rtr-red text-white py-3 rounded-xl text-sm font-medium hover:bg-[#c0001f] transition-colors"
-        >
-          <TrendingUp className="w-4 h-4" />
-          Generate AI Gap Analysis
-        </button>
-      )}
+      <button
+        onClick={onGenerate}
+        className="w-full flex items-center justify-center gap-2 bg-rtr-red text-white py-3 rounded-xl text-sm font-medium hover:bg-[#c0001f] transition-colors"
+      >
+        <TrendingUp className="w-4 h-4" />
+        Generate AI Gap Analysis
+      </button>
     </div>
   );
 }

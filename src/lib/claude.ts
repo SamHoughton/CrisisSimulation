@@ -9,12 +9,45 @@
  *    and produce a structured gap analysis report with scores, role feedback, and
  *    recommendations. Takes 20–40 seconds; costs ~$0.05–0.15/report.
  *
- * Both call the Anthropic Messages API directly from the browser (no proxy).
- * Requires "anthropic-dangerous-direct-browser-access": "true" header.
+ * Routing:
+ * - If a user-provided API key is present, calls api.anthropic.com directly
+ *   with the "anthropic-dangerous-direct-browser-access" header (BYO key mode).
+ * - Otherwise, calls the Netlify Function proxy at /.netlify/functions/claude
+ *   which injects a server-side ANTHROPIC_API_KEY env var. This keeps the
+ *   key out of the bundle and lets us absorb costs for users.
  */
 
 import type { Session, GeneratedReport } from "@/types";
 import { ROLE_SHORT, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
+
+const PROXY_ENDPOINT = "/.netlify/functions/claude";
+
+/**
+ * Call the Anthropic Messages API. Routes through the Netlify Function
+ * proxy unless a user-supplied apiKey is provided (BYO key fallback).
+ */
+async function callClaude(
+  payload: Record<string, unknown>,
+  apiKey?: string
+): Promise<Response> {
+  if (apiKey && apiKey.trim()) {
+    return fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify(payload),
+    });
+  }
+  return fetch(PROXY_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
 
 /** Generate a realistic inject body using Claude Haiku. */
 export async function suggestInjectText(
@@ -28,12 +61,12 @@ export async function suggestInjectText(
     targetRoles: string[];
     previousInjects: Array<{ title: string; body: string }>;
   },
-  apiKey: string
+  apiKey?: string
 ): Promise<string> {
   const roleNames = opts.targetRoles.join(", ") || "all participants";
   const prev = opts.previousInjects.length
     ? opts.previousInjects
-        .map((p, i) => `Inject ${i + 1}: ${p.title} -${p.body.slice(0, 120)}`)
+        .map((p, i) => `Inject ${i + 1}: ${p.title} - ${p.body.slice(0, 120)}`)
         .join("\n")
     : "None yet (this is the first inject)";
 
@@ -55,20 +88,14 @@ Write the inject body text shown on screen to participants. Requirements:
 
 Return ONLY the inject text, no preamble or explanation.`;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
+  const res = await callClaude(
+    {
       model: "claude-haiku-4-5-20251001",
       max_tokens: 300,
       messages: [{ role: "user", content: prompt }],
-    }),
-  });
+    },
+    apiKey
+  );
 
   if (!res.ok) {
     const err = await res.text();
@@ -104,7 +131,7 @@ Return ONLY valid JSON matching this schema exactly:
 
 export async function generateReport(
   session: Session,
-  apiKey: string,
+  apiKey?: string,
   opts?: { orgName?: string; facilitatorName?: string }
 ): Promise<GeneratedReport> {
   const duration = session.endedAt
@@ -153,7 +180,7 @@ ${li.facilitatorNote ? `\n**Facilitator note:** ${li.facilitatorNote}` : ""}
 **Difficulty:** ${DIFFICULTY_LABEL[session.scenario.difficulty] ?? session.scenario.difficulty}
 **Duration:** ${duration} minutes
 **Participants:** ${session.participants
-    .map((p) => `${ROLE_SHORT[p.role] ?? p.role}${p.name ? ` -${p.name}` : ""}`)
+    .map((p) => `${ROLE_SHORT[p.role] ?? p.role}${p.name ? ` - ${p.name}` : ""}`)
     .join(", ")}
 
 ## Transcript
@@ -167,21 +194,15 @@ ${
 
 Return valid JSON only.`;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
+  const res = await callClaude(
+    {
       model: "claude-sonnet-4-6",
       max_tokens: 4096,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
-    }),
-  });
+    },
+    apiKey
+  );
 
   if (!res.ok) {
     const err = await res.text();
