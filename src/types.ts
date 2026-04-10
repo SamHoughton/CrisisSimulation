@@ -29,6 +29,13 @@ export interface DecisionOption {
   key: string;        // "A", "B", "C"
   label: string;      // shown to participants
   consequence?: string; // facilitator-only note
+  /**
+   * Optional best-to-worst rank, 1 = best. Used by the facilitator-facing
+   * voting panel to hint at the designer's intended "right answer" after
+   * reveal. Omit or set equal ranks for opinion-based options where there
+   * is no single correct call.
+   */
+  rank?: number;
 }
 
 /** One branch from a decision: if optionKey is chosen, jump to nextInjectId */

@@ -884,10 +884,12 @@ function VotingPanel({
           const count    = counts[opt.key] ?? 0;
           const voters   = decisions.filter((d: DecisionEntry) => d.optionKey === opt.key);
           const isWinner = revealed && opt.key === majority;
+          const isBest   = revealed && typeof opt.rank === "number" && opt.rank === 1;
           return (
             <div key={opt.key}
               className={cn("border rounded-lg p-3 transition-all", OPTION_COLOURS[i] ?? OPTION_COLOURS[0],
-                isWinner && "ring-2 ring-amber-400/50 scale-[1.02]"
+                isWinner && "ring-2 ring-amber-400/50 scale-[1.02]",
+                isBest && !isWinner && "ring-2 ring-rtr-green/50"
               )}>
               <div className="flex items-center gap-2 mb-1">
                 <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-mono bg-white/10",
@@ -895,6 +897,16 @@ function VotingPanel({
                   {opt.key}
                 </span>
                 <span className="text-xs font-medium text-rtr-text flex-1 line-clamp-1">{opt.label}</span>
+                {revealed && typeof opt.rank === "number" && (
+                  <span className={cn(
+                    "text-[10px] font-bold font-mono px-1.5 py-0.5 rounded shrink-0",
+                    opt.rank === 1
+                      ? "bg-rtr-green/20 text-rtr-green border border-rtr-green/40"
+                      : "bg-white/5 text-rtr-dim border border-white/10"
+                  )}>
+                    #{opt.rank}
+                  </span>
+                )}
                 <span className={cn("text-xl font-bold font-mono vote-count", OPTION_TEXT[i] ?? OPTION_TEXT[0])}>
                   {count}
                 </span>
@@ -913,6 +925,9 @@ function VotingPanel({
                 </div>
               )}
               {isWinner && <div className="mt-1 text-xs font-semibold text-amber-400 font-mono">▲ MAJORITY</div>}
+              {isBest && !isWinner && (
+                <div className="mt-1 text-xs font-semibold text-rtr-green font-mono">★ DESIGNER'S PICK</div>
+              )}
             </div>
           );
         })}

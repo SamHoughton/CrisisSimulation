@@ -536,43 +536,64 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
 
 
   // ─── SCENARIO 2: THE DEEPFAKE CEO ────────────────────────────────────────────
-  // Full 3-hour arc across 11 injects. 3-way branch at inject 1, all paths
-  // converge at inject 4. The arc tests crisis comms, identity verification,
-  // market integrity, employee welfare, board governance, and long-term
-  // reputational strategy.
+  //
+  // Full 3-hour arc across 17 injects. The graph has:
+  //   - 4-way divergence at i1   (paths A/B/C/D each get their own narrative inject: i2a-i2d)
+  //   - Full convergence at i3   (shared pressures regardless of opening path)
+  //   - 2-way re-divergence at i3d (staff-led i4a vs market-led i4b)
+  //   - Re-convergence at i4h    (the personal cost - character test, both paths see this)
+  //   - Re-convergence at i5     (forensic vindication, 4 options all routing to i6)
+  //   - Re-convergence at i6     (copycat + internal leak narrative)
+  //   - 4-way divergence at i7   (endgame play - each option leads to a distinct ending)
+  //   - 4 distinct endings       (end1=triumph, end2=recovery, end3=diminished, end4=catastrophic)
+  //
+  // Every decision inject has exactly 4 options. Each option has an optional
+  // rank field (1 = best) to surface the designer's intended "right answer"
+  // during debrief. Opinion-based options share ranks where there is genuinely
+  // no single correct call.
+  //
+  // Content note: the in-universe video is a deepfake of the CEO making a
+  // contemptuous, abusive tirade about staff, clients, and regulators. It is
+  // deliberately non-racial - the test is about identity integrity, market
+  // integrity, and crisis decision-making, not about handling a racism allegation.
   {
     id: "tpl-deepfake-001",
     title: "The Deepfake CEO",
     description:
-      "A hyper-realistic AI-generated video of your CEO making inflammatory statements goes viral at 6am. Tests crisis comms, legal, identity verification, market integrity, employee welfare, and board governance across a full arc from first alert to long-term strategic recovery.",
+      "A hyper-realistic AI-generated video of your CEO making contemptuous, inflammatory statements goes viral at 6am. Branching 17-inject arc with 4 possible endings. Tests crisis comms, legal, identity verification, market integrity, employee welfare, and board governance from first alert to long-term strategic recovery.",
     type: "SOCIAL_MEDIA_CRISIS",
     difficulty: "CRITICAL",
-    durationMin: 150,
+    durationMin: 180,
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2026-04-10T00:00:00Z",
     coverGradient: "135deg, #1a0a2e 0%, #4a0080 50%, #e8002d 100%",
     roles: ["CEO", "CCO", "CLO", "CISO", "CFO", "HR_LEAD"],
     briefing:
-      "You are the senior leadership team of Apex Dynamics, a FTSE 250 technology and professional services company with 8,000 employees globally. It is 06:04 on a Monday morning. Your social media listening tool has just fired an automated alert. A 47-second video of your CEO, posted from an account called @ApexLeaks, is going viral on X. In it, the CEO appears to make openly racist remarks and threatens to fire half the workforce. Your CEO is asleep, their phone is off, and their EA is trying to reach them. You have minutes before this becomes uncontrollable.",
+      "You are the senior leadership team of Apex Dynamics, a FTSE 250 technology and professional services company with 8,000 employees globally. It is 06:04 on a Monday morning. Your social media listening tool has just fired an automated alert. A 47-second video of your CEO, posted from an account called @ApexLeaks, is going viral on X. In it, the CEO appears to deliver a contemptuous, abusive tirade: threatening mass layoffs in humiliating terms, disparaging two named enterprise clients by name, boasting about 'burying' regulators, and making crude personal attacks on a rival chief executive. The footage is forensically convincing. Your CEO is asleep, their phone is off, and their EA is trying to reach them. You have minutes before this becomes uncontrollable.",
 
     injects: [
 
-      // ── INJECT 1: T+0. Video goes viral. Three-way branch. ──────────────
+      // ── ACT 1: THE UNKNOWN ─────────────────────────────────────────────
+      // Four-way opening branch. Each option leads to a narrative inject
+      // that plays out the consequences of that specific choice before the
+      // paths converge again at df-i3.
+
+      // ── INJECT 1: T+0. Video goes viral. Four-way branch. ──────────────
       {
         id: "df-i1",
         order: 0,
         title: "The Video Goes Viral",
         body: "06:04. The video has 340,000 views in 22 minutes and is trending #1 on X under #ApexCEO. Media outlets are running 'developing story' banners. Three FTSE 100 investors have already emailed Investor Relations. Your CEO's personal inbox is being flooded. The footage is forensically convincing: off-the-shelf AI detectors return inconclusive results. Your CEO remains unreachable. The team must decide how to respond before markets open.",
         facilitatorNotes:
-          "This IS a deepfake. The CEO has been impersonated as part of a coordinated corporate espionage and short-selling operation. The challenge: the team does not know this yet. The correct instinct is Option C (holding statement): it buys time without lying. Option A risks being catastrophically wrong. Option B creates a dangerous vacuum. Key coaching question: what is the cost of being wrong in each direction?",
+          "This IS a deepfake. The CEO has been impersonated as part of a coordinated corporate espionage and short-selling operation - the team does not know this yet. Option C (measured holding statement) is the correct instinct: it buys time without lying and is legally defensible. Option A risks being catastrophically wrong if the video were real. Option B creates a dangerous vacuum. Option D is an interesting curveball - a personal tone from the CEO's family channel that humanises but bypasses process. Key coaching question: what is the cost of being wrong in each direction?",
         delayMinutes: 0,
         timerMinutes: 10,
-        tickerHeadline: "VIRAL: Video purportedly showing Apex Dynamics CEO making racist remarks passes 340,000 views",
+        tickerHeadline: "VIRAL: 47-second video purportedly showing Apex Dynamics CEO in abusive tirade passes 340,000 views",
         artifact: {
           type: "tv_broadcast",
           tvNetwork: "SKY NEWS",
-          tvHeadline: "APEX DYNAMICS CEO IN VIRAL RACISM ROW - COMPANY YET TO RESPOND",
+          tvHeadline: "APEX DYNAMICS CEO IN VIRAL SCANDAL - COMPANY YET TO RESPOND",
           tvTicker: "VIRAL: 340K views in 22 minutes. #ApexCEO trending #1. Markets open in 3h.",
           tvReporter: "LIVE - CITY OF LONDON",
         },
@@ -582,125 +603,104 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         decisionOptions: [
           {
             key: "A",
-            label: "Issue an immediate denial: 'This video is fabricated', before forensic confirmation",
+            label: "Issue an immediate denial: 'This video is fabricated', before any forensic confirmation",
             consequence:
-              "Statement out in 11 minutes. If the video were real, this would be catastrophic. Forensics later confirms it is fake, and credibility is preserved. But it was a gamble, and a second video of the CFO making fake acquisition statements then surfaces.",
+              "Statement out in 11 minutes. If the video were real, this would be catastrophic. The gamble pays off on authenticity grounds but the denial is aggressively questioned. A second deepfake of the CFO follows within the hour.",
+            rank: 4,
           },
           {
             key: "B",
-            label: "Hold all public statements until forensic verification is complete (estimated 2-3 hours)",
+            label: "Full silence: hold all public statements until forensic verification is complete (2-3 hours)",
             consequence:
-              "Vacuum filled by speculation. Two major clients call to suspend contracts pending clarity. Share price opens down 8.4% at 08:00. Forensic confirmation arrives at 09:15. Staff are in crisis.",
+              "The vacuum is filled by speculation. Two clients call to suspend contracts. Share price opens down 9.7%. Staff are in visible distress. The legally-safe choice is reputationally expensive.",
+            rank: 3,
           },
           {
             key: "C",
-            label: "Issue a holding statement: 'We are aware and urgently investigating authenticity'",
+            label: "Issue a measured holding statement: 'We are aware and urgently investigating authenticity'",
             consequence:
-              "Buys time. Media covers the uncertainty angle. Pressure builds but no major errors are made. Forensic firm engaged immediately. CEO reached at 07:20.",
+              "Buys time. Media covers the uncertainty angle without declaring a verdict. Pressure builds but no major errors are made. Forensic firm engaged immediately. CEO reached at 07:20.",
+            rank: 1,
+          },
+          {
+            key: "D",
+            label: "Let the CEO's EA authorise a short personal statement from the CEO's family account",
+            consequence:
+              "An unusual, humanising move. It works emotionally but bypasses the comms playbook and exposes the EA and family members to scrutiny. Twitter sentiment warms slightly; legal counsel is furious.",
+            rank: 2,
           },
         ],
         branches: [
           { optionKey: "A", nextInjectId: "df-i2a" },
           { optionKey: "B", nextInjectId: "df-i2b" },
           { optionKey: "C", nextInjectId: "df-i2c" },
+          { optionKey: "D", nextInjectId: "df-i2d" },
         ],
       },
 
-      // ── INJECT 2a: Path A. Denial issued, second video surfaces. ────────
+      // ── INJECT 2a: Path A narrative. Denial under siege. ───────────────
       {
         id: "df-i2a",
         order: 10,
-        title: "Path A: Denial Questioned, Second Video Emerges",
-        body: "07:00. Your denial is being challenged. A tech journalist has enhanced the audio and says it 'passes every test I know of'. The @ApexLeaks account has vanished, but not before sending the video to 22 journalists. Your stock is down 5.9% at open. Then a second video surfaces on a financial forum: this one shows your CFO announcing a fake £2.4B acquisition of a competitor. Markets briefly spike on the fake announcement before algorithms flag it. The FCA has just called.",
+        title: "Path A: The Denial Is Questioned",
+        body: "07:00. Your denial is being picked apart. A tech journalist has enhanced the audio and posted a thread saying it 'passes every AI-detection test I know of'. The @ApexLeaks account has vanished, but not before DMing the video to 22 journalists. An FT reporter is demanding a named spokesperson on the record before 07:30 or the paper will run a piece with the headline 'Denial first, evidence later: the Apex Dynamics playbook'. Sky News now has the story running on a loop.",
         facilitatorNotes:
-          "The CFO video is also a deepfake by the same actor. This is now clearly a coordinated attack. The FCA call is about potential market manipulation: the fake acquisition video caused a real market move. The team now faces two simultaneous deepfakes, a questioned denial, an FCA inquiry, and a stock in freefall. This is the maximum pressure point of Path A.",
+          "The group has taken a bold position without evidence. Keep them thinking about what they would do if the denial were proven wrong. This inject is a narrative inject - no vote. The facilitator should pressure them on evidence and talking points. All paths converge at df-i3.",
         delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "Second deepfake video causes brief market spike as CFO is impersonated in fake £2.4B acquisition announcement",
+        timerMinutes: 6,
+        tickerHeadline: "BREAKING: Apex Dynamics denial questioned as tech journalist says video 'passes every detection test'",
         artifact: {
-          type: "stock_chart",
-          stockTicker: "APEX.L",
-          stockCompanyName: "Apex Dynamics plc",
-          stockOpenPrice: 482.40,
-          stockCurrentPrice: 454.00,
-          stockChangePercent: -5.89,
-          stockVolume: "18.4M",
+          type: "tv_broadcast",
+          tvNetwork: "SKY NEWS",
+          tvHeadline: "APEX DYNAMICS DENIES VIRAL VIDEO - TECH EXPERTS CHALLENGE CLAIM",
+          tvTicker: "DEVELOPING: FT calls for spokesperson on record. Company has issued denial without forensic confirmation.",
+          tvReporter: "LIVE - CANARY WHARF",
         },
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CCO", "CLO", "CISO", "CFO"],
-        expectedKeywords: ["FCA", "market manipulation", "coordinated", "two videos", "forensic", "law enforcement"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Notify the FCA formally, engage law enforcement, and issue a joint statement on both videos",
-            consequence:
-              "FCA acknowledges the proactive engagement. Law enforcement opens an investigation. The joint statement on both deepfakes neutralises the CFO video. Market partially recovers.",
-          },
-          {
-            key: "B",
-            label: "Focus on the CEO video denial first, address the CFO video separately",
-            consequence:
-              "Fragmented response. Media treats them as two separate stories, doubling coverage. FCA sends a formal information notice within the hour.",
-          },
-        ],
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CCO", "CLO", "CEO"],
+        expectedKeywords: ["denial", "FT", "evidence", "position", "forensic"],
       },
 
-      // ── INJECT 2b: Path B. Silence costs dearly. ────────────────────────
+      // ── INJECT 2b: Path B narrative. The silence deafens. ──────────────
       {
         id: "df-i2b",
         order: 10,
-        title: "Path B: The Silence Costs You",
-        body: "08:00. Two hours of silence has been read by the market as confirmation. Your largest retail partner has suspended co-marketing. 240 staff have emailed HR asking for an emergency all-hands. The Sunday Times website now leads with 'Apex Dynamics refuses to comment as CEO racism video spreads'. Share price opens down 9.7%. Your CEO is awake and incandescent. They want to make a personal live video immediately, without a brief.",
+        title: "Path B: The Silence Deafens",
+        body: "07:45. Nearly two hours of silence is being read by the market as confirmation. 240 staff have emailed HR asking for an emergency all-hands. Three of your largest enterprise clients have put morning meetings on hold. The Sunday Times website now leads with 'Apex Dynamics refuses to comment as viral CEO video spreads'. An FT op-ed has just gone live calling for a board statement within the hour. Your CEO is awake, incandescent, and wants to record a personal video from their kitchen 'right now'.",
         facilitatorNotes:
-          "The CEO going live unplanned and emotional is high risk. But two hours of silence has already done serious damage. This tests whether the group can manage the CEO as an asset rather than a liability. The HR crisis is real: employees need to hear something. The CCO and HR lead should be pushing for an internal communication at minimum, even if the external position is still 'investigating'.",
+          "Silence has given the market free rein to fill the vacuum. The CEO's raw impulse to go live unprompted is high risk - a single fatigued or defensive word becomes the clip of the day. Coach the group: you can break the silence with a single sentence (internal first, then external) and still honour the forensics process. This inject is a narrative inject - no vote. All paths converge at df-i3.",
         delayMinutes: 0,
-        timerMinutes: 10,
-        tickerHeadline: "Apex Dynamics silent for two hours as CEO deepfake video spreads. Share price down 9.7%.",
+        timerMinutes: 6,
+        tickerHeadline: "Apex Dynamics silent two hours as viral video spreads. Share price opens down 9.7%.",
         artifact: {
           type: "slack_thread",
           slackChannel: "#all-hands",
           slackMessages: [
-            { author: "Priya Ramesh",      role: "Eng Lead",      time: "07:58", text: "Has anyone heard anything official? The video is everywhere and I've had three of my team message me asking if they should come in today." },
-            { author: "Tom Whitfield",     role: "Acct Exec",     time: "07:59", text: "Two of my clients have just emailed asking if the meetings this morning are still on. I don't know what to tell them." },
-            { author: "Aisha Chowdhury",   role: "People Ops",    time: "08:01", text: "I am deeply upset and frightened by what I've seen. I need to know whether our leadership is taking this seriously. Silence is not a strategy." },
-            { author: "Mark Harris",       role: "Senior PM",     time: "08:02", text: "The FT has just published an opinion piece calling for the CEO to resign. Is comms planning to respond?" },
-            { author: "Dani Bryant",       role: "Designer",      time: "08:03", text: "I love this company. Please, please say something. Anything. My mum saw the video and asked me why I still work here." },
+            { author: "Priya Ramesh",    role: "Eng Lead",   time: "07:38", text: "Has anyone heard anything official? The video is everywhere and three of my team have messaged me asking if they should come in today." },
+            { author: "Tom Whitfield",   role: "Acct Exec",  time: "07:40", text: "Two of my clients have emailed asking if the meetings this morning are still on. I don't know what to tell them." },
+            { author: "Aisha Chowdhury", role: "People Ops", time: "07:42", text: "I am deeply upset by what I've seen. I need to know whether our leadership is taking this seriously. Silence is not a strategy." },
+            { author: "Mark Harris",     role: "Senior PM",  time: "07:44", text: "The FT has just published an op-ed calling for the CEO to step aside pending investigation. Is comms planning to respond?" },
+            { author: "Dani Bryant",     role: "Designer",   time: "07:45", text: "I love this company. Please, please say something. Anything. My mum saw the video and asked me why I still work here." },
           ],
         },
-        isDecisionPoint: true,
+        isDecisionPoint: false,
+        decisionOptions: [],
         targetRoles: ["CEO", "CCO", "HR_LEAD"],
-        expectedKeywords: ["CEO", "live", "brief", "all-hands", "employees", "internal communication"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Let the CEO go live immediately on LinkedIn with an authentic, unscripted response",
-            consequence:
-              "The CEO is emotional but convincing. The video gets 1.2M views. Authenticity works. Share price recovers partially. But the CEO's fatigue shows, and 20 minutes later the CFO deepfake surfaces.",
-          },
-          {
-            key: "B",
-            label: "Take 30 minutes to brief the CEO, then go live with prepared key messages",
-            consequence:
-              "The CEO goes live with a calm, clear rebuttal. Forensics are not yet back, but their personal authenticity carries the message. Share price stabilises. The CFO video appears as the CEO finishes.",
-          },
-        ],
-        branches: [
-          { optionKey: "A", nextInjectId: "df-i3" },
-          { optionKey: "B", nextInjectId: "df-i3" },
-        ],
+        expectedKeywords: ["silence", "internal", "all-hands", "FT", "pressure"],
       },
 
-      // ── INJECT 2c: Path C. Holding statement buys time. ─────────────────
+      // ── INJECT 2c: Path C narrative. The measured path holds. ──────────
       {
         id: "df-i2c",
         order: 10,
         title: "Path C: The Window Holds, Forensics Race",
-        body: "07:20. Your holding statement is working. Media are covering the uncertainty angle: 'Company investigates viral CEO video'. The CEO has been reached and is calm and cooperative. Your CISO has engaged DeepDetect AI, a specialist forensic firm. They have found early AI-generated audio artefacts. ETA for confirmation: 75 minutes. Meanwhile, a campaigning journalist has published a thread calling the holding statement 'a cover-up playbook'. 180 staff have emailed HR. The CFO deepfake has just appeared on a financial forum.",
+        body: "07:20. Your measured holding statement is working. Media are covering the uncertainty angle: 'Company investigates viral CEO video'. The CEO has been reached, is calm, and is cooperating. Your CISO has engaged DeepDetect AI, a specialist forensic firm. They have found early AI-generated audio artefacts. ETA for full confirmation: 75 minutes. But a campaigning journalist has now published a thread accusing the company of running a 'cover-up playbook'. 180 staff have emailed HR asking what to do today. A second deepfake - this one of your CFO announcing a fake £2.4B acquisition - has appeared on a financial forum.",
         facilitatorNotes:
-          "Path C is the most defensible position, legally and reputationally. The group is doing well. The challenge now is internal: employees need something. The CFO video is a complication that the group now has to absorb mid-investigation. The journalist's 'cover-up' narrative is dangerous: the CCO needs a proactive media strategy, not just reactive holding statements.",
+          "Path C is the most defensible position, legally and reputationally. The group is doing well. The challenge now is internal comms (employees need something) and the CFO video complication. The journalist's 'cover-up' narrative is dangerous: the CCO needs a proactive strategy, not just reactive holding statements. This inject is a narrative inject - no vote. All paths converge at df-i3.",
         delayMinutes: 0,
-        timerMinutes: 10,
-        tickerHeadline: "Apex Dynamics investigation underway as authenticity of CEO video is disputed. CFO video now also circulating.",
+        timerMinutes: 6,
+        tickerHeadline: "Apex Dynamics investigation underway as authenticity of viral video is disputed. CFO video now also circulating.",
         artifact: {
           type: "email",
           emailFrom: "forensics@deepdetect.ai",
@@ -713,16 +713,46 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         expectedKeywords: ["forensic", "employee comms", "CFO video", "internal communication", "cover-up narrative"],
       },
 
+      // ── INJECT 2d: Path D narrative. The family statement gamble. ──────
+      {
+        id: "df-i2d",
+        order: 10,
+        title: "Path D: The Family Channel Lands",
+        body: "07:15. The CEO's EA has posted a 180-character statement from the CEO's verified family account: 'I am aware of a video circulating that purports to show me. It is not me. I am safe, at home, with my family, and cooperating with my company and the authorities.' Reaction is split. Sympathetic journalists are leading with 'CEO breaks silence from family home'. Hostile ones are calling it 'a bizarre sidestep of corporate process'. The CLO is furious because the statement was never cleared with legal. The CCO is processing it in real-time. It has 840,000 views in 15 minutes.",
+        facilitatorNotes:
+          "This is an unorthodox but emotionally potent move. It humanises the CEO and breaks the vacuum with a low-stakes format. It also bypasses the playbook and exposes the CEO's family. The CLO's anger is real - this could have been a disaster if the statement had been one word different. Push the group: is this a one-off, or are they going to double down on the family-channel tone? How do they now fold the CLO back in? This inject is a narrative inject - no vote. All paths converge at df-i3.",
+        delayMinutes: 0,
+        timerMinutes: 6,
+        tickerHeadline: "Apex Dynamics CEO breaks silence via family social account: 'It is not me'",
+        artifact: {
+          type: "tweet",
+          tweetHandle: "@CarolineMerrickHome",
+          tweetDisplayName: "Caroline Merrick",
+          tweetLikes: 42100,
+          tweetRetweets: 18400,
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CCO", "CLO", "HR_LEAD"],
+        expectedKeywords: ["family account", "personal", "process", "legal", "humanise"],
+      },
+
+      // ── ACT 2: THE CONVERGENCE ─────────────────────────────────────────
+      // All four Act 1 paths converge at df-i3 (a narrative inject, not a
+      // vote). The group then faces df-i3d, a 4-option priority decision
+      // that re-diverges the arc into two paths (staff-led vs market-led)
+      // before converging again at df-i4h.
+
       // ── INJECT 3: All paths converge. CEO reached, staff crisis. ────────
       {
         id: "df-i3",
         order: 20,
-        title: "All Hands: Staff Crisis and Market Open",
-        body: "08:15. Whatever path you took, three simultaneous crises have converged. First, 340 staff members have sent emails or Slack messages asking what is happening, and your Head of HR says morale is in freefall. Second, share price at market open is down 7.2%, and three major institutional investors are demanding a call with the Chairman before midday. Third, a national broadcaster has announced they are running the story on the morning news at 09:00. Your CEO is now fully briefed and operational. The forensic firm's ETA for confirmation is 45 minutes.",
+        title: "Convergence: Market Open and the CEO Returns",
+        body: "08:15. Whatever path you took, the same three pressures have landed simultaneously. Share price is down 7.2% at open on volume five times normal. Three institutional investors are demanding a call with the Chairman before midday. The BBC, Sky News, FT and Bloomberg all have the story leading their markets coverage. 340 staff have emailed HR asking for an all-hands. Your CEO is finally fully briefed and operational. Forensics ETA: 45 minutes. The group now has to choose what to do in the next ten minutes.",
         facilitatorNotes:
-          "This is the convergence point. Regardless of path, the group now faces the same set of simultaneous pressures. The key question is: what order do you tackle these in? The internal crisis (staff) is underweighted in most crisis response frameworks, but it matters enormously for long-term recovery. The institutional investor calls should go through the Chairman, not the CEO directly.",
+          "This is the convergence point. Whatever happened in Act 1, the group now faces the same set of simultaneous pressures. This inject is a narrative inject - the decision itself lives in df-i3d. Use the timer to create urgency. The CEO being 'finally operational' is important: the group is no longer waiting on the principal, and any failure to act is now on the room.",
         delayMinutes: 0,
-        timerMinutes: 12,
+        timerMinutes: 6,
         tickerHeadline: "Apex Dynamics shares fall 7.2% at open as institutional investors demand chairman call",
         artifact: {
           type: "stock_chart",
@@ -733,35 +763,130 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           stockChangePercent: -7.20,
           stockVolume: "22.1M",
         },
-        isDecisionPoint: true,
+        isDecisionPoint: false,
+        decisionOptions: [],
         targetRoles: ["CEO", "HR_LEAD", "CFO", "CCO"],
-        expectedKeywords: ["all-hands", "investors", "chairman", "BBC", "priority", "internal"],
+        expectedKeywords: ["convergence", "market open", "BBC", "investors", "staff", "CEO"],
+      },
+
+      // ── INJECT 3d: Priority decision. 4 options, re-diverges. ──────────
+      {
+        id: "df-i3d",
+        order: 22,
+        title: "Priority Under Pressure",
+        body: "08:20. The CEO turns to the room: 'We have ten minutes before the BBC piece drops. Who do we talk to first?' On the table: staff (all-hands from the CEO), the national broadcaster (direct interview or statement), institutional investors (via Chairman), or a full handover of the crisis response to your external PR firm. Every option has a cost. The CCO is watching the Twitter trend line. The HR lead is watching their inbox refresh every 30 seconds.",
+        facilitatorNotes:
+          "Staff-first (A) is almost always the right move in a reputational crisis: long-term trust compounds faster than short-term share price damage. Media-first (B) is defensible if the group genuinely has a message ready - but often they don't. Investors-first (C) is a classic financial-crisis answer that feels 'professional' but optically cold. External-PR handover (D) is a form of abdication and usually produces a generic, corporate, tin-eared response. Options A/B route to df-i4a (staff-led narrative); C/D route to df-i4b (market-led narrative).",
+        delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Apex Dynamics leadership team prioritises response as institutional investors press for contact",
+        artifact: {
+          type: "email",
+          emailFrom: "newsdesk@bbc.co.uk",
+          emailTo: "press@apexdynamics.com",
+          emailSubject: "BBC Business: Deadline 08:45 for on-the-record response on Apex CEO video",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "HR_LEAD", "CCO", "CFO"],
+        expectedKeywords: ["all-hands", "BBC", "investors", "chairman", "priority", "internal", "PR firm"],
         decisionOptions: [
           {
             key: "A",
-            label: "Prioritise internal: all-hands message from CEO first, then investor calls",
+            label: "Staff first: CEO records a two-minute all-hands video and sends it company-wide",
             consequence:
-              "Staff morale stabilises. Three union reps who were about to send a press statement hold off. Investor calls are brief but manage to prevent panic selling. Share price holds at -7.2%.",
+              "Morale stabilises within the hour. Union reps hold off a public statement. Investor calls later in the morning land on firmer internal ground. The long game is being played well.",
+            rank: 1,
           },
           {
             key: "B",
-            label: "Prioritise external: investor calls and BBC response first, internal comms after",
+            label: "Media first: CEO gives a tight 90-second on-the-record statement to the BBC",
             consequence:
-              "Investors are reassured. The BBC story runs with a company statement. But a union rep sends a press statement citing 'leadership silence on staff welfare'. This becomes a secondary story.",
+              "The BBC piece is balanced. The CEO comes across as composed. But 240 staff later say 'we heard it from the BBC before we heard it from our CEO' and the internal trust cost lingers.",
+            rank: 2,
           },
+          {
+            key: "C",
+            label: "Investors first: Chairman-led call with the top three institutional holders",
+            consequence:
+              "Institutional panic is defused. Share price holds. But the BBC story runs without a company voice, and staff see the leadership team treating the share price as the priority over their wellbeing.",
+            rank: 3,
+          },
+          {
+            key: "D",
+            label: "Hand the whole response over to the external PR firm until forensics are back",
+            consequence:
+              "The PR firm issues a polished but generic statement. It holds the line but does not humanise. Staff read it as corporate and distant. The CCO later notes this was the moment the company 'outsourced its own voice'.",
+            rank: 4,
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i4a" },
+          { optionKey: "B", nextInjectId: "df-i4a" },
+          { optionKey: "C", nextInjectId: "df-i4b" },
+          { optionKey: "D", nextInjectId: "df-i4b" },
         ],
       },
 
-      // ── NEW INJECT 3.5: The human moment ────────────────────────────────
-      // Tests empathy, personal leadership, and the CEO's composure under
-      // a genuinely personal pressure. Not a decision point - a character test.
+      // ── INJECT 4a: Staff-led path narrative ─────────────────────────────
       {
-        id: "df-i3h",
-        order: 25,
-        title: "The Personal Cost",
-        body: "08:35. The CEO's EA steps in quietly. The CEO's 14-year-old daughter has just been sent home from school after classmates played the video to her in the corridor and filmed her reaction. She is in tears in the car. The CEO's phone is ringing. At the same moment, the Head of HR reports that a Black colleague in Finance has asked to take the day off and is 'not sure she wants to come back'. The CEO asks the room: 'what do I do?'",
+        id: "df-i4a",
+        order: 30,
+        title: "Path: Staff-Led Recovery",
+        body: "08:45. The internal comms landed well. A two-minute video from the CEO has been watched by 6,200 of 8,000 staff within thirty minutes. The Slack mood has shifted from panic to cautious solidarity. External pressure is still intense: the BBC story is running, the FT has a long read in progress, and the CFO deepfake is now spreading on finance forums. But your people are holding together. A senior engineer has just posted a widely-shared thread defending the CEO's integrity. A client who had cancelled a meeting has rebooked.",
         facilitatorNotes:
-          "This inject is deliberately not a vote. It is a character test. The purpose is to surface the human dimensions that crisis playbooks almost always underweight. Well-run teams will pause and acknowledge this. Poorly-run teams will treat it as a distraction. Push the group: how does the CEO show up for their family AND the company in the next 10 minutes? What does the HR Lead do for the colleague in Finance? This is where leadership either earns or loses long-term trust.",
+          "Staff-led paths look slow on paper but they compound. This narrative inject is meant to show the group that the choice they made is paying off in ways they cannot always measure. Be careful not to overplay the victory - the CFO deepfake and the forensics question still loom. This is a breather, not a resolution.",
+        delayMinutes: 0,
+        timerMinutes: 6,
+        tickerHeadline: "Apex Dynamics staff rally behind CEO as internal video circulates; CFO video complication emerges",
+        artifact: {
+          type: "slack_thread",
+          slackChannel: "#all-hands",
+          slackMessages: [
+            { author: "Priya Ramesh",    role: "Eng Lead",   time: "08:42", text: "Just watched the CEO video. That was a human response. I am not going anywhere. If any of my team need to talk today my door is open." },
+            { author: "Tom Whitfield",   role: "Acct Exec",  time: "08:43", text: "Two of my three clients have just reconfirmed this morning's meetings. One said: 'we just wanted to see how you were going to handle it'." },
+            { author: "Mark Harris",     role: "Senior PM",  time: "08:44", text: "Engineering and product are both holding together. If the forensics come back soon we'll be fine." },
+          ],
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "HR_LEAD", "CCO"],
+        expectedKeywords: ["internal", "CEO video", "staff", "momentum", "CFO video"],
+      },
+
+      // ── INJECT 4b: Market-led path narrative ────────────────────────────
+      {
+        id: "df-i4b",
+        order: 30,
+        title: "Path: Market-Led Recovery",
+        body: "08:45. The institutional investor calls went well. Share price has ticked back up to -5.4% from the open low. The BBC ran the story with a brief company statement from your PR firm. Bloomberg picked up the line 'Apex Dynamics: fully investigating; no staff action in contemplation'. But your internal metrics are worrying: the Slack #all-hands channel has gone quiet in a bad way, 40 more staff have opened sick-day requests, and the union rep is drafting a statement that begins 'the leadership has prioritised the market over its people'. The CFO deepfake has just appeared on a finance forum.",
+        facilitatorNotes:
+          "Market-led paths look decisive in the moment but can corrode trust. This narrative inject is meant to show the group that share-price stabilisation has come at a cost. The union rep drafting a statement is the key detail: in the next few hours, the group will have to win back the internal room. Do not let the group conclude they made the wrong call - this is a trade-off, not a failure.",
+        delayMinutes: 0,
+        timerMinutes: 6,
+        tickerHeadline: "Apex Dynamics shares recover partially after chairman-led investor call; BBC runs PR firm statement",
+        artifact: {
+          type: "stock_chart",
+          stockTicker: "APEX.L",
+          stockCompanyName: "Apex Dynamics plc",
+          stockOpenPrice: 482.40,
+          stockCurrentPrice: 456.10,
+          stockChangePercent: -5.45,
+          stockVolume: "28.7M",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CFO", "CCO", "HR_LEAD"],
+        expectedKeywords: ["investors", "chairman", "share price", "union", "internal silence", "CFO video"],
+      },
+
+      // ── INJECT 4h: The personal cost. Character test. Both paths see this.
+      {
+        id: "df-i4h",
+        order: 35,
+        title: "The Personal Cost",
+        body: "08:55. The CEO's EA steps in quietly and closes the door. The CEO's 14-year-old daughter has just been sent home from school after classmates played the video to her in the corridor and filmed her reaction. She is in tears in the car. The CEO's phone is ringing. At the same moment, the Head of HR reports that a colleague in Finance has asked to take the day off - she is 'not sure she wants to come back to an office where people might look at her and think of that video'. The CEO turns to the room and asks, quietly: 'what do I do?'",
+        facilitatorNotes:
+          "This inject is deliberately not a vote. It is a character test. The purpose is to surface the human dimensions that crisis playbooks almost always underweight. Well-run teams will pause and acknowledge this. Poorly-run teams will treat it as a distraction. Push the group: how does the CEO show up for their family AND the company in the next ten minutes? What does the HR Lead do for the colleague in Finance? This is where leadership either earns or loses long-term trust. Both Act 2 paths (staff-led and market-led) land here.",
         delayMinutes: 0,
         timerMinutes: 8,
         tickerHeadline: "Reports emerge of Apex Dynamics staff distress as deepfake video circulates on school social media",
@@ -769,8 +894,9 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           type: "slack_thread",
           slackChannel: "dm: HR Lead to CEO",
           slackMessages: [
-            { author: "HR Lead",  role: "direct message", time: "08:33", text: "Confidential. Keisha from Finance has just come to me in tears. She said: 'I know it's not real, but I don't know how to walk past people today who might think it is.' She's asked for the day off. I've said yes. I think we need to do something more." },
-            { author: "HR Lead",  role: "direct message", time: "08:34", text: "Also: your EA has just told me about your daughter. I'm so sorry. Whatever you need from me, I'm here." },
+            { author: "HR Lead",  role: "direct message", time: "08:52", text: "Confidential. A colleague in Finance has just come to me in tears. She said: 'I know it's not real, but I don't know how to walk past people today who might think it is.' She's asked for the day off. I've said yes. I think we need to do something more." },
+            { author: "HR Lead",  role: "direct message", time: "08:53", text: "Also: your EA has just told me about your daughter. I'm so sorry. Whatever you need from me, I'm here." },
+            { author: "HR Lead",  role: "direct message", time: "08:54", text: "And one more thing: two members of my own team have been crying at their desks this morning. This crisis has a human weight you will feel more over the next 24 hours." },
           ],
         },
         isDecisionPoint: false,
@@ -779,22 +905,31 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         expectedKeywords: ["empathy", "family", "staff welfare", "personal", "leadership"],
       },
 
-      // ── INJECT 4: Forensic confirmation ─────────────────────────────────
+      // ── ACT 3: VINDICATION AND ENDGAME ─────────────────────────────────
+      // df-i5: forensic confirmation, 4-option decision, all branches
+      // converge to df-i6 (a narrative inject combining the copycat attack
+      // and the discovery of an internal leak). df-i7 is the endgame
+      // decision: 4 options, 4 branches, each routing to a distinct ending
+      // (df-end1 through df-end4). The endings are short narrative injects
+      // that provide closure for debrief.
+
+      // ── INJECT 5: Forensic vindication + short-selling intelligence ─────
       {
-        id: "df-i4",
-        order: 30,
-        title: "Forensic Confirmation: Both Videos Are Deepfakes",
-        body: "09:15. DeepDetect AI have confirmed that both videos are AI-generated. Voice synthesis, facial mapping, identical infrastructure. The technical report is publishable. The threat actor has been traced to an offshore server cluster with known links to a corporate intelligence firm, suggesting a coordinated disinformation attack possibly tied to a short-selling position. FCA trading data shows 840,000 Apex Dynamics put options were purchased in the 48 hours before the videos were released. The question is: how do you use this confirmation?",
+        id: "df-i5",
+        order: 40,
+        title: "Forensic Vindication: Both Videos Confirmed Deepfakes",
+        body: "09:30. DeepDetect AI have just delivered the final report. Both the CEO and CFO videos are AI-generated. Voice synthesis fingerprints, facial mapping artefacts, identical infrastructure. The technical report is publishable. More significantly, your CISO has separately uncovered something explosive: 840,000 Apex Dynamics put options were quietly purchased through three nominee accounts in the 48 hours before the videos dropped. Notional value approximately £18M. The trading pattern points to a coordinated short-selling attack, possibly tied to a corporate intelligence firm operating out of an offshore cluster. You now hold the vindication. The question is how you spend it.",
         facilitatorNotes:
-          "This is the vindication moment, but it has to be handled carefully. The short-selling link is potentially criminal. Publishing it prematurely could compromise an FCA or SFO investigation. The forensic report itself is publishable and should be. The question of whether to go public on the short-selling theory is genuinely difficult: it is explosive but not yet proven. Push the group on the difference between what they know and what they can say.",
+          "This is the vindication moment. The forensic report is unambiguously good news, but the short-selling angle is genuinely difficult: it is potentially criminal, it is incendiary if announced publicly, and going loud could compromise an FCA or SFO investigation. The four options offered are not equally strong. B (publish forensics + private FCA brief) is the textbook correct call: it maintains the narrative win, gives investigators what they need without tipping the attacker, and protects the company from accusations of selective disclosure. A is dramatic and tempting but risks the FCA telling you to stand down publicly. C is reckless. D is too cautious and wastes the moment. Push the group on the difference between what they know and what they can responsibly say. Whatever they choose, all four branches converge to df-i6, where they discover that the attacker had inside help.",
         delayMinutes: 0,
         timerMinutes: 12,
-        tickerHeadline: "CONFIRMED: Both Apex Dynamics videos determined to be AI deepfakes as forensic report is published",
+        tickerHeadline: "BREAKING: Forensic firm confirms Apex Dynamics CEO and CFO videos as AI-generated deepfakes",
         artifact: {
-          type: "email",
-          emailFrom: "report@deepdetect.ai",
-          emailTo: "ciso@apexdynamics.com",
-          emailSubject: "Final Forensic Report: CEO and CFO videos confirmed AI deepfake. Publishable.",
+          type: "tv_broadcast",
+          tvNetwork: "SKY NEWS",
+          tvHeadline: "APEX DYNAMICS: FORENSIC FIRM CONFIRMS CEO AND CFO VIDEOS ARE AI DEEPFAKES",
+          tvTicker: "SKY NEWS BUSINESS - APEX DYNAMICS DEEPFAKE - SHARES RECOVER 4% IN PRE-OPEN TRADING - FORENSIC REPORT TO BE PUBLISHED - FCA REPORTEDLY MONITORING UNUSUAL OPTIONS ACTIVITY - CEO TO MAKE STATEMENT",
+          tvReporter: "Ian Whitfield, Sky News Business, City of London",
         },
         isDecisionPoint: true,
         targetRoles: ["CEO", "CLO", "CCO", "CISO"],
@@ -802,257 +937,219 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         decisionOptions: [
           {
             key: "A",
-            label: "Publish the forensic report and publicly allege this may be a short-selling attack",
+            label: "Publish the forensics AND publicly accuse a coordinated short-selling attack at a press conference",
             consequence:
-              "Maximum transparency. Media pivot to 'company vindicated, attack exposed'. The FCA then contacts you and asks you to stop public speculation as it may compromise their investigation. Tense.",
+              "Maximum drama. The story flips overnight: 'Apex vindicated, attackers exposed'. But within two hours the FCA contacts the CLO formally, asking the company to cease all public speculation as it may compromise their investigation. The CEO has to walk back. A small but real credibility cost.",
+            rank: 4,
           },
           {
             key: "B",
-            label: "Publish the forensic report only, and give the short-selling evidence to the FCA privately",
+            label: "Publish the forensics in full; brief the FCA privately on the short-selling evidence and let them lead",
             consequence:
-              "The FCA is grateful for the cooperation. Investigation proceeds. Media story: 'company vindicated'. Controlled narrative. The attacker does not know investigators are closing in.",
+              "The FCA is grateful. The investigation accelerates. Media coverage is overwhelmingly positive: 'company vindicated by independent forensics'. The attacker still believes they are unobserved. Strongest possible position going into Day 2.",
+            rank: 1,
           },
           {
             key: "C",
-            label: "Brief the forensic report to major media off-record first, then publish",
+            label: "Brief two trusted financial journalists off-record before publication to control the angle",
             consequence:
-              "Journalists publish their own analysis alongside the report. Narrative strongly favourable. The FCA then investigates whether the off-record briefing itself constitutes selective disclosure.",
+              "The FT and Bloomberg run favourable pieces within an hour. The narrative is yours. But by Day 2 the FCA is asking whether the off-record briefing constituted selective disclosure under MAR. A second-order legal headache.",
+            rank: 3,
           },
+          {
+            key: "D",
+            label: "Publish only the technical forensics; say nothing publicly about the short-selling angle at all",
+            consequence:
+              "Safe. Defensible. But journalists notice the absence and start asking 'who benefited from this attack?' independently. Within 24 hours half the financial press is speculating without your facts. You lose control of the most compelling part of the story.",
+            rank: 2,
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i6" },
+          { optionKey: "B", nextInjectId: "df-i6" },
+          { optionKey: "C", nextInjectId: "df-i6" },
+          { optionKey: "D", nextInjectId: "df-i6" },
         ],
       },
 
-      // ── INJECT 5: FCA opens market manipulation investigation ───────────
-      {
-        id: "df-i5",
-        order: 40,
-        title: "FCA Opens Market Manipulation Investigation",
-        body: "10:30. The FCA has formally opened a market manipulation investigation under the Market Abuse Regulation. They confirm 840,000 put options, worth approximately £18M, were purchased in the 48 hours prior. They are requesting all company communications since last Monday and want a senior officer available for voluntary interview within 48 hours. Your own internal review has found that the deepfake videos were created using footage from a recent investor day, footage that was shared with 14 external parties including two hedge funds.",
-        facilitatorNotes:
-          "The investor day footage link is significant: the attacker had access to high-quality video material, which means someone either leaked it or it was obtained through a breach. The 14 external parties list needs immediate review. The CISO should be running a parallel investigation. The 'voluntary' FCA interview should be handled carefully: voluntary does not mean unimportant. The CLO should be advising on the correct legal approach.",
-        delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "FCA opens market manipulation investigation after 840,000 put options purchased before deepfake attack",
-        artifact: {
-          type: "legal_letter",
-          legalCaseRef: "FCA/MAR/2024/1094",
-          legalAuthority: "Financial Conduct Authority, Market Oversight Division",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CISO", "CEO", "CFO"],
-        expectedKeywords: ["MAR", "market manipulation", "investor day", "put options", "FCA interview", "leak"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Full cooperation: provide all communications and identify the investor day footage recipients",
-            consequence:
-              "The FCA moves quickly. Two hedge funds are flagged. The SFO is briefed. One fund freezes its position. The company is treated as a victim and cooperating witness, protected from regulatory action.",
-          },
-          {
-            key: "B",
-            label: "Provide only what is strictly required; take legal advice on each document before disclosure",
-            consequence:
-              "The FCA issues a formal information notice. Legal privilege review takes three weeks. By then the attacker has closed their short position. Investigation stalls without the early evidence.",
-          },
-        ],
-      },
-
-      // ── NEW INJECT 5.5: Copycat attack attempt ──────────────────────────
-      // Tests whether the group can think beyond their own crisis to the
-      // wider ecosystem, and whether cooperation is possible with a rival.
-      {
-        id: "df-i5b",
-        order: 45,
-        title: "Copycat: A Rival Is Hit",
-        body: "11:30. Your CISO is forwarded a video from a contact at Helix Corp, one of your largest competitors. A similar deepfake of their CEO has just begun circulating on Reddit and a mid-tier finance blog. It is less polished and has fewer views (around 14,000), but the pattern is unmistakable: same voice-cloning signature, same distribution vector, same timing architecture. Helix's Head of Security is calling, asking off-the-record whether you can share your forensic approach. Your PR firm warns against any contact that could be framed as coordination. The FCA is not yet aware.",
-        facilitatorNotes:
-          "This tests whether the group can see beyond their immediate crisis. Helping Helix is the right thing to do, both ethically and strategically: a second victim strengthens the attribution narrative and makes Apex look less singled-out. But it raises real questions about disclosure, legal exposure, and regulatory communication. The correct approach is to help via a formal channel (e.g. the NCSC cyber defence unit, or via respective legal counsel) rather than a direct informal exchange. Watch whether the group treats this as a distraction or as a strategic opportunity.",
-        delayMinutes: 0,
-        timerMinutes: 10,
-        tickerHeadline: "Second FTSE 250 company reportedly hit by similar AI deepfake video as pattern emerges",
-        artifact: {
-          type: "siem_alert",
-          siemAlertId: "THREAT-2024-DF-HELIX-01",
-          siemSeverity: "HIGH",
-          siemEventType: "Matching Deepfake Signature Detected on External Target. Common Infrastructure.",
-          siemSourceIp: "185.220.xxx.xxx (TOR - Same cluster as DF-01 / DF-02)",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CISO", "CLO", "CCO", "CEO"],
-        expectedKeywords: ["coordinate", "NCSC", "law enforcement", "attribution", "industry", "help"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Share forensic approach with Helix via NCSC and legal counsel, brief the FCA that a second victim exists",
-            consequence:
-              "Helix's response is accelerated. The NCSC opens a coordinated advisory. The FCA treats the attribution case as strengthened. Apex earns significant industry credibility. A joint public statement is floated.",
-          },
-          {
-            key: "B",
-            label: "Decline direct contact: advise Helix to engage their own forensic firm, say nothing publicly",
-            consequence:
-              "Helix struggles for hours without context. Their response is slower and less confident. Industry later notes Apex's caution negatively. The attacker gains time to cover tracks.",
-          },
-          {
-            key: "C",
-            label: "Share directly with Helix's CISO informally, outside official channels",
-            consequence:
-              "Helix moves fast. But the informal contact is later flagged by the FCA during disclosure review as a potential coordination risk. Tense but defensible.",
-          },
-        ],
-      },
-
-      // ── INJECT 6: Internal leak investigation surfaces ──────────────────
+      // ── INJECT 6: Copycat + internal leak (narrative convergence) ───────
       {
         id: "df-i6",
-        order: 50,
-        title: "Internal Source Identified: HR and Legal Crisis",
-        body: "12:00. Your CISO's investigation has identified the source of the investor day footage leak. It traces to the personal laptop of a senior communications manager. Access logs show the footage was copied to an encrypted drive 10 days ago. The individual is currently in the office. HR and Legal need to decide: confront immediately, or preserve evidence and coordinate with law enforcement first? Separately, two major enterprise clients have each emailed asking for reassurance calls about data security following the breach revelations.",
+        order: 45,
+        title: "The Picture Sharpens: A Rival Is Hit, And A Door Was Left Open",
+        body: "11:45. Two things land in the same fifteen minutes. First, your CISO's contact at Helix Corp - a major rival - calls in confidence: a less-polished deepfake of their CEO has just begun circulating on Reddit. Same voice-cloning signature, same distribution vector, same offshore infrastructure. Helix's Head of Security is asking, off the record, whether you can share your forensic approach. Second, while reviewing access logs, your CISO's team has identified the source of the leaked investor day footage: a personal encrypted drive belonging to a senior communications manager who is currently in the building. The footage was copied 10 days ago. The two pieces snap together: the attacker had inside help, and they are now hunting other targets. The room goes very quiet.",
         facilitatorNotes:
-          "This is a genuinely difficult HR, legal, and investigation intersection. Confronting the employee immediately risks evidence destruction, a hostile reaction, and potential whistleblowing claims if the process is mishandled. Coordinating with law enforcement first is the right instinct, but it takes longer and the individual may suspect something. The client reassurance calls are important commercially. The CISO should lead them, not the CEO.",
+          "This is the narrative pivot from 'we are the victim' to 'we are part of a wider attack with an internal dimension'. There is no decision point here on purpose - the group needs a beat to absorb both shocks before the endgame. Push them informally: how do they want to handle Helix? (The right answer is via NCSC, never directly.) How do they want to handle the comms manager? (Preserve evidence first, brief the police Economic Crime Unit, do NOT confront yet.) These are not voted on, but they should colour what the group chooses in df-i7. If the group rushes a confrontation here, flag it - that is the kind of mistake that ruins an otherwise strong endgame.",
         delayMinutes: 0,
         timerMinutes: 10,
-        tickerHeadline: "Apex Dynamics investigates internal source of deepfake footage leak",
+        tickerHeadline: "Second FTSE 250 firm reportedly hit by similar AI deepfake attack as common signature emerges",
         artifact: {
-          type: "siem_alert",
-          siemAlertId: "THREAT-2024-INT-01",
-          siemSeverity: "HIGH",
-          siemEventType: "Data Exfiltration: Investor Day Footage. Internal Source Identified.",
-          siemSourceIp: "INTERNAL. Comms Dept Device. Personal encrypted drive.",
+          type: "slack_thread",
+          slackChannel: "dm: CISO to CEO + CLO",
+          slackMessages: [
+            { author: "CISO", role: "direct message", time: "11:42", text: "Helix Corp just called. Their CEO has a deepfake circulating on Reddit. Same voice-clone fingerprint as ours. Same TOR cluster. Their head of security wants our forensic approach off the record." },
+            { author: "CISO", role: "direct message", time: "11:43", text: "Separately. We've found the leak source for the investor day footage. It came off a personal encrypted drive belonging to a senior comms manager. Copied 10 days ago. They are in the office today." },
+            { author: "CISO", role: "direct message", time: "11:44", text: "I want to brief the NCSC on the Helix link and the police Economic Crime Unit on the internal leak. I do NOT want to confront the comms manager yet - we will lose the device evidence the moment they realise. Please advise." },
+            { author: "CISO", role: "direct message", time: "11:45", text: "One more thing. If we coordinate properly with Helix and the NCSC, this stops being 'Apex got attacked'. It becomes 'Apex helped expose a market disinformation operation'. That is a different story." },
+          ],
         },
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "HR_LEAD", "CISO", "CEO"],
-        expectedKeywords: ["evidence", "law enforcement", "HR process", "preserve", "client", "investigation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Preserve evidence and brief law enforcement. Do not confront the employee yet.",
-            consequence:
-              "Police Economic Crime Unit briefed. Employee's devices preserved remotely. Formal interview conducted 48 hours later with police present. Strongest evidential position.",
-          },
-          {
-            key: "B",
-            label: "Suspend the employee immediately and interview under company HR process",
-            consequence:
-              "The employee's personal devices leave the building that evening. The company process is legally valid, but police later note the missed opportunity to seize personal devices with evidence.",
-          },
-        ],
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CISO", "CLO", "HR_LEAD", "CEO"],
+        expectedKeywords: ["NCSC", "Helix", "internal leak", "Economic Crime Unit", "preserve evidence", "coordinated attack"],
       },
 
-      // ── INJECT 7: Board governance and accountability ───────────────────
+      // ── INJECT 7: Endgame decision. 4 options. 4 distinct endings. ──────
       {
         id: "df-i7",
-        order: 60,
-        title: "Board Governance: Who Is Accountable?",
-        body: "Day 2, 09:00. Share price has recovered to down 3.1% from the worst point. The narrative is moving in Apex's favour. But the board has convened with hard questions. How did a communications manager have unsupervised access to high-quality executive footage? Was there a failure of media security policy? Should the CISO have detected the data exfiltration from the comms device earlier? Investors want a formal board statement on what has changed. A FTSE governance advisory firm has contacted your Chairman suggesting a 'board resilience review'.",
+        order: 50,
+        title: "The Endgame: How Do You Want This Story To End?",
+        body: "Day 2, 16:00. The first 36 hours are over. The forensics are public. The Helix link is being quietly worked through NCSC channels. The internal leak investigation is sealed with the police. Share price has clawed back to -3.1% from the worst point. The narrative is moving in your favour but it is not yet decided. Three things have just landed on your desk simultaneously. The government's AI Safety Institute has invited the CEO to chair a new working group on AI disinformation in financial markets. Your law firm has drafted a pre-emptive defamation lawsuit against the offshore intelligence firm believed to be behind the attack. And your PR firm has prepared a 'minimal disclosure, recovery posture' brief that they say will let the company quietly move on within six weeks. The CEO turns to the room and asks the question that has been hanging over every decision today: 'how do you want this story to end?'",
         facilitatorNotes:
-          "This is the systemic governance question. The correct answer involves improved access controls, a media asset management policy, enhanced endpoint monitoring, and probably an independent security review. The CISO accountability question is nuanced: they were the victim of a sophisticated attack, but internal data exfiltration is within their remit. The board review: advisable to accept rather than resist. It signals maturity.",
+          "This is the endgame and it is the most important decision of the exercise. The four options are not just about the next 24 hours - they are about who Apex Dynamics chooses to be after the crisis. A (transparency + AI working group) is the high-credibility long game: it converts the attack into industry leadership and is the path most likely to leave the company materially stronger than before. B (quiet internal recovery) is the safest legal path and produces a competent recovery, but Apex remains defined by the attack rather than the response. C (defensive legal posture, minimal disclosure) is the path of fear: it protects the company from short-term scrutiny but bleeds long-term trust. D (pre-emptive lawsuit) is the path of vengeance and is almost always wrong: it gives the attacker a public platform, exposes the company's evidence prematurely, and risks looking vindictive. Push the group hard. The 'right answer' is A, but the choice between A and B is genuinely strategic and reasonable people disagree. C and D have substantial costs that the group should be made to articulate before voting.",
         delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "Board convenes governance review as investors demand formal response to deepfake attack",
+        timerMinutes: 15,
+        tickerHeadline: "Apex Dynamics weighs response strategy as AI Safety Institute extends invitation; legal options under review",
         artifact: {
-          type: "email",
-          emailFrom: "governance@ftseadvisory.co.uk",
-          emailTo: "chairman@apexdynamics.com",
-          emailSubject: "Board Resilience Review: Deepfake Attack. Governance Advisory.",
+          type: "tv_broadcast",
+          tvNetwork: "FT LIVE",
+          tvHeadline: "APEX DYNAMICS: FROM TARGET TO TEST CASE - WHAT WILL THE BOARD DO NEXT?",
+          tvTicker: "FT LIVE - APEX DYNAMICS RECOVERS TO -3.1% - GOVERNMENT AI SAFETY INSTITUTE EXTENDS INVITATION - HELIX CORP CONFIRMS SIMILAR ATTACK - LEGAL ACTION REPORTEDLY UNDER CONSIDERATION - INDUSTRY WATCHES",
+          tvReporter: "Helena Marsh, Financial Times Live",
         },
         isDecisionPoint: true,
-        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
-        expectedKeywords: ["access controls", "media policy", "CISO accountability", "board review", "resilience", "governance"],
+        targetRoles: ["CEO", "CLO", "CCO", "CFO", "CISO"],
+        expectedKeywords: ["AI Safety Institute", "transparency", "lawsuit", "recovery", "leadership", "long game"],
         decisionOptions: [
           {
             key: "A",
-            label: "Accept the board resilience review, commission independently, and report results to shareholders",
+            label: "Lead from the front: accept the AI Safety Institute role, publish a full incident account, brief the industry",
             consequence:
-              "Investors are satisfied. The review takes six weeks and costs £120k. Findings lead to a new media security policy, an access review, and a CISO resource increase. Strong ESG signal.",
+              "The high-credibility path. Apex becomes the case study other companies reference. Long game won. (Routes to END_TRIUMPH.)",
+            rank: 1,
           },
           {
             key: "B",
-            label: "Resist the external review. Conduct an internal review and publish a remediation summary.",
+            label: "Quiet competence: focus on internal remediation, brief peers privately, let the story fade",
             consequence:
-              "Two institutional investors publicly state they consider the internal review inadequate. A proxy advisory firm recommends voting against the CISO's continued board-level reporting at AGM.",
-          },
-        ],
-      },
-
-      // ── NEW INJECT 7.5: The reversal ────────────────────────────────────
-      // A freelance journalist alleges Apex may have faked its own attack
-      // to cover up a real racist comment. This is the trust-reversal moment.
-      {
-        id: "df-i7b",
-        order: 65,
-        title: "The Reversal: Is the Victim Really the Villain?",
-        body: "Day 2, 14:30. A prominent freelance investigative journalist has posted a long thread on X: 'I've been looking at the Apex Dynamics deepfake story and something doesn't add up. The forensic firm, DeepDetect AI, was founded by a former Apex security consultant. Three of the investor day attendees who had access to the footage have financial ties to Apex's PR agency. I'm not saying the video is real, but I am saying: who benefits from the narrative that it isn't?' The thread has 120,000 views in 90 minutes. Two mainstream outlets are asking for comment. The CEO's phone is ringing again.",
-        facilitatorNotes:
-          "This is a genuinely hostile counter-narrative. It is factually weak but rhetorically effective. The former-consultant link at DeepDetect is technically true but irrelevant (he left two years ago). The PR agency ties are coincidental. But disproving a conspiracy theory is harder than proving a truth. The group has to decide: engage directly (risks amplifying), brief journalists privately (risks looking orchestrated), or let the story die on its own (risks it fermenting). There is no clean answer. Coach the group: what does a mature response to bad-faith scrutiny look like?",
-        delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "Journalist raises questions over independence of forensic firm in Apex Dynamics deepfake case",
-        artifact: {
-          type: "tweet",
-          tweetHandle: "@rosa_investigates",
-          tweetDisplayName: "Rosa Alvarez",
-          tweetLikes: 8400,
-          tweetRetweets: 3100,
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CCO", "CEO", "CLO"],
-        expectedKeywords: ["transparency", "rebuttal", "third party", "forensic independence", "counter-narrative"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Publish a detailed rebuttal with independent second-opinion forensics from a second firm",
-            consequence:
-              "A second forensic firm confirms the findings within 24 hours. The rebuttal is measured and transparent. The journalist pivots to a partial retraction. Credibility strengthens.",
-          },
-          {
-            key: "B",
-            label: "Ignore the thread; focus on operational recovery and let the story die",
-            consequence:
-              "The thread gains 400,000 views by evening. A Sunday paper picks it up as 'questions remain'. The counter-narrative becomes a permanent footnote on the Apex Dynamics Wikipedia page.",
+              "The safe path. Operationally sound. But Apex never quite owns the narrative. (Routes to END_RECOVERY.)",
+            rank: 2,
           },
           {
             key: "C",
-            label: "Brief a trusted journalist off-record to publish a debunking piece",
+            label: "Defensive posture: minimal disclosure, no public engagement, follow the PR firm's recovery brief",
             consequence:
-              "A well-regarded tech reporter publishes a careful debunk. It works, but the journalist who originally raised the claims publicly accuses Apex of media manipulation, reopening the wound.",
+              "The fearful path. Short-term safe, long-term corrosive. The attack defines the company. (Routes to END_DIMINISHED.)",
+            rank: 3,
           },
+          {
+            key: "D",
+            label: "Counter-attack: file the pre-emptive defamation lawsuit, publicly name the intelligence firm",
+            consequence:
+              "The path of vengeance. Almost always wrong. Gives the attacker a platform and exposes evidence. (Routes to END_CATASTROPHIC.)",
+            rank: 4,
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-end1" },
+          { optionKey: "B", nextInjectId: "df-end2" },
+          { optionKey: "C", nextInjectId: "df-end3" },
+          { optionKey: "D", nextInjectId: "df-end4" },
         ],
       },
 
-      // ── INJECT 8: Long-term AI threat doctrine ──────────────────────────
+      // ── ENDING 1: TRIUMPH (Path A) ──────────────────────────────────────
       {
-        id: "df-i8",
-        order: 70,
-        title: "The Industry Moment: Setting a Precedent",
-        body: "Day 3, 11:00. The Apex Dynamics case has become a landmark. The government's AI Safety Institute has asked your CEO to contribute to a new code of practice on AI-generated disinformation in financial markets. Three peer companies have privately asked to adopt your incident playbook. Your law firm advises this is a chance to shape the regulatory environment before it shapes you. But your CFO notes that public engagement on AI policy will bring fresh media scrutiny to what happened. The question is: how does Apex want to be remembered for this?",
+        id: "df-end1",
+        order: 60,
+        title: "Ending: The Industry Test Case",
+        body: "Six weeks later. The CEO has chaired the inaugural meeting of the AI Safety Institute working group on financial-markets disinformation. The Apex Dynamics incident report - 47 pages, technical appendix, full timeline - is being studied at three business schools and is the second most-downloaded document on the AISI website. Share price closed yesterday at +1.8% on the year, ahead of the FTSE 250. The Helix Corp CEO joined the working group as deputy chair. The offshore intelligence firm behind the attack has been formally identified by the FCA and is the subject of a joint UK-US enforcement action. The comms manager is awaiting trial. Internally, staff retention is at a five-year high and the company has just hired its largest-ever graduate intake on the back of the case. At the FT's Person of the Year shortlist event last night, the Apex CEO was named one of three runners-up. The citation read: 'showed that integrity, when paired with disclosure, compounds.'",
         facilitatorNotes:
-          "This is the final inject: forward-looking and reflective. It gives the group an opportunity to think beyond the crisis to the organisational identity question. Are you a company that hides from hard moments, or one that uses them to build credibility? The AI Safety Institute angle is real: regulators are actively looking for business input. This is also a natural debrief trigger. What would you do differently? What did this crisis reveal about your team?",
+          "This is the best possible ending and exists to validate the long-game choice. Use it in debrief to ask: what made this possible? The answer is usually a combination of (a) the early staff-first instinct in df-i3d, (b) the disciplined handling of forensics in df-i5, (c) the patient handling of the internal leak in df-i6, and (d) the courage of the endgame choice. Make sure the group sees the through-line.",
         delayMinutes: 0,
-        timerMinutes: 15,
-        tickerHeadline: "Apex Dynamics case becomes landmark AI disinformation test as government seeks input on new code of practice",
+        timerMinutes: 8,
+        tickerHeadline: "Apex Dynamics CEO named FT Person of the Year runner-up after landmark AI disinformation response",
         artifact: {
-          type: "email",
-          emailFrom: "engagement@ai-safety-institute.gov.uk",
-          emailTo: "ceo@apexdynamics.com",
-          emailSubject: "AI Safety Institute: Invitation to contribute to Code of Practice on AI Disinformation in Financial Markets",
+          type: "tv_broadcast",
+          tvNetwork: "SKY NEWS",
+          tvHeadline: "APEX DYNAMICS CEO NAMED FT PERSON OF THE YEAR RUNNER-UP - 'INTEGRITY WHEN PAIRED WITH DISCLOSURE COMPOUNDS'",
+          tvTicker: "SKY NEWS - APEX DYNAMICS SHARES +1.8% YTD - AI SAFETY INSTITUTE WORKING GROUP CONVENES - COMMS MANAGER AWAITING TRIAL - JOINT UK-US ENFORCEMENT ACTION ANNOUNCED - GRADUATE HIRING AT FIVE-YEAR HIGH",
+          tvReporter: "Ian Whitfield, Sky News Business",
         },
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CLO", "CCO", "CISO"],
-        expectedKeywords: ["AI policy", "precedent", "industry", "resilience", "code of practice", "reputation"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Accept: Apex leads the working group and publishes a public incident account",
-            consequence:
-              "The CEO becomes a recognised voice on AI disinformation. Media narrative shifts from 'attacked' to 'leader'. Share price recovers to up 1.2% within 30 days. Reputational long game won.",
-          },
-          {
-            key: "B",
-            label: "Decline: keep a low profile while legal proceedings continue",
-            consequence:
-              "Legally cautious. Another company leads the working group. Apex remains defined by the attack rather than the response. Institutional investors note the missed opportunity in their ESG assessment.",
-          },
-        ],
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CCO", "CISO", "HR_LEAD"],
+        expectedKeywords: ["transparency", "leadership", "long game", "industry", "trust"],
+      },
+
+      // ── ENDING 2: RECOVERY (Path B) ─────────────────────────────────────
+      {
+        id: "df-end2",
+        order: 60,
+        title: "Ending: Quiet Competence",
+        body: "Six weeks later. The deepfake story has faded from the front pages. Apex Dynamics' share price is back to within 1.2% of pre-attack levels. The internal remediation programme is on track: new media security policy, new endpoint controls, a quiet doubling of the CISO's budget. The comms manager has been arrested and charged. The Helix Corp link was worked discreetly through NCSC channels and a joint advisory was issued to the FTSE 350 last week without naming either company. Staff are largely past it - although exit interview data shows a small but persistent uptick in 'concerns about how the company handled communication during the crisis'. The CEO declined the AI Safety Institute invitation. The chair was taken by the CFO of a rival firm, who is now the public face of the issue. At the next board meeting, an independent director asks gently whether Apex 'might have done more with the moment'. There is a long silence before the chairman moves to the next agenda item.",
+        facilitatorNotes:
+          "This is the 'good but not great' ending. It is not a failure - the company recovered and the operational outcomes are sound. But the group should sit with the closing image: the silent boardroom. The cost of choosing safety over leadership is not a number on a P&L; it is a missed opportunity that will quietly shape the company's identity for years. Use this in debrief to ask: was it worth it? Some groups will defend B vigorously. That is a legitimate position. Make sure they articulate why.",
+        delayMinutes: 0,
+        timerMinutes: 8,
+        tickerHeadline: "Apex Dynamics shares recover to within 1.2% of pre-attack levels as company completes internal remediation",
+        artifact: {
+          type: "stock_chart",
+          stockTicker: "APEX.L",
+          stockCompanyName: "Apex Dynamics plc",
+          stockOpenPrice: 482.40,
+          stockCurrentPrice: 476.60,
+          stockChangePercent: -1.20,
+          stockVolume: "8.2M",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CFO", "CISO", "HR_LEAD"],
+        expectedKeywords: ["recovery", "remediation", "missed opportunity", "quiet competence"],
+      },
+
+      // ── ENDING 3: DIMINISHED (Path C) ───────────────────────────────────
+      {
+        id: "df-end3",
+        order: 60,
+        title: "Ending: The Long Shadow",
+        body: "Six weeks later. The minimal-disclosure strategy has held the line technically, but it has not held the room. Share price is still down 6.4% on the year, lagging the FTSE 250 by nine points. Two institutional investors have publicly downgraded their position citing 'concerns about communications maturity'. A Sunday Times Business feature ran last weekend titled 'The company that survived a deepfake attack and still lost'. Internally, three senior executives have resigned in the last month, all citing some version of 'I joined a company I was proud of and I am no longer sure what we stand for'. The comms manager case is going to court next month and the trial is expected to bring fresh media attention - none of it framed by Apex. The Helix Corp CEO took the AI Safety Institute role and gave the keynote at the Davos cyber resilience panel last week. He referred to 'one peer in our sector that chose to look away'. Everyone in the room knew who he meant.",
+        facilitatorNotes:
+          "This is the 'fear ending' and it is meant to bite. The company is not destroyed, but it is materially worse off, and worst of all, the damage is invisible from the inside until it is too late. Use this in debrief to teach the lesson that bad PR advice is often the most internally persuasive: it sounds prudent, it minimises immediate risk, and it lets everyone in the room go home tonight feeling safe. The cost shows up later, in resignations, in investor calls, in the slow erosion of identity. The Helix CEO line at Davos is the punchline.",
+        delayMinutes: 0,
+        timerMinutes: 8,
+        tickerHeadline: "Sunday Times: 'The company that survived a deepfake attack and still lost' - Apex Dynamics analysis",
+        artifact: {
+          type: "news_headline",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CCO", "CFO"],
+        expectedKeywords: ["minimal disclosure", "long shadow", "identity", "trust erosion", "missed opportunity"],
+      },
+
+      // ── ENDING 4: CATASTROPHIC (Path D) ─────────────────────────────────
+      {
+        id: "df-end4",
+        order: 60,
+        title: "Ending: The Counter-Attack That Backfired",
+        body: "Six weeks later. The pre-emptive defamation lawsuit was filed on Day 3 with a triumphant press conference. Within 48 hours the offshore intelligence firm had hired a London QC and counter-filed for malicious prosecution. Their statement, drafted by a former tabloid editor, framed Apex as 'a company so unable to cope with scrutiny that it sues the messenger'. The phrase trended for a week. Discovery in the lawsuit forced disclosure of internal communications from Day 1, including several messages where executives speculated openly about whether elements of the original video might have been 'closer to the truth than we are admitting'. Those messages were leaked. The FT ran them on the front page. The FCA, who had been working a clean market manipulation case, has now opened a parallel investigation into Apex's own conduct. Share price closed yesterday at -22% on the year. Two non-executive directors have resigned. The chairman is rumoured to be next. The CEO's contract is up for renewal in three months and the proxy advisors have already issued a 'recommend against' note. At an emergency board meeting last night, the CLO who advised against the lawsuit said only one thing before leaving the room: 'I told you so.'",
+        facilitatorNotes:
+          "This is the worst ending and it is meant to be cautionary. Pre-emptive litigation in a reputational crisis is almost always a mistake: it gives the attacker a free platform, forces evidence into discovery, and makes the company look defensive and afraid. The 'closer to the truth than we are admitting' detail is deliberately ambiguous - it does not mean the video was real, it means executives were privately worrying, and that worry leaks badly under discovery. Use this ending in debrief to teach the difference between a strong response and an aggressive one. Strong responses compound trust. Aggressive responses cost it. If the group chose D, do not shame them for it - the option was on the table for a reason - but make them articulate exactly which assumptions led them there.",
+        delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Apex Dynamics shares close -22% as FCA opens parallel investigation following lawsuit disclosure leak",
+        artifact: {
+          type: "tv_broadcast",
+          tvNetwork: "BBC NEWS",
+          tvHeadline: "APEX DYNAMICS LAWSUIT BACKFIRES - INTERNAL MESSAGES LEAKED - SHARES DOWN 22% - CHAIRMAN UNDER PRESSURE",
+          tvTicker: "BBC NEWS BUSINESS - APEX DYNAMICS -22% YTD - FCA OPENS PARALLEL INVESTIGATION - TWO NEDS RESIGN - PROXY ADVISORS RECOMMEND AGAINST CEO CONTRACT RENEWAL - LAWSUIT COUNTER-FILED",
+          tvReporter: "Marcus Reilly, BBC News, Westminster",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CLO", "CFO", "CCO"],
+        expectedKeywords: ["lawsuit", "backfire", "discovery", "FCA", "reputational collapse", "defensive"],
       },
     ],
   },
