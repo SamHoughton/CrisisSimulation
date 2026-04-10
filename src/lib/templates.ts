@@ -603,7 +603,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         isDecisionPoint: true,
         targetRoles: ["CEO", "CCO", "CLO"],
         expectedKeywords: ["deepfake", "verify", "statement", "legal", "forensic", "holding"],
-        recapLine: "you opened with {{recapFragment}}",
+        recapLine: "opened with {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
@@ -611,7 +611,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Statement out in 11 minutes. If the video were real, this would be catastrophic. The gamble pays off on authenticity grounds but the denial is aggressively questioned. A second deepfake of the CFO follows within the hour.",
             rank: 4,
-            recapFragment: "an immediate denial before forensics",
+            recapFragment: "an immediate denial",
           },
           {
             key: "B",
@@ -619,7 +619,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The vacuum is filled by speculation. Two clients call to suspend contracts. Share price opens down 9.7%. Staff are in visible distress. The legally-safe choice is reputationally expensive.",
             rank: 3,
-            recapFragment: "full silence until forensics returned",
+            recapFragment: "silence until forensics returned",
           },
           {
             key: "C",
@@ -635,7 +635,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "An unusual, humanising move. It works emotionally but bypasses the comms playbook and exposes the EA and family members to scrutiny. Twitter sentiment warms slightly; legal counsel is furious.",
             rank: 2,
-            recapFragment: "a personal statement via the family channel",
+            recapFragment: "a personal statement from the family channel",
           },
         ],
         branches: [
@@ -774,7 +774,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Internal leaders brief their teams with conviction. External messaging stays measured. When the final report lands at 09:20, the company moves confidently. Strong operational balance.",
             rank: 2,
-            recapFragment: "taking the preliminary read for internal use while holding the external line",
+            recapFragment: "taking the preliminary read internally only",
           },
           {
             key: "B",
@@ -782,7 +782,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The 84% figure goes out. The BBC runs with it. Within 40 minutes a rival forensics firm publicly questions the methodology and the Apex statement is reframed as 'partial'. The CLO's warning proves prescient.",
             rank: 4,
-            recapFragment: "publishing the 84% preliminary read to beat the BBC deadline",
+            recapFragment: "publishing the 84% preliminary read",
           },
           {
             key: "C",
@@ -790,7 +790,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The 90-minute wait is painful but disciplined. When the 99%+ report lands, Apex can move definitively and once. The BBC runs with 'company declines to speculate pending full forensic report' - a defensible position.",
             rank: 1,
-            recapFragment: "waiting for the full 99% report before saying anything",
+            recapFragment: "waiting for the full report",
           },
           {
             key: "D",
@@ -798,7 +798,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The second firm needs four hours. By the time both reports align, share price has opened down 9% and competitors are already shaping the narrative. A prudent instinct applied at the wrong tempo.",
             rank: 3,
-            recapFragment: "demanding a second independent forensic pass",
+            recapFragment: "demanding a second forensic pass",
           },
         ],
         branches: [
@@ -877,7 +877,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The BBC piece is balanced. The CEO comes across as composed. But 240 staff later say 'we heard it from the BBC before we heard it from our CEO' and the internal trust cost lingers.",
             rank: 2,
-            recapFragment: "media first with a CEO statement to the BBC",
+            recapFragment: "media first with the BBC",
           },
           {
             key: "C",
@@ -885,7 +885,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Institutional panic is defused. Share price holds. But the BBC story runs without a company voice, and staff see the leadership team treating the share price as the priority over their wellbeing.",
             rank: 3,
-            recapFragment: "investors first via a chairman-led call",
+            recapFragment: "investors first via the Chairman",
           },
           {
             key: "D",
@@ -893,7 +893,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The PR firm issues a polished but generic statement. It holds the line but does not humanise. Staff read it as corporate and distant. The CCO later notes this was the moment the company 'outsourced its own voice'.",
             rank: 4,
-            recapFragment: "handing the response to the external PR firm",
+            recapFragment: "handing it to the external PR firm",
           },
         ],
         branches: [
@@ -977,7 +977,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         isDecisionPoint: true,
         targetRoles: ["CEO", "CFO", "CCO"],
         expectedKeywords: ["BlackRock", "chairman", "shareholder", "group call", "private", "priority"],
-        recapLine: "handled the institutional shareholders by {{recapFragment}}",
+        recapLine: "handled the shareholders by {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
@@ -993,7 +993,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Efficient and fair. But BlackRock's PM arrives 40 seconds late and the first two minutes are consumed by formalities. The personal tone everyone came for is missing. Competent but cold.",
             rank: 2,
-            recapFragment: "running a single Chairman-led group call",
+            recapFragment: "running a single group call",
           },
           {
             key: "C",
@@ -1001,7 +1001,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The biggest holder gets the CEO individually. The other two get the Chairman in a format that respects their seniority. By 11:00 all three have issued private 'supportive but watching' notes internally. Best balance.",
             rank: 1,
-            recapFragment: "splitting the CEO into BlackRock and the Chairman across the other two",
+            recapFragment: "splitting CEO and Chairman across the three",
           },
           {
             key: "D",
@@ -1009,7 +1009,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Procedurally clean but emotionally wrong. BlackRock's PM takes it as a brush-off and calls a peer at a competitor firm to compare notes. The call that does eventually happen is tense.",
             rank: 4,
-            recapFragment: "sending a written briefing pack in place of a live call",
+            recapFragment: "sending a written briefing pack",
           },
         ],
         branches: [
@@ -1075,7 +1075,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         isDecisionPoint: true,
         targetRoles: ["CEO", "CLO", "CCO", "CISO"],
         expectedKeywords: ["publish", "forensic", "short selling", "FCA", "law enforcement", "narrative"],
-        recapLine: "spent the forensic vindication by {{recapFragment}}",
+        recapLine: "played the vindication by {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
@@ -1083,7 +1083,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Maximum drama. The story flips overnight: 'Apex vindicated, attackers exposed'. But within two hours the FCA contacts the CLO formally, asking the company to cease all public speculation as it may compromise their investigation. The CEO has to walk back. A small but real credibility cost.",
             rank: 4,
-            recapFragment: "publicly accusing a short-selling attack from a press conference",
+            recapFragment: "publicly accusing the short-sellers",
           },
           {
             key: "B",
@@ -1091,7 +1091,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The FCA is grateful. The investigation accelerates. Media coverage is overwhelmingly positive: 'company vindicated by independent forensics'. The attacker still believes they are unobserved. Strongest possible position going into Day 2.",
             rank: 1,
-            recapFragment: "publishing the forensics openly and briefing the FCA privately",
+            recapFragment: "publishing openly and briefing the FCA privately",
           },
           {
             key: "C",
@@ -1099,7 +1099,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The FT and Bloomberg run favourable pieces within an hour. The narrative is yours. But by Day 2 the FCA is asking whether the off-record briefing constituted selective disclosure under MAR. A second-order legal headache.",
             rank: 3,
-            recapFragment: "briefing the FT and Bloomberg off-record ahead of publication",
+            recapFragment: "briefing the FT and Bloomberg off-record",
           },
           {
             key: "D",
@@ -1107,7 +1107,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Safe. Defensible. But journalists notice the absence and start asking 'who benefited from this attack?' independently. Within 24 hours half the financial press is speculating without your facts. You lose control of the most compelling part of the story.",
             rank: 2,
-            recapFragment: "publishing only the technical forensics and staying silent on the short-selling angle",
+            recapFragment: "staying silent on the short-selling angle",
           },
         ],
         branches: [
@@ -1170,7 +1170,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         isDecisionPoint: true,
         targetRoles: ["CEO", "CLO", "CISO", "HR_LEAD"],
         expectedKeywords: ["NCSC", "Economic Crime Unit", "preserve evidence", "Bloomberg", "Helix", "coupling"],
-        recapLine: "worked the two-fronts pressure by {{recapFragment}}",
+        recapLine: "worked the two-fronts squeeze by {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
@@ -1178,7 +1178,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The NCSC opens a coordinated advisory within the hour. The Economic Crime Unit is briefed, the manager's devices are preserved remotely, a formal interview follows with police present on Day 4. Strongest legal and reputational position.",
             rank: 1,
-            recapFragment: "routing Helix via NCSC and letting police preserve the leak evidence remotely",
+            recapFragment: "routing Helix via NCSC and preserving evidence remotely",
           },
           {
             key: "B",
@@ -1186,7 +1186,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Helix moves fast but the informal contact is later flagged by the FCA during disclosure review. The comms manager's personal devices leave the building with them at 16:00. Police note the missed opportunity.",
             rank: 3,
-            recapFragment: "calling Helix informally and suspending the comms manager on the spot",
+            recapFragment: "calling Helix informally and suspending on the spot",
           },
           {
             key: "C",
@@ -1194,7 +1194,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Helix is cleanly handled. The comms manager is legally retained on plausible grounds. Police arrive at 14:30 and secure the personal devices. Operational win. Small legal risk if the 'client call' pretext is later framed as detention.",
             rank: 2,
-            recapFragment: "routing Helix via NCSC and holding the comms manager in the building until police arrived",
+            recapFragment: "routing Helix via NCSC and holding the manager in-building",
           },
           {
             key: "D",
@@ -1202,7 +1202,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "Helix struggles without context. Industry later notes Apex's caution as 'unhelpful.' The manager's devices leave the building. Police interview on Day 4 without the personal devices. Weakest outcome on both fronts.",
             rank: 4,
-            recapFragment: "declining the Helix outreach and suspending the comms manager before police were in place",
+            recapFragment: "declining Helix and suspending before police were in place",
           },
         ],
         branches: [
@@ -1310,7 +1310,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The high-credibility path. Apex becomes the case study other companies reference. Long game won. Strongest contribution to the compound score.",
             rank: 1,
-            recapFragment: "leading from the front and taking the AI Safety Institute chair",
+            recapFragment: "leading from the front",
           },
           {
             key: "B",
@@ -1318,7 +1318,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The safe path. Operationally sound but the company never owns the narrative. Respectable contribution to the compound score.",
             rank: 2,
-            recapFragment: "choosing quiet competence and a private recovery posture",
+            recapFragment: "choosing quiet competence",
           },
           {
             key: "C",
@@ -1326,7 +1326,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The fearful path. Short-term safe, long-term corrosive. Pulls the compound score down.",
             rank: 3,
-            recapFragment: "adopting a defensive, minimal-disclosure posture",
+            recapFragment: "adopting minimal disclosure",
           },
           {
             key: "D",
@@ -1334,7 +1334,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
             consequence:
               "The path of vengeance. Almost always wrong. Severe drag on the compound score and can flip a good ending into a bad one.",
             rank: 4,
-            recapFragment: "filing the pre-emptive defamation lawsuit",
+            recapFragment: "filing the lawsuit",
           },
         ],
         // Score-routed: branches are selected by compound rank average, not
@@ -1348,13 +1348,16 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
       },
 
       // ── ENDING 1: TRIUMPH (Path A) ──────────────────────────────────────
+      // Endings are now interactive: a short body + the artifact carry the
+      // narrative beat, then a single unranked reflection vote brings the
+      // room back into the loop one last time as a structured debrief.
       {
         id: "df-end1",
         order: 60,
         title: "Ending: The Industry Test Case",
-        body: "Six weeks later. The CEO has chaired the inaugural meeting of the AI Safety Institute working group on financial-markets disinformation. The Apex Dynamics incident report - 47 pages, technical appendix, full timeline - is being studied at three business schools and is the second most-downloaded document on the AISI website. Share price closed yesterday at +1.8% on the year, ahead of the FTSE 250. The Helix Corp CEO joined the working group as deputy chair. The offshore intelligence firm behind the attack has been formally identified by the FCA and is the subject of a joint UK-US enforcement action. The comms manager is awaiting trial. Internally, staff retention is at a five-year high and the company has just hired its largest-ever graduate intake on the back of the case. At the FT's Person of the Year shortlist event last night, the Apex CEO was named one of three runners-up. The citation read: 'showed that integrity, when paired with disclosure, compounds.'",
+        body: "Six weeks later. Share price closed yesterday at +1.8% YTD, ahead of the FTSE 250. The CEO chairs the AI Safety Institute working group on financial-markets disinformation; the Helix CEO joined as deputy chair. The Apex incident report is being studied at three business schools. Last night the CEO was named an FT Person of the Year runner-up. The citation: 'integrity, when paired with disclosure, compounds.'\n\nOne last vote. Looking back over the whole exercise - which earlier call did the most to earn this ending?",
         facilitatorNotes:
-          "This is the best possible ending and exists to validate the long-game choice. Use it in debrief to ask: what made this possible? The answer is usually a combination of (a) the early staff-first instinct in df-i3d, (b) the disciplined handling of forensics in df-i5, (c) the patient handling of the internal leak in df-i6, and (d) the courage of the endgame choice. Make sure the group sees the through-line.",
+          "Best possible ending. Reward the long-game choice but do not narrate the through-line yourself - the reflection vote below is designed to make the group find it. Most groups land on a combination of the early staff-first call (df-i3d), the disciplined forensics handling (df-i2v / df-i5), and the courage of the endgame. Use the vote split as your debrief opener.",
         delayMinutes: 0,
         timerMinutes: 8,
         tickerHeadline: "Apex Dynamics CEO named FT Person of the Year runner-up after landmark AI disinformation response",
@@ -1365,11 +1368,32 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           tvTicker: "SKY NEWS - APEX DYNAMICS SHARES +1.8% YTD - AI SAFETY INSTITUTE WORKING GROUP CONVENES - COMMS MANAGER AWAITING TRIAL - JOINT UK-US ENFORCEMENT ACTION ANNOUNCED - GRADUATE HIRING AT FIVE-YEAR HIGH",
           tvReporter: "Ian Whitfield, Sky News Business",
         },
-        isDecisionPoint: false,
-        decisionOptions: [],
+        isDecisionPoint: true,
         targetRoles: ["CEO", "CCO", "CISO", "HR_LEAD"],
         expectedKeywords: ["transparency", "leadership", "long game", "industry", "trust"],
         isEnding: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "The early staff-first instinct",
+            consequence: "Most common answer in groups that played the long game well. Validates the 'people before press' instinct.",
+          },
+          {
+            key: "B",
+            label: "The disciplined forensics handling",
+            consequence: "Often picked by technical-minded teams. Use to discuss tempo as a strategic asset.",
+          },
+          {
+            key: "C",
+            label: "The clean police-led leak investigation",
+            consequence: "The procedural answer. Use to discuss how legal hygiene buys the cover for bold public moves.",
+          },
+          {
+            key: "D",
+            label: "The endgame courage to lead from the front",
+            consequence: "The dramatic answer. True but incomplete - the endgame courage was only available because earlier decisions earned it.",
+          },
+        ],
       },
 
       // ── ENDING 2: RECOVERY (Path B) ─────────────────────────────────────
@@ -1377,9 +1401,9 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         id: "df-end2",
         order: 60,
         title: "Ending: Quiet Competence",
-        body: "Six weeks later. The deepfake story has faded from the front pages. Apex Dynamics' share price is back to within 1.2% of pre-attack levels. The internal remediation programme is on track: new media security policy, new endpoint controls, a quiet doubling of the CISO's budget. The comms manager has been arrested and charged. The Helix Corp link was worked discreetly through NCSC channels and a joint advisory was issued to the FTSE 350 last week without naming either company. Staff are largely past it - although exit interview data shows a small but persistent uptick in 'concerns about how the company handled communication during the crisis'. The CEO declined the AI Safety Institute invitation. The chair was taken by the CFO of a rival firm, who is now the public face of the issue. At the next board meeting, an independent director asks gently whether Apex 'might have done more with the moment'. There is a long silence before the chairman moves to the next agenda item.",
+        body: "Six weeks later. Share price is back within 1.2% of pre-attack levels. Internal remediation is on track and the comms manager has been charged. The CEO declined the AI Safety Institute invitation; the chair was taken by a rival firm's CFO, now the public face of the issue. At the next board meeting, an independent director asks whether Apex 'might have done more with the moment'. There is a long silence.\n\nOne last vote. Was 'quiet competence' the right call for this company?",
         facilitatorNotes:
-          "This is the 'good but not great' ending. It is not a failure - the company recovered and the operational outcomes are sound. But the group should sit with the closing image: the silent boardroom. The cost of choosing safety over leadership is not a number on a P&L; it is a missed opportunity that will quietly shape the company's identity for years. Use this in debrief to ask: was it worth it? Some groups will defend B vigorously. That is a legitimate position. Make sure they articulate why.",
+          "The 'good but not great' ending. Recovery achieved, but the closing image - the silent boardroom - is the point. The reflection vote below is a forced-choice debrief tool: B groups often defend their call, which is fine, but make them articulate the trade-off they accepted.",
         delayMinutes: 0,
         timerMinutes: 8,
         tickerHeadline: "Apex Dynamics shares recover to within 1.2% of pre-attack levels as company completes internal remediation",
@@ -1392,11 +1416,32 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           stockChangePercent: -1.20,
           stockVolume: "8.2M",
         },
-        isDecisionPoint: false,
-        decisionOptions: [],
+        isDecisionPoint: true,
         targetRoles: ["CEO", "CFO", "CISO", "HR_LEAD"],
         expectedKeywords: ["recovery", "remediation", "missed opportunity", "quiet competence"],
         isEnding: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Yes - recovery is the win",
+            consequence: "The pragmatic answer. Use to ask whether this team would defend the same call if the share price had recovered slower.",
+          },
+          {
+            key: "B",
+            label: "Yes for this team, but a sharper comms function would change the answer",
+            consequence: "The capability answer. Use to discuss what investments in comms maturity would have unlocked the leadership ending.",
+          },
+          {
+            key: "C",
+            label: "No - we left credibility on the table",
+            consequence: "The leadership answer. Use to discuss when 'safe' is actually the riskiest long-term play.",
+          },
+          {
+            key: "D",
+            label: "No - the silent boardroom is the real ending",
+            consequence: "The cultural answer. Use to discuss how unspoken decisions accumulate into identity.",
+          },
+        ],
       },
 
       // ── ENDING 3: DIMINISHED (Path C) ───────────────────────────────────
@@ -1404,20 +1449,41 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         id: "df-end3",
         order: 60,
         title: "Ending: The Long Shadow",
-        body: "Six weeks later. The minimal-disclosure strategy has held the line technically, but it has not held the room. Share price is still down 6.4% on the year, lagging the FTSE 250 by nine points. Two institutional investors have publicly downgraded their position citing 'concerns about communications maturity'. A Sunday Times Business feature ran last weekend titled 'The company that survived a deepfake attack and still lost'. Internally, three senior executives have resigned in the last month, all citing some version of 'I joined a company I was proud of and I am no longer sure what we stand for'. The comms manager case is going to court next month and the trial is expected to bring fresh media attention - none of it framed by Apex. The Helix Corp CEO took the AI Safety Institute role and gave the keynote at the Davos cyber resilience panel last week. He referred to 'one peer in our sector that chose to look away'. Everyone in the room knew who he meant.",
+        body: "Six weeks later. Share price is still down 6.4% YTD, lagging the FTSE 250 by nine points. Two institutional investors have publicly downgraded, citing 'concerns about communications maturity'. Three senior executives have resigned in the last month, all citing some version of 'I'm no longer sure what we stand for'. At Davos last week, the Helix CEO referred to 'one peer in our sector that chose to look away'. Everyone in the room knew who he meant.\n\nOne last vote. Where did this story actually go wrong?",
         facilitatorNotes:
-          "This is the 'fear ending' and it is meant to bite. The company is not destroyed, but it is materially worse off, and worst of all, the damage is invisible from the inside until it is too late. Use this in debrief to teach the lesson that bad PR advice is often the most internally persuasive: it sounds prudent, it minimises immediate risk, and it lets everyone in the room go home tonight feeling safe. The cost shows up later, in resignations, in investor calls, in the slow erosion of identity. The Helix CEO line at Davos is the punchline.",
+          "The 'fear ending' and it is meant to bite. The company is not destroyed but it is materially worse off, and the damage is invisible from the inside until too late. The reflection vote forces the group to locate the wound. Most groups land on (D) once they trace the cascade - which is the lesson.",
         delayMinutes: 0,
         timerMinutes: 8,
         tickerHeadline: "Sunday Times: 'The company that survived a deepfake attack and still lost' - Apex Dynamics analysis",
         artifact: {
           type: "news_headline",
         },
-        isDecisionPoint: false,
-        decisionOptions: [],
+        isDecisionPoint: true,
         targetRoles: ["CEO", "CCO", "CFO"],
         expectedKeywords: ["minimal disclosure", "long shadow", "identity", "trust erosion", "missed opportunity"],
         isEnding: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "The early under-communication to staff",
+            consequence: "Locates the wound at df-i3d. Often the right answer for groups whose internal trust collapsed first.",
+          },
+          {
+            key: "B",
+            label: "The cautious forensics handling",
+            consequence: "Locates the wound at df-i2v / df-i5. The 'tempo' answer.",
+          },
+          {
+            key: "C",
+            label: "The minimal-disclosure brief at the endgame",
+            consequence: "Locates the wound at df-i7. The 'we knew the moment when we lost it' answer.",
+          },
+          {
+            key: "D",
+            label: "All of the above, compounding",
+            consequence: "The systems answer and usually the most accurate one. Use to teach that 'minor' choices in early injects compound silently into the ending.",
+          },
+        ],
       },
 
       // ── ENDING 4: CATASTROPHIC (Path D) ─────────────────────────────────
@@ -1425,9 +1491,9 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         id: "df-end4",
         order: 60,
         title: "Ending: The Counter-Attack That Backfired",
-        body: "Six weeks later. The pre-emptive defamation lawsuit was filed on Day 3 with a triumphant press conference. Within 48 hours the offshore intelligence firm had hired a London QC and counter-filed for malicious prosecution. Their statement, drafted by a former tabloid editor, framed Apex as 'a company so unable to cope with scrutiny that it sues the messenger'. The phrase trended for a week. Discovery in the lawsuit forced disclosure of internal communications from Day 1, including several messages where executives speculated openly about whether elements of the original video might have been 'closer to the truth than we are admitting'. Those messages were leaked. The FT ran them on the front page. The FCA, who had been working a clean market manipulation case, has now opened a parallel investigation into Apex's own conduct. Share price closed yesterday at -22% on the year. Two non-executive directors have resigned. The chairman is rumoured to be next. The CEO's contract is up for renewal in three months and the proxy advisors have already issued a 'recommend against' note. At an emergency board meeting last night, the CLO who advised against the lawsuit said only one thing before leaving the room: 'I told you so.'",
+        body: "Six weeks later. The defamation lawsuit was counter-filed within 48 hours. Discovery forced internal Day-1 messages onto the FT front page, including executives speculating that the video might be 'closer to the truth than we're admitting'. The FCA has opened a parallel investigation into Apex's own conduct. Share price -22% YTD. Two NEDs have resigned. Last night, the CLO who had advised against the lawsuit said only one thing before leaving the room: 'I told you so.'\n\nOne last vote. If you could rewind 48 hours, where would you intervene?",
         facilitatorNotes:
-          "This is the worst ending and it is meant to be cautionary. Pre-emptive litigation in a reputational crisis is almost always a mistake: it gives the attacker a free platform, forces evidence into discovery, and makes the company look defensive and afraid. The 'closer to the truth than we are admitting' detail is deliberately ambiguous - it does not mean the video was real, it means executives were privately worrying, and that worry leaks badly under discovery. Use this ending in debrief to teach the difference between a strong response and an aggressive one. Strong responses compound trust. Aggressive responses cost it. If the group chose D, do not shame them for it - the option was on the table for a reason - but make them articulate exactly which assumptions led them there.",
+          "Worst ending. Pre-emptive litigation in a reputational crisis is almost always wrong - it gives the attacker a free platform and forces evidence into discovery. The 'closer to the truth' detail is ambiguous on purpose: it doesn't mean the video was real, it means execs were privately worrying, and that worry leaks badly under disclosure. Don't shame the D-vote groups; use the reflection vote below to make them articulate the exact moment they would replay.",
         delayMinutes: 0,
         timerMinutes: 10,
         tickerHeadline: "Apex Dynamics shares close -22% as FCA opens parallel investigation following lawsuit disclosure leak",
@@ -1438,11 +1504,32 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
           tvTicker: "BBC NEWS BUSINESS - APEX DYNAMICS -22% YTD - FCA OPENS PARALLEL INVESTIGATION - TWO NEDS RESIGN - PROXY ADVISORS RECOMMEND AGAINST CEO CONTRACT RENEWAL - LAWSUIT COUNTER-FILED",
           tvReporter: "Marcus Reilly, BBC News, Westminster",
         },
-        isDecisionPoint: false,
-        decisionOptions: [],
+        isDecisionPoint: true,
         targetRoles: ["CEO", "CLO", "CFO", "CCO"],
         expectedKeywords: ["lawsuit", "backfire", "discovery", "FCA", "reputational collapse", "defensive"],
         isEnding: true,
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Refuse the lawsuit, take the AI Safety Institute role instead",
+            consequence: "Single-decision rewind. Use to ask whether the group would have had the standing to take the chair after the earlier choices that led here.",
+          },
+          {
+            key: "B",
+            label: "Refuse the lawsuit, take the quiet recovery posture",
+            consequence: "The pragmatic rewind. Trades the worst ending for the recovery ending.",
+          },
+          {
+            key: "C",
+            label: "Lock down internal comms before any external action",
+            consequence: "The discovery-aware answer. Names the actual mechanism that did the damage.",
+          },
+          {
+            key: "D",
+            label: "Different choices much earlier in the day",
+            consequence: "The systems answer. Catches that the lawsuit was the symptom, not the cause - by Day 2 the room had already learned a defensive posture.",
+          },
+        ],
       },
     ],
   },
