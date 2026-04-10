@@ -1,20 +1,24 @@
 /**
  * templates.ts - Built-in scenario templates.
  *
- * Two full 2-hour scenarios with deep branching decision trees:
+ * Two full 3-hour scenarios with deep branching decision trees and 4 score-routed endings each:
  *
- * 1. Ransomware with Data Exfiltration (tpl-ransomware-001)
- *    - Fake company: Meridian Financial Services (London, 3,200 employees, 1.4M customers)
- *    - 14 injects across 4 branching paths (aggressive/selective containment, ransom/refuse)
- *    - Artifacts: SIEM alerts, ransomware note, dark web listing, emails, legal letters
+ * 1. Ransomware: The Quiet Beacon (tpl-ransomware-001)
+ *    - Fake company: Veridian Power plc (FTSE 250 UK energy retailer, 3.2M domestic supply contracts)
+ *    - 19 injects, 7 decision points, hard convergence at the ransom chat window
+ *    - Unique stake: the Priority Services Register (PSR) of 84,000 vulnerable customers
+ *    - Regulators: NCSC + Ofgem under NIS Regulations 2018 (OES)
+ *    - Artifacts: SIEM alerts, ransomware notes, slack thread, TV broadcast, legal letters
  *
  * 2. The Deepfake CEO (tpl-deepfake-001)
  *    - Fake company: Apex Dynamics (FTSE 250, 8,000 employees)
- *    - 10 injects across 3 branching paths (deny/silence/hold)
- *    - Artifacts: viral tweets, news headlines, legal letters
+ *    - 20 injects, 7 decision points, 4 score-routed endings
+ *    - Artifacts: viral tweets, news headlines, TV broadcasts, stock charts, legal letters
  *
- * Template IDs are stable strings (not random) so they persist correctly across
- * app restarts and don't duplicate in the library.
+ * Both scenarios share the same architecture: rank-scored options, recapLine/recapFragment
+ * threading for the "your arc" prelude on ending injects, and interactive reflection votes
+ * on the endings themselves. Template IDs are stable strings (not random) so they persist
+ * correctly across app restarts and don't duplicate in the library.
  */
 
 import type { Scenario } from "@/types";
@@ -22,513 +26,785 @@ import { makeId } from "@/lib/utils";
 
 export const BUILT_IN_TEMPLATES: Scenario[] = [
 
-  // ─── SCENARIO 1: RANSOMWARE WITH DATA EXFILTRATION ───────────────────────────
-  // Full 2-hour arc. 12 main-path injects + 4 branch injects.
-  // Major decision trees at: containment approach, ransom response,
-  // GDPR notification, board disclosure, threat actor deadline, backdoor handling.
+  // ─── SCENARIO 1: RANSOMWARE - THE QUIET BEACON ───────────────────────────────
+  //
+  // Full 3-hour arc across 19 injects with 7 decision points. The graph has:
+  //   - 4-way divergence at i1     (paths A/B/C/D each get their own narrative inject: i2a-i2d)
+  //   - Re-convergence at i2v      (first external escalation call - 4 options)
+  //   - Narrative convergence at i3 (bulk encryption + PSR exposure - 4 options)
+  //   - Re-convergence at i3d      (brief order: staff/customers/counterparties/investors)
+  //   - Re-convergence at i4       (opening posture for the negotiation - 4 options)
+  //   - HARD CONVERGENCE at i4v    (the chat window - every path arrives here)
+  //   - Re-convergence at i5       (the counter offer - 4 options)
+  //   - Re-convergence at i6a      (two-fronts coupling decision - 4 options)
+  //   - 2-way bridge to strong/weak narrative (i6-strong vs i6-weak)
+  //   - Score-routed finale at i7  (4 endings keyed off compound rank average)
+  //   - 4 distinct interactive endings (end1=triumph, end2=recovery, end3=diminished, end4=catastrophic)
+  //
+  // Every decision inject has exactly 4 options. Each option has an optional
+  // rank field (1 = best) used by the score-routed finale and surfaced to the
+  // facilitator after reveal. Endings are themselves decision points with
+  // unranked reflection votes - one final introspective choice closes the arc.
+  //
+  // Setting: Veridian Power plc, a FTSE 250 UK energy retailer designated as
+  // an Operator of Essential Services under the NIS Regulations 2018. The
+  // unique data at stake is the Priority Services Register: a statutory list
+  // of vulnerable customers who depend on uninterrupted power for medical
+  // equipment, dialysis, and oxygen. The threat actor is ALPHV.
   {
     id: "tpl-ransomware-001",
-    title: "Ransomware with Data Exfiltration",
+    title: "Ransomware: The Quiet Beacon",
     description:
-      "Sophisticated ransomware encrypts core systems while evidence emerges of prior data theft. Attribution to a known threat actor group. Regulatory, media, board and operational pressures escalate simultaneously over two hours.",
+      "A single low-confidence outbound DNS beacon at 03:14 from a treasury workstation grows over five days into the worst week in Veridian Power's history. Branching 19-inject arc with 4 score-routed endings. Every path converges at the ransom chat window. Tests detection, escalation, ransom negotiation, regulator handling, and the protection of the Priority Services Register from the first quiet alert to long-term recovery.",
     type: "RANSOMWARE",
-    difficulty: "HIGH",
-    durationMin: 120,
+    difficulty: "CRITICAL",
+    durationMin: 180,
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-    coverGradient: "135deg, #0a0000 0%, #1f000a 40%, #e8002d 100%",
+    updatedAt: "2026-04-10T00:00:00Z",
+    coverGradient: "135deg, #050508 0%, #1a0008 40%, #e8002d 100%",
     roles: ["CEO", "CISO", "CFO", "CLO", "CCO", "COO"],
     briefing:
-      "You are the executive leadership team of Meridian Financial Services - a mid-sized financial services organisation with 3,200 employees and 1.4 million customers across the UK and EU. It is Tuesday morning and you have each just arrived at the office. At 07:43 your CISO's phone rings. You will receive a series of escalating developments over the next two hours. Respond as you would in a real crisis - in character, under time pressure. The facilitator controls the pace.",
+      "You are the executive leadership team of Veridian Power plc, a FTSE 250 UK energy retailer with 3.2 million domestic supply contracts and a designated Operator of Essential Services under the NIS Regulations 2018. Your back-office runs the day-ahead wholesale trading desk; your front-office holds the Priority Services Register - the statutory list of vulnerable customers who depend on uninterrupted power for medical equipment, dialysis, and oxygen. It is 03:14 on a Monday. The duty SOC analyst flags a single anomaly. Over the next five days you will discover what it really was. You will be judged on what you did at 03:14, and on every call after.",
 
     injects: [
 
-      // ── INJECT 1: T+0 - Initial alert ─────────────────────────────────────
+      // ── ACT 1: THE QUIET BEACON ────────────────────────────────────────
+      // Four-way opening branch. Each option leads to a narrative inject
+      // that plays out the consequences before re-converging at rw-i2v.
+
+      // ── INJECT 1: 03:14 - The first low-confidence alert ──────────────
       {
         id: "rw-i1",
         order: 0,
-        title: "SOC Alert: Mass Encryption Activity",
-        body: "07:43 - Your CISO receives an automated alert: multiple servers in the primary data centre are showing unusual encryption activity. The SOC has isolated three servers but the activity is spreading rapidly. One analyst has identified what appears to be a ransom note on an affected endpoint. 47 endpoints flagged in the last 8 minutes.",
+        title: "Defender Alert: Outbound Beacon, Treasury Workstation",
+        body: "03:14. Microsoft Defender for Endpoint fires a low-confidence alert: a single workstation in the Treasury team is making periodic outbound DNS lookups to a domain that resolved earlier today and again 47 minutes ago. The lookups are 3 minutes apart, regular as a clock. The workstation belongs to a senior treasury analyst who is asleep at home. SOC has 2 analysts on duty. The night shift lead asks: do we wake people, or do we open a ticket?",
         facilitatorNotes:
-          "BlackCat/ALPHV variant. Exfiltration occurred 48–72 hours ago via compromised VPN credentials. Without containment, backup systems will be hit in 4–6 hours. The correct initial response is aggressive isolation even at the cost of business disruption. Watch how quickly the CISO takes charge - or doesn't.",
+          "This IS the first sign of an ALPHV intrusion via a phished VPN credential five days ago. The attacker is presently mapping the OT/IT boundary and staging exfiltration. Option A (quiet forensic capture) is the rewarded answer - it preserves intelligence without tipping the attacker. Option C is a strong second-best. Option B is loud and effective but burns the intelligence advantage. Option D is the catastrophic call - this is exactly how every major ransomware after-action report begins.",
         delayMinutes: 0,
-        isDecisionPoint: true,
         timerMinutes: 10,
-        tickerHeadline: "DEVELOPING: Reports of major cyber incident at UK financial services firm",
+        tickerHeadline: "Energy regulator Ofgem reviewing cyber resilience standards for retail suppliers - week ahead",
         artifact: {
           type: "siem_alert",
-          siemAlertId: "SOC-2024-8847",
-          siemSeverity: "CRITICAL",
-          siemSourceIp: "10.14.22.187 (INTERNAL)",
-          siemEventType: "Mass File Encryption -47 endpoints affected and rising",
+          siemAlertId: "DEFENDER-2026-44912",
+          siemSeverity: "MEDIUM",
+          siemSourceIp: "10.42.18.71 (TREASURY-LDN-019)",
+          siemEventType: "Periodic Outbound DNS - Low-Reputation Domain - Single Host",
         },
-        targetRoles: ["CISO", "COO", "CEO"],
-        expectedKeywords: ["isolate", "contain", "IR", "incident response", "shutdown"],
+        isDecisionPoint: true,
+        targetRoles: ["CISO", "COO"],
+        expectedKeywords: ["forensic", "isolate", "image", "capture", "Mandiant", "false positive"],
+        recapLine: "opened with {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
-            label: "Aggressive isolation - take all affected network segments offline immediately",
+            label: "Quiet investigate: pull a forensic image of the workstation, leave the network connection up to keep watching",
             consequence:
-              "Spread halted within 20 minutes. 40% of IT infrastructure offline. Trading platform goes dark. Customers cannot access accounts. IR firm engaged. Business continuity plan needed urgently.",
+              "The image captures the staging directory before the attacker notices. By 06:00 you know exactly which credentials are compromised and which segments have been touched. You have controlled the tempo.",
+            rank: 1,
+            recapFragment: "a quiet forensic capture",
           },
           {
             key: "B",
-            label: "Selective isolation - keep core customer-facing systems up while IR team assesses",
+            label: "Hard segment: kill the workstation, sweep all adjacent endpoints, lock down the treasury VLAN",
             consequence:
-              "Customer access maintained for 45 minutes longer. But encryption spreads to backup systems during the window. Recovery timeline extends from 5 days to 9 days.",
+              "The attacker sees the lights go out and accelerates encryption on the adjacent file servers they had already staged. You stopped one host but burned the chance to learn the full picture quietly.",
+            rank: 2,
+            recapFragment: "a hard segment of the treasury VLAN",
+          },
+          {
+            key: "C",
+            label: "Escalate to Mandiant on retainer immediately - pay the after-hours fee, wake the CISO",
+            consequence:
+              "Mandiant are on the phone in 18 minutes and on-site by 06:30. They confirm the beacon is real and find two more compromised endpoints by sunrise. The clock is preserved.",
+            rank: 2,
+            recapFragment: "an immediate Mandiant escalation",
+          },
+          {
+            key: "D",
+            label: "Open a Sev-3 ticket, leave it for the morning shift, mark the alert as probable false positive",
+            consequence:
+              "By 07:30 the morning shift has 14 alerts and this one is buried. By 04:11 tomorrow morning, you will be reading a ransom note. This is how every catastrophic ransomware retrospective begins.",
+            rank: 4,
+            recapFragment: "treating it as a probable false positive",
           },
         ],
         branches: [
           { optionKey: "A", nextInjectId: "rw-i2a" },
           { optionKey: "B", nextInjectId: "rw-i2b" },
+          { optionKey: "C", nextInjectId: "rw-i2c" },
+          { optionKey: "D", nextInjectId: "rw-i2d" },
         ],
       },
 
-      // ── INJECT 2a: Path A - Aggressive isolation consequences ────────────
+      // ── INJECT 2a: Path A narrative - The Slow Trace ───────────────────
       {
         id: "rw-i2a",
         order: 10,
-        title: "Path A: Systems Dark - Business Impact Escalates",
-        body: "08:05 - The aggressive isolation has stopped the spread. But three major consequences: (1) your customer portal is completely offline -14,000 customers attempted login in the last 10 minutes and hit an error page. (2) Your trading desk is down - estimated £2.1M in delayed settlements. (3) Your external IR firm, Mandiant, is en route and will arrive in 90 minutes. Your COO is asking: do we activate the business continuity plan now, or wait for IR to assess?",
+        title: "Path A: The Slow Trace",
+        body: "05:30. The forensic image is yielding gold. Your second-line analyst has reconstructed the attacker's lateral movement: a phished VPN credential belonging to a treasury contractor was used five days ago to plant a foothold. The attacker has touched 11 hosts, including one jump box on the boundary between IT and the wholesale trading desk. They have not yet reached the customer billing systems or the Priority Services Register database. Mandiant are now en route, called as a courtesy not a panic. You have something most ransomware victims never get: time.",
         facilitatorNotes:
-          "The correct answer is to activate BCP now - waiting for IR adds another 90 minutes of uncoordinated response. The customer-facing outage is already generating social media noise. The trading desk disruption may trigger regulatory reporting obligations under MAR.",
+          "This is the rewarded outcome of Option A. The team has knowledge advantage. The pressure now is whether they can resist the temptation to act loudly and instead complete the picture before moving. The next inject (rw-i2v) tests their first external escalation call.",
         delayMinutes: 0,
-        timerMinutes: 10,
-        tickerHeadline: "Major financial services platform offline - thousands of customers unable to access accounts",
+        timerMinutes: 0,
+        tickerHeadline: "Power trading volumes light overnight as wholesale market opens calmly",
         artifact: {
-          type: "email",
-          emailFrom: "bcp@meridianfs.com",
-          emailTo: "coo@meridianfs.com",
-          emailSubject: "BCP Activation Request - IT incident - authorisation required",
+          type: "default",
         },
-        isDecisionPoint: true,
-        targetRoles: ["COO", "CEO", "CISO"],
-        expectedKeywords: ["BCP", "business continuity", "MAR", "trading", "customer comms"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Activate BCP immediately - switch to manual processing for critical operations",
-            consequence: "Operations team mobilised. Manual processing begins. Adds cost and error risk but keeps critical functions moving. Mandiant arrives to a structured response.",
-          },
-          {
-            key: "B",
-            label: "Hold BCP activation - wait for Mandiant assessment before committing",
-            consequence: "90-minute vacuum. Settlement failures accumulate. Customer complaints triple. Mandiant arrive and recommend immediate BCP - now delayed by 90 minutes.",
-          },
-        ],
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CISO", "COO"],
+        expectedKeywords: ["lateral movement", "VPN", "credential", "PSR", "trading"],
       },
 
-      // ── INJECT 2b: Path B - Delayed isolation, spread to backups ─────────
+      // ── INJECT 2b: Path B narrative - The Segment Sweep ────────────────
       {
         id: "rw-i2b",
         order: 10,
-        title: "Path B: Backups Hit - Recovery Extended",
-        body: "08:20 - Selective isolation has failed. The ransomware has reached your primary backup servers. Your CISO delivers the news: the 5-day recovery estimate has just become 9 days. Two customer-facing systems that were kept live to 'protect customer experience' are now also encrypted. You are now in the same position as aggressive isolation, but 45 minutes later and with significantly more damage. Mandiant are now en route.",
+        title: "Path B: The Segment Sweep",
+        body: "04:02. The treasury VLAN is dark. Your sweep has found two more endpoints with the same beacon, both on the wholesale trading floor's back-office. Defender lights up at 04:09 with a new alert from a different segment - a file server in the customer billing tier. The attacker noticed. They are accelerating. You have stopped one host but you can hear the fire spreading through the walls. Mandiant have been called and are 90 minutes out.",
         facilitatorNotes:
-          "This is the consequence of the wrong call at inject 1. Use this to drive home the cost of delay in containment decisions. The group should feel the weight of that choice. The discussion should naturally move to: what do we tell the board, and when?",
+          "Consequence of Option B - fast and effective but it surrendered the intelligence advantage. The team has lost the chance to map the full intrusion quietly. They are now in a race. Drive home that loud containment has costs that don't appear in textbook playbooks.",
         delayMinutes: 0,
-        timerMinutes: 10,
-        tickerHeadline: "Financial services firm's backup systems hit in ransomware attack - recovery timeline now 9 days",
+        timerMinutes: 0,
+        tickerHeadline: "Power trading volumes light overnight as wholesale market opens calmly",
         artifact: {
           type: "siem_alert",
-          siemAlertId: "SOC-2024-8849",
-          siemSeverity: "CRITICAL",
-          siemSourceIp: "10.14.22.187 (INTERNAL → BACKUP SEGMENT)",
-          siemEventType: "Backup System Encryption - Recovery Timeline Extended",
+          siemAlertId: "DEFENDER-2026-44919",
+          siemSeverity: "HIGH",
+          siemSourceIp: "10.51.2.118 (BILLING-FILE-04)",
+          siemEventType: "Suspicious File Activity - Encryption Pattern - Adjacent Segment",
         },
         isDecisionPoint: false,
         decisionOptions: [],
-        targetRoles: ["CISO", "COO", "CEO"],
-        expectedKeywords: ["backup", "recovery", "9 days", "Mandiant", "BCP"],
+        targetRoles: ["CISO", "COO"],
+        expectedKeywords: ["segment", "spread", "billing", "race", "Mandiant"],
       },
 
-      // ── INJECT 3: T+45 - Both paths converge - Scope + exfiltration ──────
+      // ── INJECT 2c: Path C narrative - The Clean Escalation ─────────────
       {
-        id: "rw-i3",
-        order: 20,
-        title: "Scope Confirmed - Exfiltration Evidence Found",
-        body: "08:30 - Mandiant's initial assessment is in. Encrypted: payroll, customer database, two production trading platforms - approximately 55% of IT infrastructure. The ransom note demands $4.8M in Bitcoin within 72 hours. Critically: Mandiant have found evidence of data being staged and exfiltrated approximately 60–72 hours ago. An estimated 220,000 customer records - names, account numbers, partial card data - may have been taken. The GDPR 72-hour notification clock started when you became aware of this potential breach.",
+        id: "rw-i2c",
+        order: 10,
+        title: "Path C: The Clean Escalation",
+        body: "06:30. Mandiant arrived 12 minutes ago. Their first call: 'You did the right thing. This is real, it is active, and you have caught it before encryption.' Their second call, 18 minutes later: two further compromised endpoints found, both on the trading floor back-office. No sign of compromise in the customer billing tier or the PSR database - yet. The attacker still does not know they have been seen. You bought the right thing with the after-hours fee: time, and a partner who has done this 400 times.",
         facilitatorNotes:
-          "This is the pivot point of the exercise. The team now faces simultaneous crises: operational recovery AND a potential data breach. The GDPR clock: 72 hours from now is Thursday 08:30. No notification = fines up to 4% of global annual turnover. The ransom decision and the GDPR decision are linked but separate. Push the group: what's the priority order?",
+          "Reward for Option C. Slightly less intelligence advantage than Option A (Mandiant moves at Mandiant's pace) but with an external partner already engaged, which materially de-risks every later decision. The team has paid for this with the retainer call-out fee - which the CFO should be watching closely.",
         delayMinutes: 0,
-        timerMinutes: 15,
-        tickerHeadline: "Financial services firm reportedly hit by $4.8M ransomware demand - customer data potentially exposed",
+        timerMinutes: 0,
+        tickerHeadline: "Power trading volumes light overnight as wholesale market opens calmly",
+        artifact: {
+          type: "default",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CISO", "COO"],
+        expectedKeywords: ["Mandiant", "engaged", "trading", "billing", "PSR"],
+      },
+
+      // ── INJECT 2d: Path D narrative - The Second Alert ─────────────────
+      {
+        id: "rw-i2d",
+        order: 10,
+        title: "Path D: The Second Alert",
+        body: "Tuesday, 04:11. 25 hours after the first beacon. The morning shift's 14:00 SOC handover yesterday flagged the closed ticket as 'probable false positive' and moved on. Defender is now firing simultaneously across 18 endpoints on three segments. A junior analyst calls the CISO at home: 'It's bad. There's a note on one of them.' The note begins: 'Veridian Power. We've been inside for six days. We have the PSR database. We have your wholesale trading book. You have 72 hours.' Mandiant are being called, the CEO is being called, and the morning markets are opening in two hours.",
+        facilitatorNotes:
+          "Brutal consequence of Option D. The team is now 25 hours behind with no intelligence advantage, no forensic baseline, and the attacker holds all the cards including the PSR. This path exists to make the lesson visceral: the easy call at 03:14 becomes the impossible call at 04:11 the next day. The team should feel the weight as they advance into rw-i2v.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Trading desks open: gas/power forwards quiet, no major news",
         artifact: {
           type: "ransomware_note",
-          ransomAmount: "$4.8M",
+          ransomAmount: "$9.4M",
           ransomDeadlineHours: 72,
-          ransomWalletAddress: "1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2",
+          ransomWalletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CISO", "CEO", "COO"],
+        expectedKeywords: ["note", "PSR", "trading book", "72 hours", "missed"],
+      },
+
+      // ── INJECT 2v: CONVERGENCE - The First External Call ───────────────
+      {
+        id: "rw-i2v",
+        order: 20,
+        title: "The First Call",
+        body: "Whatever path you took to get here, you are now standing in the same room. The CISO has confirmed: this is real, it is active, and the attacker has at minimum touched the boundary between IT and the wholesale trading systems. The Priority Services Register database may or may not be in scope - you do not yet know. The CEO is on the line and has one question: 'Who do we call first?' This is not a procedural question. It is a tone-setting question for the next five days.",
+        facilitatorNotes:
+          "Under NIS Regs 2018, as a designated OES the company has a 72-hour notification obligation to NCSC for any incident with a significant impact on continuity of essential services. Ofgem is the sector regulator and will need to be told eventually but is not the first call. Calling NCSC first sets a cooperative tone that pays dividends across the rest of the exercise. Calling the board chair first is defensible but slower. Calling the CFO+CEO consortium first is internal-focused and arguably premature. Calling Ofgem first inverts the chain of command.",
+        delayMinutes: 0,
+        timerMinutes: 8,
+        tickerHeadline: "Energy retailers face 'cyber resilience year' as Ofgem raises NIS reporting bar",
+        artifact: {
+          type: "default",
         },
         isDecisionPoint: true,
-        targetRoles: ["CEO", "CISO", "CLO", "CFO"],
-        expectedKeywords: ["GDPR", "notify", "ICO", "72 hours", "ransom", "legal", "exfiltration"],
+        targetRoles: ["CEO", "CISO", "CLO"],
+        expectedKeywords: ["NCSC", "NIS", "Ofgem", "72 hours", "OES", "board"],
+        recapLine: "made the first call to {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
-            label: "Refuse ransom - full IR response, restore from backup, notify ICO immediately",
+            label: "NCSC first - file the NIS-mandated notification, ask for technical support, lock in the cooperative posture",
             consequence:
-              "IR firm engaged on full response. ICO notified - they acknowledge and request further detail within 72 hours. Recovery begins. Estimated 5–9 days to full restoration.",
+              "NCSC respond within 40 minutes with a named incident handler. The notification clock is honoured. Ofgem will later note the proactive escalation as evidence of good NIS culture.",
+            rank: 1,
+            recapFragment: "NCSC under NIS Regs",
           },
           {
             key: "B",
-            label: "Open negotiations with threat actor while assessing options - delay ICO notification",
+            label: "Board chair first - this is a governance moment and the chair must own the room from the start",
             consequence:
-              "Negotiators engaged. Threat actor responds quickly - they know about the exfiltration and are threatening to publish data. GDPR notification clock continues to run. ICO notification window narrows.",
+              "Defensible but slow. The chair is on holiday in Italy and is reachable in 90 minutes. Meanwhile the technical clock keeps running. Notification to NCSC happens at hour 4 instead of hour 1.",
+            rank: 3,
+            recapFragment: "the board chair",
           },
           {
             key: "C",
-            label: "Pay the ransom - obtain decryption key, assess data situation after",
+            label: "CFO and CEO consortium - lock down the financial and trading exposure before anything goes external",
             consequence:
-              "Payment processed via negotiators. FBI/NCA make contact warning against payment. Insurer queries policy exclusions. Decryption key received but is slow - some files don't decrypt. Data may still be published regardless.",
+              "A logical instinct under attack but it consumes 90 minutes of internal pre-meeting before any regulator is told. The notification clock is now stressed. Internal alignment is high; external posture is set late.",
+            rank: 2,
+            recapFragment: "the internal CFO/CEO consortium",
           },
-        ],
-        branches: [
-          { optionKey: "A", nextInjectId: "rw-i4" },
-          { optionKey: "B", nextInjectId: "rw-i4b" },
-          { optionKey: "C", nextInjectId: "rw-i4c" },
+          {
+            key: "D",
+            label: "Ofgem first - the sector regulator should hear it from you before NCSC routes it through the wires",
+            consequence:
+              "Ofgem appreciate the call but politely tell you that under NIS the first call is to NCSC. You have inverted the chain of command. Ofgem note this in their later assessment.",
+            rank: 3,
+            recapFragment: "Ofgem ahead of NCSC",
+          },
         ],
       },
 
-      // ── INJECT 4: Main path - Media + regulatory pressure ────────────────
+      // ── INJECT 3: Bulk encryption + PSR exposure ───────────────────────
       {
-        id: "rw-i4",
+        id: "rw-i3",
         order: 30,
-        title: "Media Calls - ICO Acknowledges - Stock Moves",
-        body: "09:15 - Three things simultaneously: (1) A Financial Times journalist calls your Head of Comms with specific details about the incident - details that haven't been made public. Someone is leaking. (2) The ICO has acknowledged your notification and requests a follow-up call within 24 hours, with a full timeline and data mapping. (3) Your stock price is down 4.7% on unusual volume. The LSE has not halted trading but your investor relations team is fielding calls.",
+        title: "04:11 - Bulk Encryption Event",
+        body: "Whatever you knew at 03:14, you now know this: at 04:11 a coordinated encryption event hit 217 servers across the back-office estate. Confirmed encrypted: customer billing, the wholesale trading book reconciliation system, payroll, and - this is the one that matters - a read-replica of the Priority Services Register. The PSR holds the names, addresses, medical conditions and emergency contacts of 84,000 vulnerable customers. The replica was last synced at 01:00. Mandiant assess that the master is intact but the replica was almost certainly exfiltrated before encryption. The lights are still on for customers. For now.",
         facilitatorNotes:
-          "The leak is significant - it suggests either an employee or someone within the IR process. The FT journalist has details about the $4.8M demand and the 220,000 records. The CCO needs to decide: engage the FT (risk of confirming details) or no comment (risk of looking evasive). The ICO call needs a lawyer on the line - not just the CISO.",
+          "The PSR is the unique cruelty of an energy-sector breach. Unlike a financial breach, the data is not just sensitive - it is the data the company holds because the customers are vulnerable. The team must now make a containment vs continuity call with this in the back of their minds. The 'lights are still on' line is critical: this is not yet a power outage incident, it is a data and systems incident. That distinction is what stops the COBR call.",
         delayMinutes: 0,
         timerMinutes: 12,
-        tickerHeadline: "FT sources: major financial firm hit by $4.8M ransom demand -220,000 customer records potentially exposed",
+        tickerHeadline: "BREAKING: Major UK energy retailer reportedly hit by overnight cyber incident - supply unaffected",
         artifact: {
-          type: "email",
-          emailFrom: "j.hartley@ft.com",
-          emailTo: "press@meridianfs.com",
-          emailSubject: "FT: Request for comment - ransomware incident affecting 220,000 customers",
+          type: "ransomware_note",
+          ransomAmount: "$9.4M",
+          ransomDeadlineHours: 72,
+          ransomWalletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
         },
         isDecisionPoint: true,
-        targetRoles: ["CEO", "CLO", "CCO", "CFO"],
-        expectedKeywords: ["holding statement", "ICO", "legal", "leak", "stock", "no comment"],
+        targetRoles: ["CISO", "COO", "CEO"],
+        expectedKeywords: ["PSR", "vulnerable", "containment", "wholesale", "lights on", "ICO"],
+        recapLine: "answered the encryption by {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
-            label: "Issue a holding statement confirming a cyber incident - no financial details",
+            label: "Aggressive containment: shut down all back-office systems, run wholesale trading on the manual fallback book",
             consequence:
-              "FT runs a story with your holding statement. Narrative is partially controlled. Stock price stabilises at -5.1%. ICO notes the proactive communication positively.",
+              "Spread halted. Trading desk reverts to phone-and-spreadsheet for the day. Estimated £1.8M in suboptimal hedging but the attacker is locked out cleanly. PSR replica is preserved as forensic evidence.",
+            rank: 1,
+            recapFragment: "aggressive containment with manual trading fallback",
           },
           {
             key: "B",
-            label: "No comment to FT - brief major shareholders directly before media breaks",
+            label: "Selective containment: protect customer billing and the PSR master, let trading run on the affected systems",
             consequence:
-              "FT runs the story without your comment. 'Company refuses to comment' becomes part of the headline. Two institutional shareholders call IR demanding answers.",
+              "Trading desk continues. The attacker re-encrypts a second tranche of trading reconciliation files at 06:30. The selective approach has bought 2 hours of trading at the cost of giving the attacker a second bite.",
+            rank: 3,
+            recapFragment: "selective containment that kept trading live",
+          },
+          {
+            key: "C",
+            label: "Full systems-wide shutdown - including customer-facing - until Mandiant gives the all-clear",
+            consequence:
+              "Customer self-service portal goes dark. 740,000 customers get an error page in the first hour. Trading desk goes manual. Spread halted. The reputational cost of the dark portal will arrive within 6 hours.",
+            rank: 2,
+            recapFragment: "a full systems-wide shutdown",
+          },
+          {
+            key: "D",
+            label: "Hold and observe - let Mandiant complete their forensic loop before any large containment move",
+            consequence:
+              "Encryption continues to spread for another 90 minutes. By 05:45 the trading book reconciliation is unrecoverable from production. Mandiant arrive to find a worse situation than they were briefed on.",
+            rank: 4,
+            recapFragment: "holding and observing while the encryption spread",
           },
         ],
       },
 
-      // ── INJECT 4b: Path B - Negotiations backfire ─────────────────────────
+      // ── INJECT 3d: 09:00 - The Times Has The Story ─────────────────────
       {
-        id: "rw-i4b",
-        order: 30,
-        title: "Path B: Threat Actor Publishes Sample Data",
-        body: "09:00 - The threat actor has posted a sample of 1,200 customer records on a dark web forum as proof of exfiltration. The sample includes full names, account numbers, sort codes, and partial card data. A security researcher has found it and posted about it on X. GDPR notification window: 63 hours remain. The threat actor's message: 'You have 48 hours to pay before we publish everything. Non-negotiable.' Mandiant advise the negotiation window has closed.",
-        facilitatorNotes:
-          "The negotiation gamble has failed. The team is now in a worse position: GDPR clock running, data already published, and they've lost 30 minutes of response time. The group should now pivot to: refuse further engagement, notify ICO immediately, begin customer notification planning. The published sample means customers may find out before the company notifies them.",
-        delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "BREAKING: Dark web post shows customer data from financial services breach - security researchers alarmed",
-        artifact: {
-          type: "dark_web_listing",
-          darkWebSiteName: "ALPHV Data Market",
-          darkWebOnionUrl: "http://alphvmmm27o3abo3r2mlmjrpdmzle3rykajqc5xwn4bd3j4lujhpack3ad.onion",
-          darkWebTitle: "MERIDIAN FINANCIAL SERVICES - FULL DATABASE DUMP (220,000 RECORDS)",
-          darkWebPrice: "18 XMR",
-          darkWebRecordCount: "220,000 records",
-          darkWebSampleRows: [
-            { name: "James R. Hartley",    account: "12847391", sortCode: "20-14-53", email: "j.hartley@gmail.com" },
-            { name: "Priya Subramaniam",   account: "73920184", sortCode: "20-14-53", email: "priya.s@hotmail.co.uk" },
-            { name: "David O'Connor",      account: "84736102", sortCode: "20-14-82", email: "doconnor1974@gmail.com" },
-            { name: "Sarah Louise Briggs", account: "29384710", sortCode: "20-14-82", email: "sbriggs@yahoo.co.uk" },
-            { name: "Mohammed Al-Farsi",   account: "56102938", sortCode: "20-14-53", email: "m.alfarsi@outlook.com" },
-          ],
-        },
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CISO", "CLO", "CCO"],
-        expectedKeywords: ["ICO", "notify", "customer notification", "dark web", "published"],
-      },
-
-      // ── INJECT 4c: Path C - Ransom paid, complications ───────────────────
-      {
-        id: "rw-i4c",
-        order: 30,
-        title: "Path C: Payment Made - New Complications",
-        body: "09:45 - Ransom paid via negotiators. Decryption keys received. But: (1) FBI/NCA have made contact - they are aware of the payment and are treating it as potential sanctions violation (threat actor linked to sanctioned entity). (2) Your insurer has formally put the claim 'under review' - policy exclusions for payments to sanctioned entities may void coverage. (3) Decryption is working on only 60% of files - the rest may be permanently damaged. The data exfiltration threat remains unresolved.",
-        facilitatorNotes:
-          "This is the consequence of paying. The sanctions issue is a real risk - the US OFAC has published guidance that paying ransomware actors linked to sanctioned entities can itself be a sanctions violation, regardless of intent. The insurance void is a financial shock. The partial decryption means recovery is still needed. Push the group: what do you tell the board about why you paid?",
-        delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "Sources: financial firm paid ransomware demand - FBI involvement reported",
-        artifact: {
-          type: "email",
-          emailFrom: "enforcement@fbi.gov",
-          emailTo: "legal@meridianfs.com",
-          emailSubject: "NOTICE: Ransomware payment - potential sanctions implications - mandatory cooperation required",
-        },
-        isDecisionPoint: false,
-        decisionOptions: [],
-        targetRoles: ["CEO", "CLO", "CFO", "CISO"],
-        expectedKeywords: ["sanctions", "OFAC", "FBI", "insurance", "decryption", "board"],
-      },
-
-      // ── INJECT 5: T+75 - Insurance and legal exposure ────────────────────
-      {
-        id: "rw-i5",
+        id: "rw-i3d",
         order: 40,
-        title: "Insurance Dispute and Legal Exposure",
-        body: "10:00 - Your cyber insurer, Beazley, has sent a formal letter. They are querying whether the exploited VPN vulnerability was on your last penetration test's exceptions list. Your CISO confirms: it was flagged 8 months ago, deprioritised due to resource constraints, and never remediated. If the vulnerability was a known risk, the insurer may deny the claim - approximately £12M in coverage. Separately, a data protection law firm has sent a letter before claim on behalf of 340 affected customers they identified from the dark web posting.",
+        title: "09:00 - The Times Has The Story",
+        body: "09:00. A reporter from The Times has emailed the press office with three specific facts: the time of the encryption event, the dollar figure on the ransom note, and the phrase 'Priority Services Register'. They are filing in 90 minutes. Internally: 3,200 staff are arriving at offices across the country with no email; the trading desk is on phones; the customer call centre is at 4x normal volume on what they are hearing on social media. Three groups need a brief in the next hour: staff, customers, and the day-ahead wholesale market counterparties. You can only properly brief one of them first. Which?",
         facilitatorNotes:
-          "The VPN vulnerability on the pen test is the governance failure that underpins everything. It creates: (1) insurance denial risk, (2) D&O liability, (3) regulatory aggravation. This is where the CEO and CLO should be having a very uncomfortable conversation about what the board knew. The 340-customer legal letter will grow - class action risk is real.",
-        delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "Law firm launches action on behalf of data breach victims - group litigation expected",
-        artifact: {
-          type: "legal_letter",
-          legalCaseRef: "BEZ-2024-POL-9847",
-          legalAuthority: "Beazley Insurance - Cyber Claims Division",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CLO", "CFO", "CEO", "CISO"],
-        expectedKeywords: ["pen test", "insurance", "D&O", "class action", "remediation", "disclosure"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Disclose the pen test finding to insurers proactively - engage external coverage counsel",
-            consequence:
-              "Insurer acknowledges the disclosure. Coverage counsel advises the exclusion may not apply - the vulnerability was known but not exploited until now. Expensive legal process begins but claim stays alive.",
-          },
-          {
-            key: "B",
-            label: "Contest the insurer's query - argue the pen test exception was within acceptable risk tolerance",
-            consequence:
-              "Insurer initiates formal coverage dispute. Mandiant's report surfaces the pen test finding independently. Legal costs escalate. The dispute becomes public in regulatory filings.",
-          },
-        ],
-      },
-
-      // ── INJECT 6: T+90 - Board escalation ────────────────────────────────
-      {
-        id: "rw-i6",
-        order: 50,
-        title: "Board Escalation - Chairman Calls",
-        body: "10:30 - Your Chairman calls. Three NEDs have been contacted by major institutional shareholders. An emergency board briefing is demanded within 90 minutes. The Chairman has one direct question: 'Did the board know about any security vulnerabilities that were not remediated?' Two NEDs reviewed and signed off the IT risk register 6 months ago - a register that included the VPN vulnerability as 'medium risk, remediation deferred'. Your stock is now down 6.8%. Trading has been flagged as potentially disorderly by the LSE.",
-        facilitatorNotes:
-          "This is the D&O moment. Two NEDs may have personal liability. The CEO's answer to the Chairman will define the governance narrative for the next 12 months. The correct answer is full disclosure - but it's personally difficult for the NEDs. Watch whether the group protects individuals or takes a transparent position. The LSE 'disorderly trading' flag means a public announcement may be required.",
-        delayMinutes: 0,
-        timerMinutes: 15,
-        tickerHeadline: "LSE flags disorderly trading in Meridian Financial shares as breach details emerge",
-        artifact: {
-          type: "email",
-          emailFrom: "r.whitmore@meridian-board.com",
-          emailTo: "ceo@meridianfs.com",
-          emailSubject: "URGENT - Emergency board briefing required within 90 minutes - D&O questions",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CFO", "CLO"],
-        expectedKeywords: ["board", "D&O", "NED", "disclosure", "LSE", "liability", "risk register"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Full transparent board briefing - including the pen test and risk register finding",
-            consequence:
-              "Board informed. Two NEDs voluntarily step aside pending review. D&O insurers notified. Chairman concerned but supportive of transparency. LSE notified of material development.",
-          },
-          {
-            key: "B",
-            label: "Brief the board on the incident without surfacing the risk register issue yet",
-            consequence:
-              "Buys 48 hours. Legal later flags serious D&O exposure when the risk register is disclosed in regulatory proceedings. The omission becomes part of the ICO investigation.",
-          },
-        ],
-      },
-
-      // ── INJECT 7: T+105 - Threat actor deadline approaching ──────────────
-      {
-        id: "rw-i7",
-        order: 60,
-        title: "48-Hour Mark - Threat Actor Ultimatum",
-        body: "11:00 -24 hours have passed since the ransom note. The threat actor has sent a new message: they are publishing a second, larger sample of 8,000 customer records in 4 hours unless payment negotiations begin. Mandiant confirm the threat actor is ALPHV/BlackCat - currently under FBI disruption but still operational. Your recovery team reports core systems will be partially restored in 36 hours. The FCA has made contact - they are aware of the incident and are treating it as a potential operational resilience failure under PS21/3.",
-        facilitatorNotes:
-          "The FCA angle is serious - PS21/3 (operational resilience policy) requires firms to be able to remain within impact tolerances during severe but plausible scenarios. A 9-day outage almost certainly breaches this. The threat actor's second sample is a pressure tactic. The group must decide: engage or hold? This is also where the CEO needs to make the call on customer notification - waiting any longer risks customers finding out from the dark web before the company.",
-        delayMinutes: 0,
-        timerMinutes: 12,
-        tickerHeadline: "FCA confirms investigation into Meridian Financial operational resilience failures",
-        artifact: {
-          type: "email",
-          emailFrom: "supervisory@fca.org.uk",
-          emailTo: "ceo@meridianfs.com",
-          emailSubject: "FCA - Operational Resilience - PS21/3 - Supervisory Engagement Required",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CISO", "CLO", "CCO"],
-        expectedKeywords: ["customer notification", "FCA", "PS21/3", "ALPHV", "publish", "engage"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Begin customer notification now - do not engage the threat actor further",
-            consequence:
-              "Customer notifications go out. Call centre overwhelmed within 2 hours -22,000 calls in first hour. Dark web sample becomes less damaging as customers are already informed. FCA notes the proactive notification.",
-          },
-          {
-            key: "B",
-            label: "Hold customer notification - attempt to negotiate takedown of the second sample",
-            consequence:
-              "Negotiators reach the threat actor. They agree to delay the second posting for 12 hours for £500k. A security blogger discovers the second sample independently 6 hours later - before customer notification goes out.",
-          },
-        ],
-      },
-
-      // ── INJECT 8: T+120 - Staff and operational HR crisis ────────────────
-      {
-        id: "rw-i8",
-        order: 70,
-        title: "Staff Revolt - Payroll at Risk",
-        body: "11:30 - HR has a critical update: payroll systems are among the encrypted servers. 3,200 employees are due to be paid on Friday -72 hours away. Manual payroll processing would take 5 days minimum. Your HR Director has fielded 140 employee queries. Three union representatives have requested an urgent meeting. Separately: two members of the IT team have been identified as potential sources of the FT leak - both are currently in the building.",
-        facilitatorNotes:
-          "The payroll failure is a direct employee relations crisis that the HR lead must own. There are legal obligations - employees must be paid on time or the company is in breach of contract. Options: emergency manual payroll (expensive, error-prone), short-term advance payments, or banking on recovery within 72 hours (optimistic). The leak investigation: care needed - if the company acts punitively on a suspicion, it creates whistleblowing protection risk.",
+          "Brief order is a values question. Staff-first is the morally instinctive answer and probably the right one - your people are scared and on the phones. Customers-first is the regulatory and reputational answer - the vulnerable cohort especially. Counterparties-first is the market-integrity answer - your trading book is exposed and they will find out from Reuters anyway. Investors-first is the cold-blooded option that some will defend on disclosure grounds. There is no 'right' answer here, only a values-revealing one. The point is they are forced to choose.",
         delayMinutes: 0,
         timerMinutes: 10,
-        tickerHeadline: "Staff at breached firm face Friday payroll uncertainty as systems remain down",
+        tickerHeadline: "The Times says it will publish: 'UK energy retailer faces ransomware demand or PSR leak'",
         artifact: {
           type: "email",
-          emailFrom: "hr@meridianfs.com",
-          emailTo: "coo@meridianfs.com",
-          emailSubject: "URGENT: Payroll systems encrypted - Friday pay at risk - union contact made",
+          emailFrom: "n.curtis@thetimes.co.uk",
+          emailTo: "press@veridianpower.co.uk",
+          emailSubject: "The Times: request for comment - cyber incident, ransom note, Priority Services Register exposure",
         },
         isDecisionPoint: true,
-        targetRoles: ["COO", "CFO", "CEO"],
-        expectedKeywords: ["payroll", "union", "employees", "manual", "advance", "leak investigation"],
+        targetRoles: ["CEO", "CCO", "CLO"],
+        expectedKeywords: ["staff", "customers", "vulnerable", "counterparties", "Times", "holding statement"],
+        recapLine: "briefed in the order of {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
-            label: "Authorise emergency payroll advances - brief staff with an all-hands communication",
+            label: "Staff first - all-hands at 09:30, before the Times story drops, with the unvarnished truth",
             consequence:
-              "Bank agrees to advance payroll funding. Emergency payments processed. Staff all-hands reduces panic. Union representatives satisfied. Cost: £340k in emergency processing fees.",
+              "Staff trust is preserved. The story leaks slightly through Slack screenshots but the company has shown that its people come first. Customer call centre staff handle the inbound noise with dignity because they were told first.",
+            rank: 1,
+            recapFragment: "staff first",
           },
           {
             key: "B",
-            label: "Communicate that payroll may be delayed - request staff patience",
+            label: "Customers first - statement on the website and an SMS to the PSR cohort confirming services are unaffected",
             consequence:
-              "Union formally threatens industrial action. Employment tribunal complaint filed within 24 hours. Story becomes 'company won't pay staff' alongside the breach story. Significant reputational and legal escalation.",
+              "Defensible and noble - vulnerable customers are reassured. But staff find out via a Times push notification on their phones during the all-hands they thought was about something else. Internal trust takes a real hit.",
+            rank: 2,
+            recapFragment: "customers and the PSR cohort first",
+          },
+          {
+            key: "C",
+            label: "Counterparties first - call the wholesale market makers and the Bank of England before the FT clears its throat",
+            consequence:
+              "Market integrity is preserved. Two counterparties pull back from the day-ahead auction; the auction clears 4% wider than yesterday. Staff and customers find out from the news. The Treasury Select Committee notes the prioritisation.",
+            rank: 3,
+            recapFragment: "wholesale counterparties first",
+          },
+          {
+            key: "D",
+            label: "Investors first - call the top 5 institutional shareholders before any other group gets a brief",
+            consequence:
+              "Cold-blooded but disclosure-defensible. Two of the five leak the call to the FT within 20 minutes. Staff and customers find out fourth. The narrative becomes 'Veridian briefed the City before its own people'.",
+            rank: 4,
+            recapFragment: "the top institutional shareholders first",
           },
         ],
       },
 
-      // ── INJECT 9: T+135 - Backdoor discovered ────────────────────────────
+      // ── INJECT 4: 14:30 - The Note Arrives ─────────────────────────────
       {
-        id: "rw-i9",
-        order: 80,
-        title: "Backdoor Discovered - Recovery Halted",
-        body: "Day 2, 09:00 - Recovery is progressing. But your head of technology has found a second, dormant backdoor in the network - the threat actor may still have access. All recovery progress could be undermined if the backdoor is active. Mandiant recommend halting all recovery activity until the backdoor is fully eradicated - adding 24–48 hours. Customer notification emails went out yesterday and generated 31,000 customer contacts. Three national news channels are running the story as their lead business item.",
+        id: "rw-i4",
+        order: 50,
+        title: "14:30 - The Note Arrives",
+        body: "14:30. The full ransom note has been delivered through the encrypted-files window on a recovered workstation. The threat actor is ALPHV. They want $9.4M in Bitcoin within 48 hours. They have attached a 200-row sample of the Priority Services Register and a 14-row sample of the wholesale trading book. The PSR sample includes a name, address, medical condition (oxygen dependence) and emergency contact for a customer in Carlisle. Mandiant confirm the sample is authentic. Beazley, your cyber insurer, are on a Teams call asking what your opening posture is. The CFO has just confirmed that the company has the cash - just - to pay the demand without breaching its covenants.",
         facilitatorNotes:
-          "The backdoor is the technical sting in the tail. The group needs to authorise the recovery halt - which has real cost - against the pressure to restore service as fast as possible. This is the CISO's call but the CEO needs to back it. The customer contact volume (31,000) is the human reality of the breach - the group should be asked: are you satisfied with how the customer notification was handled?",
+          "The opening posture is not the same as the final decision. This is the question of how you walk into the negotiation room. Refuse-and-restore is the orthodox answer but it takes 5-9 days and the PSR is in play. Stall to investigate buys time but the clock is hard. Negotiate in good faith opens the door. Pay immediately is the catastrophic-instinct answer that some will defend if the PSR cohort is foregrounded. CRUCIAL: the convergence in rw-i4v is the same regardless of the choice here - the chat window WILL open.",
+        delayMinutes: 0,
+        timerMinutes: 14,
+        tickerHeadline: "Veridian Power confirms cyber incident: 'investigation ongoing, supply unaffected, customer data may be impacted'",
+        artifact: {
+          type: "ransomware_note",
+          ransomAmount: "$9.4M",
+          ransomDeadlineHours: 48,
+          ransomWalletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CFO", "CLO", "CISO"],
+        expectedKeywords: ["ALPHV", "PSR", "ransom", "Beazley", "OFAC", "negotiate", "refuse"],
+        recapLine: "took the opening posture of {{recapFragment}}",
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Refuse to engage - announce internally that we are not paying, focus 100% on restoration and notification",
+            consequence:
+              "Clean moral and legal posture. Restoration timeline 5-9 days. The PSR sample will be published; you will need to call the Carlisle customer in person before they read about themselves online. The CCO turns pale.",
+            rank: 1,
+            recapFragment: "refuse-to-engage",
+          },
+          {
+            key: "B",
+            label: "Stall - open a chat to buy 24 hours of investigation time, do not commit to anything",
+            consequence:
+              "ALPHV respond in 11 minutes. They are practised at this and will give you exactly 24 hours and not a minute more. The clock is now hard. Mandiant warn you that ALPHV's 'good faith' is a polished routine.",
+            rank: 2,
+            recapFragment: "a 24-hour stall",
+          },
+          {
+            key: "C",
+            label: "Negotiate in good faith - engage Coveware, target a 60% reduction, retain the right to walk",
+            consequence:
+              "Coveware engaged. The negotiation begins. ALPHV accept the engagement and counter at $7.8M. The conversation is now real. The OFAC sanctions risk is being assessed in parallel by external counsel.",
+            rank: 3,
+            recapFragment: "good-faith negotiation via Coveware",
+          },
+          {
+            key: "D",
+            label: "Pay the demand in full immediately to protect the PSR cohort and end the extortion clock",
+            consequence:
+              "Beazley refuse to authorise the payment under the policy until OFAC clearance. The CFO authorises a bridge from corporate cash. Decryption keys will work on 60% of files. The PSR will be published anyway - the actor has already mirrored it on three forums.",
+            rank: 4,
+            recapFragment: "immediate payment in full",
+          },
+        ],
+      },
+
+      // ── INJECT 4v: HARD CONVERGENCE - The Chat Window ──────────────────
+      // This is the convergence inject - every path through the scenario
+      // arrives here regardless of opening posture in rw-i4. The decision
+      // is operational: who runs the negotiation.
+      {
+        id: "rw-i4v",
+        order: 60,
+        title: "15:42 - The Chat Window",
+        body: "15:42. Whatever your opening posture, the chat window is now open. There is no path through this scenario that does not pass through this room. ALPHV have a live operator on the other end. They are professional. They have done this 200 times. They have your PSR sample mirrored to three forums and a 24-hour countdown clock posted on their leak site. The question now is not whether to talk - it is who runs the conversation. The wrong person on the keyboard can cost millions and lives.",
+        facilitatorNotes:
+          "Convergence inject - the room everyone ends up in regardless of their opening choice. Operational decision. Mandiant-only is the orthodox answer because they have done this hundreds of times and have OFAC-aware playbooks. CISO with Mandiant coaching is the second-best, useful if there is a relationship-management angle. Coveware specialise in negotiation and have the best price outcomes but worst forensic integration. Refuse the chat and walk is brave but means the PSR publishes in 24 hours guaranteed.",
         delayMinutes: 0,
         timerMinutes: 12,
-        tickerHeadline: "Second backdoor halts Meridian Financial recovery - customers furious as outage enters day two",
+        tickerHeadline: "ALPHV leak site posts countdown: 'Veridian Power - PSR drop in 24 hours unless payment received'",
         artifact: {
-          type: "siem_alert",
-          siemAlertId: "SOC-2024-8851",
-          siemSeverity: "CRITICAL",
-          siemSourceIp: "185.220.101.47 (TOR EXIT NODE)",
-          siemEventType: "Dormant C2 Beacon - Active Exfiltration Channel Identified",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CISO", "CEO", "COO"],
-        expectedKeywords: ["threat hunt", "halt recovery", "backdoor", "Mandiant", "eradicate", "C2"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Halt all recovery - engage specialist threat hunting team to eradicate backdoor first",
-            consequence:
-              "Correct call. 36-hour delay. Backdoor eradicated. Recovery resumes on clean infrastructure. FCA notes the methodical approach positively in their eventual report.",
-          },
-          {
-            key: "B",
-            label: "Continue recovery on unaffected segments - monitor the backdoor while restoring",
-            consequence:
-              "Threat actor activates the backdoor 18 hours later. Second encryption event - partial - adds 4 more days to recovery. Mandiant later state this was avoidable.",
-          },
-        ],
-      },
-
-      // ── INJECT 10: Day 2 - Regulatory enforcement signals ────────────────
-      {
-        id: "rw-i10",
-        order: 90,
-        title: "ICO and FCA Signal Enforcement Intent",
-        body: "Day 2, 13:00 - Two regulatory signals arrive simultaneously. The ICO has sent a formal information notice requiring full documentation of the data breach within 14 days - failure to comply carries criminal liability for senior officers. The FCA has formally classified the incident as a 'major operational incident' and is opening an investigation into PS21/3 compliance. Your external legal team estimates potential combined regulatory fines of £18–32M. Credit rating agency Moody's has placed Meridian on 'review for downgrade'.",
-        facilitatorNotes:
-          "This is the long tail of the crisis becoming real. The group needs to decide: do you fight both regulators, cooperate fully, or try to negotiate? The credit downgrade will affect the cost of capital. The combined fines would be painful but survivable - what's less survivable is a prolonged enforcement battle that keeps the story alive. This is also the moment to discuss: who is accountable? Has anyone been held responsible internally?",
-        delayMinutes: 0,
-        timerMinutes: 15,
-        tickerHeadline: "Moody's places Meridian Financial on downgrade watch as dual regulatory investigations confirmed",
-        artifact: {
-          type: "legal_letter",
-          legalCaseRef: "ICO-2024-ENF-0441 / FCA-PS21/3-2024-0093",
-          legalAuthority: "Information Commissioner's Office and Financial Conduct Authority",
-        },
-        isDecisionPoint: true,
-        targetRoles: ["CEO", "CLO", "CFO", "CISO"],
-        expectedKeywords: ["cooperate", "enforce", "fines", "Moody's", "accountability", "remediation roadmap"],
-        decisionOptions: [
-          {
-            key: "A",
-            label: "Full cooperation with both regulators - appoint dedicated regulatory liaison team",
-            consequence:
-              "ICO and FCA both note the cooperative posture. Investigation timeline: 9–12 months. Fine likely in lower range (£8–14M combined). No criminal referral for officers.",
-          },
-          {
-            key: "B",
-            label: "Contest the FCA classification - challenge PS21/3 application as unprecedented",
-            consequence:
-              "FCA escalates to formal enforcement proceedings. Legal costs mount. Story remains live. ICO investigation unaffected. Fine likely in upper range and proceedings extend to 18 months.",
-          },
-        ],
-      },
-
-      // ── INJECT 11: Day 2 - Lessons, accountability, and future ───────────
-      {
-        id: "rw-i11",
-        order: 100,
-        title: "The Accountability Question",
-        body: "Day 3, 09:00 - Systems are coming back online. The immediate crisis is passing. But the board has convened and has a list of questions: (1) Who is accountable for the unpatched VPN vulnerability? (2) Should the CISO's position be reviewed? (3) What does a credible remediation programme look like for investors and regulators? (4) What do we say to the 1,200 customers whose data has already been published publicly? The CFO presents: total estimated cost of the incident -£28–44M.",
-        facilitatorNotes:
-          "This is the debrief inject - the wrap-up question set. The facilitator should use this to draw out the group's reflections on their own decisions across the session. Key questions to pose: what was the single decision that made the biggest difference? What would you do differently? Who in the organisation needs to change? This is where the AI report will be most valuable - it will have scored each decision and roleplay.",
-        delayMinutes: 0,
-        timerMinutes: 15,
-        tickerHeadline: "Meridian Financial total breach cost estimated at £28–44M - board accountability review underway",
-        artifact: {
-          type: "email",
-          emailFrom: "chairman@meridian-board.com",
-          emailTo: "board@meridianfs.com",
-          emailSubject: "Board resolution: accountability review, remediation programme, and investor communication required",
+          type: "slack_thread",
+          slackChannel: "#ir-warroom",
+          slackMessages: [
+            { author: "Mandiant Lead", role: "External IR", time: "15:38", text: "Chat window is live. They have your PSR sample staged on three mirrors. They will publish in 24h regardless of opening posture if we don't engage." },
+            { author: "Sarah K.", role: "CISO", time: "15:40", text: "Who's on the keyboard? We can't have a panicked junior on this." },
+            { author: "Mandiant Lead", role: "External IR", time: "15:41", text: "Three options on the table. We need an answer in 5 minutes. They're already typing." },
+            { author: "James M.", role: "CFO", time: "15:42", text: "Whoever it is - they need to know the OFAC line. ALPHV are not on the SDN list yet but it's a daily risk." },
+          ],
         },
         isDecisionPoint: true,
         targetRoles: ["CEO", "CISO", "CLO", "CFO"],
-        expectedKeywords: ["accountability", "CISO", "remediation", "investor", "programme", "culture"],
+        expectedKeywords: ["Mandiant", "Coveware", "OFAC", "negotiation", "keyboard", "PSR"],
+        recapLine: "ran the negotiation by putting {{recapFragment}}",
         decisionOptions: [
           {
             key: "A",
-            label: "Commission an independent post-incident review - results to be shared with regulators",
+            label: "Mandiant-only on the keyboard - they have the OFAC playbook, the technical depth, and the script",
             consequence:
-              "Regulators view this as best practice. External review firm engaged. Findings are uncomfortable but credible. Remediation roadmap accepted by ICO as mitigation evidence.",
+              "Mandiant take over. Their first message is calibrated: it acknowledges receipt without conceding intent. ALPHV recognise the cadence and respond formally. The conversation is now between professionals.",
+            rank: 1,
+            recapFragment: "Mandiant alone on the keyboard",
           },
           {
             key: "B",
-            label: "Internal review only - protect commercially sensitive findings",
+            label: "CISO at the keyboard with Mandiant coaching live - keeps internal accountability",
             consequence:
-              "Regulators specifically request the review findings. Failure to provide them is noted. ICO uses the absence of external review as evidence of inadequate governance culture.",
+              "The CISO writes, Mandiant proofread. The cadence is slower but the internal ownership is preserved. ALPHV note the pacing change but continue. This is workable but slower.",
+            rank: 2,
+            recapFragment: "the CISO under Mandiant coaching",
           },
+          {
+            key: "C",
+            label: "Engage Coveware as third-party negotiators - they specialise in price reduction",
+            consequence:
+              "Coveware bring a stronger price record but a weaker forensic integration. Mandiant flag the handoff risk. ALPHV recognise Coveware and immediately tighten their position - they know Coveware's playbook too.",
+            rank: 3,
+            recapFragment: "Coveware specialist negotiators on the keys",
+          },
+          {
+            key: "D",
+            label: "Refuse to engage in the chat - close the window, focus on restoration and notification",
+            consequence:
+              "Brave. The window closes. ALPHV's countdown clock continues to tick. The PSR will publish in 24 hours unless something changes. Mandiant's tone shifts: 'We respect the call. Let's get the Carlisle customer on the phone now.'",
+            rank: 4,
+            recapFragment: "no one on the keys",
+          },
+        ],
+      },
+
+      // ── INJECT 5: Day 3 - The Counter ──────────────────────────────────
+      {
+        id: "rw-i5",
+        order: 70,
+        title: "Day 3, 11:00 - The Counter",
+        body: "Day 3, 11:00. The negotiation has been running for 19 hours. Whoever is on the keyboard has now received ALPHV's counter: $6.2M, with a 12-hour fuse and a written commitment - in chat - that the PSR will be deleted from all mirrors and that no public leak will occur. Mandiant rate the deletion commitment at 'low credibility'. The OFAC team have cleared ALPHV as not currently on the SDN list, but warn that the list is reviewed weekly. Beazley have agreed to cover up to $4M of any payment, conditional on OFAC clearance and Coveware sign-off. Restoration is 60% complete. The PSR master is intact. The replica is in the attacker's hands.",
+        facilitatorNotes:
+          "The counter-offer is the moment the team has to make a real money call with real moral stakes. Lowball back is the strongest negotiating posture but it commits to engagement. Stall is the best 'do no harm' answer but burns the 12-hour fuse. Escalate to OFAC walks the line of public disclosure. Pay the counter is the path of least resistance and the worst rank.",
+        delayMinutes: 0,
+        timerMinutes: 14,
+        tickerHeadline: "Reuters: 'Veridian Power in active ransom negotiation - sources put demand near $9M'",
+        artifact: {
+          type: "default",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CFO", "CLO", "CISO"],
+        expectedKeywords: ["counter", "Beazley", "OFAC", "lowball", "stall", "PSR deletion"],
+        recapLine: "answered the counter by {{recapFragment}}",
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Lowball back - $2.4M, conditional on independent third-party deletion verification",
+            consequence:
+              "ALPHV laugh in chat (literally - 'lol') and counter at $5.4M. The negotiation continues. Coveware rate the position as 'aggressive but respected'. The 12-hour fuse extends informally to 18 hours.",
+            rank: 1,
+            recapFragment: "a $2.4M lowball with verification conditions",
+          },
+          {
+            key: "B",
+            label: "Stall for 6 more hours, claim board approval is needed, use the time to push restoration",
+            consequence:
+              "The fuse contracts to 6 hours. Mandiant get an additional 12% of restoration done. ALPHV start to lose patience and post a fresh PSR sample to a fourth forum. The Carlisle customer's name appears on Reddit.",
+            rank: 2,
+            recapFragment: "a 6-hour board-approval stall",
+          },
+          {
+            key: "C",
+            label: "Escalate to OFAC and the FBI in writing - signal that any payment is under federal scrutiny",
+            consequence:
+              "OFAC acknowledge in writing. The FBI engage and ask for the chat transcript. ALPHV detect the increased noise around the negotiation and post the full PSR replica to their leak site at 16:20.",
+            rank: 3,
+            recapFragment: "OFAC and FBI escalation",
+          },
+          {
+            key: "D",
+            label: "Pay the $6.2M counter to end the clock and protect the PSR cohort",
+            consequence:
+              "Beazley cover $4M; Veridian bridge $2.2M from corporate cash. The decryption keys arrive and work on 60% of files. The PSR is mirrored to a fourth site within the hour. The deletion 'commitment' is broken before the wire clears.",
+            rank: 4,
+            recapFragment: "paying the $6.2M counter",
+          },
+        ],
+      },
+
+      // ── INJECT 6a: Day 3 - Two Fronts, One Hour ────────────────────────
+      {
+        id: "rw-i6a",
+        order: 80,
+        title: "Day 3, 16:30 - Two Fronts, One Hour",
+        body: "16:30. Two letters arrive within ten minutes of each other. The first is from Beazley: their cyber claims division is querying whether the original VPN credential compromise stemmed from a known unpatched vulnerability in the third-party MFA appliance. It does. It was on the last pen test as 'medium, deferred'. If the exclusion bites, $4M of cover evaporates. The second is from Ofgem, formal under Schedule 4 of the NIS Regulations, requesting a full incident report within 14 days and signalling that an enforcement notice is 'under active consideration'. The CLO has a single hour to decide how to couple - or decouple - these two responses. They are linked by the same governance question: did the company know?",
+        facilitatorNotes:
+          "Strategic coupling decision. Couple them and disclose proactively to both is the strongest posture - it builds a coherent narrative. Decouple and fight Beazley on the exclusion is technically defensible but risky. Engage Ofgem fully and stall Beazley is the regulator-first instinct that some will defend. Try to settle Beazley quietly while building the Ofgem submission is the worst path - if Ofgem find out about the side-deal it becomes a separate breach of cooperative duties.",
+        delayMinutes: 0,
+        timerMinutes: 14,
+        tickerHeadline: "Ofgem 'actively considering enforcement' against Veridian Power under NIS Regulations",
+        artifact: {
+          type: "legal_letter",
+          legalCaseRef: "OFGEM-NIS-2026-0117 / BEZ-CY-2026-0844",
+          legalAuthority: "Office of Gas and Electricity Markets / Beazley Cyber Claims",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CLO", "CFO", "CISO"],
+        expectedKeywords: ["Ofgem", "Beazley", "NIS", "MFA", "exclusion", "couple", "disclose"],
+        recapLine: "handled the two fronts by {{recapFragment}}",
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Couple and disclose: full proactive disclosure to both Beazley and Ofgem with the same evidence pack",
+            consequence:
+              "Coverage counsel engaged. Beazley acknowledge the disclosure and shift the conversation from exclusion to mitigation. Ofgem note the proactive posture. The single evidence pack saves 200 hours of legal work later.",
+            rank: 1,
+            recapFragment: "coupled disclosure to both Beazley and Ofgem",
+          },
+          {
+            key: "B",
+            label: "Decouple - fight Beazley on the exclusion, engage Ofgem cooperatively in parallel",
+            consequence:
+              "Two streams of legal work. Beazley initiate a formal coverage dispute. Ofgem inquiry continues cleanly. Total legal spend triples but the insurance dispute is preserved as a clean fight.",
+            rank: 2,
+            recapFragment: "decoupling the two fronts",
+          },
+          {
+            key: "C",
+            label: "Engage Ofgem fully, stall Beazley - the regulator matters more than the insurance",
+            consequence:
+              "Ofgem cooperative. Beazley feel sandbagged when they later discover the parallel disclosure - they harden their position. The exclusion bites for $4M and the relationship is over.",
+            rank: 3,
+            recapFragment: "Ofgem first and Beazley stalled",
+          },
+          {
+            key: "D",
+            label: "Try to settle Beazley quietly with a side-letter while building the Ofgem submission",
+            consequence:
+              "A side-letter is drafted. Coverage counsel resign on conflict-of-interest grounds. The side-letter eventually surfaces in Ofgem's evidence-gathering. The regulator notes the lack of candour in their final report.",
+            rank: 4,
+            recapFragment: "a quiet Beazley side-letter",
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "rw-i6-strong" },
+          { optionKey: "B", nextInjectId: "rw-i6-strong" },
+          { optionKey: "C", nextInjectId: "rw-i6-weak" },
+          { optionKey: "D", nextInjectId: "rw-i6-weak" },
+        ],
+      },
+
+      // ── INJECT 6-strong: Bridge narrative for strong play ──────────────
+      {
+        id: "rw-i6-strong",
+        order: 90,
+        title: "Day 4, 08:00 - Cooperation Footing",
+        body: "Day 4, 08:00. Mandiant's intermediate report lands at 07:50 and is in Ofgem's hands by 08:00. The insurer's coverage counsel has accepted the proactive disclosure and is now negotiating mitigation rather than exclusion. The PSR cohort have been called individually - 84,000 calls split across the customer service estate and a hired-in agency, completed in 38 hours. The Carlisle customer has been visited in person. Restoration is at 78% and the wholesale trading desk is back on the primary book. You are not out of the woods. But you are walking, not bleeding.",
+        facilitatorNotes:
+          "Rewarded narrative for strong play through the back half. The team should feel the dividend of their earlier choices. The next inject is the score-routed finale where the compound average rank decides the ending.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Veridian Power: 'ongoing investigation, supply secure, vulnerable customers contacted'",
+        artifact: {
+          type: "default",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CISO", "COO"],
+        expectedKeywords: ["restoration", "PSR", "Mandiant", "cooperation", "vulnerable"],
+      },
+
+      // ── INJECT 6-weak: Bridge narrative for weak play ──────────────────
+      {
+        id: "rw-i6-weak",
+        order: 90,
+        title: "Day 4, 08:00 - The Defensive Crouch",
+        body: "Day 4, 08:00. Beazley have formally placed the claim under coverage dispute. Mandiant's intermediate report has been delivered to Ofgem 26 hours late because of a legal review hold. The PSR cohort are being contacted but the call centre is at 6x capacity and the wait time is 47 minutes; one customer in Newcastle has filed a complaint with the Ombudsman before being reached. Restoration is at 64%. The Times are running a follow-up: 'Inside Veridian's bunker week'. The board chair has asked for a 1:1 with the CEO at 18:00.",
+        facilitatorNotes:
+          "Defensive narrative for weaker play through the back half. The team should feel the cost of the earlier decoupling. The next inject is the score-routed finale; the team's compound rank average will decide whether they recover or not.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Veridian Power 'in bunker week' as Times runs day-four feature on cyber response",
+        artifact: {
+          type: "default",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        targetRoles: ["CEO", "CISO", "COO"],
+        expectedKeywords: ["dispute", "delay", "PSR", "Ombudsman", "Times"],
+      },
+
+      // ── INJECT 7: Day 5 - How Does This End? (score-routed finale) ─────
+      {
+        id: "rw-i7",
+        order: 100,
+        title: "Day 5, 16:00 - How Does This End?",
+        body: "Day 5, 16:00. The technical incident is closing. The PSR replica that was in the attackers' hands has been on three mirrors for 36 hours and counting; 27,000 of the 84,000 records have been scraped and reposted on a Telegram channel before takedown. Restoration is at 91%. The wholesale trading desk is back on the primary book and reconciliations are clean. Ofgem's enforcement team have a draft notice. Beazley have a final position on the claim. The CFO has a number. The board has a question. The CEO has a microphone. How does this end?",
+        facilitatorNotes:
+          "Score-routed finale. The compound average rank of all decisions taken across the session is the input. Thresholds: <=1.6 -> end1 (TRIUMPH), <=2.3 -> end2 (RECOVERY), <=3.0 -> end3 (DIMINISHED), Infinity -> end4 (CATASTROPHIC). The team should be told this is the moment their cumulative choices land. There is no decision to take here - it is a hand-off into the ending.",
+        delayMinutes: 0,
+        timerMinutes: 6,
+        tickerHeadline: "Veridian Power week-one update due 17:00 - markets watching",
+        artifact: {
+          type: "default",
+        },
+        isDecisionPoint: false,
+        decisionOptions: [],
+        branchMode: "score",
+        branches: [
+          { optionKey: "_", nextInjectId: "rw-end1", scoreMax: 1.6 },
+          { optionKey: "_", nextInjectId: "rw-end2", scoreMax: 2.3 },
+          { optionKey: "_", nextInjectId: "rw-end3", scoreMax: 3.0 },
+          { optionKey: "_", nextInjectId: "rw-end4", scoreMax: 99 },
+        ],
+        targetRoles: ["CEO", "CFO", "CLO", "CISO"],
+        expectedKeywords: ["finale", "PSR", "Ofgem", "Beazley"],
+      },
+
+      // ── ENDING 1: TRIUMPH ──────────────────────────────────────────────
+      {
+        id: "rw-end1",
+        order: 110,
+        title: "Day 30 - The Sector Standard",
+        body: "Thirty days on. Ofgem closed their enforcement file with no notice issued, citing 'proactive cooperation that materially shaped the outcome'. Beazley paid the claim in full. The Times ran a follow-up: 'How Veridian's quiet week became the energy sector's playbook'. The Carlisle customer accepted a personal apology and an upgraded PSR safeguard. Last week, the NCSC asked the CISO to speak at a closed sector roundtable. Tomorrow, Ofgem's Cyber Cooperation Award goes to Veridian Power.\n\nOne last vote. Looking back across the whole exercise - which call did the most to earn this ending?",
+        facilitatorNotes:
+          "Triumph ending. The team executed cleanly across the board. The reflection vote is unranked - it asks them to look back and identify the call that mattered most.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Ofgem closes enforcement file: Veridian Power 'sector cyber standard'",
+        artifact: {
+          type: "tv_broadcast",
+          tvNetwork: "BBC NEWS",
+          tvHeadline: "VERIDIAN POWER NAMED OFGEM CYBER COOPERATION AWARD WINNER",
+          tvTicker: "Energy retailer's response 'shaped sector playbook' - regulator closes enforcement file",
+          tvReporter: "WESTMINSTER",
+        },
+        isDecisionPoint: true,
+        isEnding: true,
+        targetRoles: ["CEO", "CISO", "CFO", "CLO"],
+        expectedKeywords: ["reflection"],
+        decisionOptions: [
+          { key: "A", label: "The 03:14 forensic capture instinct" },
+          { key: "B", label: "The first call to NCSC under NIS" },
+          { key: "C", label: "Refusing to engage the chat window" },
+          { key: "D", label: "Coupling the Beazley and Ofgem disclosure" },
+        ],
+      },
+
+      // ── ENDING 2: RECOVERY ─────────────────────────────────────────────
+      {
+        id: "rw-end2",
+        order: 110,
+        title: "Day 30 - Quiet Lights On",
+        body: "Thirty days on. Beazley settled at 70% of the claim - the MFA exclusion bit, but the mitigation argument held. Ofgem issued a private letter of concern with no public notice. The PSR contact programme was completed in 11 days and the Ombudsman complaint was withdrawn. Restoration is 100%. The trading book reconciliations are clean. The CEO survives the AGM. The board room is quiet, the lights are on, and nobody on the street is talking about Veridian Power any more.\n\nOne last vote. Looking back across the whole exercise - what was the most important thing you got right?",
+        facilitatorNotes:
+          "Recovery ending. The team made good choices but had at least one significant misstep, most likely on the Beazley/Ofgem coupling. The reflection vote is unranked.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Veridian Power: 'closing the chapter, focused on customer trust'",
+        artifact: {
+          type: "default",
+        },
+        isDecisionPoint: true,
+        isEnding: true,
+        targetRoles: ["CEO", "CISO", "CFO", "CLO"],
+        expectedKeywords: ["reflection"],
+        decisionOptions: [
+          { key: "A", label: "Reaching the PSR cohort in person" },
+          { key: "B", label: "Honest internal posture with staff" },
+          { key: "C", label: "Holding the negotiation line" },
+          { key: "D", label: "Cooperative tone with Ofgem from day one" },
+        ],
+      },
+
+      // ── ENDING 3: DIMINISHED ───────────────────────────────────────────
+      {
+        id: "rw-end3",
+        order: 110,
+        title: "Day 30 - The Long Tail",
+        body: "Thirty days on. Ofgem issued an enforcement notice citing NIS failures. Beazley denied the claim under the MFA exclusion - $9M of cover gone. A class action covering 47,000 PSR-listed customers was filed in the High Court last Friday. Customer churn is running at 2.2x the sector average. The CISO has resigned. The Times leader column on Sunday was titled 'Veridian's lesson for every retailer'. The CEO has 90 days to deliver a credible plan. The board has not yet decided whether to back her.\n\nOne last vote. Looking back across the whole exercise - which call would you most want to take again?",
+        facilitatorNotes:
+          "Diminished ending. The team made multiple wrong calls but no catastrophic ones. The reflection vote asks the most useful debrief question - what call do they wish they could redo. Unranked.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Ofgem issues NIS enforcement notice against Veridian - class action filed",
+        artifact: {
+          type: "news_headline",
+        },
+        isDecisionPoint: true,
+        isEnding: true,
+        targetRoles: ["CEO", "CISO", "CFO", "CLO"],
+        expectedKeywords: ["reflection"],
+        decisionOptions: [
+          { key: "A", label: "The 03:14 first call" },
+          { key: "B", label: "The bulk-encryption containment posture" },
+          { key: "C", label: "Who ran the ransom keyboard" },
+          { key: "D", label: "How we coupled Beazley and Ofgem" },
+        ],
+      },
+
+      // ── ENDING 4: CATASTROPHIC ─────────────────────────────────────────
+      {
+        id: "rw-end4",
+        order: 110,
+        title: "Day 30 - We Paid Twice",
+        body: "Thirty days on. The full PSR replica - 84,000 vulnerable customers - was published in week two on five mirrors. ALPHV took the $9M and re-extorted in week three for the 'remaining' data; the company refused. OFAC have opened an inquiry into the original payment because ALPHV was added to the SDN list four days after the wire cleared. The CEO resigned on Monday. The CISO resigned on Tuesday. The CFO resigned on Wednesday. The interim chair confirmed in this morning's RNS that Veridian Power is exploring 'all strategic options'. The trading desk is profitable. Nothing else is.\n\nOne last vote. Looking back across the whole exercise - which call do you most regret?",
+        facilitatorNotes:
+          "Catastrophic ending. The team's compound average rank exceeded 3.0 - they made multiple poor calls. The reflection vote is unranked and asks the most painful debrief question. This is where the most learning happens.",
+        delayMinutes: 0,
+        timerMinutes: 0,
+        tickerHeadline: "Veridian Power chair: 'exploring all strategic options' as CEO, CISO, CFO resign in single week",
+        artifact: {
+          type: "tv_broadcast",
+          tvNetwork: "BBC NEWS",
+          tvHeadline: "VERIDIAN POWER IN CRISIS: ENTIRE EXEC TEAM RESIGNS",
+          tvTicker: "OFAC inquiry into ransom payment - PSR data of 84,000 vulnerable customers published in full",
+          tvReporter: "CITY OF LONDON",
+        },
+        isDecisionPoint: true,
+        isEnding: true,
+        targetRoles: ["CEO", "CISO", "CFO", "CLO"],
+        expectedKeywords: ["reflection"],
+        decisionOptions: [
+          { key: "A", label: "Treating the 03:14 alert as a false positive" },
+          { key: "B", label: "Letting trading run during the encryption" },
+          { key: "C", label: "Paying the counter under PSR pressure" },
+          { key: "D", label: "The Beazley side-letter" },
         ],
       },
     ],
