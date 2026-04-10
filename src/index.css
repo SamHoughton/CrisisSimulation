@@ -86,7 +86,7 @@ select.input, select {
 }
 .ticker-track {
   display: inline-block;
-  animation: ticker-scroll 40s linear infinite;
+  animation: ticker-scroll 120s linear infinite;
 }
 .ticker-track:hover { animation-play-state: paused; }
 @keyframes ticker-scroll {
