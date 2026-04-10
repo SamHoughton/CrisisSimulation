@@ -171,8 +171,11 @@ export function Runner() {
         }
         const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
         if (!inj) return;
+        // Use currentLive.injectBody so QR participants see the rendered body
+        // (e.g. ending injects with the prepended session recap).
+        const renderedInj = { ...inj, body: currentLive.injectBody };
         const revealed = !!voteRevealed[inj.id];
-        const remoteInj = toRemoteInject(inj, revealed);
+        const remoteInj = toRemoteInject(renderedInj, revealed);
         // When revealed, include the winner so phones can display it
         if (revealed) {
           const counts: Record<string, number> = {};

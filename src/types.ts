@@ -36,12 +36,30 @@ export interface DecisionOption {
    * is no single correct call.
    */
   rank?: number;
+  /**
+   * Optional short prose fragment used when compiling the "your arc" recap
+   * that is prepended to ending injects. e.g. "a measured holding statement"
+   * or "the NCSC-led route". Should read naturally after the parent inject's
+   * `recapLine` template.
+   */
+  recapFragment?: string;
 }
 
-/** One branch from a decision: if optionKey is chosen, jump to nextInjectId */
+/**
+ * One branch from a decision. If optionKey is chosen (in vote mode) or the
+ * compound rank score falls within scoreMax (in score mode), jump to
+ * nextInjectId.
+ */
 export interface InjectBranch {
   optionKey: string;
   nextInjectId: string;
+  /**
+   * Upper-bound for compound rank score in score-routed injects (branchMode:
+   * "score"). Branches are evaluated in ascending scoreMax order and the
+   * first whose scoreMax >= the session's average rank is selected.
+   * Ignored in vote mode.
+   */
+  scoreMax?: number;
 }
 
 // ─── Inject artifact ─────────────────────────────────────────────────────────
@@ -117,11 +135,34 @@ export interface Inject {
   isDecisionPoint: boolean;
   decisionOptions: DecisionOption[];
   branches?: InjectBranch[];      // tree branching: per-option next inject overrides
+  /**
+   * How branches are resolved:
+   * - "vote" (default): follow the branch whose optionKey matches the
+   *   majority vote of this inject's decisions.
+   * - "score": ignore the current vote and route by the average rank of
+   *   all ranked decisions taken in the whole session so far (including
+   *   this one). Select the branch with the smallest scoreMax such that
+   *   avgRank <= scoreMax. Used for compound-scored finales.
+   */
+  branchMode?: "vote" | "score";
   targetRoles: ExecRole[];
   expectedKeywords?: string[];
   artifact?: InjectArtifact;      // styled display type for present screen
   timerMinutes?: number;          // per-inject countdown (facilitator controlled)
   tickerHeadline?: string;        // added to news ticker when inject is released
+  /**
+   * Optional template used when compiling a session recap. The placeholder
+   * {{recapFragment}} is replaced with the chosen option's recapFragment.
+   * e.g. "opened with {{recapFragment}}".
+   */
+  recapLine?: string;
+  /**
+   * Mark this inject as a scenario ending. When true, the store prepends
+   * a computed "your arc" recap to the body of this inject at release
+   * time, so that Present and QR participants see the full journey recap
+   * alongside the ending body.
+   */
+  isEnding?: boolean;
 }
 
 export interface Scenario {

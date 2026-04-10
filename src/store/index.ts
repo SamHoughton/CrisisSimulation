@@ -157,10 +157,15 @@ export const useStore = create<AppStore>()(
         if (!session) return;
         const inj = session.scenario.injects.find((i) => i.id === injectId);
         if (!inj) return;
+        // For ending injects, prepend a computed "your arc" recap so the
+        // outcome references the specific journey that led here.
+        const recap = inj.isEnding ? buildScenarioRecap(session) : "";
+        const renderedBody = recap ? recap + inj.body : inj.body;
+        const renderedInject = recap ? { ...inj, body: renderedBody } : inj;
         const liveInject: LiveInject = {
           injectId,
           injectTitle: inj.title,
-          injectBody: inj.body,
+          injectBody: renderedBody,
           releasedAt: new Date().toISOString(),
           responses: [],
           decisions: [],
@@ -172,7 +177,7 @@ export const useStore = create<AppStore>()(
             ? { ...st.session, liveInjects: [...st.session.liveInjects, liveInject] }
             : st.session,
         }));
-        broadcast({ type: "inject", inject: inj, injectNum, totalInjects });
+        broadcast({ type: "inject", inject: renderedInject, injectNum, totalInjects });
         if (session.status === "setup") get().launchSession();
       },
 
@@ -287,13 +292,64 @@ export function getCurrentLiveInject(session: Session | null): LiveInject | null
 }
 
 /**
+ * Compute the average rank of all ranked decisions taken across the session.
+ * Used by score-routed finales. Unranked decisions are skipped. Returns null
+ * if no ranked decisions exist yet.
+ */
+export function getSessionAverageRank(session: Session): number | null {
+  let total = 0;
+  let count = 0;
+  for (const live of session.liveInjects) {
+    if (live.decisions.length === 0) continue;
+    const inj = session.scenario.injects.find((i) => i.id === live.injectId);
+    if (!inj) continue;
+    const winningKey = getMajorityOption(live.decisions);
+    const chosen = inj.decisionOptions.find((o) => o.key === winningKey);
+    if (chosen && typeof chosen.rank === "number") {
+      total += chosen.rank;
+      count += 1;
+    }
+  }
+  return count === 0 ? null : total / count;
+}
+
+/**
+ * Build a short prose recap of the session's key choices, used as a prelude
+ * to ending injects so that participants see the arc that led to their
+ * outcome. Walks all released injects in release order and renders any that
+ * have a recapLine template filled with the chosen option's recapFragment.
+ * Returns an empty string if no recap-enabled decisions have been taken.
+ */
+export function buildScenarioRecap(session: Session): string {
+  const fragments: string[] = [];
+  for (const live of session.liveInjects) {
+    if (live.decisions.length === 0) continue;
+    const inj = session.scenario.injects.find((i) => i.id === live.injectId);
+    if (!inj?.recapLine) continue;
+    const winningKey = getMajorityOption(live.decisions);
+    const chosen = inj.decisionOptions.find((o) => o.key === winningKey);
+    if (!chosen?.recapFragment) continue;
+    fragments.push(inj.recapLine.replace("{{recapFragment}}", chosen.recapFragment));
+  }
+  if (fragments.length === 0) return "";
+  const avg = getSessionAverageRank(session);
+  const scoreLine = avg !== null
+    ? ` Compound decision score: ${avg.toFixed(2)} (lower is better; 1.00 = perfect).`
+    : "";
+  return `Your arc: ${fragments.join("; ")}.${scoreLine}\n\n`;
+}
+
+/**
  * Determine the next inject to release, respecting the decision tree.
  *
  * Logic:
- * 1. If the current inject has branches AND votes have been cast, follow the
- *    majority vote's branch to the specified nextInjectId.
- * 2. If it's a decision point but no votes yet, return null (hold - don't auto-advance).
- * 3. Otherwise fall back to linear order (next unreleased inject with higher order).
+ * 1. If the current inject has branchMode "score" and any decisions were taken,
+ *    compute the session's average rank and pick the branch whose scoreMax is
+ *    the smallest value that is still >= avgRank.
+ * 2. Otherwise, if the current inject has branches AND votes have been cast,
+ *    follow the majority vote's branch to the specified nextInjectId.
+ * 3. If it's a decision point but no votes yet, return null (hold - don't auto-advance).
+ * 4. Otherwise fall back to linear order (next unreleased inject with higher order).
  */
 export function getNextInject(session: Session | null) {
   if (!session) return null;
@@ -311,7 +367,28 @@ export function getNextInject(session: Session | null) {
   const currentInject = session.scenario.injects.find((i) => i.id === currentLive.injectId);
   if (!currentInject) return null;
 
-  // Branch resolution: if current inject has defined branches and a decision was made
+  // Score-routed branch resolution: compound rank average selects the ending
+  if (
+    currentInject.branchMode === "score" &&
+    currentInject.branches?.length &&
+    currentLive.decisions.length > 0
+  ) {
+    const avgRank = getSessionAverageRank(session);
+    if (avgRank !== null) {
+      const ranked = [...currentInject.branches]
+        .filter((b) => typeof b.scoreMax === "number")
+        .sort((a, b) => (a.scoreMax ?? Infinity) - (b.scoreMax ?? Infinity));
+      const winning = ranked.find((b) => avgRank <= (b.scoreMax ?? Infinity));
+      if (winning) {
+        const next = session.scenario.injects.find(
+          (i) => i.id === winning.nextInjectId && !released.has(i.id)
+        );
+        if (next) return next;
+      }
+    }
+  }
+
+  // Vote-routed branch resolution: majority of this inject's decisions wins
   if (currentInject.branches?.length && currentLive.decisions.length > 0) {
     const winning = getMajorityOption(currentLive.decisions);
     const branch  = currentInject.branches.find((b) => b.optionKey === winning);
