@@ -537,20 +537,23 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
 
   // ─── SCENARIO 2: THE DEEPFAKE CEO ────────────────────────────────────────────
   //
-  // Full 3-hour arc across 17 injects. The graph has:
-  //   - 4-way divergence at i1   (paths A/B/C/D each get their own narrative inject: i2a-i2d)
-  //   - Full convergence at i3   (shared pressures regardless of opening path)
+  // Full 3-hour arc across 20 injects with 7 decision points. The graph has:
+  //   - 4-way divergence at i1     (paths A/B/C/D each get their own narrative inject: i2a-i2d)
+  //   - Re-convergence at i2v      (forensic speed/confidence tactical decision - 4 options)
+  //   - Narrative convergence at i3 (shared pressures regardless of opening path)
   //   - 2-way re-divergence at i3d (staff-led i4a vs market-led i4b)
-  //   - Re-convergence at i4h    (the personal cost - character test, both paths see this)
-  //   - Re-convergence at i5     (forensic vindication, 4 options all routing to i6)
-  //   - Re-convergence at i6     (copycat + internal leak narrative)
-  //   - 4-way divergence at i7   (endgame play - each option leads to a distinct ending)
-  //   - 4 distinct endings       (end1=triumph, end2=recovery, end3=diminished, end4=catastrophic)
+  //   - Re-convergence at i4v      (BlackRock shareholder call decision - 4 options, opinion-based)
+  //   - Narrative re-convergence at i4h (the personal cost - character test, no vote)
+  //   - Re-convergence at i5       (forensic vindication, 4 options all routing to i6)
+  //   - Narrative convergence at i6 (copycat + internal leak narrative)
+  //   - Re-convergence at i6a      (two-fronts coupling decision - 4 options)
+  //   - 4-way divergence at i7     (endgame play - each option leads to a distinct ending)
+  //   - 4 distinct endings         (end1=triumph, end2=recovery, end3=diminished, end4=catastrophic)
   //
   // Every decision inject has exactly 4 options. Each option has an optional
   // rank field (1 = best) to surface the designer's intended "right answer"
   // during debrief. Opinion-based options share ranks where there is genuinely
-  // no single correct call.
+  // no single correct call (e.g. i4v BlackRock call format).
   //
   // Content note: the in-universe video is a deepfake of the CEO making a
   // contemptuous, abusive tirade about staff, clients, and regulators. It is
@@ -737,6 +740,65 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         expectedKeywords: ["family account", "personal", "process", "legal", "humanise"],
       },
 
+      // ── INJECT 2v: Forensics early read. Tactical speed/confidence call.
+      // All four Act 1 paths hit this before converging at df-i3.
+      {
+        id: "df-i2v",
+        order: 15,
+        title: "Forensics: Speed vs Confidence",
+        body: "07:50. DeepDetect AI calls directly: 'We can give you a qualified preliminary read in five minutes at 84% confidence the video is AI-generated, or a final full-confidence report in ninety minutes at 99%+.' The difference matters. Markets open in 70 minutes. The BBC needs a response in 55 minutes. Your CLO warns that a preliminary finding publicly announced and later contradicted would be 'genuinely career-ending.' Your CCO says the current silence is now visibly shaping the narrative against the company. Your CISO recommends a middle path but defers to legal. What do you ask the forensics firm for, and what do you do with it?",
+        facilitatorNotes:
+          "Classic speed-vs-confidence tension. C (wait for full report, hold the line with measured language) is the textbook correct call: it preserves the option to respond definitively without risking a retraction. A (use preliminary internally only) is the strongest real-world compromise: it lets internal leaders move with confidence while keeping external messaging measured. B (release preliminary publicly) is the tempting but riskiest option — an 84% confidence claim made public cannot be walked back without severe credibility cost. D (demand a second independent pass) is a decent-sounding instinct that in practice burns the exact time you needed the first answer for. Push the group on the asymmetry: being late with certainty costs reputation in hours; being wrong with speed costs reputation in years.",
+        delayMinutes: 0,
+        timerMinutes: 8,
+        tickerHeadline: "Apex Dynamics forensic investigation underway as markets prepare for open; company yet to issue definitive statement",
+        artifact: {
+          type: "email",
+          emailFrom: "lead@deepdetect.ai",
+          emailTo: "ciso@apexdynamics.com",
+          emailSubject: "URGENT - Preliminary read available at 84% confidence. Final report ETA 90 minutes. Your call.",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CISO", "CLO", "CCO"],
+        expectedKeywords: ["forensic", "preliminary", "confidence", "internal", "BBC", "retraction", "measured"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Take the preliminary now. Use it to align internal comms only. Hold external line until the full report arrives.",
+            consequence:
+              "Internal leaders brief their teams with conviction. External messaging stays measured. When the final report lands at 09:20, the company moves confidently. Strong operational balance.",
+            rank: 2,
+          },
+          {
+            key: "B",
+            label: "Take the preliminary and release it publicly to get ahead of the BBC deadline",
+            consequence:
+              "The 84% figure goes out. The BBC runs with it. Within 40 minutes a rival forensics firm publicly questions the methodology and the Apex statement is reframed as 'partial'. The CLO's warning proves prescient.",
+            rank: 4,
+          },
+          {
+            key: "C",
+            label: "Wait for the full report. Hold the public line with measured language and no specific claims.",
+            consequence:
+              "The 90-minute wait is painful but disciplined. When the 99%+ report lands, Apex can move definitively and once. The BBC runs with 'company declines to speculate pending full forensic report' - a defensible position.",
+            rank: 1,
+          },
+          {
+            key: "D",
+            label: "Ask for a second independent forensic pass before either report is used",
+            consequence:
+              "The second firm needs four hours. By the time both reports align, share price has opened down 9% and competitors are already shaping the narrative. A prudent instinct applied at the wrong tempo.",
+            rank: 3,
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i3" },
+          { optionKey: "B", nextInjectId: "df-i3" },
+          { optionKey: "C", nextInjectId: "df-i3" },
+          { optionKey: "D", nextInjectId: "df-i3" },
+        ],
+      },
+
       // ── ACT 2: THE CONVERGENCE ─────────────────────────────────────────
       // All four Act 1 paths converge at df-i3 (a narrative inject, not a
       // vote). The group then faces df-i3d, a 4-option priority decision
@@ -879,6 +941,65 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         expectedKeywords: ["investors", "chairman", "share price", "union", "internal silence", "CFO video"],
       },
 
+      // ── INJECT 4v: BlackRock calls. Shareholder call format decision. ──
+      // Both Act 2 paths (i4a and i4b) route through this before i4h.
+      {
+        id: "df-i4v",
+        order: 33,
+        title: "BlackRock Calls The Chairman Directly",
+        body: "09:05. The Chairman has just been called on his mobile by the lead portfolio manager at BlackRock, your third-largest institutional shareholder (6.4% of the register). His message is short: 'I need 20 minutes with the top of the house at 09:30 to hear this directly. I can do it privately, or I can do it on a group call with Legal & General and Aviva - they've both asked me the same thing.' The Chairman has come back to the room. 'I can do one thing at 09:30, not two. Or we try to thread it. How do we handle this?' Share price is currently down 6.8% and the order book is thin. Investor relations are watching.",
+        facilitatorNotes:
+          "This is a genuine judgement call with defensible answers in every direction, which is why it matters for a vote. The 'correct-ish' answer is C (Chairman handles the group at 10:15; CEO does the BlackRock call individually at 09:30) because it lets the biggest holder feel personally handled while treating the other two fairly - but this is genuinely opinion-based and the group should be encouraged to argue for A, B or D. A prioritises the biggest but signals favouritism to the others. B is fair but loses the personal touch that shareholders reward in a crisis. D is cold and defensive. Push the group to articulate what each holder actually needs right now - not just what is procedurally clean.",
+        delayMinutes: 0,
+        timerMinutes: 10,
+        tickerHeadline: "Apex Dynamics institutional holders request urgent engagement as shares trade down 6.8%",
+        artifact: {
+          type: "email",
+          emailFrom: "mark.holloway@blackrock.com",
+          emailTo: "chairman@apexdynamics.com",
+          emailSubject: "Urgent - request for 09:30 call. L&G and Aviva have asked the same. Your call on format.",
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CFO", "CCO"],
+        expectedKeywords: ["BlackRock", "chairman", "shareholder", "group call", "private", "priority"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Chairman takes BlackRock privately at 09:30. Individual follow-ups with L&G and Aviva through the morning.",
+            consequence:
+              "BlackRock feels handled. L&G takes the follow-up well. Aviva is polite but notes they were 'second in the queue' in a later analyst note. A clean but slightly hierarchical approach.",
+            rank: 3,
+          },
+          {
+            key: "B",
+            label: "Single group call at 10:15 with all three lead portfolio managers, Chairman chairing.",
+            consequence:
+              "Efficient and fair. But BlackRock's PM arrives 40 seconds late and the first two minutes are consumed by formalities. The personal tone everyone came for is missing. Competent but cold.",
+            rank: 2,
+          },
+          {
+            key: "C",
+            label: "CEO takes BlackRock at 09:30 alone. Chairman runs the group call at 10:15 with L&G and Aviva.",
+            consequence:
+              "The biggest holder gets the CEO individually. The other two get the Chairman in a format that respects their seniority. By 11:00 all three have issued private 'supportive but watching' notes internally. Best balance.",
+            rank: 1,
+          },
+          {
+            key: "D",
+            label: "Written briefing pack sent to all three at 09:30; offer individual calls later in the day.",
+            consequence:
+              "Procedurally clean but emotionally wrong. BlackRock's PM takes it as a brush-off and calls a peer at a competitor firm to compare notes. The call that does eventually happen is tense.",
+            rank: 4,
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i4h" },
+          { optionKey: "B", nextInjectId: "df-i4h" },
+          { optionKey: "C", nextInjectId: "df-i4h" },
+          { optionKey: "D", nextInjectId: "df-i4h" },
+        ],
+      },
+
       // ── INJECT 4h: The personal cost. Character test. Both paths see this.
       {
         id: "df-i4h",
@@ -997,6 +1118,69 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
         decisionOptions: [],
         targetRoles: ["CISO", "CLO", "HR_LEAD", "CEO"],
         expectedKeywords: ["NCSC", "Helix", "internal leak", "Economic Crime Unit", "preserve evidence", "coordinated attack"],
+      },
+
+      // ── INJECT 6a: Two Fronts. Tactical coupling decision. ─────────────
+      // Helix outreach + comms manager handling, both in the same 30-minute window.
+      {
+        id: "df-i6a",
+        order: 48,
+        title: "Two Fronts, Thirty Minutes",
+        body: "12:15. Two clocks are running. First: the Helix CISO is waiting on a response - Bloomberg is going to print a 'second FTSE 250 company may have been hit' piece at 13:30 whether you engage or not. Second: HR has just flagged that your comms manager booked a 16:00 train to Edinburgh at 11:58 for 'a personal matter.' Their laptop is still on their desk. Nobody has confronted them. The CLO, CISO and Head of HR are in the room with you and they need a decision in the next fifteen minutes. They keep looking at each other and then at you.",
+        facilitatorNotes:
+          "This is a coupling decision: both problems need handling in the same window and the way you handle one shapes the other. A (NCSC for Helix, police-led evidence preservation on the comms manager, no confrontation) is the textbook correct answer - it keeps both processes clean and gives the Economic Crime Unit time to move. C is a decent second-best that trades some evidential cleanliness for operational control (holding the manager in the office via a pretext). B is the 'emotionally satisfying, legally weak' option and will typically lose the device evidence. D is the fear-response option - declining the Helix outreach gives up a strategic advantage and suspending the manager without police in place forfeits the criminal case. Push the group: what do they want the headline of this day to be? 'Apex helped expose a market disinformation attack' or 'Apex suspended an employee'? The answer shapes the endgame.",
+        delayMinutes: 0,
+        timerMinutes: 12,
+        tickerHeadline: "Bloomberg preparing second FTSE 250 deepfake story; Apex Dynamics internal investigation continues",
+        artifact: {
+          type: "slack_thread",
+          slackChannel: "dm: CLO to CEO",
+          slackMessages: [
+            { author: "CLO", role: "direct message", time: "12:12", text: "Time pressure on two fronts. Need to know how to play both before 12:30." },
+            { author: "CLO", role: "direct message", time: "12:13", text: "Helix: NCSC is the clean channel. Direct contact risks coordination accusation later. But Helix CISO is waiting right now and Bloomberg goes at 13:30 either way." },
+            { author: "CLO", role: "direct message", time: "12:14", text: "Comms manager: if we suspend now, personal devices leave the building at 16:00. If we involve the ECU first, we may be able to preserve those devices remotely and interview with police present. Stronger case. But it takes 48-72 hours." },
+            { author: "CLO", role: "direct message", time: "12:15", text: "Whatever we pick, we pick both at once. Cannot have a fast decision on one and a slow decision on the other - the two interact." },
+          ],
+        },
+        isDecisionPoint: true,
+        targetRoles: ["CEO", "CLO", "CISO", "HR_LEAD"],
+        expectedKeywords: ["NCSC", "Economic Crime Unit", "preserve evidence", "Bloomberg", "Helix", "coupling"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "NCSC formal channel for Helix. Police-led remote evidence preservation on the comms manager. No confrontation today.",
+            consequence:
+              "The NCSC opens a coordinated advisory within the hour. The Economic Crime Unit is briefed, the manager's devices are preserved remotely, a formal interview follows with police present on Day 4. Strongest legal and reputational position.",
+            rank: 1,
+          },
+          {
+            key: "B",
+            label: "Direct informal call to Helix's CISO. Suspend the comms manager immediately, search their desk before 16:00.",
+            consequence:
+              "Helix moves fast but the informal contact is later flagged by the FCA during disclosure review. The comms manager's personal devices leave the building with them at 16:00. Police note the missed opportunity.",
+            rank: 3,
+          },
+          {
+            key: "C",
+            label: "NCSC for Helix. Hold the comms manager in the building by asking them to stay for an urgent client call while police move into position.",
+            consequence:
+              "Helix is cleanly handled. The comms manager is legally retained on plausible grounds. Police arrive at 14:30 and secure the personal devices. Operational win. Small legal risk if the 'client call' pretext is later framed as detention.",
+            rank: 2,
+          },
+          {
+            key: "D",
+            label: "Decline Helix outreach on legal advice. Suspend the comms manager immediately and call police after.",
+            consequence:
+              "Helix struggles without context. Industry later notes Apex's caution as 'unhelpful.' The manager's devices leave the building. Police interview on Day 4 without the personal devices. Weakest outcome on both fronts.",
+            rank: 4,
+          },
+        ],
+        branches: [
+          { optionKey: "A", nextInjectId: "df-i7" },
+          { optionKey: "B", nextInjectId: "df-i7" },
+          { optionKey: "C", nextInjectId: "df-i7" },
+          { optionKey: "D", nextInjectId: "df-i7" },
+        ],
       },
 
       // ── INJECT 7: Endgame decision. 4 options. 4 distinct endings. ──────
