@@ -154,7 +154,19 @@ export function Present() {
         }
       }
     };
-    return () => bc.close();
+    // Ask Runner for the current state in case the initial broadcast was missed
+    // (Present window mounts asynchronously after Runner calls window.open).
+    bc.postMessage({ type: "request-state" });
+    // Retry a few times in case Runner isn't listening yet on first mount.
+    const retry1 = setTimeout(() => bc.postMessage({ type: "request-state" }), 300);
+    const retry2 = setTimeout(() => bc.postMessage({ type: "request-state" }), 800);
+    const retry3 = setTimeout(() => bc.postMessage({ type: "request-state" }), 1800);
+    return () => {
+      clearTimeout(retry1);
+      clearTimeout(retry2);
+      clearTimeout(retry3);
+      bc.close();
+    };
   }, []);
 
   // Timer tick on present screen

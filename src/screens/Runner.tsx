@@ -89,6 +89,43 @@ export function Runner() {
     bc.close();
   }, [session?.status]);
 
+  // Keep a ref of the latest session so the request-state listener always
+  // responds with up-to-date data without re-subscribing on every render.
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+
+  // Listen for request-state pings from the Present window.
+  // When the Present window mounts, it may miss the initial status broadcast
+  // because its BroadcastChannel listener isn't attached yet. The Present
+  // window pings us on mount (with retries) and we reply with the current state.
+  useEffect(() => {
+    const bc = new BroadcastChannel("crisis-present");
+    bc.onmessage = (e) => {
+      if (e.data?.type !== "request-state") return;
+      const s = sessionRef.current;
+      if (!s) return;
+      const reply = new BroadcastChannel("crisis-present");
+      reply.postMessage({ type: "status", status: s.status, scenario: s.scenario });
+      reply.close();
+      // Also replay the most recent inject if one is live so Present can catch up
+      const live = s.liveInjects[s.liveInjects.length - 1];
+      if (live) {
+        const inj = s.scenario.injects.find((i) => i.id === live.injectId);
+        if (inj) {
+          const reply2 = new BroadcastChannel("crisis-present");
+          reply2.postMessage({
+            type: "inject",
+            inject: inj,
+            injectNum: s.liveInjects.length,
+            totalInjects: s.scenario.injects.length,
+          });
+          reply2.close();
+        }
+      }
+    };
+    return () => bc.close();
+  }, []);
+
   // Reset timer when inject changes
   useEffect(() => {
     stopTimer();
