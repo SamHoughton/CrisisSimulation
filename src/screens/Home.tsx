@@ -1,14 +1,16 @@
 /**
  * Home.tsx - Dashboard screen.
  *
- * Shows key stats (scenarios available, exercises run, hours simulated),
- * an active session banner if one is running, quick-start template cards,
- * and a list of recent completed exercises with report scores.
+ * Shows a branded hero with the ECG mark, key stats, an active session banner,
+ * quick-start template cards, a "how it works" section, and recent exercises.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
-import { Plus, PlayCircle, FileText, BookOpen, ChevronRight, Clock, AlertTriangle, Zap } from "lucide-react";
+import {
+  Plus, PlayCircle, FileText, BookOpen, ChevronRight, Clock,
+  AlertTriangle, Zap, Target, BarChart3, Users,
+} from "lucide-react";
 import { SCENARIO_TYPE_LABELS, DIFFICULTY_COLOUR, DIFFICULTY_LABEL, formatDuration } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -23,7 +25,7 @@ function useCountUp(target: number, duration = 900) {
     const start = performance.now();
     const frame = (now: number) => {
       const t = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3); // cubic ease-out
+      const eased = 1 - Math.pow(1 - t, 3);
       setValue(Math.round(eased * target));
       if (t < 1) requestAnimationFrame(frame);
     };
@@ -42,128 +44,252 @@ export function Home() {
   const recent = pastSessions.slice(0, 5);
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8 fade-in-up">
-        <div>
-          <h1 className="text-2xl font-semibold text-rtr-text">Dashboard</h1>
-          <p className="text-rtr-muted text-sm mt-0.5">
-            Prepare. Respond. Recover.
-          </p>
-        </div>
-        <button
-          onClick={() => { useStore.getState().setEditingScenario(null); setView("builder"); }}
-          className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-xs font-medium hover:bg-[#c0001f] transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          New Scenario
-        </button>
-      </div>
+    <div className="min-h-full">
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8 stagger">
-        <Stat icon={<BookOpen className="w-4 h-4 text-rtr-green" />} label="Scenarios available" value={allScenarios.length} />
-        <Stat icon={<FileText className="w-4 h-4 text-rtr-green" />} label="Exercises run"       value={pastSessions.length} />
-        <Stat icon={<Clock className="w-4 h-4 text-rtr-muted" />}   label="Hours simulated"     value={Math.round(pastSessions.reduce((sum, s) => sum + (s.endedAt ? (new Date(s.endedAt).getTime() - new Date(s.startedAt).getTime()) / 3600000 : s.scenario.durationMin / 60), 0))} suffix="h" />
-      </div>
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <div className="relative overflow-hidden border-b border-rtr-border">
+        {/* Background ECG motif */}
+        <svg className="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none" width="600" height="120" viewBox="0 0 600 120" fill="none">
+          <line x1="0" y1="80" x2="180" y2="80" stroke="#E82222" strokeWidth="3" strokeLinecap="round" />
+          <polyline points="180,80 270,20 360,80" stroke="#E82222" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="360" y1="80" x2="600" y2="80" stroke="#E82222" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="270" cy="20" r="8" fill="#E82222" />
+        </svg>
+        {/* Top accent line */}
+        <div className="h-[2px] bg-gradient-to-r from-rtr-red via-rtr-red/60 to-transparent" />
 
-      {/* Active session banner */}
-      {session && session.status !== "ended" && (
-        <div className="mb-6 fade-in-up">
-          <button
-            onClick={() => setView("runner")}
-            className="w-full flex items-center gap-4 bg-rtr-red/8 border border-rtr-red/30 rounded-xl p-4 hover:bg-rtr-red/12 transition-colors text-left group"
-          >
-            <div className="relative shrink-0">
-              <AlertTriangle className="w-5 h-5 text-rtr-red" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rtr-red animate-ping" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-rtr-text">{session.scenario.title}</p>
-              <p className="text-xs text-rtr-muted mt-0.5">
-                Session {session.status} · {session.liveInjects.length}/{session.scenario.injects.length} injects released
-              </p>
-            </div>
-            <span className="text-xs font-semibold text-rtr-red bg-rtr-red/15 px-2 py-0.5 rounded-full font-mono pulse-dot">
-              {session.status === "active" ? "LIVE" : session.status.toUpperCase()}
-            </span>
-            <ChevronRight className="w-4 h-4 text-rtr-dim group-hover:translate-x-0.5 transition-transform" />
-          </button>
-        </div>
-      )}
-
-      {/* Quick start */}
-      <section className="mb-8">
-        <div className="flex items-center justify-between mb-3 fade-in-up">
-          <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
-            Quick Start - Scenario Templates
-          </h2>
-          <button onClick={() => setView("library")} className="text-xs text-rtr-green hover:underline flex items-center gap-1">
-            View all <ChevronRight className="w-3 h-3" />
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-3 stagger">
-          {allScenarios.filter((s) => s.isTemplate).slice(0, 4).map((s) => (
-            <ScenarioCard key={s.id} scenario={s} onRun={() => {
-              useStore.getState().setEditingScenario(s.id);
-              setView("setup");
-            }} />
-          ))}
-        </div>
-      </section>
-
-      {/* Empty state */}
-      {allScenarios.filter((s) => s.isTemplate).length === 0 && (
-        <div className="text-center py-12 border border-dashed border-rtr-border rounded-xl mb-8 fade-in-up">
-          <Zap className="w-8 h-8 text-rtr-dim mx-auto mb-3" />
-          <p className="text-sm font-medium text-rtr-text mb-1">No scenarios yet</p>
-          <p className="text-xs text-rtr-muted mb-4">Create your first crisis scenario to get started</p>
-          <button
-            onClick={() => { useStore.getState().setEditingScenario(null); setView("builder"); }}
-            className="inline-flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-xs font-medium hover:bg-[#c0001f] transition-colors"
-          >
-            <Plus className="w-3.5 h-3.5" /> New Scenario
-          </button>
-        </div>
-      )}
-
-      {/* Recent sessions */}
-      {recent.length > 0 && (
-        <section className="fade-in-up">
-          <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-3">
-            Recent Exercises
-          </h2>
-          <div className="border border-rtr-border rounded-xl divide-y divide-rtr-border overflow-hidden bg-rtr-panel">
-            {recent.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => {
-                  useStore.getState().setViewingSession(s.id);
-                  useStore.setState({ session: s });
-                  setView("report");
-                }}
-                className="w-full flex items-center gap-4 px-5 py-4 hover:bg-rtr-elevated transition-colors text-left group"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-rtr-text truncate">{s.scenario.title}</p>
-                  <p className="text-xs text-rtr-muted mt-0.5">
-                    {SCENARIO_TYPE_LABELS[s.scenario.type]} · {s.participants.length} participants ·{" "}
-                    {formatDistanceToNow(new Date(s.startedAt), { addSuffix: true })}
-                  </p>
+        <div className="px-8 py-10 max-w-5xl mx-auto relative">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(232,34,34,0.1)", border: "1px solid rgba(232,34,34,0.2)" }}>
+                  <svg viewBox="0 0 32 32" className="w-5 h-5">
+                    <line x1="3" y1="23" x2="10" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
+                    <polyline points="10,23 15,8 20,23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    <line x1="20" y1="23" x2="29" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
+                    <circle cx="15" cy="8" r="2.5" fill="#E82222" />
+                  </svg>
                 </div>
-                {s.report ? (
-                  <ScorePill score={s.report.overallScore} />
-                ) : (
-                  <span className="text-xs text-rtr-dim bg-rtr-elevated px-2 py-0.5 rounded-full">
-                    No report
-                  </span>
-                )}
-                <ChevronRight className="w-4 h-4 text-rtr-dim group-hover:translate-x-0.5 transition-transform" />
-              </button>
+                <span className="text-[10px] text-rtr-dim tracking-[0.35em] uppercase font-medium">Crisis Simulation Platform</span>
+              </div>
+              <h1 className="text-3xl font-bold text-rtr-text mb-2">
+                Prepare your team for the
+                <span className="text-rtr-red ml-2">worst day</span>
+              </h1>
+              <p className="text-sm text-rtr-muted max-w-lg leading-relaxed">
+                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal under pressure, and generate AI-powered post-exercise reports.
+              </p>
+              <div className="flex items-center gap-3 mt-5">
+                <button
+                  onClick={() => {
+                    const tpl = allScenarios.find((s) => s.isTemplate);
+                    if (tpl) { useStore.getState().setEditingScenario(tpl.id); setView("setup"); }
+                    else setView("library");
+                  }}
+                  className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2.5 rounded-lg text-xs font-semibold hover:brightness-110 transition"
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  Run a Scenario
+                </button>
+                <button
+                  onClick={() => { useStore.getState().setEditingScenario(null); setView("builder"); }}
+                  className="flex items-center gap-2 bg-rtr-elevated text-rtr-muted px-4 py-2.5 rounded-lg text-xs font-medium border border-rtr-border hover:text-rtr-text hover:border-rtr-border-light transition"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Build Custom
+                </button>
+              </div>
+            </div>
+
+            {/* Stats cluster */}
+            <div className="hidden lg:flex items-center gap-3">
+              <StatCard icon={<BookOpen className="w-4 h-4" />} label="Scenarios" value={allScenarios.length} />
+              <StatCard icon={<FileText className="w-4 h-4" />} label="Exercises" value={pastSessions.length} />
+              <StatCard
+                icon={<Clock className="w-4 h-4" />}
+                label="Hours"
+                value={Math.round(pastSessions.reduce(
+                  (sum, s) => sum + (s.endedAt
+                    ? (new Date(s.endedAt).getTime() - new Date(s.startedAt).getTime()) / 3600000
+                    : s.scenario.durationMin / 60
+                  ), 0))}
+                suffix="h"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-8 max-w-5xl mx-auto py-8">
+
+        {/* ── Active session banner ───────────────────────────────────────── */}
+        {session && session.status !== "ended" && (
+          <div className="mb-8 fade-in-up">
+            <button
+              onClick={() => setView("runner")}
+              className="w-full flex items-center gap-4 bg-rtr-red/8 border border-rtr-red/30 rounded-xl p-4 hover:bg-rtr-red/12 transition-colors text-left group"
+            >
+              <div className="relative shrink-0">
+                <AlertTriangle className="w-5 h-5 text-rtr-red" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rtr-red animate-ping" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-rtr-text">{session.scenario.title}</p>
+                <p className="text-xs text-rtr-muted mt-0.5">
+                  Session {session.status} · {session.liveInjects.length}/{session.scenario.injects.length} injects released
+                </p>
+              </div>
+              <span className="text-xs font-semibold text-rtr-red bg-rtr-red/15 px-2 py-0.5 rounded-full font-mono pulse-dot">
+                {session.status === "active" ? "LIVE" : session.status.toUpperCase()}
+              </span>
+              <ChevronRight className="w-4 h-4 text-rtr-dim group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+        )}
+
+        {/* ── Scenario Templates ──────────────────────────────────────────── */}
+        <section className="mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
+              Scenario Templates
+            </h2>
+            <button onClick={() => setView("library")} className="text-xs text-rtr-green hover:underline flex items-center gap-1">
+              View all <ChevronRight className="w-3 h-3" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger">
+            {allScenarios.filter((s) => s.isTemplate).slice(0, 4).map((s) => (
+              <ScenarioCard key={s.id} scenario={s} onRun={() => {
+                useStore.getState().setEditingScenario(s.id);
+                setView("setup");
+              }} />
             ))}
           </div>
         </section>
-      )}
+
+        {/* ── How It Works ────────────────────────────────────────────────── */}
+        <section className="mb-10">
+          <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-4">
+            How It Works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <StepCard
+              step={1}
+              icon={<Target className="w-5 h-5" />}
+              title="Select a scenario"
+              description="Choose from branching templates or build your own. Assign roles, set the briefing, and configure decision points."
+            />
+            <StepCard
+              step={2}
+              icon={<Users className="w-5 h-5" />}
+              title="Run the exercise"
+              description="Release injects in real time. Your team votes on decisions under pressure. The projector view keeps the room immersed."
+            />
+            <StepCard
+              step={3}
+              icon={<BarChart3 className="w-5 h-5" />}
+              title="Review the report"
+              description="AI-generated gap analysis scores every decision. See what went right, what went wrong, and what to train next."
+            />
+          </div>
+        </section>
+
+        {/* ── Empty state ─────────────────────────────────────────────────── */}
+        {allScenarios.filter((s) => s.isTemplate).length === 0 && (
+          <div className="text-center py-12 border border-dashed border-rtr-border rounded-xl mb-8 fade-in-up">
+            <Zap className="w-8 h-8 text-rtr-dim mx-auto mb-3" />
+            <p className="text-sm font-medium text-rtr-text mb-1">No scenarios yet</p>
+            <p className="text-xs text-rtr-muted mb-4">Create your first crisis scenario to get started</p>
+            <button
+              onClick={() => { useStore.getState().setEditingScenario(null); setView("builder"); }}
+              className="inline-flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-xs font-medium hover:brightness-110 transition"
+            >
+              <Plus className="w-3.5 h-3.5" /> New Scenario
+            </button>
+          </div>
+        )}
+
+        {/* ── Recent sessions ─────────────────────────────────────────────── */}
+        {recent.length > 0 && (
+          <section className="fade-in-up">
+            <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-3">
+              Recent Exercises
+            </h2>
+            <div className="border border-rtr-border rounded-xl divide-y divide-rtr-border overflow-hidden bg-rtr-panel">
+              {recent.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    useStore.getState().setViewingSession(s.id);
+                    useStore.setState({ session: s });
+                    setView("report");
+                  }}
+                  className="w-full flex items-center gap-4 px-5 py-4 hover:bg-rtr-elevated transition-colors text-left group"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-rtr-text truncate">{s.scenario.title}</p>
+                    <p className="text-xs text-rtr-muted mt-0.5">
+                      {SCENARIO_TYPE_LABELS[s.scenario.type]} · {s.participants.length} participants ·{" "}
+                      {formatDistanceToNow(new Date(s.startedAt), { addSuffix: true })}
+                    </p>
+                  </div>
+                  {s.report ? (
+                    <ScorePill score={s.report.overallScore} />
+                  ) : (
+                    <span className="text-xs text-rtr-dim bg-rtr-elevated px-2 py-0.5 rounded-full">
+                      No report
+                    </span>
+                  )}
+                  <ChevronRight className="w-4 h-4 text-rtr-dim group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Sub-components ───────────────────────────────────────────────────────── */
+
+function StatCard({
+  icon, label, value, suffix = "",
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  suffix?: string;
+}) {
+  const displayed = useCountUp(value);
+  return (
+    <div className="bg-rtr-panel/60 border border-rtr-border rounded-xl px-5 py-4 min-w-[100px] text-center backdrop-blur-sm">
+      <div className="flex justify-center mb-2 text-rtr-dim">{icon}</div>
+      <p className="text-xl font-bold text-rtr-text font-mono">{displayed}{suffix}</p>
+      <p className="text-[10px] text-rtr-dim uppercase tracking-wider mt-0.5">{label}</p>
+    </div>
+  );
+}
+
+function StepCard({
+  step, icon, title, description,
+}: {
+  step: number;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5 group hover:border-rtr-border-light transition-colors">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-rtr-red"
+          style={{ background: "rgba(232,34,34,0.08)", border: "1px solid rgba(232,34,34,0.15)" }}>
+          {icon}
+        </div>
+        <span className="text-[10px] font-bold text-rtr-dim tracking-wider uppercase">Step {step}</span>
+      </div>
+      <p className="text-sm font-semibold text-rtr-text mb-1.5">{title}</p>
+      <p className="text-xs text-rtr-muted leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -180,41 +306,19 @@ function ScorePill({ score }: { score: number }) {
   );
 }
 
-function Stat({
-  icon, label, value, suffix = "",
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-  suffix?: string;
-}) {
-  const displayed = useCountUp(value);
-  return (
-    <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5 stat-shimmer card-lift fade-in-up">
-      <div className="mb-3">{icon}</div>
-      <p className="text-2xl font-bold text-rtr-text font-mono">
-        {displayed}{suffix}
-      </p>
-      <p className="text-xs text-rtr-muted mt-0.5">{label}</p>
-    </div>
-  );
-}
-
 function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void }) {
   const hasCover = scenario.imageUrl || scenario.coverGradient;
   return (
     <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden card-lift group fade-in-up cursor-pointer"
       onClick={onRun}
     >
-      {/* Cover */}
       {hasCover && (
-        <div className="relative h-24 overflow-hidden"
+        <div className="relative h-28 overflow-hidden"
           style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}>
           {scenario.imageUrl && (
             <img src={scenario.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity group-hover:opacity-60 transition-opacity" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-rtr-panel to-transparent" />
-          {/* Quick-run overlay */}
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
             <span className="flex items-center gap-1.5 text-xs text-white font-semibold bg-rtr-red/90 px-3 py-1.5 rounded-full">
               <PlayCircle className="w-3.5 h-3.5" /> Run scenario
@@ -239,7 +343,7 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
           </span>
           <button
             onClick={(e) => { e.stopPropagation(); onRun(); }}
-            className="flex items-center gap-1.5 text-xs text-white bg-rtr-red hover:bg-[#c0001f] px-3 py-1.5 rounded transition-colors"
+            className="flex items-center gap-1.5 text-xs text-white bg-rtr-red hover:brightness-110 px-3 py-1.5 rounded transition"
           >
             <PlayCircle className="w-3.5 h-3.5" />
             Run
