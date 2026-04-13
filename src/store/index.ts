@@ -63,10 +63,14 @@ interface AppStore {
   releaseInject: (injectId: string) => void;
   addResponse: (injectId: string, response: ResponseEntry) => void;
   addDecision: (injectId: string, decision: DecisionEntry) => void;
+  /** Replace an existing decision from the same role, or add if new. Used for remote revotes. */
+  upsertDecision: (injectId: string, decision: DecisionEntry) => void;
   revealVotes: (injectId: string) => void;
   updateInjectNote: (injectId: string, note: string) => void;
   addNote: (text: string) => void;
   setReport: (report: GeneratedReport) => void;
+
+  importSessions: (sessions: Session[]) => void;
 
   view: View;
   setView: (v: View) => void;
@@ -217,6 +221,35 @@ export const useStore = create<AppStore>()(
         });
       },
 
+      upsertDecision: (injectId, decision) => {
+        set((st) => ({
+          session: st.session
+            ? {
+                ...st.session,
+                liveInjects: st.session.liveInjects.map((li) =>
+                  li.injectId === injectId
+                    ? {
+                        ...li,
+                        // Replace existing vote from the same role, or append if first vote
+                        decisions: [
+                          ...li.decisions.filter((d) => d.role !== decision.role),
+                          decision,
+                        ],
+                      }
+                    : li
+                ),
+              }
+            : st.session,
+        }));
+        // Broadcast updated vote to present screen
+        broadcast({
+          type: "vote",
+          role: decision.role,
+          roleName: decision.name || decision.role,
+          optionKey: decision.optionKey,
+        });
+      },
+
       revealVotes: (injectId) => {
         const { session } = get();
         const live = session?.liveInjects.find((li) => li.injectId === injectId);
@@ -253,6 +286,14 @@ export const useStore = create<AppStore>()(
             session: updated,
             pastSessions: st.pastSessions.map((s) => (s.id === updated.id ? updated : s)),
           };
+        }),
+
+      // ── Session archive import ───────────────────────────────────────────
+      importSessions: (sessions) =>
+        set((st) => {
+          const existingIds = new Set(st.pastSessions.map((s) => s.id));
+          const fresh = sessions.filter((s) => !existingIds.has(s.id));
+          return { pastSessions: [...fresh, ...st.pastSessions] };
         }),
 
       // ── Navigation ────────────────────────────────────────────────────────

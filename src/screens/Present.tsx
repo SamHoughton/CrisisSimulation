@@ -426,6 +426,7 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
         {/* ── Right: scenario artifact ── */}
         {scenario.type === "RANSOMWARE" && <RansomwareBriefingArtifact />}
         {scenario.type === "SOCIAL_MEDIA_CRISIS" && <DeepfakeBriefingArtifact />}
+        {scenario.type === "SUPPLY_CHAIN" && <SupplyChainBriefingArtifact />}
       </div>
     </div>
   );
@@ -556,6 +557,88 @@ function DeepfakeBriefingArtifact() {
         <p className="text-xs" style={{ color: "#6b7280" }}>
           Posted via web · <span style={{ color: "#8b5cf6" }}>⚡ Trending: #ApexCEO #AIDeepfake #ApexDynamics</span>
         </p>
+      </div>
+    </div>
+  );
+}
+
+// Supply chain briefing - vendor integration dashboard
+function SupplyChainBriefingArtifact() {
+  const vendors = [
+    { name: "PeopleCore",         status: "CRITICAL",  tenants: 140, records: "620K", risk: "Unaudited" },
+    { name: "CloudVault Backup",  status: "OK",        tenants: 1,   records: "—",    risk: "Audited" },
+    { name: "SecurePay Gateway",  status: "OK",        tenants: 1,   records: "—",    risk: "Audited" },
+    { name: "DataSync Analytics", status: "OK",        tenants: 1,   records: "—",    risk: "Pending" },
+  ];
+
+  return (
+    <div className="w-[480px] shrink-0 rounded-xl overflow-hidden font-mono text-xs shadow-2xl"
+      style={{ border: "1px solid rgba(232,34,34,0.4)", boxShadow: "0 0 60px rgba(232,34,34,0.12)" }}>
+
+      {/* Dashboard title bar */}
+      <div className="flex items-center justify-between px-4 py-2.5"
+        style={{ background: "#0a0f0a", borderBottom: "1px solid #1a2e1a" }}>
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+          <span style={{ color: "#4afe91" }}>Vendor Risk Dashboard</span>
+        </div>
+        <span style={{ color: "#4a5a4a" }}>07:22 UTC</span>
+      </div>
+
+      {/* Alert banner */}
+      <div className="px-4 py-3" style={{ background: "#1a0000", borderBottom: "1px solid #330000" }}>
+        <div className="flex items-center gap-2">
+          <span style={{ color: "#ff4444" }}>⚠</span>
+          <span style={{ color: "#ff6644" }}>VENDOR BREACH NOTIFICATION RECEIVED — TLP:AMBER</span>
+        </div>
+      </div>
+
+      {/* Vendor list */}
+      <div style={{ background: "#080a08" }}>
+        <div className="flex items-center gap-3 px-4 py-2" style={{ borderBottom: "1px solid #1a2e1a", color: "#3a5a3a" }}>
+          <span className="flex-1">Sub-Processor</span>
+          <span className="w-16 text-center">Status</span>
+          <span className="w-14 text-right">Records</span>
+          <span className="w-20 text-right">Audit</span>
+        </div>
+        {vendors.map((v, i) => (
+          <div key={i} className="flex items-center gap-3 px-4 py-3"
+            style={{
+              borderBottom: "1px solid #0f1a0f",
+              background: v.status === "CRITICAL" ? "rgba(232,34,34,0.06)" : "transparent",
+            }}>
+            <span className="flex-1" style={{ color: v.status === "CRITICAL" ? "#ff4444" : "#8ba88b" }}>
+              {v.name}
+            </span>
+            <span className="w-16 text-center text-xs font-bold px-1.5 py-0.5 rounded"
+              style={{
+                color: v.status === "CRITICAL" ? "#ff2222" : "#4afe91",
+                background: v.status === "CRITICAL" ? "rgba(232,34,34,0.15)" : "rgba(74,254,145,0.08)",
+              }}>
+              {v.status}
+            </span>
+            <span className="w-14 text-right" style={{ color: v.status === "CRITICAL" ? "#ff6644" : "#4a5a4a" }}>
+              {v.records}
+            </span>
+            <span className="w-20 text-right" style={{
+              color: v.risk === "Unaudited" ? "#ff4444" : v.risk === "Pending" ? "#f59e0b" : "#4afe91",
+            }}>
+              {v.risk}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* DPIA warning */}
+      <div className="px-4 py-3" style={{ background: "#0d0000", borderTop: "2px solid #E82222" }}>
+        <div className="rounded-lg p-3" style={{ background: "#150000", border: "1px solid rgba(232,34,34,0.5)" }}>
+          <p className="text-xs text-center" style={{ color: "#cc4422" }}>
+            ⚠ DPIA INCOMPLETE — PeopleCore sub-processor audit never conducted
+          </p>
+          <p className="text-xs text-center mt-1" style={{ color: "#663322" }}>
+            140 client tenants · 620,000 records · incl. NHS trust data
+          </p>
+        </div>
       </div>
     </div>
   );

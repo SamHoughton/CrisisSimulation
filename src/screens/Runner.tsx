@@ -49,6 +49,7 @@ export function Runner() {
   const endSession       = useStore((s) => s.endSession);
   const releaseInject    = useStore((s) => s.releaseInject);
   const addDecision      = useStore((s) => s.addDecision);
+  const upsertDecision   = useStore((s) => s.upsertDecision);
   const addResponse      = useStore((s) => s.addResponse);
   const revealVotes      = useStore((s) => s.revealVotes);
   const updateInjectNote = useStore((s) => s.updateInjectNote);
@@ -217,11 +218,13 @@ export function Runner() {
         for (const vote of latest.votes) {
           const participant = latest.participants.find((p) => p.id === vote.participantId);
           if (!participant) continue;
-          // Skip if this role has already voted locally
-          if (live.decisions.some((d) => d.role === participant.role)) continue;
           const option = localInject.decisionOptions?.find((o) => o.key === vote.optionKey);
           if (!option) continue;
-          addDecision(live.injectId, {
+          // Check if this role already voted locally with the same option — skip no-op updates
+          const existing = live.decisions.find((d) => d.role === participant.role);
+          if (existing?.optionKey === vote.optionKey) continue;
+          // Upsert: replaces previous vote from this role so participants can change their mind
+          upsertDecision(live.injectId, {
             role: participant.role,
             name: participant.name,
             optionKey: option.key,
@@ -238,7 +241,7 @@ export function Runner() {
     tick();
     const id = window.setInterval(tick, 1500);
     return () => { cancelled = true; window.clearInterval(id); };
-  }, [remoteSession?.code, addDecision]);
+  }, [remoteSession?.code, upsertDecision]);
 
   // ─── End remote session when local session ends ──────────────────────────
   useEffect(() => {

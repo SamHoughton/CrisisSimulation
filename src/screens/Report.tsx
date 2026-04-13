@@ -207,26 +207,46 @@ export function Report() {
 
       <div className="flex-1 overflow-y-auto px-8 py-8">
         <div className="max-w-5xl mx-auto">
-          {!report && !generating && (
-            <NoReportState onGenerate={handleGenerate} />
-          )}
-          {generating && (
-            <div className="flex items-center justify-center py-24">
-              <div className="text-center">
-                <Loader2 className="w-10 h-10 animate-spin text-rtr-red mx-auto mb-4" />
-                <p className="text-rtr-text font-medium">Generating gap analysis…</p>
-                <p className="text-rtr-muted text-sm mt-1">Claude is reading the full transcript. Usually 20–40s.</p>
+          {/* Screen: show active tab only */}
+          <div className="print:hidden">
+            {!report && !generating && (
+              <NoReportState onGenerate={handleGenerate} />
+            )}
+            {generating && (
+              <div className="flex items-center justify-center py-24">
+                <div className="text-center">
+                  <Loader2 className="w-10 h-10 animate-spin text-rtr-red mx-auto mb-4" />
+                  <p className="text-rtr-text font-medium">Generating gap analysis…</p>
+                  <p className="text-rtr-muted text-sm mt-1">Claude is reading the full transcript. Usually 20–40s.</p>
+                </div>
               </div>
+            )}
+
+            {activeTab === "log"             && <DecisionLogTab session={session} />}
+            {activeTab === "dashboard"       && <DashboardTab session={session} />}
+            {report && activeTab === "summary"         && <SummaryTab report={report} />}
+            {report && activeTab === "timeline"        && <TimelineTab session={session} />}
+            {report && activeTab === "gaps"            && <GapsTab gaps={report.gapAnalysis} />}
+            {report && activeTab === "roles"           && <RolesTab feedback={report.roleFeedback} participants={session.participants} />}
+            {report && activeTab === "recommendations" && <RecsTab recs={report.recommendations} />}
+          </div>
+
+          {/* Print: render all report sections at once */}
+          {report && (
+            <div className="hidden print:block space-y-8">
+              <div><h2 className="text-lg font-bold mb-4 print-section-title">Executive Summary</h2><SummaryTab report={report} /></div>
+              <div><h2 className="text-lg font-bold mb-4 print-section-title">Decision Log</h2><DecisionLogTab session={session} /></div>
+              <div><h2 className="text-lg font-bold mb-4 print-section-title">Timeline</h2><TimelineTab session={session} /></div>
+              <div><h2 className="text-lg font-bold mb-4 print-section-title">Gap Analysis</h2><GapsTab gaps={report.gapAnalysis} /></div>
+              <div><h2 className="text-lg font-bold mb-4 print-section-title">Role Feedback</h2><RolesTab feedback={report.roleFeedback} participants={session.participants} /></div>
+              <div><h2 className="text-lg font-bold mb-4 print-section-title">Recommendations</h2><RecsTab recs={report.recommendations} /></div>
             </div>
           )}
-
-          {activeTab === "log"             && <DecisionLogTab session={session} />}
-          {activeTab === "dashboard"       && <DashboardTab session={session} />}
-          {report && activeTab === "summary"         && <SummaryTab report={report} />}
-          {report && activeTab === "timeline"        && <TimelineTab session={session} />}
-          {report && activeTab === "gaps"            && <GapsTab gaps={report.gapAnalysis} />}
-          {report && activeTab === "roles"           && <RolesTab feedback={report.roleFeedback} participants={session.participants} />}
-          {report && activeTab === "recommendations" && <RecsTab recs={report.recommendations} />}
+          {!report && (
+            <div className="hidden print:block">
+              <DecisionLogTab session={session} />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import {
   Plus, PlayCircle, FileText, BookOpen, ChevronRight, Clock,
-  AlertTriangle, Zap, Target, BarChart3, Users,
+  AlertTriangle, Zap, Target, BarChart3, Users, Download, Upload,
 } from "lucide-react";
 import { SCENARIO_TYPE_LABELS, DIFFICULTY_COLOUR, DIFFICULTY_LABEL, formatDuration } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
@@ -35,11 +35,12 @@ function useCountUp(target: number, duration = 900) {
 }
 
 export function Home() {
-  const setView      = useStore((s) => s.setView);
-  const session      = useStore((s) => s.session);
-  const pastSessions = useStore((s) => s.pastSessions);
-  const store        = useStore();
-  const allScenarios = getAllScenarios(store);
+  const setView         = useStore((s) => s.setView);
+  const session         = useStore((s) => s.session);
+  const pastSessions    = useStore((s) => s.pastSessions);
+  const importSessions  = useStore((s) => s.importSessions);
+  const store           = useStore();
+  const allScenarios    = getAllScenarios(store);
 
   const recent = pastSessions.slice(0, 5);
 
@@ -209,12 +210,74 @@ export function Home() {
           </div>
         )}
 
+        {/* Import button when no past sessions exist */}
+        {pastSessions.length === 0 && (
+          <section className="mb-8 fade-in-up">
+            <p className="text-xs text-rtr-dim text-center mb-2">Have sessions from a previous export?</p>
+            <label className="flex items-center justify-center gap-1.5 text-xs text-rtr-muted hover:text-rtr-text border border-dashed border-rtr-border px-3 py-2.5 rounded-lg transition-colors cursor-pointer mx-auto w-fit">
+              <Upload className="w-3.5 h-3.5" />Import session archive
+              <input type="file" accept=".json" className="hidden" onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                  try {
+                    const data = JSON.parse(reader.result as string);
+                    const sessions = Array.isArray(data) ? data : data.pastSessions ?? [data.session].filter(Boolean);
+                    if (sessions.length > 0) importSessions(sessions);
+                  } catch { /* ignore invalid JSON */ }
+                };
+                reader.readAsText(file);
+                e.target.value = "";
+              }} />
+            </label>
+          </section>
+        )}
+
         {/* ── Recent sessions ─────────────────────────────────────────────── */}
         {recent.length > 0 && (
           <section className="fade-in-up">
-            <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-3">
-              Recent Exercises
-            </h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
+                Recent Exercises
+              </h2>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const blob = new Blob([JSON.stringify(pastSessions, null, 2)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `redline-sessions-${new Date().toISOString().slice(0, 10)}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="flex items-center gap-1.5 text-xs text-rtr-muted hover:text-rtr-text border border-rtr-border px-2.5 py-1.5 rounded transition-colors"
+                  title="Export all sessions as JSON"
+                >
+                  <Download className="w-3 h-3" />Export
+                </button>
+                <label className="flex items-center gap-1.5 text-xs text-rtr-muted hover:text-rtr-text border border-rtr-border px-2.5 py-1.5 rounded transition-colors cursor-pointer"
+                  title="Import sessions from JSON"
+                >
+                  <Upload className="w-3 h-3" />Import
+                  <input type="file" accept=".json" className="hidden" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      try {
+                        const data = JSON.parse(reader.result as string);
+                        const sessions = Array.isArray(data) ? data : data.pastSessions ?? [data.session].filter(Boolean);
+                        if (sessions.length > 0) importSessions(sessions);
+                      } catch { /* ignore invalid JSON */ }
+                    };
+                    reader.readAsText(file);
+                    e.target.value = "";
+                  }} />
+                </label>
+              </div>
+            </div>
             <div className="border border-rtr-border rounded-xl divide-y divide-rtr-border overflow-hidden bg-rtr-panel">
               {recent.map((s) => (
                 <button

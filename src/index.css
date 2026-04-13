@@ -211,6 +211,7 @@ select.input, select {
   /* Hide app chrome */
   aside,
   .print\:hidden { display: none !important; }
+  .hidden.print\:block { display: block !important; }
 
   /* Reset layout so report fills the page */
   html, body, #root {
@@ -229,13 +230,35 @@ select.input, select {
     color: #111 !important;
   }
 
+  /* Fix text colours for white background */
+  .text-rtr-text  { color: #111 !important; }
+  .text-rtr-muted { color: #444 !important; }
+  .text-rtr-dim   { color: #666 !important; }
+
+  /* Fix borders for white background */
+  .border-rtr-border,
+  .border-rtr-border-light,
+  .divide-rtr-border > * + * { border-color: #ddd !important; }
+
   /* Ensure tables and content don't get clipped */
   table { page-break-inside: auto; }
   tr    { page-break-inside: avoid; }
 
+  /* Section breaks */
+  .print-section-title {
+    page-break-before: always;
+    padding-top: 1rem;
+    border-bottom: 2px solid #E82222;
+    padding-bottom: 0.5rem;
+  }
+  .print-section-title:first-child { page-break-before: avoid; }
+
   /* Widen content area to full page */
   .max-w-5xl { max-width: 100% !important; }
 
-  /* Remove box shadows */
-  * { box-shadow: none !important; }
+  /* Remove box shadows and animations */
+  * { box-shadow: none !important; animation: none !important; }
+
+  /* Expand collapsed gap cards for print */
+  .fade-in-up { opacity: 1 !important; transform: none !important; }
 }
