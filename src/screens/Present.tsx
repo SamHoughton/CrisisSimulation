@@ -7,7 +7,7 @@
  * Phases: splash → waiting → briefing → inject (repeating) → ended
  *
  * Features:
- * - VIGIL splash intro (2.6s animated logo + loading bar)
+ * - Redline splash intro (2.6s animated logo + loading bar)
  * - Scenario briefing with immersive artifacts (ransomware desktop, deepfake video)
  * - Inject display with typed artifacts (ransomware note, tweet, email, SIEM, etc.)
  * - Real-time vote visualisation with animated reveal and winner glow
@@ -223,19 +223,19 @@ export function Present() {
     : null;
 
   // Crisis bar colour
-  const crisisBarColour = crisisLevel < 35 ? "#4afe91" : crisisLevel < 65 ? "#f59e0b" : "#e8002d";
+  const crisisBarColour = crisisLevel < 35 ? "#4afe91" : crisisLevel < 65 ? "#f59e0b" : "#E82222";
 
   return (
     <div className="min-h-screen flex flex-col select-none" style={{ background: "#0a0b0d", color: "#e8eaf0" }}>
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
-      <div className="shrink-0" style={{ borderTop: "2px solid #e8002d" }}>
+      <div className="shrink-0" style={{ borderTop: "2px solid #E82222" }}>
         {/* Crisis escalation bar */}
         <div className="h-1.5 w-full" style={{ background: "#111215" }}>
           <div className="h-full crisis-fill" style={{ width: `${crisisLevel}%`, background: crisisBarColour }} />
         </div>
         <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: "#1e2128" }}>
           <div className="flex items-center gap-4">
-            <span className="brand-glow text-base tracking-[0.3em] font-bold">VIGIL</span>
+            <span className="brand-glow text-lg">REDLINE</span>
             {crisisLevel > 0 && (
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-32 rounded-full" style={{ background: "#1c1f24" }}>
@@ -293,7 +293,7 @@ export function Present() {
           <div className="ticker-track">
             {[...headlines, ...headlines].map((h, i) => (
               <span key={i} className="inline-flex items-center gap-3 mr-12">
-                <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#e8002d" }}>
+                <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#E82222" }}>
                   ■ LIVE
                 </span>
                 <span className="text-xs font-mono" style={{ color: "#8b8fa8" }}>{h}</span>
@@ -334,31 +334,31 @@ function SplashScreen({ scenario, onDone }: { scenario: Scenario | null; onDone:
     <div className="h-full flex flex-col items-center justify-center" style={{ background: "#080a0d" }}>
       {/* Animated red ring */}
       <div className="relative flex items-center justify-center mb-10">
-        <div className="absolute w-36 h-36 rounded-full animate-ping opacity-10" style={{ background: "#e8002d" }} />
-        <div className="absolute w-28 h-28 rounded-full animate-ping opacity-15" style={{ background: "#e8002d", animationDelay: "0.3s" }} />
+        <div className="absolute w-36 h-36 rounded-full animate-ping opacity-10" style={{ background: "#E82222" }} />
+        <div className="absolute w-28 h-28 rounded-full animate-ping opacity-15" style={{ background: "#E82222", animationDelay: "0.3s" }} />
         <div className="relative w-20 h-20 rounded-2xl flex items-center justify-center"
-          style={{ background: "rgba(232,0,45,0.15)", border: "1px solid rgba(232,0,45,0.4)" }}>
-          <ShieldAlert className="w-10 h-10" style={{ color: "#e8002d" }} />
+          style={{ background: "rgba(232,34,34,0.15)", border: "1px solid rgba(232,34,34,0.4)" }}>
+          <ShieldAlert className="w-10 h-10" style={{ color: "#E82222" }} />
         </div>
       </div>
 
       {/* Wordmark */}
-      <p className="brand-glow text-5xl tracking-[0.4em] font-bold mb-3">VIGIL</p>
-      <p className="text-xs tracking-[0.25em] uppercase font-mono mb-10" style={{ color: "#4a4f65" }}>
-        Executive Crisis Training
+      <p className="brand-glow text-6xl mb-3">REDLINE</p>
+      <p className="text-[10px] tracking-[0.35em] uppercase mb-10" style={{ color: "rgba(255,255,255,0.28)", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        CRISIS SIMULATION PLATFORM
       </p>
 
       {/* Scenario pill */}
       {scenario && (
         <div className="px-5 py-2.5 rounded-full text-sm font-medium"
-          style={{ background: "rgba(232,0,45,0.08)", border: "1px solid rgba(232,0,45,0.2)", color: "#c5c8d8" }}>
+          style={{ background: "rgba(232,34,34,0.08)", border: "1px solid rgba(232,34,34,0.2)", color: "#c5c8d8" }}>
           {scenario.title}
         </div>
       )}
 
       {/* Loading bar */}
       <div className="mt-10 w-48 h-0.5 rounded-full overflow-hidden" style={{ background: "#1c1f24" }}>
-        <div className="h-full rounded-full" style={{ background: "#e8002d", animation: "splash-fill 2.4s ease forwards" }} />
+        <div className="h-full rounded-full" style={{ background: "#E82222", animation: "splash-fill 2.4s ease forwards" }} />
       </div>
     </div>
   );
@@ -370,10 +370,10 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
   return (
     <div className="h-full flex flex-col items-center justify-center px-8">
       <div className="flex items-center justify-center w-20 h-20 rounded-2xl mb-8"
-        style={{ background: "rgba(232,0,45,0.1)", border: "1px solid rgba(232,0,45,0.25)" }}>
-        <ShieldAlert className="w-10 h-10" style={{ color: "#e8002d" }} />
+        style={{ background: "rgba(232,34,34,0.1)", border: "1px solid rgba(232,34,34,0.25)" }}>
+        <ShieldAlert className="w-10 h-10" style={{ color: "#E82222" }} />
       </div>
-      <h1 className="text-4xl font-bold mb-3">{scenario?.title ?? "VIGIL"}</h1>
+      <h1 className="text-4xl font-bold mb-3">{scenario?.title ?? "REDLINE"}</h1>
       {scenario && (
         <div className="flex items-center gap-3 mb-6">
           <span className="text-sm" style={{ color: "#8b8fa8" }}>{SCENARIO_TYPE_LABELS[scenario.type]}</span>
@@ -446,7 +446,7 @@ function RansomwareBriefingArtifact() {
 
   return (
     <div className="w-[480px] shrink-0 rounded-xl overflow-hidden font-mono text-xs shadow-2xl"
-      style={{ border: "1px solid rgba(232,0,45,0.4)", boxShadow: "0 0 60px rgba(232,0,45,0.12)" }}>
+      style={{ border: "1px solid rgba(232,34,34,0.4)", boxShadow: "0 0 60px rgba(232,34,34,0.12)" }}>
 
       {/* Windows title bar */}
       <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: "#1a0000", borderBottom: "1px solid #330000" }}>
@@ -475,8 +475,8 @@ function RansomwareBriefingArtifact() {
       </div>
 
       {/* Ransom popup overlay */}
-      <div className="px-4 py-4" style={{ background: "#0d0000", borderTop: "2px solid #e8002d" }}>
-        <div className="rounded-lg p-4" style={{ background: "#150000", border: "1px solid rgba(232,0,45,0.5)" }}>
+      <div className="px-4 py-4" style={{ background: "#0d0000", borderTop: "2px solid #E82222" }}>
+        <div className="rounded-lg p-4" style={{ background: "#150000", border: "1px solid rgba(232,34,34,0.5)" }}>
           <p className="text-sm font-bold text-center mb-2" style={{ color: "#ff2200" }}>
             ⚠ YOUR FILES HAVE BEEN ENCRYPTED ⚠
           </p>
@@ -506,7 +506,7 @@ function DeepfakeBriefingArtifact() {
         </div>
         <div className="flex items-center gap-3" style={{ color: "#6b7280" }}>
           <span>🔁 <span style={{ color: "#e8eaf0" }}>284K</span></span>
-          <span>♥ <span style={{ color: "#e8002d" }}>891K</span></span>
+          <span>♥ <span style={{ color: "#E82222" }}>891K</span></span>
         </div>
       </div>
 
@@ -574,10 +574,10 @@ function InjectScreen({ inject, num, voteState }: {
       <div className="flex items-center justify-between mb-6 shrink-0">
         <div className="flex items-center gap-3">
           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#e8002d" }} />
-            <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: "#e8002d" }} />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#E82222" }} />
+            <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: "#E82222" }} />
           </span>
-          <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#e8002d" }}>
+          <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#E82222" }}>
             New Development
           </span>
         </div>
@@ -653,16 +653,16 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
 function RansomwareNote({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
   return (
     <div className="rounded-xl overflow-hidden font-mono"
-      style={{ background: "#050505", border: "1px solid #e8002d", boxShadow: "0 0 30px rgba(232,0,45,0.15)" }}>
+      style={{ background: "#050505", border: "1px solid #E82222", boxShadow: "0 0 30px rgba(232,34,34,0.15)" }}>
       {/* Title bar */}
-      <div className="px-4 py-2 flex items-center gap-2" style={{ background: "#0f0000", borderBottom: "1px solid #e8002d" }}>
+      <div className="px-4 py-2 flex items-center gap-2" style={{ background: "#0f0000", borderBottom: "1px solid #E82222" }}>
         <span className="w-3 h-3 rounded-full bg-red-600" />
         <span className="w-3 h-3 rounded-full bg-yellow-600" />
         <span className="w-3 h-3 rounded-full bg-green-900" />
-        <span className="text-xs ml-2" style={{ color: "#e8002d" }}>README_DECRYPT.txt</span>
+        <span className="text-xs ml-2" style={{ color: "#E82222" }}>README_DECRYPT.txt</span>
       </div>
       <div className="p-7">
-        <p className="text-2xl font-bold mb-6 text-center" style={{ color: "#e8002d" }}>
+        <p className="text-2xl font-bold mb-6 text-center" style={{ color: "#E82222" }}>
           !!! YOUR FILES HAVE BEEN ENCRYPTED !!!
         </p>
         <div className="text-sm leading-relaxed space-y-3 mb-8" style={{ color: "#cc3333" }}>
@@ -671,19 +671,19 @@ function RansomwareNote({ inject, artifact: art }: { inject: Inject; artifact: I
         <div className="rounded-lg p-4 mb-5 space-y-2" style={{ background: "#0a0a0a", border: "1px solid #330000" }}>
           {art.ransomAmount && (
             <div className="flex justify-between">
-              <span style={{ color: "#e8002d" }}>DEMAND:</span>
+              <span style={{ color: "#E82222" }}>DEMAND:</span>
               <span style={{ color: "#ff4444" }}>{art.ransomAmount} Bitcoin</span>
             </div>
           )}
           {art.ransomDeadlineHours && (
             <div className="flex justify-between">
-              <span style={{ color: "#e8002d" }}>DEADLINE:</span>
+              <span style={{ color: "#E82222" }}>DEADLINE:</span>
               <span style={{ color: "#ff4444" }}>{art.ransomDeadlineHours} HOURS</span>
             </div>
           )}
           {art.ransomWalletAddress && (
             <div>
-              <span style={{ color: "#e8002d" }}>WALLET:</span>
+              <span style={{ color: "#E82222" }}>WALLET:</span>
               <p className="text-xs mt-1 break-all" style={{ color: "#ff6666" }}>{art.ransomWalletAddress}</p>
             </div>
           )}
@@ -699,7 +699,7 @@ function RansomwareNote({ inject, artifact: art }: { inject: Inject; artifact: I
 // ── SIEM alert ─────────────────────────────────────────────────────────────────
 
 function SiemAlert({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
-  const sevColour = art.siemSeverity === "CRITICAL" ? "#e8002d" : art.siemSeverity === "HIGH" ? "#f59e0b" : "#4afe91";
+  const sevColour = art.siemSeverity === "CRITICAL" ? "#E82222" : art.siemSeverity === "HIGH" ? "#f59e0b" : "#4afe91";
   return (
     <div className="rounded-xl font-mono overflow-hidden"
       style={{ background: "#060809", border: `1px solid ${sevColour}40`, boxShadow: `0 0 20px ${sevColour}15` }}>
@@ -830,14 +830,14 @@ function TweetCard({ inject, artifact: art }: { inject: Inject; artifact: Inject
             <span className="text-sm" style={{ color: "#8b8fa8" }}>Reposts</span>
           </div>
           <div className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#e8002d">
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#E82222">
               <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <span className="text-sm font-bold vote-count" style={{ color: "#e8eaf0" }}>{fmtNum(likes)}</span>
             <span className="text-sm" style={{ color: "#8b8fa8" }}>Likes</span>
           </div>
           <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
-            style={{ background: "rgba(232,0,45,0.15)", color: "#e8002d" }}>
+            style={{ background: "rgba(232,34,34,0.15)", color: "#E82222" }}>
             <span className="animate-pulse">●</span> TRENDING
           </div>
         </div>
@@ -915,13 +915,13 @@ function NewsHeadline({ inject }: { inject: Inject }) {
   return (
     <div className="rounded-xl overflow-hidden">
       {/* Breaking news banner */}
-      <div className="px-6 py-3 flex items-center gap-4" style={{ background: "#e8002d" }}>
+      <div className="px-6 py-3 flex items-center gap-4" style={{ background: "#E82222" }}>
         <span className="text-white font-black text-sm uppercase tracking-widest">Breaking News</span>
         <span className="flex items-center gap-1.5 text-white/80 text-xs">
           <span className="animate-pulse">●</span> LIVE
         </span>
       </div>
-      <div className="p-7" style={{ background: "#15171a", border: "1px solid rgba(232,0,45,0.3)" }}>
+      <div className="p-7" style={{ background: "#15171a", border: "1px solid rgba(232,34,34,0.3)" }}>
         <h3 className="text-2xl font-bold leading-tight mb-4" style={{ color: "#e8eaf0" }}>{inject.title}</h3>
         <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
         <div className="flex items-center gap-3 mt-5 text-xs" style={{ color: "#4a4f65" }}>
@@ -1218,7 +1218,7 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
 
   return (
     <div className="w-full max-w-4xl rounded-xl overflow-hidden"
-      style={{ background: "#000", border: "1px solid #1a1a1a", boxShadow: "0 0 40px rgba(232,0,45,0.15)" }}>
+      style={{ background: "#000", border: "1px solid #1a1a1a", boxShadow: "0 0 40px rgba(232,34,34,0.15)" }}>
       {/* Fake studio frame */}
       <div className="relative aspect-video" style={{ background: "linear-gradient(135deg, #0a0a1a 0%, #1a0a1a 40%, #2a0a0a 100%)" }}>
         {/* Blurred studio silhouette */}
@@ -1226,14 +1226,14 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
         <div className="absolute" style={{ left: "30%", top: "25%", width: "40%", height: "55%", background: "linear-gradient(180deg, rgba(100,100,130,0.5) 0%, rgba(20,20,30,0.8) 100%)", borderRadius: "50% 50% 20% 20%", filter: "blur(8px)" }} />
 
         {/* LIVE indicator top-right */}
-        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded" style={{ background: "rgba(232,0,45,0.9)" }}>
+        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded" style={{ background: "rgba(232,34,34,0.9)" }}>
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#fff" }} />
           <span className="text-xs font-bold text-white tracking-widest">LIVE</span>
         </div>
 
         {/* Network logo top-left */}
-        <div className="absolute top-4 left-4 px-3 py-1.5 rounded" style={{ background: "rgba(0,0,0,0.7)", border: "1px solid rgba(232,0,45,0.5)" }}>
-          <span className="text-sm font-bold tracking-wider" style={{ color: "#e8002d" }}>{network}</span>
+        <div className="absolute top-4 left-4 px-3 py-1.5 rounded" style={{ background: "rgba(0,0,0,0.7)", border: "1px solid rgba(232,34,34,0.5)" }}>
+          <span className="text-sm font-bold tracking-wider" style={{ color: "#E82222" }}>{network}</span>
         </div>
 
         {/* Time / location top-right (below LIVE) */}
@@ -1244,12 +1244,12 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
         {/* Lower-third chyron */}
         <div className="absolute bottom-10 left-0 right-0">
           {/* Red BREAKING NEWS strip */}
-          <div className="px-5 py-2 flex items-center gap-3" style={{ background: "#e8002d" }}>
+          <div className="px-5 py-2 flex items-center gap-3" style={{ background: "#E82222" }}>
             <span className="text-xs font-bold tracking-[0.2em] text-white">▶ BREAKING NEWS</span>
             <span className="text-xs text-white/80">{reporter}</span>
           </div>
           {/* Headline strip */}
-          <div className="px-5 py-3" style={{ background: "rgba(0,0,0,0.9)", borderTop: "1px solid #e8002d" }}>
+          <div className="px-5 py-3" style={{ background: "rgba(0,0,0,0.9)", borderTop: "1px solid #E82222" }}>
             <p className="text-lg font-bold leading-tight text-white">{headline}</p>
           </div>
         </div>
@@ -1257,7 +1257,7 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
         {/* Bottom ticker bar */}
         <div className="absolute bottom-0 left-0 right-0 py-2 overflow-hidden" style={{ background: "#0a0a0a", borderTop: "1px solid #2a2a2a" }}>
           <div className="flex items-center gap-3 whitespace-nowrap px-4">
-            <span className="text-xs font-bold tracking-widest shrink-0" style={{ color: "#e8002d" }}>■ LIVE</span>
+            <span className="text-xs font-bold tracking-widest shrink-0" style={{ color: "#E82222" }}>■ LIVE</span>
             <span className="text-xs font-mono text-white/70 truncate">{ticker}</span>
           </div>
         </div>

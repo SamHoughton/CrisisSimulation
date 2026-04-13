@@ -419,9 +419,9 @@ export function Runner() {
       <div
         className="flex flex-col bg-rtr-panel sticky top-0 z-20"
         style={{
-          borderBottom: `1px solid ${crisisPct < 40 ? "#1e2128" : crisisPct < 70 ? "rgba(245,158,11,0.35)" : "rgba(232,0,45,0.45)"}`,
+          borderBottom: `1px solid ${crisisPct < 40 ? "#1e2128" : crisisPct < 70 ? "rgba(245,158,11,0.35)" : "rgba(232,34,34,0.45)"}`,
           boxShadow: crisisPct >= 70
-            ? "0 2px 24px rgba(232,0,45,0.1)"
+            ? "0 2px 24px rgba(232,34,34,0.1)"
             : crisisPct >= 40
             ? "0 2px 16px rgba(245,158,11,0.06)"
             : "none",
@@ -438,7 +438,7 @@ export function Runner() {
                 ? "#4afe91"
                 : crisisPct < 70
                 ? "#f59e0b"
-                : "#e8002d",
+                : "#E82222",
             }}
           />
         </div>

@@ -212,7 +212,7 @@ function difficultyColor(difficulty: string): string {
     low:      "#4afe91",
     medium:   "#f59e0b",
     high:     "#f97316",
-    critical: "#e8002d",
+    critical: "#E82222",
   };
   return map[difficulty] ?? "#8b8fa8";
 }

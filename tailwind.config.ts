@@ -6,7 +6,7 @@ export default {
     extend: {
       colors: {
         rtr: {
-          base:     "#0d0e10",
+          base:     "#0f0e0e",
           sidebar:  "#111215",
           panel:    "#15171a",
           elevated: "#1c1f24",
@@ -16,11 +16,13 @@ export default {
           text:     "#e8eaf0",
           muted:    "#8b8fa8",
           dim:      "#4a4f65",
+          cream:    "#f2ede8",
           green:    "#4afe91",
-          red:      "#e8002d",
+          red:      "#E82222",
         },
       },
       fontFamily: {
+        brand: ["'Bebas Neue'", "Impact", "'Arial Black'", "sans-serif"],
         mono: ["'Share Tech Mono'", "Cascadia Code", "monospace"],
       },
       keyframes: {

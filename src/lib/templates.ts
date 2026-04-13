@@ -62,7 +62,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2026-04-10T00:00:00Z",
-    coverGradient: "135deg, #050508 0%, #1a0008 40%, #e8002d 100%",
+    coverGradient: "135deg, #050508 0%, #1a0008 40%, #E82222 100%",
     roles: ["CEO", "CISO", "CFO", "CLO", "CCO", "COO"],
     briefing:
       "You are the executive leadership team of Veridian Power plc, a FTSE 250 UK energy retailer with 3.2 million domestic supply contracts and a designated Operator of Essential Services under the NIS Regulations 2018. Your back-office runs the day-ahead wholesale trading desk; your front-office holds the Priority Services Register - the statutory list of vulnerable customers who depend on uninterrupted power for medical equipment, dialysis, and oxygen. It is 03:14 on a Monday. The duty SOC analyst flags a single anomaly. Over the next five days you will discover what it really was. You will be judged on what you did at 03:14, and on every call after.",
@@ -846,7 +846,7 @@ export const BUILT_IN_TEMPLATES: Scenario[] = [
     isTemplate: true,
     createdAt: "2024-01-01T00:00:00Z",
     updatedAt: "2026-04-10T00:00:00Z",
-    coverGradient: "135deg, #1a0a2e 0%, #4a0080 50%, #e8002d 100%",
+    coverGradient: "135deg, #1a0a2e 0%, #4a0080 50%, #E82222 100%",
     roles: ["CEO", "CCO", "CLO", "CISO", "CFO", "HR_LEAD"],
     briefing:
       "You are the senior leadership team of Apex Dynamics, a FTSE 250 technology and professional services company with 8,000 employees globally. It is 06:04 on a Monday morning. Your social media listening tool has just fired an automated alert. A 47-second video of your CEO, posted from an account called @ApexLeaks, is going viral on X. In it, the CEO appears to deliver a contemptuous, abusive tirade: threatening mass layoffs in humiliating terms, disparaging two named enterprise clients by name, boasting about 'burying' regulators, and making crude personal attacks on a rival chief executive. The footage is forensically convincing. Your CEO is asleep, their phone is off, and their EA is trying to reach them. You have minutes before this becomes uncontrollable.",

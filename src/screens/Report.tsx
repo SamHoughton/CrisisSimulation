@@ -639,7 +639,7 @@ function DashboardTab({ session }: { session: Session }) {
 
   // Colour of final score
   const finalScore = series[series.length - 1].score;
-  const lineColor  = finalScore >= 70 ? "#4afe91" : finalScore >= 45 ? "#f59e0b" : "#e8002d";
+  const lineColor  = finalScore >= 70 ? "#4afe91" : finalScore >= 45 ? "#f59e0b" : "#E82222";
 
   const [hovered, setHovered] = useState<number | null>(null);
 
