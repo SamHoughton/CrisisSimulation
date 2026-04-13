@@ -276,7 +276,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
         scenarioDay: 1,
         scenarioTime: "08:15",
         title: "Convergence: Market Open and the CEO Returns",
-        body: "08:15. Whatever path you took, the same three pressures have landed simultaneously. Share price is down 7.2% at open on volume five times normal. Three institutional investors are demanding a call with the Chairman before midday. The BBC, Sky News, FT and Bloomberg all have the story leading their markets coverage. 340 staff have emailed HR asking for an all-hands. Your CEO is finally fully briefed and operational. Forensics ETA: 45 minutes. The group now has to choose what to do in the next ten minutes.",
+        body: "08:15. Three pressures have landed simultaneously. Share price is down 7.2% at open on volume five times normal. Three institutional investors are demanding a call with the Chairman before midday. The BBC, Sky News, FT and Bloomberg all have the story leading their markets coverage. 340 staff have emailed HR asking for an all-hands. Your CEO is finally fully briefed and operational. Forensics ETA: 45 minutes. The group now has to choose what to do in the next ten minutes.",
         facilitatorNotes:
           "This is the convergence point. Whatever happened in Act 1, the group now faces the same set of simultaneous pressures. This inject is a narrative inject - the decision itself lives in df-i3d. Use the timer to create urgency. The CEO being 'finally operational' is important: the group is no longer waiting on the principal, and any failure to act is now on the room.",
         delayMinutes: 0,
