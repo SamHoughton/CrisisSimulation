@@ -27,6 +27,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i1",
         order: 0,
+        scenarioDay: 1,
+        scenarioTime: "07:22",
         title: "Vendor Breach Notification: PeopleCore",
         body: "07:22, Monday. PeopleCore's CISO is on the line with yours. Their SIEM detected bulk data staging and exfiltration from their multi-tenant HR platform over the past 11 days. Ashworth & Lyle's tenant is confirmed affected. The threat actor — tracked as 'Brass Badger', a financially-motivated group — had read access to the full payroll dataset: names, NI numbers, bank sort codes and account numbers, salaries, home addresses, emergency contacts. 620,000 records across all 140 client tenants. PeopleCore has engaged CrowdStrike. They are requesting TLP:AMBER — no public disclosure yet. They have not notified the ICO. Your CISO needs an instruction.",
         facilitatorNotes:
@@ -86,6 +88,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2a",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:40",
         title: "Isolation Complete, But the Data Already Left",
         body: "Your team kills the SSO federation to PeopleCore within 18 minutes. SIEM confirms no active exfiltration from your own environment — the integration was read-only and the threat actor never pivoted into your infrastructure. Good news ends there. CrowdStrike's preliminary timeline shows Brass Badger had access to PeopleCore's platform for 11 days. Your payroll data was staged and exfiltrated in a single batch on Day 6. You contained your side cleanly — the horse bolted from their stable a week ago. Your HR Director is asking whether the 12,000 Ashworth & Lyle employees whose bank details are now in threat actor hands need to be told. Your CLO is asking about the other 608,000.",
         facilitatorNotes:
@@ -113,6 +117,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2b",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:30",
         title: "The CEO Call: Worse Than Expected",
         body: "PeopleCore's CEO, Marcus Gale, is defensive and evasive. Under pressure he admits they discovered the breach 72 hours ago but delayed notification to 'complete their investigation'. Their IR firm found evidence of staging activity across all 140 client tenants — Ashworth & Lyle is one of the larger ones. He cannot confirm whether data was exfiltrated, only that the threat actor had 'persistent read access to the production datastore'. He asks you not to notify the ICO yet because 'it would be premature and could trigger a market reaction that hurts us both.' Your CLO is listening on the call. She is writing one word on a notepad and holding it up: GDPR.",
         facilitatorNotes:
@@ -134,6 +140,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2c",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:30",
         title: "The Board Chair's First Question",
         body: "The board chair, Dame Helen Ashworth, listens for ninety seconds and asks one question: 'Are we controller or processor for this data?' The answer is both — controller for your own 12,000 employees, processor for your 140 clients' 608,000 employees. 'Then we have two separate GDPR clocks running,' she says. 'For our own people, the 72 hours started when your CISO picked up the phone. For the client data, each of those 140 organisations is the controller — they need to know so they can start their own clocks. Have you killed the integration yet?' You have not. 'Do that. Then get me an emergency board call for 14:00 with the CLO and a timeline.'",
         facilitatorNotes:
@@ -155,6 +163,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2d",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "09:30",
         title: "The Written Notice That Doesn't Come",
         body: "Two hours pass. No formal written notification from PeopleCore. At 09:30, their status page updates to 'Planned Maintenance' on the HR data platform — no mention of a security incident. Your SIEM team notices the PeopleCore API endpoints returning 503s — they are taking systems offline without telling you. Your CCO's phone buzzes: a journalist from the Financial Times has sent a LinkedIn message asking about 'a significant data breach at a major payroll provider affecting FTSE-listed companies.' Meanwhile, the SSO integration to PeopleCore is still live. The GDPR clock has been running since 07:22. You have done nothing.",
         facilitatorNotes:
@@ -180,6 +190,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2v",
         order: 20,
+        scenarioDay: 1,
+        scenarioTime: "09:45",
         title: "09:45 - The Notification Question",
         body: "09:45. Regardless of your opening move, the picture is now clear: the breach is real, the data is gone, and PeopleCore is being evasive about timelines. Your CLO convenes the room.\n\n'We have two separate GDPR obligations running in parallel. As controller for our own 12,000 employees, Article 33 requires us to notify the ICO within 72 hours of becoming aware — and that clock started at 07:22 this morning. As processor for 140 client organisations, Article 33(2) requires us to notify each controller without undue delay so they can meet their own 72-hour obligations. We also have contractual notification clauses in most of those DPAs — some as short as 24 hours. And one of those clients is an NHS trust with mandatory DSPT reporting. We cannot do everything at once. Who goes first?'",
         facilitatorNotes:
@@ -239,6 +251,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i3",
         order: 30,
+        scenarioDay: 1,
+        scenarioTime: "14:00",
         title: "14:00 - The Full Scope: 620,000 Records",
         body: "14:00. CrowdStrike's interim report lands. The breach is worse than PeopleCore initially disclosed. The threat actor Brass Badger had persistent access for 11 days and exfiltrated the full payroll dataset across all 140 client tenants. Total exposure:\n\n• 620,000 individuals\n• Full names, dates of birth, NI numbers\n• Bank sort codes and account numbers\n• Gross and net salary, tax codes\n• Home addresses and emergency contact details\n• HR notes including disciplinary records and medical adjustments\n\nBrass Badger is a financially-motivated group known for two plays: selling bulk PII on dark web markets and conducting targeted spear-phishing using payroll data to impersonate employers. CrowdStrike assesses with high confidence that the data will surface on dark web markets within 48 hours. Your CFO asks: 'What does containment even look like when the data is already out?'",
         facilitatorNotes:
@@ -305,6 +319,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i3d",
         order: 40,
+        scenarioDay: 1,
+        scenarioTime: "15:30",
         title: "15:30 - The NHS Trust",
         body: "15:30. Your COO flags a complication. One of the 140 client organisations is Northmoor NHS Foundation Trust — 4,200 clinical and administrative staff whose payroll you process through PeopleCore. NHS England's Data Security and Protection Toolkit (DSPT) requires immediate mandatory reporting of any data security incident involving NHS staff data. The trust's Caldicott Guardian, Dr. Priya Sharma, has been trying to reach your team since 11:00.\n\nWhen she finally gets through, her question is precise: 'Your processor agreement with us required annual penetration testing of any sub-processor handling our data. We have no record of PeopleCore being tested. Was it?' Your CLO checks. It wasn't. The DPIA for the PeopleCore onboarding recommended a sub-processor audit programme. It was never implemented.\n\nDr. Sharma says: 'I need to report to NHS England within 24 hours. What I report depends on what you tell me in the next thirty minutes.'",
         facilitatorNotes:
@@ -364,6 +380,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i4",
         order: 50,
+        scenarioDay: 2,
+        scenarioTime: "08:15",
         title: "Day 2, 08:15 - PeopleCore Goes Public",
         body: "Day 2, 08:15. PeopleCore releases a press statement:\n\n'PeopleCore confirms that a sophisticated cyber attack by a state-affiliated threat actor affected a limited portion of our platform infrastructure. Our investigation, supported by CrowdStrike, has identified that a small number of client organisations were impacted due to misconfigured single sign-on (SSO) integrations on the client side. PeopleCore's core platform security was not compromised. We are working with affected clients to remediate.'\n\nYour CCO calls this what it is: they are blaming you. The Financial Times runs it at 08:42: 'Payroll data breach hits FTSE companies — vendor points to client security failures.' Your switchboard lights up. By 09:00, three clients have threatened immediate contract termination. Two more are asking for the sub-processor audit records you don't have. The Ashworth & Lyle share price drops 4.2% on the open.",
         facilitatorNotes:
@@ -391,6 +409,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i4v",
         order: 60,
+        scenarioDay: 2,
+        scenarioTime: "11:00",
         title: "Day 2, 11:00 - The Commercial Question",
         body: "Day 2, 11:00. Your CFO presents the numbers. The PeopleCore contract is £4.2M per year with three years remaining. Termination requires 12 months' notice under the standard clause, or immediate termination for material breach — which your CLO argues this clearly is.\n\nBut your COO has the operational reality: PeopleCore runs your entire payroll infrastructure. 12,000 Ashworth & Lyle employees and 608,000 client employees are paid through that platform. The next pay run is in 9 days. Migration to a new provider takes 3-6 months minimum. If you pull the plug, nobody gets paid on the 25th.\n\nPeopleCore knows this. Their CEO's voicemail to yours at 10:45 was conciliatory but carried an undertone: 'We should work through this together. A public separation right now helps neither of us.'\n\nYour CLO says: 'That's not a partnership offer. That's a hostage negotiation.'",
         facilitatorNotes:
@@ -457,6 +477,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i5",
         order: 70,
+        scenarioDay: 15,
         title: "Week 3 - The ICO Investigation",
         body: "Week 3. The Information Commissioner's Office has opened a formal investigation under UK GDPR Article 83. Their scope letter identifies three areas of inquiry:\n\n1. Whether Ashworth & Lyle conducted adequate due diligence before onboarding PeopleCore as a sub-processor — specifically, whether a Data Protection Impact Assessment (DPIA) was completed\n2. Whether the processor agreement with PeopleCore included adequate audit rights and whether those rights were exercised\n3. Whether Ashworth & Lyle's notification to affected data subjects was timely and adequate\n\nYour CLO has reviewed the file. The DPIA was started but never completed. The processor agreement included audit rights but they were never exercised. The sub-processor register listed PeopleCore but did not include a risk rating.\n\nThe ICO's penalties for GDPR violations can reach £17.5 million or 4% of global annual turnover, whichever is higher. Your global revenue last year was £1.8 billion.\n\nYour CLO needs a legal strategy for the ICO engagement.",
         facilitatorNotes:
@@ -515,6 +536,8 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i6a",
         order: 80,
+        scenarioDay: 22,
+        scenarioTime: "18:00",
         title: "Week 4 - The Emergency Board Meeting",
         body: "Week 4. Dame Helen Ashworth has convened an emergency board meeting. The agenda has one item: the PeopleCore breach — root cause, regulatory exposure, commercial impact, and the leadership team's handling of the crisis.\n\nThe board pack lands at 18:00 the night before. The non-executive directors have read it. They have questions.\n\nThe CFO's exposure estimate: £12-18M in direct costs (IR, legal, credit monitoring, client remediation), plus £8-14M in potential ICO penalties, plus unquantified litigation risk from clients and affected individuals. The share price is down 11% since the breach became public. Two major clients have served termination notices.\n\nThe board chair's private message to the CEO at 22:15: 'I need to know whether this is a vendor management failure or a governance failure. The answer determines what I recommend to the board tomorrow. How do you want to present this?'",
         facilitatorNotes:
@@ -569,6 +592,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i6-strong",
         order: 90,
+        scenarioDay: 29,
         title: "Week 5 - The Accountability Dividend",
         body: "Week 5. The board accepted the leadership team's presentation and endorsed the remediation programme. Dame Helen's closing remark: 'This is a governance failure, not a character failure. I can work with the first.' The ICO investigation is proceeding — your full cooperation has been noted in their file. CrowdStrike's final report is in: Brass Badger monetised the data on three dark web markets but your proactive engagement with UK Finance flagged 89% of the exposed accounts before any fraudulent transactions cleared. The NHS trust's Caldicott Guardian sent a private note to your CEO: 'Thank you for being straight with us. That is rarer than it should be.' Client attrition has stabilised at 8 of the 140 — painful but survivable. The PeopleCore migration is on track for Month 3. You are not out of the woods. But you are walking forward, not looking back.",
         facilitatorNotes:
@@ -587,6 +611,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i6-weak",
         order: 90,
+        scenarioDay: 29,
         title: "Week 5 - The Credibility Gap",
         body: "Week 5. The board meeting did not go well. Two non-executive directors have requested an independent review of the executive team's handling of the crisis. Dame Helen's private feedback to the CEO: 'You told me what you thought I wanted to hear. I needed the truth.' The ICO has escalated its investigation to the enforcement team — your cooperation has been assessed as 'reactive and inconsistent.' The NHS trust has filed a formal complaint with NHS England and engaged solicitors. Client attrition is at 23 of the 140 — each one citing 'loss of confidence in data governance.' The dark web data surfaced on a Telegram channel and 2,100 individuals have reported fraudulent transactions on accounts linked to the breach. The PeopleCore migration has been delayed by contractual disputes. The Financial Times has published a feature: 'The vendor you trusted: inside Ashworth & Lyle's payroll breach.' The board chair has asked for a 1:1 with the CEO at 18:00.",
         facilitatorNotes:
@@ -605,6 +630,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i7",
         order: 100,
+        scenarioDay: 90,
         title: "Month 3 - How Does This End?",
         body: "Month 3. The operational crisis is closing. CrowdStrike's final attribution report is published: Brass Badger monetised the data across four dark web markets and a Telegram channel before takedown. 620,000 individuals were notified. The breach response line has handled 34,000 calls. Fraud cases linked to the breach are being processed through the banks. The ICO has a draft enforcement notice. The board has a governance report. The insurers have a coverage position. The clients have a migration timeline. The CEO has a microphone — the annual results presentation is in 48 hours and every analyst on the call will ask about PeopleCore. How does this end?",
         facilitatorNotes:
@@ -630,6 +656,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-end1",
         order: 110,
+        scenarioDay: 180,
         title: "Month 6 - The New Standard",
         body: "Six months on. The ICO closed its investigation with a formal reprimand but no fine — citing 'exceptional cooperation and a remediation programme that now represents sector-leading practice.' The board endorsed the governance review and the new vendor assurance framework has been published as an open-source playbook. Three competitors have adopted it. The NHS trust renewed its contract — Dr. Sharma cited the in-person transparency as the deciding factor. Client attrition stabilised at 5 of 140, and two have since returned. UK Finance invited the CISO to co-chair a working group on payroll data protection. The annual results call went smoothly — the CEO's prepared statement on vendor governance was described by one analyst as 'the most honest 90 seconds I've heard from a FTSE board in five years.'\n\nLast week, PeopleCore filed for administration. Their other clients were not as forgiving.\n\nOne last vote. Looking back across the whole exercise — which call did the most to earn this ending?",
         facilitatorNotes:
@@ -660,6 +687,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-end2",
         order: 110,
+        scenarioDay: 180,
         title: "Month 6 - The Long Walk Back",
         body: "Six months on. The ICO issued a formal reprimand and a £2.4 million fine — reduced from the indicative £8 million because of 'meaningful cooperation in the later stages of the investigation.' The board endorsed the remediation programme but commissioned an independent review of vendor governance that surfaced three additional sub-processors with incomplete DPIAs. Client attrition settled at 18 of 140 — painful but the pipeline is rebuilding. The NHS trust stayed, reluctantly, after the CLO negotiated enhanced audit rights and a quarterly governance review. The annual results call was difficult but the CEO's candour on vendor governance earned a cautious 'Hold' from two analysts who had been at 'Sell.'\n\nPeopleCore is in administration. Your migration to the replacement platform completes next month.\n\nOne last vote. Looking back — which single call would you change if you could do this again?",
         facilitatorNotes:
@@ -690,6 +718,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-end3",
         order: 110,
+        scenarioDay: 180,
         title: "Month 6 - The Slow Erosion",
         body: "Six months on. The ICO issued a £9.2 million fine — the maximum was £72 million but the Commissioner cited 'systemic vendor governance failures partially mitigated by belated remediation.' The fine is under appeal but your CLO rates the chances at 30/70. The board's independent review found that the DPIA gap was one of eleven vendor governance failures across the outsourcing portfolio. Three non-executive directors have resigned, citing 'loss of confidence in management's risk culture.' Client attrition hit 41 of 140. The NHS trust terminated and its Caldicott Guardian gave evidence to the Health and Social Care Committee about 'a processor who chose cost over care.' The share price is down 24% from pre-breach levels. The PeopleCore migration completed but the replacement vendor demanded a 40% premium given your risk profile.\n\nThe annual results call was brutal. One analyst asked: 'Can you name a single vendor in your supply chain that you have audited in the last three years?' The silence lasted four seconds.\n\nOne last vote. Was this a failure of people, process, or culture?",
         facilitatorNotes:
@@ -720,6 +749,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-end4",
         order: 110,
+        scenarioDay: 180,
         title: "Month 6 - The Reckoning",
         body: "Six months on. The ICO issued the maximum penalty: £72 million — 4% of global turnover. The enforcement notice cited 'a systemic failure of vendor governance compounded by obstructive and misleading engagement with the investigation.' The fine is under appeal but your insurers have denied coverage, citing a policy exclusion for 'failure to maintain reasonable security controls over sub-processors.' Client attrition reached 94 of 140. The NHS trust terminated, reported Ashworth & Lyle to NHS England's Oversight Framework, and its Caldicott Guardian's evidence to the Health and Social Care Committee was broadcast live on Parliament TV. The board voted no confidence in the CEO. The share price is down 58%. Two class action lawsuits have been filed — one by affected individuals, one by client organisations — with combined claims exceeding £200 million.\n\nThe Financial Times headline this morning: 'The Trusted Vendor: How Ashworth & Lyle's payroll empire collapsed in 90 days.'\n\nThe replacement CEO starts on Monday.\n\nOne last vote. At what point was this ending inevitable — or was it?",
         facilitatorNotes:

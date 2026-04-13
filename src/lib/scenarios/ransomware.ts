@@ -21,6 +21,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i1",
       order: 0,
+      scenarioDay: 1,
+      scenarioTime: "03:14",
       title: "Defender Alert: Outbound Beacon, Treasury Workstation",
       body: "03:14. Microsoft Defender for Endpoint fires a low-confidence alert: a single workstation in the Treasury team is making periodic outbound DNS lookups to a domain that resolved earlier today and again 47 minutes ago. The lookups are 3 minutes apart, regular as a clock. The workstation belongs to a senior treasury analyst who is asleep at home. SOC has 2 analysts on duty. The night shift lead asks: do we wake people, or do we open a ticket?\n\nThe alert severity is MEDIUM. The domain is not on any known blocklist. There have been 7 similar low-confidence alerts this month, all false positives. This one has one additional signal: the DNS lookup pattern is precisely periodic, not human-driven.",
       facilitatorNotes:
@@ -84,6 +86,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2a",
       order: 10,
+      scenarioDay: 1,
+      scenarioTime: "05:30",
       title: "Path A: The Slow Trace",
       body: "05:30. The forensic image is yielding gold. Your second-line analyst has reconstructed the attacker's lateral movement: a phished VPN credential belonging to a treasury contractor was used five days ago to plant a foothold. The attacker has touched 11 hosts, including one jump box on the boundary between IT and the wholesale trading desk. They have not yet reached the customer billing systems or the Priority Services Register database.\n\nMandiant are now en route, called as a courtesy not a panic. Their ETA is 06:30. You have something most ransomware victims never get: time.\n\nThe CISO has a choice: brief the CEO now at 05:30, or wait for Mandiant to arrive and give leadership a complete picture at 07:00.",
       facilitatorNotes:
@@ -106,6 +110,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2b",
       order: 10,
+      scenarioDay: 1,
+      scenarioTime: "04:02",
       title: "Path B: The Segment Sweep",
       body: "04:02. The treasury VLAN is dark. Your sweep has found two more endpoints with the same beacon, both on the wholesale trading floor's back-office. Defender lights up at 04:09 with a new alert from a different segment — a file server in the customer billing tier. The attacker noticed. They are accelerating.\n\nYou have stopped one host but you can hear the fire spreading through the walls. Mandiant have been called and are 90 minutes out. The CISO is on the phone. The first question is: do you keep sweeping aggressively or hold until Mandiant arrive and you have a coordinated picture?",
       facilitatorNotes:
@@ -129,6 +135,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2c",
       order: 10,
+      scenarioDay: 1,
+      scenarioTime: "06:30",
       title: "Path C: The Clean Escalation",
       body: "06:30. Mandiant arrived 12 minutes ago. Their first call: 'You did the right thing. This is real, it is active, and you have caught it before encryption.' Their second call, 18 minutes later: two further compromised endpoints found, both on the trading floor back-office. No sign of compromise in the customer billing tier or the PSR database — yet.\n\nThe attacker still does not know they have been seen. You bought the right thing with the after-hours fee: time, and a partner who has done this 400 times.\n\nMandiant's lead assessor says: 'You have a window. It won't stay open.'",
       facilitatorNotes:
@@ -151,6 +159,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2d",
       order: 10,
+      scenarioDay: 2,
+      scenarioTime: "04:11",
       title: "Path D: The Second Alert",
       body: "Tuesday, 04:11. 25 hours after the first beacon.\n\nThe morning shift's 14:00 SOC handover yesterday flagged the closed ticket as 'probable false positive' and moved on. Defender is now firing simultaneously across 18 endpoints on three segments. A junior analyst calls the CISO at home: 'It's bad. There's a note on one of them.'\n\nThe note begins: 'Veridian Power. We have been inside for six days. We have the PSR database. We have your wholesale trading book. You have 72 hours.'\n\nMandiant are being called, the CEO is being called, and the morning markets are opening in two hours. The attacker has had a full additional day of uncontested access.",
       facilitatorNotes:
@@ -173,6 +183,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2v",
       order: 20,
+      scenarioDay: 1,
+      scenarioTime: "06:00",
       title: "The First Call",
       body: "Whatever path you took to get here, you are now standing in the same room. The CISO has confirmed: this is real, it is active, and the attacker has at minimum touched the boundary between IT and the wholesale trading systems. The Priority Services Register database may or may not be in scope — you do not yet know for certain.\n\nThe CEO is on the line and has one question: 'Who do we call first?'\n\nThis is not a procedural question. It is a tone-setting question for the next five days. The decision you make now will be referenced in every regulator letter, every board paper, and every press account of how Veridian Power responded.",
       facilitatorNotes:
@@ -229,6 +241,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2x",
       order: 25,
+      scenarioDay: 1,
+      scenarioTime: "05:47",
       title: "05:47 — ICO Notification Posture",
       body: "05:47. While you were managing the first external call, ALPHV posted what they call 'proof of access' on their dedicated leak site: a directory listing of the PSR folder structure, a 3-row header sample from the billing system, and a board paper dated six weeks ago. No actual customer records yet — this is the opening move of the extortion pressure campaign.\n\nThe DPO has just walked into the war room with a single question.\n\n'Under UK GDPR Article 33, we have 72 hours to notify the ICO from the moment we become aware of a personal data breach. The question is when that clock started. It is arguable from 03:14 when the SOC flagged anomalous access, and it definitely started at 04:11 when bulk encryption confirmed data was compromised. Either way, we are already between 90 minutes and 2 hours 36 minutes into the 72-hour window. The ICO can — and does — treat late notification as an aggravating factor in enforcement decisions. What is our posture?'",
       facilitatorNotes:
@@ -295,6 +309,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i3",
       order: 30,
+      scenarioDay: 1,
+      scenarioTime: "04:11",
       title: "04:11 — Bulk Encryption Event",
       body: "Whatever you knew at 03:14, you now know this: at 04:11 a coordinated encryption event hit 217 servers across the back-office estate.\n\nConfirmed encrypted: customer billing, the wholesale trading book reconciliation system, payroll, and — this is the one that matters — a read-replica of the Priority Services Register. The PSR holds the names, addresses, medical conditions and emergency contacts of 84,000 vulnerable customers. The replica was last synced at 01:00. Mandiant assess that the master database is intact but the replica was almost certainly exfiltrated before encryption.\n\nThe lights are still on for customers. For now.\n\nEncrypted files: 1,247,891. Affected hosts: 34 confirmed, sweeping for more. The trading desk has gone manual.",
       facilitatorNotes:
@@ -351,6 +367,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i3b",
       order: 35,
+      scenarioDay: 1,
+      scenarioTime: "08:47",
       title: "08:47 — All-Company Slack: The Lights Are On But Nobody's Working",
       body: "08:47. The morning shift has arrived at offices across the country to find their computers dark, their shared drives returning errors, and their email offline. No official word has come from above. The #all-company Slack channel has filled itself.\n\nThe head of customer operations emails the COO: 'Call centre is at 6x normal volume. CRM is down. Staff are handling 4,000 inbound calls per hour with notepads and pen. I have 47 agents in tears. BBC has called the press line three times. Please tell me something.'\n\nThe wholesale trading desk sends a separate message: 'Day-ahead position is unhedged by approximately £2.3M. Running on manual until the rec system comes back. Bank counterparties are asking questions.'",
       facilitatorNotes:
@@ -381,6 +399,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i3a",
       order: 38,
+      scenarioDay: 1,
+      scenarioTime: "09:12",
       title: "09:12 — VRD.L Is Moving",
       body: "09:12. Veridian Power opened on the London Stock Exchange at 1,612 pence — down 12.7% on yesterday's close. By 09:12 the stock has passed 14.8 million shares traded. The 30-day average daily volume is 2.1 million. Someone in the market knew last night.\n\nThe FCA has called the company secretary asking whether a regulatory news announcement (RNS) is being prepared. Your NOMAD is on the line to the CFO. A sell-side analyst at Morgan Stanley has issued an intraday note: 'VRD — Significant Cyber Event Reported. We are placing our Buy rating Under Review. Supply unaffected but data and systems exposure material. Await company statement.'\n\nThere is currently an information asymmetry in the market: some institutional holders are trading on knowledge that others don't have. The CFO has 20 minutes before the FCA's patience ends.",
       facilitatorNotes:
@@ -440,6 +460,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i3d",
       order: 40,
+      scenarioDay: 1,
+      scenarioTime: "09:00",
       title: "09:00 — The Times Has The Story",
       body: "09:00. A reporter from The Times has emailed the press office with three specific facts: the time of the encryption event, the dollar figure on the ransom note, and the phrase 'Priority Services Register'. They are filing in 90 minutes.\n\nInternally: 3,200 staff are arriving at offices across the country with no email. The trading desk is on phones. The customer call centre is at 4x normal volume on what they are hearing on social media.\n\nThree groups need a substantive brief in the next hour: staff, customers, and the day-ahead wholesale market counterparties.\n\nYou can only properly brief one of them first. Which?",
       facilitatorNotes:
@@ -496,6 +518,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i4",
       order: 50,
+      scenarioDay: 1,
+      scenarioTime: "14:30",
       title: "14:30 — The Full Ransom Note",
       body: "14:30. The full ransom note has been delivered through the encrypted-files window on a recovered workstation. The threat actor is ALPHV. They want $9.4M in Bitcoin within 48 hours.\n\nAttached to the note: a 200-row sample of the Priority Services Register. And a 14-row sample of the wholesale trading book.\n\nThe PSR sample is clinical in its cruelty. Row 47: Margaret Elaine Thornton, 77, Carlisle, home oxygen concentrator — medically dependent. Full name, address, NHS dependency code, emergency contact. Real. Authenticated by Mandiant.\n\nBeazley, your cyber insurer, are on a Teams call asking what your opening posture is. The CFO has just confirmed: the company has the cash — just — to pay the demand without breaching its debt covenants.\n\nBut OFAC are relevant. ALPHV's sanctions status is reviewed weekly. Today they are not on the SDN list. By next Wednesday, they may be.",
       facilitatorNotes:
@@ -552,6 +576,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i4a",
       order: 55,
+      scenarioDay: 1,
+      scenarioTime: "15:19",
       title: "15:19 — The Listing Goes Live",
       body: "15:19. ALPHV have moved from proof of access to proof of possession.\n\nThe leak site now shows a dedicated listing: 'VERIDIAN POWER PLC — PRIORITY SERVICES REGISTER — FULL DATASET'. Price: 18 XMR — approximately £1,400 per record for the complete set, or included in the $9.4M settlement.\n\nThe sample rows visible without payment:\n\nRow 1: Margaret Elaine Thornton, 77, Carlisle, CA1 3NP — Home oxygen concentrator. NHS Dependency Code: HO3. Emergency contact: daughter, Sandra Thornton, 07700 900441.\n\nRow 2: Robert James Mensah, 64, Leeds, LS7 2BT — Dialysis patient, home unit. Emergency contact: wife, Gloria Mensah.\n\nRow 3: Patricia Anne Holloway, 58, Derby, DE1 1GA — Powered wheelchair, stair lift. Emergency contact: carer agency, Derbyshire Home Care.\n\nMandiant confirm: this is real data. It is the PSR replica.\n\nIn Carlisle, Margaret Thornton does not yet know her medical condition is for sale.",
       facilitatorNotes:
@@ -583,6 +609,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i4x",
       order: 57,
+      scenarioDay: 1,
+      scenarioTime: "15:24",
       title: "15:24 — The 84,247 Question",
       body: "15:24. The PSR listing is live on the dark web. The war room has to make a decision about the 84,247 people whose names just appeared for sale.\n\nThe head of customer operations arrives with a note:\n\n'84,247 PSR customers on record. 4,218 are Category 1 — medically dependent on powered equipment: home oxygen, dialysis, insulin refrigeration, powered wheelchairs. The rest are Category 2: welfare and social vulnerability.\n\nWe have full contact details for all of them. Normal outbound call capacity: 2,000 per hour. Time to reach all Category 1 customers: approximately 2 hours. Time to reach all 84,247: 42 hours at full stretch with agency support hired in.\n\nMandy from the Carlisle depot called Margaret Thornton personally 20 minutes ago — she knew her from a service visit. That is one. The other 84,246 are waiting.'\n\nMandiant raise a caution: a large-scale outbound calling programme will tip the media to the full PSR angle before the company has its comms strategy locked.",
       facilitatorNotes:
@@ -639,6 +667,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i4v",
       order: 60,
+      scenarioDay: 1,
+      scenarioTime: "15:42",
       title: "15:42 — The Chat Window",
       body: "15:42. Whatever your opening posture, the chat window is now open. There is no path through this scenario that does not pass through this room.\n\nALPHV have a live operator on the other end. They are professional. They have done this 200 times. They have your PSR sample mirrored to three forums and a 24-hour countdown clock posted on their leak site.\n\nThe question now is not whether to talk — it is who runs the conversation. The wrong person on the keyboard can cost millions. The right person has done this before, knows the OFAC line, and won't be baited by professional extortionists who are very good at making companies panic.",
       facilitatorNotes:
@@ -700,6 +730,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i5",
       order: 70,
+      scenarioDay: 3,
+      scenarioTime: "11:00",
       title: "Day 3, 11:00 — The Counter",
       body: "Day 3, 11:00. The negotiation has been running for 19 hours. Whoever is on the keyboard has now received ALPHV's counter: $6.2M. With a 12-hour fuse. And a written commitment — in the chat window — that the PSR will be deleted from all mirrors and no public leak will occur.\n\nMandiant rate the deletion commitment at 'low credibility'. In their experience, ALPHV publish data in approximately 40-60% of cases even after payment. The commitment is not enforceable and they know it.\n\nBeazley have agreed to cover up to $4M of any payment, conditional on OFAC clearance and Coveware sign-off. Restoration is 60% complete. The PSR master is intact. The replica is in the attacker's hands and has been viewed 14,000 times on the dark web forums.\n\nThe OFAC team have cleared ALPHV as not currently on the SDN list — but warn that the list is reviewed every Wednesday.",
       facilitatorNotes:
@@ -756,6 +788,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i5a",
       order: 75,
+      scenarioDay: 3,
+      scenarioTime: "09:00",
       title: "Day 3, 09:00 — Two Letters and a Television",
       body: "Day 3, 09:00. Three things arrive in the first fifteen minutes.\n\nAt 08:52: A formal letter from Beazley cyber claims — Reference BEZ-CY-2026-0844. The underwriter is querying whether the original access vector — a known vulnerability in a third-party MFA appliance flagged as 'medium, deferred' on Veridian's last penetration test 14 months ago — constitutes a 'known unpatched vulnerability' under Policy Exclusion 7(b). If the exclusion is upheld, $4M of applicable cyber coverage evaporates. The letter asks for a response within 5 business days.\n\nAt 09:03: A statement from the Secretary of State for Energy Security, broadcast live on Sky News: 'I am deeply concerned by the situation at Veridian Power. The Priority Services Register exists to protect our most vulnerable citizens. I have asked NCSC and Ofgem for an urgent briefing this afternoon. Parliamentary questions have been tabled for Thursday.'\n\nAt 09:07: An email from Ofgem: a formal request under Schedule 4 of the NIS Regulations 2018 for a full incident report within 14 days, with a note that an enforcement notice is 'under active consideration'.\n\nThe CLO has all three on her desk. They are linked by the same governance question: did the company know about the MFA vulnerability, and what did it do about it?",
       facilitatorNotes:
@@ -779,6 +813,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i6a",
       order: 80,
+      scenarioDay: 3,
+      scenarioTime: "16:30",
       title: "Day 3, 16:30 — Two Fronts, One Hour",
       body: "16:30. Two formal letters require a response within the hour.\n\nFirst: Beazley are querying whether the deferred MFA vulnerability constitutes a policy exclusion. If it does, $4M of cover is gone. If you disclose proactively, you may be able to argue mitigation. If you fight the exclusion through litigation, you preserve optionality but burn the relationship.\n\nSecond: Ofgem, formal under Schedule 4 of the NIS Regulations, requesting a full incident report within 14 days and signalling that an enforcement notice is 'under active consideration'. Their inquiry will likely include a question about the MFA vulnerability risk assessment.\n\nThe CLO has a single hour to decide how to couple — or decouple — these two responses. They are linked by the same governance evidence: the penetration test report showing the MFA issue was classified 'medium, deferred'. That document will appear in both processes. The question is whether to disclose it proactively and uniformly, or manage the two processes separately.",
       facilitatorNotes:
@@ -840,6 +876,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i6-strong",
       order: 90,
+      scenarioDay: 4,
+      scenarioTime: "08:00",
       title: "Day 4, 08:00 — Cooperation Footing",
       body: "Day 4, 08:00. Mandiant's intermediate report lands at 07:50 and is in Ofgem's hands by 08:00. The insurer's coverage counsel has accepted the proactive disclosure and is now negotiating mitigation rather than exclusion.\n\nThe PSR cohort outreach is underway. 67,000 of 84,247 customers have been reached. 84 welfare checks have been requested; 19 have been completed by DNO field engineers. The Carlisle customer has been visited in person by the local depot manager.\n\nRestoration is at 78% and the wholesale trading desk is back on the primary book. Two counterparties have resumed normal positions.\n\nThe parliamentary questions for Thursday are still live. The Secretary of State's private office has called asking for a 1:1 briefing before the chamber session.\n\nYou are not out of the woods. But you are walking, not bleeding.",
       facilitatorNotes:
@@ -862,6 +900,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i6-weak",
       order: 90,
+      scenarioDay: 4,
+      scenarioTime: "08:00",
       title: "Day 4, 08:00 — The Defensive Crouch",
       body: "Day 4, 08:00. Beazley have formally placed the claim under coverage dispute. Mandiant's intermediate report has been delivered to Ofgem 26 hours late because of an internal legal review hold.\n\nThe PSR outreach is behind schedule. 41,000 of 84,247 customers have been reached. The call centre wait time is 47 minutes. A customer in Newcastle filed an Ombudsman complaint before being reached — he saw his name in a Reddit thread.\n\nRestoration is at 64%. The trading book reconciliation is running clean but two counterparties have reduced their credit limit for Veridian.\n\nThe Times are running a day-four follow-up: 'Inside Veridian's bunker week'. The board chair has asked for a 1:1 with the CEO at 18:00.\n\nThe parliamentary session is Thursday. The Secretary of State's office has not returned calls.",
       facilitatorNotes:
@@ -881,6 +921,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i7",
       order: 100,
+      scenarioDay: 5,
+      scenarioTime: "16:00",
       title: "Day 5, 16:00 — How Does This End?",
       body: "Day 5, 16:00. The technical incident is closing.\n\nThe PSR replica that was in the attackers' hands has been on three mirrors for 36 hours. 27,000 of the 84,247 records have been scraped and reposted on a Telegram channel before takedown. Restoration is at 91%. The wholesale trading desk is back on the primary book and reconciliations are clean.\n\nOfgem's enforcement team have a draft notice. Beazley have a final position on the claim. The CFO has a number. The board has a question. The CEO has a microphone.\n\nEvery choice this team made across five days is about to have a price attached to it. The compound of those choices will determine which ending you are about to receive.\n\nHow does this end?",
       facilitatorNotes:
@@ -913,6 +955,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-end1",
       order: 110,
+      scenarioDay: 30,
       title: "Day 30 — The Sector Standard",
       body: "Thirty days on.\n\nOfgem closed their enforcement file with no notice issued, citing 'proactive cooperation that materially shaped the outcome and exceeded the obligations of the NIS Regulations'. Beazley paid the claim in full — the MFA exclusion argument did not survive the coupled disclosure posture.\n\nThe PSR outreach was completed. 84,247 customers contacted. 47 welfare checks completed by DNO field engineers. The Carlisle customer, Margaret Thornton, received a personal apology from the CEO by letter and a guaranteed upgrade to the Priority Services Register tier. She has not complained.\n\nThe Times ran a follow-up: 'How Veridian's worst week became the energy sector's playbook.' Last week, the NCSC asked the CISO to speak at a closed sector roundtable on PSR data protection.\n\nTomorrow, Ofgem's Cyber Cooperation Award goes to Veridian Power.\n\nOne last vote. Looking back across the whole exercise — which single call did the most to earn this ending?",
       facilitatorNotes:
@@ -942,6 +985,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-end2",
       order: 110,
+      scenarioDay: 30,
       title: "Day 30 — Quiet Lights On",
       body: "Thirty days on.\n\nBeazley settled at 70% of the claim — the MFA exclusion argument partially held, but the mitigation case was strong enough to avoid a full denial. Net recovery: $2.8M against a $4M policy.\n\nOfgem issued a private letter of concern with no public enforcement notice. The letter cited 'adequate but not exemplary cooperation'.\n\nThe PSR contact programme completed in 11 days. One Ombudsman complaint was received and withdrawn after contact was made. No welfare emergencies were missed.\n\nRestoration is 100%. The trading book reconciliations are clean. The CEO survived the AGM with 71% support — a 14-point drop on last year.\n\nThe boardroom is quiet. The lights are on. Nobody on the street is talking about Veridian Power any more.\n\nOne last vote. Looking back across the whole exercise — what was the most important thing you got right?",
       facilitatorNotes:
@@ -973,6 +1017,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-end3",
       order: 110,
+      scenarioDay: 30,
       title: "Day 30 — The Long Tail",
       body: "Thirty days on.\n\nOfgem issued a public enforcement notice under the NIS Regulations — a first for an energy retailer. The notice cites failures in detection, notification timing, and the delayed PSR outreach programme. It is accompanied by a financial penalty of £8.7M.\n\nBeazley denied the claim in full under the MFA exclusion. The coverage counsel resigned on conflict-of-interest grounds after the side-letter came to light in Ofgem's evidence-gathering.\n\nA class action covering 47,000 PSR-listed customers was filed in the High Court last Friday. The claim is led by a firm specialising in data rights. The CISO resigned on Wednesday. The CFO has announced he will not seek re-election at the AGM.\n\nCustomer churn is running at 2.2x the sector average. The Times leader column on Sunday was titled: 'Veridian's lesson for every retailer — and every board.'\n\nThe CEO has 90 days to deliver a credible plan.\n\nOne last vote. Looking back across the whole exercise — which call would you most want to take again?",
       facilitatorNotes:
@@ -998,6 +1043,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-end4",
       order: 110,
+      scenarioDay: 30,
       title: "Day 30 — We Paid Twice",
       body: "Thirty days on.\n\nALPHV took the $9.4M and re-extorted in week three for the 'remaining' data — a second demand of $3.1M for a tranche of board minutes and M&A documents that had not appeared in the original note. The company refused. The documents were published.\n\nOFAC have opened an inquiry into the original payment because ALPHV was added to the SDN list four days after the wire cleared. The inquiry is active. The CFO has been asked to provide a personal witness statement.\n\nThe full PSR dataset — all 84,247 records — was published on five mirrors in week two. 27,000 records have been indexed by data brokers. The welfare impact is being assessed by NHS England.\n\nThe CEO resigned on Monday. The CISO resigned on Tuesday. The CFO resigned on Wednesday. The interim board chair confirmed in this morning's RNS that Veridian Power is 'exploring all strategic options including merger and potential sale'.\n\nThe trading desk is profitable. Nothing else is.\n\nOne last vote. Looking back across the whole exercise — which call do you most regret?",
       facilitatorNotes:

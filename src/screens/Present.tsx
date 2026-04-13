@@ -18,6 +18,7 @@ import { useState, useEffect, useRef } from "react";
 import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
 import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
 import type { DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
+import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
 
 // ─── Background ticker headlines (always scrolling) ───────────────────────────
 const BG_HEADLINES = [
@@ -64,6 +65,8 @@ export function Present() {
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
   const [timerRunning, setTimerRunning] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  /** Persists the current scenario across phase transitions so the day strip stays rendered. */
+  const [activeScenario, setActiveScenario] = useState<Scenario | null>(null);
   const injectCountRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   /** Holds the scenario received during splash so we can transition correctly when splash ends. */
@@ -112,7 +115,10 @@ export function Present() {
         setPhase({ phase: "adhoc", body: msg.body });
       } else if (msg.type === "status") {
         // Always stash the scenario so splash → briefing works
-        if (msg.scenario) pendingScenarioRef.current = msg.scenario;
+        if (msg.scenario) {
+          pendingScenarioRef.current = msg.scenario;
+          setActiveScenario(msg.scenario);
+        }
 
         if ((msg.status === "active" || msg.status === "setup") && msg.scenario) {
           setPhase((prev) => {
@@ -247,6 +253,16 @@ export function Present() {
               </div>
             )}
           </div>
+
+          {/* Scenario day strip — centre of header, visible during inject phase */}
+          {activeScenario && phase.phase === "inject" && (
+            <ScenarioDayStrip
+              scenario={activeScenario}
+              currentDay={phase.inject.scenarioDay}
+              currentTime={phase.inject.scenarioTime}
+              size="md"
+            />
+          )}
           <div className="flex items-center gap-5">
             {timerLabel && (
               <div className="flex items-center gap-2">

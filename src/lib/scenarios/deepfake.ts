@@ -28,6 +28,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i1",
         order: 0,
+        scenarioDay: 1,
+        scenarioTime: "06:04",
         title: "The Video Goes Viral",
         body: "06:04. The video has 340,000 views in 22 minutes and is trending #1 on X under #ApexCEO. Media outlets are running 'developing story' banners. Three FTSE 100 investors have already emailed Investor Relations. Your CEO's personal inbox is being flooded. The footage is forensically convincing: off-the-shelf AI detectors return inconclusive results. Your CEO remains unreachable. The team must decide how to respond before markets open.",
         facilitatorNotes:
@@ -92,6 +94,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i2a",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:00",
         title: "Path A: The Denial Is Questioned",
         body: "07:00. Your denial is being picked apart. A tech journalist has enhanced the audio and posted a thread saying it 'passes every AI-detection test I know of'. The @ApexLeaks account has vanished, but not before DMing the video to 22 journalists. An FT reporter is demanding a named spokesperson on the record before 07:30 or the paper will run a piece with the headline 'Denial first, evidence later: the Apex Dynamics playbook'. Sky News now has the story running on a loop.",
         facilitatorNotes:
@@ -116,6 +120,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i2b",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:45",
         title: "Path B: The Silence Deafens",
         body: "07:45. Nearly two hours of silence is being read by the market as confirmation. 240 staff have emailed HR asking for an emergency all-hands. Three of your largest enterprise clients have put morning meetings on hold. The Sunday Times website now leads with 'Apex Dynamics refuses to comment as viral CEO video spreads'. An FT op-ed has just gone live calling for a board statement within the hour. Your CEO is awake, incandescent, and wants to record a personal video from their kitchen 'right now'.",
         facilitatorNotes:
@@ -144,6 +150,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i2c",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:20",
         title: "Path C: The Window Holds, Forensics Race",
         body: "07:20. Your measured holding statement is working. Media are covering the uncertainty angle: 'Company investigates viral CEO video'. The CEO has been reached, is calm, and is cooperating. Your CISO has engaged DeepDetect AI, a specialist forensic firm. They have found early AI-generated audio artefacts. ETA for full confirmation: 75 minutes. But a campaigning journalist has now published a thread accusing the company of running a 'cover-up playbook'. 180 staff have emailed HR asking what to do today. A second deepfake - this one of your CFO announcing a fake £2.4B acquisition - has appeared on a financial forum.",
         facilitatorNotes:
@@ -167,6 +175,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i2d",
         order: 10,
+        scenarioDay: 1,
+        scenarioTime: "07:15",
         title: "Path D: The Family Channel Lands",
         body: "07:15. The CEO's EA has posted a 180-character statement from the CEO's verified family account: 'I am aware of a video circulating that purports to show me. It is not me. I am safe, at home, with my family, and cooperating with my company and the authorities.' Reaction is split. Sympathetic journalists are leading with 'CEO breaks silence from family home'. Hostile ones are calling it 'a bizarre sidestep of corporate process'. The CLO is furious because the statement was never cleared with legal. The CCO is processing it in real-time. It has 840,000 views in 15 minutes.",
         facilitatorNotes:
@@ -192,6 +202,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i2v",
         order: 15,
+        scenarioDay: 1,
+        scenarioTime: "07:50",
         title: "Forensics: Speed vs Confidence",
         body: "07:50. DeepDetect AI calls directly: 'We can give you a qualified preliminary read in five minutes at 84% confidence the video is AI-generated, or a final full-confidence report in ninety minutes at 99%+.' The difference matters. Markets open in 70 minutes. The BBC needs a response in 55 minutes. Your CLO warns that a preliminary finding publicly announced and later contradicted would be 'genuinely career-ending.' Your CCO says the current silence is now visibly shaping the narrative against the company. Your CISO recommends a middle path but defers to legal. What do you ask the forensics firm for, and what do you do with it?",
         facilitatorNotes:
@@ -261,6 +273,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i3",
         order: 20,
+        scenarioDay: 1,
+        scenarioTime: "08:15",
         title: "Convergence: Market Open and the CEO Returns",
         body: "08:15. Whatever path you took, the same three pressures have landed simultaneously. Share price is down 7.2% at open on volume five times normal. Three institutional investors are demanding a call with the Chairman before midday. The BBC, Sky News, FT and Bloomberg all have the story leading their markets coverage. 340 staff have emailed HR asking for an all-hands. Your CEO is finally fully briefed and operational. Forensics ETA: 45 minutes. The group now has to choose what to do in the next ten minutes.",
         facilitatorNotes:
@@ -287,6 +301,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i3d",
         order: 22,
+        scenarioDay: 1,
+        scenarioTime: "08:20",
         title: "Priority Under Pressure",
         body: "08:20. The CEO turns to the room: 'We have ten minutes before the BBC piece drops. Who do we talk to first?' On the table: staff (all-hands from the CEO), the national broadcaster (direct interview or statement), institutional investors (via Chairman), or a full handover of the crisis response to your external PR firm. Every option has a cost. The CCO is watching the Twitter trend line. The HR lead is watching their inbox refresh every 30 seconds.",
         facilitatorNotes:
@@ -350,6 +366,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i4a",
         order: 30,
+        scenarioDay: 1,
+        scenarioTime: "08:45",
         title: "Path: Staff-Led Recovery",
         body: "08:45. The internal comms landed well. A two-minute video from the CEO has been watched by 6,200 of 8,000 staff within thirty minutes. The Slack mood has shifted from panic to cautious solidarity. External pressure is still intense: the BBC story is running, the FT has a long read in progress, and the CFO deepfake is now spreading on finance forums. But your people are holding together. A senior engineer has just posted a widely-shared thread defending the CEO's integrity. A client who had cancelled a meeting has rebooked.",
         facilitatorNotes:
@@ -376,6 +394,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i4b",
         order: 30,
+        scenarioDay: 1,
+        scenarioTime: "08:45",
         title: "Path: Market-Led Recovery",
         body: "08:45. The institutional investor calls went well. Share price has ticked back up to -5.4% from the open low. The BBC ran the story with a brief company statement from your PR firm. Bloomberg picked up the line 'Apex Dynamics: fully investigating; no staff action in contemplation'. But your internal metrics are worrying: the Slack #all-hands channel has gone quiet in a bad way, 40 more staff have opened sick-day requests, and the union rep is drafting a statement that begins 'the leadership has prioritised the market over its people'. The CFO deepfake has just appeared on a finance forum.",
         facilitatorNotes:
@@ -403,6 +423,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i4v",
         order: 33,
+        scenarioDay: 1,
+        scenarioTime: "09:05",
         title: "BlackRock Calls The Chairman Directly",
         body: "09:05. The Chairman has just been called on his mobile by the lead portfolio manager at BlackRock, your third-largest institutional shareholder (6.4% of the register). His message is short: 'I need 20 minutes with the top of the house at 09:30 to hear this directly. I can do it privately, or I can do it on a group call with Legal & General and Aviva - they've both asked me the same thing.' The Chairman has come back to the room. 'I can do one thing at 09:30, not two. Or we try to thread it. How do we handle this?' Share price is currently down 6.8% and the order book is thin. Investor relations are watching.",
         facilitatorNotes:
@@ -466,6 +488,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i4h",
         order: 35,
+        scenarioDay: 1,
+        scenarioTime: "08:55",
         title: "The Personal Cost",
         body: "08:55. The CEO's EA steps in quietly and closes the door. The CEO's 14-year-old daughter has just been sent home from school after classmates played the video to her in the corridor and filmed her reaction. She is in tears in the car. The CEO's phone is ringing. At the same moment, the Head of HR reports that a colleague in Finance has asked to take the day off - she is 'not sure she wants to come back to an office where people might look at her and think of that video'. The CEO turns to the room and asks, quietly: 'what do I do?'",
         facilitatorNotes:
@@ -500,6 +524,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i5",
         order: 40,
+        scenarioDay: 1,
+        scenarioTime: "09:30",
         title: "Forensic Vindication: Both Videos Confirmed Deepfakes",
         body: "09:30. DeepDetect AI have just delivered the final report. Both the CEO and CFO videos are AI-generated. Voice synthesis fingerprints, facial mapping artefacts, identical infrastructure. The technical report is publishable. More significantly, your CISO has separately uncovered something explosive: 840,000 Apex Dynamics put options were quietly purchased through three nominee accounts in the 48 hours before the videos dropped. Notional value approximately £18M. The trading pattern points to a coordinated short-selling attack, possibly tied to a corporate intelligence firm operating out of an offshore cluster. You now hold the vindication. The question is how you spend it.",
         facilitatorNotes:
@@ -564,6 +590,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i6",
         order: 45,
+        scenarioDay: 1,
+        scenarioTime: "11:45",
         title: "The Picture Sharpens: A Rival Is Hit, And A Door Was Left Open",
         body: "11:45. Two things land in the same fifteen minutes. First, your CISO's contact at Helix Corp - a major rival - calls in confidence: a less-polished deepfake of their CEO has just begun circulating on Reddit. Same voice-cloning signature, same distribution vector, same offshore infrastructure. Helix's Head of Security is asking, off the record, whether you can share your forensic approach. Second, while reviewing access logs, your CISO's team has identified the source of the leaked investor day footage: a personal encrypted drive belonging to a senior communications manager who is currently in the building. The footage was copied 10 days ago. The two pieces snap together: the attacker had inside help, and they are now hunting other targets. The room goes very quiet.",
         facilitatorNotes:
@@ -592,6 +620,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i6a",
         order: 48,
+        scenarioDay: 1,
+        scenarioTime: "12:15",
         title: "Two Fronts, Thirty Minutes",
         body: "12:15. Two clocks are running. First: the Helix CISO is waiting on a response - Bloomberg is going to print a 'second FTSE 250 company may have been hit' piece at 13:30 whether you engage or not. Second: HR has just flagged that your comms manager booked a 16:00 train to Edinburgh at 11:58 for 'a personal matter.' Their laptop is still on their desk. Nobody has confronted them. The CLO, CISO and Head of HR are in the room with you and they need a decision in the next fifteen minutes. They keep looking at each other and then at you.",
         facilitatorNotes:
@@ -663,6 +693,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i6-strong",
         order: 49,
+        scenarioDay: 2,
+        scenarioTime: "09:15",
         title: "The Clean Hand",
         body: "Day 2, 09:15. You walk into the boardroom with something you didn't have yesterday: a clean evidential trail. Overnight the Economic Crime Unit secured the comms manager's personal devices remotely - laptop, two phones, an old tablet still logged into a personal Gmail. The interview happened at 07:30 with two officers and your CLO present. The manager has not been charged but is cooperating, and they have already named the offshore PR firm that paid them. The CLO slides a single-page summary across to you: 'This is the version of this story we want the FCA to read first. We control the disclosure. We can go to them this morning before they come to us.' Sky News has the arrest as their 09:00 headline but - critically - the Apex name is not in it yet. You have a choice about how the next 24 hours play out, and for once you have the strong position.",
         facilitatorNotes:
@@ -692,6 +724,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i6-weak",
         order: 49,
+        scenarioDay: 2,
+        scenarioTime: "09:15",
         title: "The Mess You're In",
         body: "Day 2, 09:15. You walk into the boardroom and the CLO does not look up. They slide a single sheet across to you. 'We have a problem from yesterday. The comms manager left the building at 16:08 with their personal devices. They retained criminal counsel by 19:00. As of 06:00 their solicitor has informed us they will be making no statement and any further contact must go through the firm. The Economic Crime Unit are still working with us but they are - and I quote - frustrated. Without the personal devices the case is largely circumstantial. The FCA will see the same set of facts and they will see that we suspended an employee before involving police, which weakens our cooperation defence. The disclosure is going to be reactive, not proactive. We are still in the game but we are in it on the back foot.' Outside the window, your share price ticker shows a small bounce. It will not last.",
         facilitatorNotes:
@@ -726,6 +760,8 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-i7",
         order: 50,
+        scenarioDay: 2,
+        scenarioTime: "16:00",
         title: "The Endgame: How Do You Want This Story To End?",
         body: "Day 2, 16:00. The first 36 hours are over. The forensics are public. The Helix link is being quietly worked through NCSC channels. The internal leak investigation is sealed with the police. Share price has clawed back to -3.1% from the worst point. The narrative is moving in your favour but it is not yet decided. Three things have just landed on your desk simultaneously. The government's AI Safety Institute has invited the CEO to chair a new working group on AI disinformation in financial markets. Your law firm has drafted a pre-emptive defamation lawsuit against the offshore intelligence firm believed to be behind the attack. And your PR firm has prepared a 'minimal disclosure, recovery posture' brief that they say will let the company quietly move on within six weeks. The CEO turns to the room and asks the question that has been hanging over every decision today: 'how do you want this story to end?'",
         facilitatorNotes:
@@ -796,6 +832,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-end1",
         order: 60,
+        scenarioDay: 42,
         title: "Ending: The Industry Test Case",
         body: "Six weeks later. Share price closed yesterday at +1.8% YTD, ahead of the FTSE 250. The CEO chairs the AI Safety Institute working group on financial-markets disinformation; the Helix CEO joined as deputy chair. The Apex incident report is being studied at three business schools. Last night the CEO was named an FT Person of the Year runner-up. The citation: 'integrity, when paired with disclosure, compounds.'\n\nOne last vote. Looking back over the whole exercise - which earlier call did the most to earn this ending?",
         facilitatorNotes:
@@ -842,6 +879,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-end2",
         order: 60,
+        scenarioDay: 42,
         title: "Ending: Quiet Competence",
         body: "Six weeks later. Share price is back within 1.2% of pre-attack levels. Internal remediation is on track and the comms manager has been charged. The CEO declined the AI Safety Institute invitation; the chair was taken by a rival firm's CFO, now the public face of the issue. At the next board meeting, an independent director asks whether Apex 'might have done more with the moment'. There is a long silence.\n\nOne last vote. Was 'quiet competence' the right call for this company?",
         facilitatorNotes:
@@ -890,6 +928,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-end3",
         order: 60,
+        scenarioDay: 42,
         title: "Ending: The Long Shadow",
         body: "Six weeks later. Share price is still down 6.4% YTD, lagging the FTSE 250 by nine points. Two institutional investors have publicly downgraded, citing 'concerns about communications maturity'. Three senior executives have resigned in the last month, all citing some version of 'I'm no longer sure what we stand for'. At Davos last week, the Helix CEO referred to 'one peer in our sector that chose to look away'. Everyone in the room knew who he meant.\n\nOne last vote. Where did this story actually go wrong?",
         facilitatorNotes:
@@ -932,6 +971,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
       {
         id: "df-end4",
         order: 60,
+        scenarioDay: 42,
         title: "Ending: The Counter-Attack That Backfired",
         body: "Six weeks later. The defamation lawsuit was counter-filed within 48 hours. Discovery forced internal Day-1 messages onto the FT front page, including executives speculating that the video might be 'closer to the truth than we're admitting'. The FCA has opened a parallel investigation into Apex's own conduct. Share price -22% YTD. Two NEDs have resigned. Last night, the CLO who had advised against the lawsuit said only one thing before leaving the room: 'I told you so.'\n\nOne last vote. If you could rewind 48 hours, where would you intervene?",
         facilitatorNotes:

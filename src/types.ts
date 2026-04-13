@@ -163,6 +163,17 @@ export interface Inject {
    * alongside the ending body.
    */
   isEnding?: boolean;
+  /**
+   * Fictional day number within the scenario (1 = Day 1, 2 = Day 2, etc.).
+   * Used to power the scenario day strip on Runner and Present screens.
+   * Omit for injects that don't have a clear in-story day (e.g. pure endings).
+   */
+  scenarioDay?: number;
+  /**
+   * Fictional time of day within the scenario, e.g. "03:14" or "09:00".
+   * Shown alongside the day strip to orient participants in the story timeline.
+   */
+  scenarioTime?: string;
 }
 
 export interface Scenario {

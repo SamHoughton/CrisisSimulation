@@ -12,6 +12,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
 import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
@@ -747,6 +748,19 @@ export function Runner() {
                     {new Date(currentLive.releasedAt).toLocaleTimeString()}
                   </p>
                 </div>
+                {(() => {
+                  const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+                  return (inj?.scenarioDay !== undefined) ? (
+                    <div className="mb-3">
+                      <ScenarioDayStrip
+                        scenario={session.scenario}
+                        currentDay={inj.scenarioDay}
+                        currentTime={inj.scenarioTime}
+                        size="sm"
+                      />
+                    </div>
+                  ) : null;
+                })()}
                 <h2 className="text-base font-semibold text-rtr-text mb-2">{currentLive.injectTitle}</h2>
                 <p className="text-sm text-rtr-muted leading-relaxed mb-3">{currentLive.injectBody}</p>
                 {(() => {
