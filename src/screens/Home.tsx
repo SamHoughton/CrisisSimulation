@@ -80,7 +80,7 @@ export function Home() {
                 <span className="text-rtr-red ml-2">worst day</span>
               </h1>
               <p className="text-sm text-rtr-muted max-w-lg leading-relaxed">
-                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal consequences under pressure, and walk away with a structured debrief that shows exactly where your response held — and where it didn't.
+                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal consequences under pressure, and leave knowing exactly where the team held and where the gaps are.
               </p>
               <div className="flex items-center gap-3 mt-5">
                 <button
@@ -201,7 +201,7 @@ export function Home() {
               step={3}
               icon={<BarChart3 className="w-5 h-5" />}
               title="Review the report"
-              description="A structured debrief scores every decision against best-practice response principles. See what held under pressure, where gaps appeared, and what to prioritise in your next training cycle."
+              description="Every decision gets scored. You see where the team held, where it didn't, and what to work on before the next exercise."
             />
           </div>
         </section>

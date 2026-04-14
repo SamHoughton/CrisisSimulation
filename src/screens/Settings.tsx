@@ -61,12 +61,9 @@ export function Settings() {
         {/* Claude API */}
         <Card title="Anthropic API Key (optional)">
           <p className="text-xs text-rtr-muted mb-4 leading-relaxed">
-            By default, AI features (inject suggestions and post-exercise reports) run
-            through our hosted proxy with usage limits. You only need to add a key if
-            you want to use your own Anthropic account, bypass rate limits, or run the
-            app entirely offline from us. Your key is stored only in this browser's
-            localStorage and is sent directly to the Anthropic API, never to our
-            servers.{" "}
+            Report generation uses Claude via a hosted proxy with usage limits. Add your own key if
+            you want to use your own Anthropic account or remove the rate limits entirely.
+            Your key is stored only in this browser and sent directly to Anthropic — it never touches our servers.{" "}
             <a
               href="https://console.anthropic.com/"
               target="_blank"

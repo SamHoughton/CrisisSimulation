@@ -143,7 +143,7 @@ export function Report() {
                 className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors"
               >
                 <TrendingUp className="w-4 h-4" />
-                Generate AI Report
+                Generate Report
               </button>
             )}
             {generating && (
@@ -217,8 +217,8 @@ export function Report() {
               <div className="flex items-center justify-center py-24">
                 <div className="text-center">
                   <Loader2 className="w-10 h-10 animate-spin text-rtr-red mx-auto mb-4" />
-                  <p className="text-rtr-text font-medium">Generating gap analysis…</p>
-                  <p className="text-rtr-muted text-sm mt-1">Claude is reading the full transcript. Usually 20–40s.</p>
+                  <p className="text-rtr-text font-medium">Analysing the transcript…</p>
+                  <p className="text-rtr-muted text-sm mt-1">Reading all decisions and responses. Usually takes 20 to 40 seconds.</p>
                 </div>
               </div>
             )}
@@ -292,7 +292,7 @@ function RealOutcomeTab({ realOutcome }: { realOutcome: string }) {
         </div>
         <p className="text-sm text-rtr-text leading-relaxed">{realOutcome}</p>
         <p className="text-xs text-rtr-dim mt-4 border-t border-rtr-border pt-3">
-          This scenario is based on a real incident. The above describes the actual response and outcome.
+          Based on real incidents. Names and details have been changed.
         </p>
       </div>
     </div>
@@ -329,7 +329,7 @@ function NoReportState({ onGenerate }: { onGenerate: () => void }) {
         className="w-full flex items-center justify-center gap-2 bg-rtr-red text-white py-3 rounded-xl text-sm font-medium hover:bg-[#c0001f] transition-colors"
       >
         <TrendingUp className="w-4 h-4" />
-        Generate AI Gap Analysis
+        Generate Debrief Report
       </button>
     </div>
   );
