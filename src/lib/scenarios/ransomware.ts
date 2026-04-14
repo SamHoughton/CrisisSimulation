@@ -4,16 +4,17 @@ export const RANSOMWARE_SCENARIO: Scenario = {
   id: "tpl-ransomware-001",
   title: "Ransomware: The Quiet Beacon",
   description:
-    "A single low-confidence outbound DNS beacon at 03:14 from a treasury workstation grows over five days into the worst week in Veridian Power's history. Covers detection instinct, ICO notification timing, RNS obligations, ransom negotiation, PSR outreach, insurance coupling and parliamentary exposure.",
+    "A single low-confidence outbound DNS beacon at 03:14 from a treasury workstation grows over five days into the worst week in Veridian Power's history. Rebuilt 25-inject arc with 9 decision points and 4 score-routed endings. Tests detection instinct, ICO notification timing, RNS obligations, ransom negotiation, PSR outreach, insurance coupling and parliamentary exposure, from the first quiet alert to long-term recovery.",
   type: "RANSOMWARE",
   difficulty: "CRITICAL",
   durationMin: 180,
   isTemplate: true,
   createdAt: "2024-01-01T00:00:00Z",
-  updatedAt: "2026-04-10T00:00:00Z",
+  updatedAt: "2026-04-14T00:00:00Z",
   coverGradient: "135deg, #050508 0%, #1a0008 40%, #E82222 100%",
   regulatoryFrameworks: ["NIS Regs 2018", "UK GDPR / ICO", "OFAC Sanctions", "FCA MAR / RNS", "Cyber Essentials"],
-  realOutcome: "Drawn from real UK ransomware incidents between 2022 and 2024, including operations attributed to ALPHV/BlackCat, Clop and LockBit against utilities and financial services firms.\n\nRoughly 65% of organisations that paid received working decryption keys. Very few recovered exfiltrated data. OFAC reviewed several UK payments to groups on the SDN list and opened sanctions enquiries. The ICO fined organisations that held back from notifying within 72 hours, citing deliberate delay as an aggravating factor in at least one case. Exposure of Priority Services Register data triggered parliamentary questions and direct Ofgem engagement in multiple incidents.\n\nEvery post-incident review found the same thing. What the team decided in the first 90 minutes set the regulatory and reputational picture for the next 18 months.",
+  realOutcome:
+    "Drawn from real UK ransomware incidents between 2022 and 2024, including operations attributed to ALPHV/BlackCat, Clop and LockBit against utilities and financial services firms.\n\nRoughly 65% of organisations that paid received working decryption keys. Very few recovered exfiltrated data. OFAC reviewed several UK payments to groups on the SDN list and opened sanctions enquiries. The ICO fined organisations that held back from notifying within 72 hours, citing deliberate delay as an aggravating factor in at least one case. Exposure of Priority Services Register data triggered parliamentary questions and direct Ofgem engagement in multiple incidents.\n\nEvery post-incident review found the same thing. What the team decided in the first 90 minutes set the regulatory and reputational picture for the next 18 months.",
   roles: ["CEO", "CISO", "CFO", "CLO", "CCO", "COO"],
   briefing:
     "You are the executive leadership team of Veridian Power plc, a FTSE 250 UK energy retailer with 3.2 million domestic supply contracts and a designated Operator of Essential Services under the NIS Regulations 2018. Your back-office runs the day-ahead wholesale trading desk. Your front-office holds the Priority Services Register, the statutory list of 84,000 vulnerable customers who depend on uninterrupted power for medical equipment, dialysis, and oxygen. It is 03:14 on a Monday. The duty SOC analyst flags a single anomaly. Over the next five days you will discover what it really was. You will be judged on what you did at 03:14, and on every decision after.",
@@ -98,10 +99,13 @@ export const RANSOMWARE_SCENARIO: Scenario = {
       timerMinutes: 0,
       tickerHeadline: "Power trading volumes light overnight as wholesale market opens calmly",
       artifact: {
-        type: "email",
-        emailFrom: "soc.lead@veridianpower.co.uk",
-        emailTo: "s.khatun@veridianpower.co.uk",
-        emailSubject: "P1-CANDIDATE: Forensic image confirms lateral movement, 11 hosts, Mandiant ETA 06:30",
+        type: "voicemail",
+        voicemailCaller: "Abena Osei, SOC Night Lead",
+        voicemailCallerNumber: "+44 7700 900271",
+        voicemailDuration: "1:14",
+        voicemailTime: "05:28",
+        voicemailTranscript:
+          "Sarah, it's Abena at the SOC. Time is 05:28. I need you to see this before Mandiant arrive. We've got something on the forensic image. The attacker staged a directory on TREASURY-LDN-019 labelled PHANTOMCOIL-STAGE. Inside: eleven host profiles, three credential dumps, and what looks like a partial copy of a database export. The filename is PSR_REPLICA_PARTIAL. I don't want to say that over email. We still have time. They haven't encrypted anything. Call me back directly. Do not email this.",
       },
       isDecisionPoint: false,
       decisionOptions: [],
@@ -250,7 +254,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
       facilitatorNotes:
         "This is about governance under uncertainty. The trap: briefing the Chairman before you know what you're saying creates a second stakeholder to manage who now has incomplete information and may act on it. Not briefing him when he is already asking creates a governance failure and a trust problem. Option B is the strongest answer for most organisations. Option A creates a well-informed board but risks panic. Option C is defensible but requires the Company Secretary to carry an uncomfortable message. Option D is the trap. Regulatory guidance is clear that boards must be informed promptly of material cyber incidents.",
       delayMinutes: 15,
-      isDecisionPoint: true,
+      timerMinutes: 0,
+      tickerHeadline: "Energy retailers face 'cyber resilience year' as Ofgem raises NIS reporting bar",
       artifact: {
         type: "voicemail",
         voicemailCaller: "Margaret Osei",
@@ -260,6 +265,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
         voicemailTranscript:
           "It's Margaret. Sir David has had a message from Peter Cranfield. I don't know how Peter found out, but the Chairman is awake and he wants to know what's happening. I've told him you're assessing. He said 'assessing what, exactly'. I need to know what to say to him. Call me back.",
       },
+      isDecisionPoint: true,
       targetRoles: ["CEO", "CLO", "CCO"],
       decisionOptions: [
         {
@@ -433,7 +439,8 @@ export const RANSOMWARE_SCENARIO: Scenario = {
       facilitatorNotes:
         "Classic insurance coupling problem. The 4-hour notification requirement is real in most UK cyber policies and is frequently missed. Key tensions: (1) calling Beazley now means telling an insurer you have a live ransomware incident before you know the scope. That's fine legally but creates a paper trail and hands control partly to the insurer; (2) the panel counsel clause is significant. Most boards don't know this exists until they're in an incident; (3) Option C is the trap. Missing the notification window is a coverage risk. Option A is the right answer. Note for facilitators: this is often the moment in real incidents where organisations discover their insurance policy is 3 years old and has never been read by anyone in the room.",
       delayMinutes: 10,
-      isDecisionPoint: true,
+      timerMinutes: 0,
+      tickerHeadline: "Energy retailers face 'cyber resilience year' as Ofgem raises NIS reporting bar",
       artifact: {
         type: "internal_memo",
         memoTitle: "Cyber Insurance: Notification Obligations and Panel Counsel Instruction",
@@ -443,6 +450,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
         memoDate: "07:43 Day 1",
         memoRef: "VPL/LEGAL/CI-001",
       },
+      isDecisionPoint: true,
       targetRoles: ["CEO", "CFO", "CLO"],
       decisionOptions: [
         {
@@ -793,14 +801,34 @@ export const RANSOMWARE_SCENARIO: Scenario = {
       timerMinutes: 12,
       tickerHeadline: "ALPHV leak site posts countdown: 'Veridian Power | PSR drop in 24 hours unless payment received'",
       artifact: {
-        type: "slack_thread",
-        slackChannel: "#ir-warroom",
-        slackMessages: [
-          { author: "Mandiant Lead", role: "External IR", time: "15:38", text: "Chat window is live. They have your PSR sample staged on three mirrors. They will publish in 24h regardless of opening posture if we don't engage and they don't get a signal we're serious." },
-          { author: "Sarah K.", role: "CISO", time: "15:40", text: "Who's on the keyboard? We cannot have anyone on this who will panic or concede authority they don't have." },
-          { author: "Mandiant Lead", role: "External IR", time: "15:41", text: "Three options on the table. We need an answer in the next 5 minutes. They're already typing on their side." },
-          { author: "James M.", role: "CFO", time: "15:42", text: "Whoever it is, they need to know the OFAC line cold. ALPHV are not on the SDN list today. That changes weekly. Any payment offer has to be conditional on current OFAC status at wire time." },
-          { author: "Mandiant Lead", role: "External IR", time: "15:43", text: "Agreed. Also, do NOT mention the PSR outreach calls we've already started. That tells them we've accepted the breach is real and gives them leverage." },
+        type: "negotiation_chat",
+        negotiationThreatAlias: "ALPHV-SUPPORT",
+        negotiationMessages: [
+          {
+            side: "threat",
+            text: "Hello Veridian Power. We see your team is now online. You have had time to review our terms. What is your position?",
+            time: "15:43",
+          },
+          {
+            side: "negotiator",
+            text: "We acknowledge receipt of your communication. We are reviewing the matter internally.",
+            time: "15:47",
+          },
+          {
+            side: "threat",
+            text: "We respect that answer. We are patient professionals. The clock is clear. You have 22 hours 13 minutes remaining. We hold 84,247 records. Your customers in Carlisle will read about themselves in The Times tomorrow morning if we do not receive confirmation of your intent.",
+            time: "15:49",
+          },
+          {
+            side: "threat",
+            text: "We have completed this process 200 times. The companies that engage quickly receive the best outcomes. The companies that stall beyond 6 hours find that we become impatient. We recommend you make your position known before 22:00 tonight.",
+            time: "15:51",
+          },
+          {
+            side: "threat",
+            text: "One further point. We are aware that you have Mandiant on site. We have worked with Mandiant before. We have enormous respect for them. This does not change the clock.",
+            time: "15:54",
+          },
         ],
       },
       isDecisionPoint: true,
