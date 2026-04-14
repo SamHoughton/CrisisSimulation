@@ -209,7 +209,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
         title: "Forensics: Speed vs Confidence",
         body: "07:50. DeepDetect AI calls directly: 'We can give you a qualified preliminary read in five minutes at 84% confidence the video is AI-generated, or a final full-confidence report in ninety minutes at 99%+.' The difference matters. Markets open in 70 minutes. The BBC needs a response in 55 minutes. Your CLO warns that a preliminary finding publicly announced and later contradicted would be 'genuinely career-ending.' Your CCO says the current silence is now visibly shaping the narrative against the company. Your CISO recommends a middle path but defers to legal. What do you ask the forensics firm for, and what do you do with it?",
         facilitatorNotes:
-          "Classic speed-vs-confidence tension. C (wait for full report, hold the line with measured language) is the textbook correct call: it preserves the option to respond definitively without risking a retraction. A (use preliminary internally only) is the strongest real-world compromise: it lets internal leaders move with confidence while keeping external messaging measured. B (release preliminary publicly) is the tempting but riskiest option — an 84% confidence claim made public cannot be walked back without severe credibility cost. D (demand a second independent pass) is a decent-sounding instinct that in practice burns the exact time you needed the first answer for. Push the group on the asymmetry: being late with certainty costs reputation in hours; being wrong with speed costs reputation in years.",
+          "Classic speed-vs-confidence tension. C (wait for full report, hold the line with measured language) is the textbook correct call: it preserves the option to respond definitively without risking a retraction. A (use preliminary internally only) is the strongest real-world compromise: it lets internal leaders move with confidence while keeping external messaging measured. B (release preliminary publicly) is the tempting but riskiest option: an 84% confidence claim made public cannot be walked back without severe credibility cost. D (demand a second independent pass) is a decent-sounding instinct that in practice burns the exact time you needed the first answer for. Push the group on the asymmetry: being late with certainty costs reputation in hours; being wrong with speed costs reputation in years.",
         delayMinutes: 0,
         timerMinutes: 8,
         tickerHeadline: "Apex Dynamics forensic investigation underway as markets prepare for open; company yet to issue definitive statement",
@@ -306,9 +306,9 @@ export const DEEPFAKE_SCENARIO: Scenario =
         scenarioDay: 1,
         scenarioTime: "07:45",
         title: "07:45 — An Employee Defends You (Before You Have)",
-        body: "A well-meaning employee has just posted on LinkedIn. The post is already getting traction — 340 likes in 11 minutes, shares into PR and comms circles. The employee has been at Apex for nine years and is clearly acting out of loyalty. The problem: the post implies the video is fake before your forensics team has confirmed it. If the forensics come back ambiguous, this post becomes evidence of premature denial. Your social media team is watching the notifications climb.",
+        body: "A well-meaning employee has just posted on LinkedIn. The post is already getting traction: 340 likes in 11 minutes, shares into PR and comms circles. The employee has been at Apex for nine years and is clearly acting out of loyalty. The problem: the post implies the video is fake before your forensics team has confirmed it. If the forensics come back ambiguous, this post becomes evidence of premature denial. Your social media team is watching the notifications climb.",
         facilitatorNotes:
-          "This is a human comms problem, not a technical one. The employee is doing the right thing by instinct but creating legal and reputational exposure. The correct answer depends on what the team has already decided about external comms — if they have issued a statement, the post is now consistent with it; if they haven't, the post has jumped the gun. Key coaching point: ask the room 'who owns this decision?' Most organisations have no protocol for employee social media during an active crisis. Option A is right but must be handled with care — you cannot ask someone to delete a supportive post without it becoming a story. Option B is the trap in disguise — leaving it exposes the company if forensics are slow.",
+          "This is a human comms problem, not a technical one. The employee is doing the right thing by instinct but creating legal and reputational exposure. The correct answer depends on what the team has already decided about external comms. If they have issued a statement, the post is now consistent with it; if they haven't, the post has jumped the gun. Key coaching point: ask the room 'who owns this decision?' Most organisations have no protocol for employee social media during an active crisis. Option A is right but must be handled with care: you cannot ask someone to delete a supportive post without it becoming a story. Option B is the trap in disguise: leaving it exposes the company if forensics are slow.",
         delayMinutes: 5,
         isDecisionPoint: true,
         artifact: {
@@ -324,7 +324,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
         decisionOptions: [
           {
             key: "A",
-            label: "Contact Sarah directly — thank her privately and ask her to add a note that the company is investigating",
+            label: "Contact Sarah directly, thank her privately and ask her to add a note that the company is investigating",
             consequence:
               "Protects the employee while slightly hedging the post. Requires a fast, careful message. Risk of the DM being screenshotted.",
             rank: 1,
@@ -332,9 +332,9 @@ export const DEEPFAKE_SCENARIO: Scenario =
           },
           {
             key: "B",
-            label: "Leave it — employee advocacy is helpful and the post is factually consistent with our position",
+            label: "Leave it: employee advocacy is helpful and the post is factually consistent with our position",
             consequence:
-              "Fine if forensics confirm quickly. A liability if forensics take longer or are inconclusive — the post is now cited as evidence of premature denial.",
+              "Fine if forensics confirm quickly. A liability if forensics take longer or are inconclusive, as the post is now cited as evidence of premature denial.",
             rank: 2,
             recapFragment: "a decision to leave the employee post in place as consistent with company position",
           },
@@ -348,7 +348,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
           },
           {
             key: "D",
-            label: "Share the post internally to demonstrate staff confidence — send to all-company",
+            label: "Share the post internally to demonstrate staff confidence, send to all-company",
             consequence:
               "Amplifies a post that has not been legally reviewed and asserts the video is fake before forensics have confirmed it. High risk.",
             rank: 3,
@@ -429,16 +429,16 @@ export const DEEPFAKE_SCENARIO: Scenario =
         scenarioDay: 1,
         scenarioTime: "07:15",
         title: "07:15 — Five Board Members Are Online",
-        body: "07:15. The board portal has lit up. Five of the seven non-executive directors are logged in — three of them before 07:00. One has forwarded the video link to two investor relations contacts. The Chairman has sent a message through the portal flagged HIGH PRIORITY: 'Have seen the video. Assume fake but market opens in 75 minutes. Need a call. Where are we?' The CFO has not yet been briefed on the full position. Two major institutional shareholders have emailed the investor relations team directly.",
+        body: "07:15. The board portal has lit up. Five of the seven non-executive directors are logged in, three of them before 07:00. One has forwarded the video link to two investor relations contacts. The Chairman has sent a message through the portal flagged HIGH PRIORITY: 'Have seen the video. Assume fake but market opens in 75 minutes. Need a call. Where are we?' The CFO has not yet been briefed on the full position. Two major institutional shareholders have emailed the investor relations team directly.",
         facilitatorNotes:
-          "The key tension here is that the board found out the same way the market did — through social media — before management had a chance to shape the narrative. The Chairman's message is measured but the 75-minute market open clock is now explicit. Option A is the right answer for governance but it requires the CEO to front a board call without all the facts yet. Option C is tempting but 'we'll call at 08:00' with the market opening at 08:00 is too late. The inject is designed to surface whether the team has a board escalation protocol and whether the CFO is properly looped in. Note: one NED forwarding the link to investor contacts is a real governance risk that often gets missed in the heat.",
+          "The key tension here is that the board found out the same way the market did, through social media, before management had a chance to shape the narrative. The Chairman's message is measured but the 75-minute market open clock is now explicit. Option A is the right answer for governance but it requires the CEO to front a board call without all the facts yet. Option C is tempting but 'we'll call at 08:00' with the market opening at 08:00 is too late. The inject is designed to surface whether the team has a board escalation protocol and whether the CFO is properly looped in. Note: one NED forwarding the link to investor contacts is a real governance risk that often gets missed in the heat.",
         delayMinutes: 10,
         isDecisionPoint: true,
         artifact: {
           type: "board_portal",
           boardPortalOrgName: "Apex Dynamics plc",
           boardPortalAlertCount: 3,
-          boardPortalAlertTitle: "URGENT: CEO video — board members requesting briefing",
+          boardPortalAlertTitle: "URGENT: CEO video, board members requesting briefing",
           boardPortalMembers: [
             { name: "Sir Charles Whitmore", role: "Chairman", isOnline: true, loggedInAt: "06:48" },
             { name: "Priya Nair", role: "Senior Independent Director", isOnline: true, loggedInAt: "06:52" },
@@ -453,7 +453,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
         decisionOptions: [
           {
             key: "A",
-            label: "Call the Chairman now — short verbal briefing before the board portal explodes",
+            label: "Call the Chairman now: short verbal briefing before the board portal explodes",
             consequence:
               "Reestablishes management control of the narrative. Requires the CEO to brief from an incomplete position but that is better than silence.",
             rank: 1,
@@ -461,7 +461,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
           },
           {
             key: "B",
-            label: "Send a written update to all board members via the portal — 'forensics ongoing'",
+            label: "Send a written update to all board members via the portal: 'forensics ongoing'",
             consequence:
               "Buys time and is on the record. Risk: a written update without a call feels like a holding position and the Chairman has explicitly asked for a call.",
             rank: 2,
@@ -469,7 +469,7 @@ export const DEEPFAKE_SCENARIO: Scenario =
           },
           {
             key: "C",
-            label: "Request a board call at 08:30 — after market open and first statement issued",
+            label: "Request a board call at 08:30, after market open and first statement issued",
             consequence:
               "Too late. Market opens at 08:00. The board will be watching the share price move without having spoken to management.",
             rank: 4,
