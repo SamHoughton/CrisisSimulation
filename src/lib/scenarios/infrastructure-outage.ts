@@ -35,7 +35,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 0,
       scenarioDay: 1,
       scenarioTime: "07:43",
-      title: "SIEM: Cascading Database Failure — NexCore UK-PROD",
+      title: "SIEM: Cascading Database Failure - NexCore UK-PROD",
       body: "07:43. The COO's pager fires. The SIEM is showing a cascading failure across all three database replica nodes in CORE-DB-CLUSTER-01, the NexCore UK-PROD environment that runs every critical banking system Clearpoint operates. Node 1 failed at 07:41:52. Node 2 at 07:42:08. Node 3 at 07:43:01. There is no quorum. Online banking, mobile app, CHAPS payment rails, internal branch systems, and Direct Debit processing have all dropped. The monitoring console shows 47 dependent services in a critical state. Month-end salary processing is scheduled to begin at 09:00. The last successful system heartbeat was 07:38, four minutes before the cluster began to fail.",
       facilitatorNotes:
         "This is a pure scene-setter: no decision, no vote. Give participants 2 minutes to absorb the artifact and orient. Prompt them: what do you know? What do you not know? Who owns this? The absence of an obvious cyber threat here is deliberate: this is an operational failure, and the temptation to treat it as a cyber incident should be resisted until more information arrives. The COO and CISO should be talking to each other immediately. The CEO does not need to be woken yet: that is a facilitator discussion point, not a decision vote.",
@@ -58,7 +58,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 5,
       scenarioDay: 1,
       scenarioTime: "07:51",
-      title: "NexCore First Contact — 'Resolved Within 30 Minutes'",
+      title: "NexCore First Contact - 'Resolved Within 30 Minutes'",
       body: "07:51. An email arrives from Priya Mehta, NexCore UK Support Lead, to the Clearpoint IT Director and COO: 'We are aware of an issue following an emergency security patch applied at 07:38 to the UK-PROD environment. The patch was applied in response to an NCSC advisory issued at 07:15. We are investigating the root cause and expect resolution within 30 minutes. We apologise for the disruption.' There is no mention of change control. The NCSC advisory reference number given is NCSC-ALT-2026-1142. The Clearpoint change control log shows no NexCore emergency patch request received today. The emergency change control process requires a minimum 2-hour notice period even for critical patches, with written sign-off from the Clearpoint IT Director. That process was not followed.",
       facilitatorNotes:
         "Option A (escalate to NexCore CEO) is aggressive but defensible. The CLO should flag it as potentially relevant to later breach-of-contract arguments; however, it may not get the outage fixed faster. Option C (activate internal IR) is the best call right now, because the internal response cannot wait for NexCore. Option B (wait 30 minutes) is the natural instinct and the most dangerous: every tabletop after TSB showed teams defaulting to vendor-optimism bias. Option D (notify PRA now) is premature at 07:51; the PRA notification question comes properly in inject 3. Push the team: what does 'monitoring' actually mean in practice? Who is doing what while you wait?",
@@ -119,7 +119,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 10,
       scenarioDay: 1,
       scenarioTime: "08:05",
-      title: "PRA Notification Window — Two-Hour Clock",
+      title: "PRA Notification Window - Two-Hour Clock",
       body: "08:05. The CLO, Rachel Winters, has sent an urgent message to the COO and CEO: 'Under PRA SS1/21 and FCA SYSC 15A, we are required to notify the PRA of a major operational incident within 2 hours of becoming aware. Our awareness time is 07:43. Our notification deadline is 09:43. I need a decision on timing. Notifying early, before we have full scope, is permitted and signals good culture. Waiting until 09:30 is a calculated risk. Notifying at the deadline is defensible only if we have a clear reason for the delay. I have the PRA's operational incident reporting portal open.' It is 08:05. You have 22 minutes before the salary payments are due to fail.",
       facilitatorNotes:
         "This is the inject where CLOs often shine and CEOs often want to defer. The right answer is Option A: early voluntary notification before full scope is known. The PRA published clear guidance after TSB that firms which notified early, even with incomplete information, were treated more favourably than firms that waited. Option B is understandable but sets up a crunch at 09:30 when the team will be dealing with the payment failure simultaneously. Option C (deadline-only) is a red flag for the PRA. Option D (legal advice first) sounds prudent but burns 30-40 minutes during which the clock continues running. The CLO should know this law cold.",
@@ -180,7 +180,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 15,
       scenarioDay: 1,
       scenarioTime: "08:12",
-      title: "Customer Communications — Three Drafts on the Table",
+      title: "Customer Communications - Three Drafts on the Table",
       body: "08:12. The Head of Customer Communications, Tom Bassett, has brought three draft statements to the war room. Draft A reads: 'We are experiencing a systems issue affecting online banking and payments. We are working to resolve this. We will provide updates every 30 minutes. We apologise to all customers affected.' Draft B reads: 'Some customers may be experiencing difficulty accessing services. We are investigating and will provide updates shortly.' Draft C is a holding statement for internal use only: no public communication until an ETA is known. It is 08:12. The mobile banking app has been down for 29 minutes. No public statement has been issued. There is no ETA. Twitter is quiet. For now.",
       facilitatorNotes:
         "Option A is the right call. It commits to a 30-minute update cadence, which is achievable and forces the team to maintain discipline. It is transparent without promising a fix time that does not exist. Option B is the weakest: 'some customers may be experiencing difficulty' is demonstrably false when the whole system is down, and it will read as dishonest the moment anyone checks. Option C (hold until ETA is known) is the TSB mistake in its purest form. If no ETA is known for 90 minutes, customers have been in the dark for 90 minutes. Option D (branches first) sounds customer-centric but takes time and delays the digital audience who will find out via social media before any branch manager has been briefed. Ask the CCO: what is the cost of saying nothing for the next hour if the hashtag starts trending?",
@@ -232,7 +232,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 20,
       scenarioDay: 1,
       scenarioTime: "09:00",
-      title: "09:00 — Salary Payments Fail",
+      title: "09:00 - Salary Payments Fail",
       body: "09:00. An email from the Payments Operations team lands in the war room: 'Confirmed: 60,000 Direct Debit salary payment instructions have failed to process. The batch ran at 09:00:00 as scheduled and returned 60,000 individual rejections within 4 seconds: the payment gateway has no connection to core banking. The processing window has now passed. These payments will not be re-attempted automatically. Manual reprocessing will require system restoration first. We have never failed on payday. I do not have words for this.' The email is from Helen Marsh, Head of Payments Operations, and was sent at 09:04. It is month-end. These are 60,000 people's salaries.",
       facilitatorNotes:
         "No decision here. Let the weight of this land. Give the room 2-3 minutes of silence if needed. The facilitator should then prompt: who does each role think is now responsible for contacting those 60,000 customers? What is the plan for the people whose mortgage direct debit was going to come out of that salary today? Who is the most vulnerable person in that cohort? This inject is designed to shift the room from 'systems problem' to 'human problem'. That shift is necessary for everything that follows.",
@@ -256,7 +256,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 22,
       scenarioDay: 1,
       scenarioTime: "09:41",
-      title: "Contact Centre — 11,000 Calls in 40 Minutes",
+      title: "Contact Centre - 11,000 Calls in 40 Minutes",
       body: "09:41. A voicemail from Sandra Obi, Contact Centre Director, left for the COO 4 minutes ago: 'It's Sandra. I need you to listen carefully because I am going to lose my voice. We have taken 11,000 inbound calls in 40 minutes. Average wait time is 34 minutes. My agents have no more information than the customers calling them. Two agents have had customers in tears on the phone about mortgage payments and rent. One customer said she has no food in the house and her salary was supposed to be there this morning. I am asking my team to hold a line they cannot hold. I need a script. I need an ETA. I need both in the next 20 minutes or I am going to lose people.' The contact centre has 180 agents on shift.",
       facilitatorNotes:
         "This inject is designed to test whether the CCO and COO have thought about second-order impacts. The contact centre cannot be fixed by giving agents a better script if the underlying information does not exist. The coaching question: what can you tell agents that is true, specific, and does not promise something you cannot deliver? The CCO should be drafting a script right now. The answer is not 'we are working on it': that is what agents are already saying. The answer is: what do we know, what do we not know, and when will we next communicate.",
@@ -281,7 +281,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 25,
       scenarioDay: 1,
       scenarioTime: "09:48",
-      title: "#ClearpointDown — Trending",
+      title: "#ClearpointDown - Trending",
       body: "09:48. The hashtag #ClearpointDown is trending in the UK. A tweet from @RachelT_London, with 11,400 followers, has been retweeted 3,200 times in the last 22 minutes: 'Clearpoint Bank have not paid my salary. I have a mortgage payment going out today. I have been on hold for 40 minutes. THIS IS MY MONEY. Do better. #ClearpointDown'. Sky News has sent a press inquiry. The BBC has sent a press inquiry. ITV Money has sent a press inquiry. The Guardian personal finance desk has sent a press inquiry. The communications team has not yet issued a second statement since the opening one.",
       facilitatorNotes:
         "The tweet is not from a journalist: it is from a real customer with real reach. The room should notice the difference between a media problem and a genuine customer harm problem that has now become a media problem. The CCO needs to decide whether to respond directly to the tweet (risky, as it can escalate), issue the next 30-minute update now (ahead of schedule because the situation has changed), or do both. The CEO needs to decide whether they are now 'on camera'. The wrong answer is to wait.",
@@ -368,7 +368,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 32,
       scenarioDay: 1,
       scenarioTime: "10:22",
-      title: "Manchester Deansgate — Customers Queuing, Safe Question",
+      title: "Manchester Deansgate - Customers Queuing, Safe Question",
       body: "10:22. A voicemail from David Kim, branch manager at Manchester Deansgate, Clearpoint's fourth-largest branch, left for the COO: 'David Kim, Manchester Deansgate. I have approximately 60 people queuing on the pavement before we opened this morning. I now have the branch full and more outside. Customers are asking for cash. The branch systems are partially down. I can see some account balances but cannot process transactions normally. I have three elderly customers who cannot access any money. One says she has no cash at home. She is asking me, personally, if she can have enough to buy food today. I know the policy says no emergency cash releases without full system access. But I am standing in front of her. Do I open the safe?'",
       facilitatorNotes:
         "This is the FCA Consumer Duty decision in human form. Option A (discretionary emergency cash with identity checks) is the right call: Consumer Duty requires firms to act in the genuine interest of customers, and leaving elderly customers without food money because the policy manual says so would be a stark failure of that duty. Option B (normal process only) ignores Consumer Duty. Option C (close branches) will generate photographs of Clearpoint locking its doors on payday: do not do this. Option D (direct to other ATMs) is the right supplementary action but is not a substitute for doing something for the person standing in front of the branch manager right now. The COO should also be thinking: who else in those 140 branches is about to face this same question?",
@@ -428,7 +428,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 35,
       scenarioDay: 1,
       scenarioTime: "10:55",
-      title: "CLRP.L — Down 6.1% on the Open",
+      title: "CLRP.L - Down 6.1% on the Open",
       body: "10:55. Clearpoint Bank plc shares (CLRP.L) opened at 247p this morning. They are currently trading at 232p, a fall of 6.1% on volume of 8.4 million shares, against an average daily volume of 1.9 million. City analysts at Peel Hunt and Panmure Gordon have both published intraday notes. Peel Hunt: 'Operational incident at Clearpoint: watching for customer impact duration and regulatory response.' Panmure Gordon: 'Clearpoint Bank: systems failure on payday raises questions about NexCore dependency risk and insurance coverage. Maintain Hold pending resolution.' The CFO's IR team are fielding calls from three institutional shareholders.",
       facilitatorNotes:
         "No decision point: this is a temperature read. The facilitator should ask: does the share price move change anything about how you communicate? Does it change the PRA notification? The CFO should think about whether there is a market disclosure obligation if the outage is material. In the UK, listed companies have an obligation under MAR to disclose inside information as soon as possible. The question of whether a 6.1% price move on a payment failure constitutes inside information is worth a brief discussion: the CLO and CFO should be aligned on this before the next press inquiry.",
@@ -453,7 +453,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 40,
       scenarioDay: 1,
       scenarioTime: "11:45",
-      title: "NexCore ETA Miss Number Two — 14:00 BST",
+      title: "NexCore ETA Miss Number Two - 14:00 BST",
       body: "11:45. An email from Dana Reeves, Global CTO at NexCore Systems, to James Cordell and the war room: 'Following our call this morning, I want to give you a direct update. Our engineering team has identified the root cause of the cascading failure: the emergency patch applied at 07:38 had an undocumented dependency conflict with a database index that was updated during last week's maintenance window. The patch is being correctly rolled back. Full restoration of CORE-DB-CLUSTER-01 is estimated at 14:00 BST. I am personally supervising this. I understand the gravity of what has occurred and I am available to you directly.' It is 11:45. It has been four hours and two minutes since the outage began. A 14:00 restoration means four hours and seventeen minutes from now before payments can be processed.",
       facilitatorNotes:
         "This is the ETA credibility test. Options A and D are the two poles. The problem with Option A (publish the 14:00 ETA) is that NexCore have missed three ETAs already: a fourth miss would be catastrophically damaging if the team has committed publicly to 14:00. Option B (no ETA) frustrates customers but protects against a fourth public failure. Option C (commit to hourly updates without an ETA) is the best answer: it is honest about the uncertainty without leaving customers with nothing. Ask the CCO: what is the cost of saying '14:00' in a press release and then missing it? Compare to the cost of saying 'we will update you every hour'.",
@@ -513,7 +513,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 45,
       scenarioDay: 1,
       scenarioTime: "12:10",
-      title: "PRA Formal Engagement — 14:00 Call Requested",
+      title: "PRA Formal Engagement - 14:00 Call Requested",
       body: "12:10. An email from Katherine Elliot, PRA Supervision Director, to James Cordell: 'The Prudential Regulation Authority notes reports of a significant operational disruption at Clearpoint Bank plc affecting retail payment services on what we understand is a high-volume salary payment date. We request a call with the CEO and Chief Risk Officer at 14:00 today to discuss: (1) impact scope and number of customers affected; (2) your customer remediation plan; (3) your response under the operational resilience impact tolerance framework; and (4) your current assessment of vendor management and change control failures. Please confirm attendance by return.' The Chief Risk Officer is Marcus Webb. It is 12:10. The PRA call is in 110 minutes.",
       facilitatorNotes:
         "Option A (full attendance, full timeline) is the right answer. The PRA have been signalled this is coming: if you chose Option A in inject 3, they received the voluntary early notification. The 14:00 call is a supervisory conversation, not a formal enforcement action, yet. Going in with a complete timeline signals candour. Option B (request a delay) will be politely refused and signals that the bank is not ready. Option C (CLO only) signals that the CEO is not engaged: the PRA have specifically requested the CEO. Option D (off the record) is not how PRA supervision works: the conversation will be noted regardless.",
@@ -571,7 +571,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 50,
       scenarioDay: 1,
       scenarioTime: "12:35",
-      title: "CFO Liquidity Note — £47M Intraday Exposure",
+      title: "CFO Liquidity Note - £47M Intraday Exposure",
       body: "12:35. A strictly confidential memo from Catherine Park, CFO, to James Cordell: '60,000 failed salary payment instructions represent a £47M intraday liquidity exposure that remains on Clearpoint's books until remediation payments are processed. Our intraday liquidity buffer is £85M. In normal circumstances this exposure would clear by 11:00, but today it has not. If restoration does not occur by 16:00 and we are required to fund remediation payments through an emergency overnight facility, we will approach but not breach the buffer limit. This is within operating parameters today. If the outage extends to tomorrow morning and creates a second batch failure, the position changes materially. I am flagging this now, not as an immediate crisis, but because the Bank of England's supervision team will ask. Do we tell them now or wait until the picture is clearer?'",
       facilitatorNotes:
         "Option A (proactive Bank of England notification) is the better governance call. The Bank of England's supervision function for intraday liquidity is separate from PRA operational resilience supervision: the CFO knows this. Option B (manage internally) is defensible today but sets a tone. Option C (brief board finance chair) is a good parallel action but not a substitute for Option A. Option D (no action) ignores the governance logic the CFO herself has laid out. Push the CFO: what does 'approaching the buffer' look like in practice? What is the trigger for mandatory notification?",
@@ -632,7 +632,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 55,
       scenarioDay: 1,
       scenarioTime: "13:30",
-      title: "BBC News — Live Segment Outside Clearpoint Branch",
+      title: "BBC News - Live Segment Outside Clearpoint Branch",
       body: "13:30. BBC News is running a live segment titled 'Clearpoint Bank customers locked out on payday: what went wrong?' The lower-third reads: 'BREAKING: CLEARPOINT BANK SYSTEMS DOWN. CUSTOMERS UNABLE TO ACCESS SALARIES.' Reporter Eleanor Walsh is standing outside the Clearpoint branch on Tottenham Court Road, London. Behind her, a queue of approximately 30 customers is visible. Walsh: 'The bank has issued one public statement this morning and declined to answer questions about when services will be restored. The BBC has learned that the outage is linked to a software patch applied by the bank's US-based technology vendor, NexCore Systems. Sixty thousand salary payments are understood to have failed.' The communications team has one hour to respond before the segment airs again at 14:30.",
       facilitatorNotes:
         "This is a media management decision that also has strategic implications. Option A (CEO interview) is the strongest signal: it puts the top of the house on camera and demonstrates accountability. The risk is that the CEO must say something meaningful, not just 'we are sorry and working on it'. Option B (written statement) is safer but reads as the bank hiding its CEO. Option C (CCO does the interview) is a plausible choice for a CCO who is a strong media performer, but the BBC have specifically asked for the CEO. Option D (decline until resolved) gave us 'Clearpoint refuses to comment' in the morning editions. Ask the CCO: what does a good CEO interview sound like at 13:30 when the system is still down? It is not an apology for the system. It is an account of what the bank is doing for every one of those 60,000 people.",
@@ -691,7 +691,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 60,
       scenarioDay: 1,
       scenarioTime: "14:17",
-      title: "NexCore CEO on the Line — Change Control Confrontation",
+      title: "NexCore CEO on the Line - Change Control Confrontation",
       body: "14:17. James Cordell has finally reached Marcus Webb, CEO of NexCore Systems, directly. It has taken four hours of escalation to get him on a call. Webb opens: 'James, I want to say how sorry I am for the disruption today. My team is absolutely committed to restoring your services and they are close.' Cordell: 'Marcus, the patch applied at 07:38 was not approved through our change control process. Your UK director did not notify us. Your SLA requires a minimum 2-hour notice window for emergency changes, with written sign-off. That did not happen.' Webb: 'We followed our own emergency protocol in response to an NCSC advisory. The advisory indicated a time-critical vulnerability. Our legal position is that a credible security alert does not require you to authorise an emergency security patch on our own infrastructure.' The 2-hour notice requirement is explicit in schedule 4 of the NexCore contract.",
       facilitatorNotes:
         "Option A (formal breach notice) is the CLO's recommendation and is legally correct, but the timing is the question. Option B (hold vendor escalation) is what most teams instinctively prefer during an active incident: do not do anything that might slow the fix. Option C (contract review and termination triggers) is the right parallel workstream for the CLO. Option D (public statement naming NexCore) was available in inject 8 and has been addressed: it is still the wrong call. The coaching question: can you hold someone contractually accountable and still need them to fix your system? Yes. The two things are not incompatible. The CLO and CEO should be able to articulate how you do both simultaneously.",
@@ -757,7 +757,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 65,
       scenarioDay: 1,
       scenarioTime: "17:00",
-      title: "Emergency Board Session — 'How Did We Get Here?'",
+      title: "Emergency Board Session - 'How Did We Get Here?'",
       body: "17:00. All six Non-Executive Directors are online. The Chairman, Sir Peter Albury, has called an emergency board session. The NED for Audit and Risk, Frances Osei, has sent a message ahead of the meeting: 'I need to understand one thing before this meeting starts. We approved the NexCore transformation 18 months ago. Our operational resilience framework was signed off by this board in March 2025. Our impact tolerance for the retail payments service was set at 4 hours. Today we failed our customers for more than eight hours, and counting. This is exactly the scenario our framework was supposed to address. I would like the CEO to explain how we got here, and what this tells us about the strength of our third-party oversight programme.' The board meeting is in 10 minutes.",
       facilitatorNotes:
         "Option A (full timeline, accept accountability, commit to independent review) is the right answer. This is a governance moment. The board needs to see a CEO who can be honest about what went wrong, including the systemic vendor oversight failure, without deflecting to the vendor. Option B (frame as vendor failure) will not land with Frances Osei. She has read the operational resilience framework. She knows the bank owns its impact tolerances regardless of what the vendor does. Option C (defer the meeting) is a red flag: the board has been called and is online. Option D (send General Counsel to lead) is an evasion. The CEO should be in that room.",
@@ -826,7 +826,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 70,
       scenarioDay: 1,
       scenarioTime: "15:48",
-      title: "Restoration — Systems Coming Back, CISO Flag",
+      title: "Restoration - Systems Coming Back, CISO Flag",
       body: "15:48. The IT war room Slack lights up. Systems are coming back online. NexCore have restored the core banking cluster. Payments team: 'Core banking is live. We can begin processing the outstanding 60,000 payment queue, estimated 90 minutes for full batch completion.' CISO, Sanjay Patel: 'Before we go live on payments I need 45 minutes to validate the NexCore patch. We do not have the patch notes in advance. I have not seen the code. We are being asked to run 60,000 financial transactions on a system that failed this morning because of a patch we did not approve. I want to know what is in it before customers' money moves.' The payments team: 'Every minute we wait is another minute someone cannot access their salary.' Both positions are correct.",
       facilitatorNotes:
         "This is the tension between speed and security: the genuine dilemma of the CISO's role during an operational recovery. Option B (wait for CISO validation) is the right call in a pure security sense. Option A (begin immediately) is the natural operational pressure. Option C (begin payments but publish a notice) is a reasonable compromise if the CISO can confirm that the risk is bounded. Option D (Mandiant validation) is too slow: 4 hours for an emergency Mandiant engagement will cost more customer time than the 45-minute internal validation. Push the CISO: what exactly are you validating for in 45 minutes? What is the worst-case scenario if the patch has a second issue? Could it affect payment data integrity? That answer changes the calculus.",
@@ -890,7 +890,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 75,
       scenarioDay: 1,
       scenarioTime: "17:30",
-      title: "Customer Remediation — What Do We Owe People?",
+      title: "Customer Remediation - What Do We Owe People?",
       body: "17:30. Systems are restored. Payments are processing. The war room turns to the question every customer-facing business dreads: what do we owe the people we failed today? Catherine Park, CFO: '60,000 salary payment failures. An estimated 840 emergency branch cash releases. Contact centre at breaking point from 09:00 to 17:00. Some customers will have incurred bank charges because of failed standing orders triggered off salary payments that never arrived. Some will have paid overdraft fees. Some will have experienced genuine hardship.' Tom Bassett, CCO: 'Consumer Duty requires us to act in the genuine financial interest of affected customers. The question is how proactive we are prepared to be.' Four options are on the table.",
       facilitatorNotes:
         "This is the Consumer Duty decision at its most concrete. Option A (proactive £50 per customer) is bold, operationally complex, and sends the clearest signal. It costs £3M if fully paid. Option B (complaint-led only) is the minimum legal position and will be seen as the minimum legal position by both customers and the FCA: Consumer Duty specifically pushes against complaint-led models. Option C (one month free banking) is creative and delivers clear value for loyal customers but does not help those who have already incurred specific charges. Option D (apology only) is almost certainly insufficient under Consumer Duty. The FCA's Consumer Duty guidance is explicit: firms must provide redress that is fair and proportionate to the harm caused. Ask the CFO: what is the cost of each option? Ask the CLO: what does Consumer Duty case precedent say?",
@@ -967,7 +967,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 80,
       scenarioDay: 2,
       scenarioTime: "08:00",
-      title: "Outcome: Mixed — PRA Review Opened",
+      title: "Outcome: Mixed - PRA Review Opened",
       isEnding: true,
       body: "Your team held together but made enough hesitations that the regulatory and reputational picture is murkier than it needed to be. The PRA has opened a formal operational resilience review under SS1/21. The review is not an enforcement action yet. They are asking three specific questions: why was the PRA notification delayed past the voluntary early window; why were branch cash releases not authorised more promptly; and what does the bank's operational resilience impact tolerance framework say about third-party vendor change control? The FCA is monitoring.\n\nCLRP.L recovered from 232p to 238p by Friday but has not returned to the 247p open. Three institutional shareholders have written to the board requesting a briefing on vendor dependency risk. The NexCore relationship is under review but no action has been taken. Two thousand customers have switched accounts in the week following the incident, within normal monthly attrition levels but at the top of the range.\n\nThe PRA's supervision note: 'Clearpoint Bank's response to the operational incident of 14 April 2026 was adequate in most respects but fell short of best practice in three areas identified for supervisory discussion. This firm remains under enhanced monitoring for the next 12 months.'",
       facilitatorNotes:
@@ -983,7 +983,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
       order: 80,
       scenarioDay: 3,
       scenarioTime: "09:00",
-      title: "Outcome: Enforcement — £12M Fine, 18,000 Customers Gone",
+      title: "Outcome: Enforcement - £12M Fine, 18,000 Customers Gone",
       isEnding: true,
       body: "The FCA has opened a formal enforcement investigation into Clearpoint Bank plc. Preliminary findings indicate failures under FCA SYSC 15A (operational resilience), FCA Consumer Duty (customer harm prevention), and FCA BCOBS (banking conduct). A fine of approximately £12M is assessed as likely based on comparator cases, including the TSB precedent. The PRA has issued a Requirement Notice requiring Clearpoint to conduct a full operational resilience review and submit a remediation plan within 60 days.\n\n18,000 customers switched accounts in the four weeks following the incident, a 3% outflow of the retail base and the largest single-month attrition in the bank's history. The branch network has seen a measurable shift in customer trust. Three parliamentary questions have been tabled about the bank's dependence on US-based technology vendors. CLRP.L is trading at 218p, 12% below the day of the incident.\n\nThe NexCore contract remains in force. The termination clause was never formally activated. NexCore have submitted a counter-claim for breach of their emergency security protocol provisions.\n\nThe PRA's supervision note: 'Clearpoint Bank's response to the operational incident of 14 April 2026 was materially inadequate. Notification delays, failure to activate contingency payment routes promptly, inadequate customer communication, and an insufficient Consumer Duty response have together produced significant customer harm. This matter has been referred for enforcement consideration.'",
       facilitatorNotes:

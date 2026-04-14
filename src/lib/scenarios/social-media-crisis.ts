@@ -27,7 +27,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
   injects: [
 
-    // ─── ACT 1 — DISCOVERY ────────────────────────────────────────────────────
+    // ─── ACT 1 - DISCOVERY ────────────────────────────────────────────────────
 
     {
       id: "smc-i01",
@@ -230,7 +230,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
       ],
     },
 
-    // ─── ACT 2 — OVERNIGHT ───────────────────────────────────────────────────
+    // ─── ACT 2 - OVERNIGHT ───────────────────────────────────────────────────
 
     {
       id: "smc-i05",
@@ -357,7 +357,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
       ],
     },
 
-    // ─── ACT 3 — MORNING ─────────────────────────────────────────────────────
+    // ─── ACT 3 - MORNING ─────────────────────────────────────────────────────
 
     {
       id: "smc-i07",
@@ -588,7 +588,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
       ],
     },
 
-    // ─── ACT 4 — AFTERNOON ───────────────────────────────────────────────────
+    // ─── ACT 4 - AFTERNOON ───────────────────────────────────────────────────
 
     {
       id: "smc-i12",
@@ -763,7 +763,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
       ],
     },
 
-    // ─── ACT 5 — ENDINGS ─────────────────────────────────────────────────────
+    // ─── ACT 5 - ENDINGS ─────────────────────────────────────────────────────
 
     {
       id: "smc-i15",
