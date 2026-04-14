@@ -49,9 +49,10 @@ function useCountUp(target: number, duration = 900) {
 }
 
 export function Report() {
-  const session   = useStore((s) => s.session);
-  const settings  = useStore((s) => s.settings);
-  const setReport = useStore((s) => s.setReport);
+  const session      = useStore((s) => s.session);
+  const settings     = useStore((s) => s.settings);
+  const setReport    = useStore((s) => s.setReport);
+  const pastSessions = useStore((s) => s.pastSessions);
 
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError]     = useState("");
@@ -224,7 +225,7 @@ export function Report() {
             )}
 
             {activeTab === "log"             && <DecisionLogTab session={session} />}
-            {activeTab === "dashboard"       && <DashboardTab session={session} />}
+            {activeTab === "dashboard"       && <DashboardTab session={session} pastSessions={pastSessions} />}
             {report && activeTab === "summary"         && <SummaryTab report={report} />}
             {report && activeTab === "timeline"        && <TimelineTab session={session} />}
             {report && activeTab === "gaps"            && <GapsTab gaps={report.gapAnalysis} />}
@@ -651,7 +652,7 @@ function DecisionLogTab({ session }: { session: Session }) {
 
 // ── Dashboard / reputation chart tab ─────────────────────────────────────────
 
-function DashboardTab({ session }: { session: Session }) {
+function DashboardTab({ session, pastSessions }: { session: Session; pastSessions: Session[] }) {
   // Rule-based reputation score: starts at 100, each inject chips it down;
   // responses and decisions partially offset the damage.
   const points = session.liveInjects.map((li, i) => {
@@ -801,6 +802,61 @@ function DashboardTab({ session }: { session: Session }) {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      <ScenarioComparisonCard session={session} pastSessions={pastSessions} />
+    </div>
+  );
+}
+
+// ── Scenario comparison card ──────────────────────────────────────────────────
+
+function ScenarioComparisonCard({ session, pastSessions }: { session: Session; pastSessions: Session[] }) {
+  // Prior runs of this scenario, excluding the current session.
+  const priorRuns = pastSessions.filter(
+    (s) => s.id !== session.id && s.scenario.id === session.scenario.id && s.report?.overallScore != null
+  );
+
+  if (priorRuns.length === 0) return null;
+
+  const avgScore = Math.round(priorRuns.reduce((sum, s) => sum + (s.report!.overallScore), 0) / priorRuns.length);
+  const thisScore = session.report?.overallScore ?? null;
+  const diff = thisScore != null ? thisScore - avgScore : null;
+
+  const diffColour = diff == null ? "" : diff > 0 ? "text-rtr-green" : diff < 0 ? "text-red-400" : "text-rtr-muted";
+  const diffLabel  = diff == null ? null : diff > 0 ? `+${diff} above average` : diff < 0 ? `${diff} below average` : "On average";
+
+  return (
+    <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5 fade-in-up">
+      <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-4">
+        Previous Runs of This Scenario
+      </p>
+      <div className="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <p className="text-2xl font-bold font-mono text-rtr-text">{priorRuns.length}</p>
+          <p className="text-xs text-rtr-muted mt-1">
+            Prior run{priorRuns.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <div>
+          <p className="text-2xl font-bold font-mono text-rtr-text">{avgScore}</p>
+          <p className="text-xs text-rtr-muted mt-1">Average score</p>
+        </div>
+        <div>
+          {diff != null ? (
+            <>
+              <p className={`text-2xl font-bold font-mono ${diffColour}`}>
+                {thisScore}
+              </p>
+              <p className={`text-xs mt-1 ${diffColour}`}>{diffLabel}</p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl font-bold font-mono text-rtr-dim">--</p>
+              <p className="text-xs text-rtr-muted mt-1">This run (no report yet)</p>
+            </>
+          )}
         </div>
       </div>
     </div>

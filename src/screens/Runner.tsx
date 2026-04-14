@@ -287,6 +287,49 @@ export function Runner() {
     if (timerRef.current) clearInterval(timerRef.current);
   }
 
+  // ─── Keyboard shortcuts ───────────────────────────────────────────────────
+  // Space / Enter: release next inject (when no text input has focus).
+  // T: toggle the countdown timer.
+  // Escape: close the ad-hoc inject panel.
+  useEffect(() => {
+    if (session?.status !== "active") return;
+
+    const handler = (e: KeyboardEvent) => {
+      // Ignore shortcuts when a text-entry element is focused.
+      const tag = (document.activeElement as HTMLElement | null)?.tagName ?? "";
+      const isEditable =
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        (document.activeElement as HTMLElement | null)?.isContentEditable;
+
+      if (e.key === " " || e.key === "Enter") {
+        if (isEditable) return;
+        e.preventDefault();
+        if (nextInject) releaseInject(nextInject.id);
+        return;
+      }
+
+      if (e.key === "t" || e.key === "T") {
+        if (isEditable) return;
+        e.preventDefault();
+        if (timerRunning) {
+          handleStopTimer();
+        } else {
+          handleStartTimer();
+        }
+        return;
+      }
+
+      if (e.key === "Escape") {
+        setShowAdHoc(false);
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.status, nextInject, timerRunning]);
+
   function broadcastTimer(action: "start" | "stop" | "reset", seconds: number) {
     const bc = new BroadcastChannel("crisis-present");
     bc.postMessage({ type: "timer", action, seconds });
@@ -434,6 +477,30 @@ export function Runner() {
   const timerMins   = Math.floor(timerSeconds / 60);
   const timerSecs   = timerSeconds % 60;
   const timerLabel  = `${String(timerMins).padStart(2, "0")}:${String(timerSecs).padStart(2, "0")}`;
+
+  // ─── Rolling decision quality score ───────────────────────────────────────
+  // Collect every ranked decision across all released injects, look up the
+  // corresponding DecisionOption from the scenario inject, and average the
+  // rank values. Only considers decisions where a rank is defined.
+  const sessionScore = (() => {
+    if (!session) return null;
+    const ranks: number[] = [];
+    for (const live of session.liveInjects) {
+      const scenarioInject = session.scenario.injects.find((i) => i.id === live.injectId);
+      if (!scenarioInject?.isDecisionPoint) continue;
+      for (const decision of live.decisions) {
+        const option = scenarioInject.decisionOptions?.find(
+          (o) => o.key === decision.optionKey
+        );
+        if (option?.rank !== undefined) {
+          ranks.push(option.rank);
+        }
+      }
+    }
+    if (ranks.length === 0) return null;
+    const avg = ranks.reduce((sum, r) => sum + r, 0) / ranks.length;
+    return avg;
+  })();
 
   return (
     <div className="flex h-full flex-col bg-rtr-base">
@@ -827,6 +894,25 @@ export function Runner() {
                   onChange={(note) => updateInjectNote(currentLive.injectId, note)}
                 />
               </div>
+
+              {/* Keyboard shortcut hint strip */}
+              <div className="px-6 py-2 border-t border-rtr-border bg-rtr-panel flex items-center gap-3 flex-wrap">
+                {nextInject && session.status === "active" && (
+                  <span className="text-rtr-dim text-xs font-mono">
+                    Space — release next
+                  </span>
+                )}
+                {currentLive && (
+                  <span className="text-rtr-dim text-xs font-mono">
+                    T — {timerRunning ? "pause timer" : "start timer"}
+                  </span>
+                )}
+                {showAdHoc && (
+                  <span className="text-rtr-dim text-xs font-mono">
+                    Esc — close panel
+                  </span>
+                )}
+              </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center text-sm text-rtr-dim">
@@ -842,6 +928,31 @@ export function Runner() {
           <div className="px-4 py-2.5 border-b border-rtr-border">
             <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Session Notes</p>
           </div>
+
+          {/* Rolling decision quality badge */}
+          {sessionScore !== null && (
+            <div className="px-3 pt-3">
+              <div className={cn(
+                "flex items-center justify-between rounded-lg px-3 py-2 border text-xs font-semibold",
+                sessionScore <= 1.5
+                  ? "bg-rtr-green/10 border-rtr-green/30 text-rtr-green"
+                  : sessionScore <= 2.5
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                  : "bg-rtr-red/10 border-rtr-red/30 text-rtr-red"
+              )}>
+                <span>
+                  {sessionScore <= 1.5
+                    ? "Strong decisions"
+                    : sessionScore <= 2.5
+                    ? "Mixed decisions"
+                    : "Weak decisions"}
+                </span>
+                <span className="font-mono">
+                  {sessionScore.toFixed(1)}
+                </span>
+              </div>
+            </div>
+          )}
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {session.notes.map((n, i) => (
               <div key={i} className="bg-amber-500/8 border border-amber-500/20 rounded px-2.5 py-2">

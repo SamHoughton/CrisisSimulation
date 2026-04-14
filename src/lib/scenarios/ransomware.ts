@@ -856,10 +856,45 @@ export const RANSOMWARE_SCENARIO: Scenario = {
       timerMinutes: 14,
       tickerHeadline: "Reuters: 'Veridian Power in active ransom negotiation — sources put demand near $9M'",
       artifact: {
-        type: "email",
-        emailFrom: "mandiant.lead@mandiant.com",
-        emailTo: "s.khatun@veridianpower.co.uk",
-        emailSubject: "CONFIDENTIAL: ALPHV counter received — $6.2M — 12hr fuse — your instructions needed",
+        type: "negotiation_chat",
+        negotiationThreatAlias: "ALPHV SUPPORT",
+        negotiationMessages: [
+          {
+            side: "negotiator",
+            text: "Good morning. We represent the organisation. We have reviewed your initial communication and are authorised to discuss a resolution. Before we can move forward we need to understand the scope of the data you hold. Can you confirm what you have and provide a verifiable sample?",
+            time: "Day 2, 15:42",
+          },
+          {
+            side: "threat",
+            text: "Confirmed. We hold 847GB extracted from your production environment between 04 March and 07 March. This includes HR records, financial data, and what appears to be a protected-sector patient register. A sample of 500 records has been available on our forum since yesterday. You have seen it. We do not negotiate scope. We negotiate price.",
+            time: "Day 2, 16:09",
+          },
+          {
+            side: "negotiator",
+            text: "Understood. We are working through internal approvals to discuss a figure. The data set is large and the verification process takes time on our side. We ask for patience. What is your current ask?",
+            time: "Day 2, 17:31",
+          },
+          {
+            side: "threat",
+            text: "Our position is $9.1M USD in Monero. This covers full decryption, deletion from all storage and mirrors, and a signed commitment not to publish. The price is firm until 06:00 tomorrow. After that it increases by 15% per 12-hour period and we begin selective publication.",
+            time: "Day 2, 17:55",
+          },
+          {
+            side: "negotiator",
+            text: "We cannot move at that figure. Our principals are not in a position to approve anything near that level. We are willing to engage seriously but you need to work with us on a number that reflects the organisation's actual capacity. Can we discuss?",
+            time: "Day 2, 22:17",
+          },
+          {
+            side: "threat",
+            text: "We understand your position. We have done this before. We know what organisations say at this stage and we know what they pay. We are prepared to move. Our revised and final offer is $6.2M USD in Monero. This offer carries a 12-hour fuse from timestamp of this message. On acceptance: full decryption keys within 2 hours, deletion from all mirrors confirmed by our own log export, and no publication. The commitment will be made in this window in writing. We do not extend deadlines.",
+            time: "Day 3, 10:44",
+          },
+          {
+            side: "negotiator",
+            text: "We have received your counter and are taking it to principals now. We need time to work through the approval process and confirm insurance coverage. We are not walking away. Please hold.",
+            time: "Day 3, 11:03",
+          },
+        ],
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CFO", "CLO", "CISO"],

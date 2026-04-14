@@ -297,7 +297,17 @@ export function Present() {
           });
         }} />}
         {phase.phase === "briefing" && <BriefingScreen scenario={phase.scenario} />}
-        {phase.phase === "inject"   && <InjectScreen inject={phase.inject} num={phase.num} voteState={voteState} />}
+        {phase.phase === "inject"   && (
+          <InjectScreen
+            inject={phase.inject}
+            num={phase.num}
+            voteState={voteState}
+            timerSeconds={timerSeconds}
+            timerRunning={timerRunning}
+            timerUrgent={timerUrgent}
+            timerLabel={timerLabel}
+          />
+        )}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
         {phase.phase === "paused"   && <PausedScreen />}
         {phase.phase === "ended"    && <EndedScreen />}
@@ -662,10 +672,14 @@ function SupplyChainBriefingArtifact() {
 
 // ─── Inject screen ────────────────────────────────────────────────────────────
 
-function InjectScreen({ inject, num, voteState }: {
+function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, timerUrgent, timerLabel }: {
   inject: Inject; num: number; voteState: VoteState;
+  timerSeconds: number | null; timerRunning: boolean; timerUrgent: boolean; timerLabel: string | null;
 }) {
   const showVoting = inject.isDecisionPoint && inject.decisionOptions.length > 0;
+
+  // Whether to show the large timer: running, or paused with time remaining
+  const showTimer = timerLabel !== null && (timerRunning || (timerSeconds !== null && timerSeconds > 0));
 
   return (
     <div className="h-full flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-auto">
@@ -680,6 +694,33 @@ function InjectScreen({ inject, num, voteState }: {
             New Development
           </span>
         </div>
+
+        {/* Large countdown timer: visible to participants on the projector */}
+        {showTimer && (
+          <div className="flex flex-col items-center gap-0.5">
+            <span
+              className={cn(
+                "font-mono font-black leading-none tabular-nums",
+                /* Urgent (≤60 s): pulsing red. Paused: dimmed. Normal: green. */
+                timerUrgent
+                  ? "timer-urgent text-5xl"
+                  : timerRunning
+                    ? "text-rtr-green text-5xl"
+                    : "text-5xl"
+              )}
+              style={!timerUrgent && !timerRunning ? { color: "#4a4f65" } : undefined}
+            >
+              {timerLabel}
+            </span>
+            {/* Paused indicator: shown only when timer has time remaining but is not running */}
+            {!timerRunning && (
+              <span className="text-[10px] font-mono font-semibold uppercase tracking-widest" style={{ color: "#4a4f65" }}>
+                paused
+              </span>
+            )}
+          </div>
+        )}
+
         <span className="text-xs font-semibold px-3 py-1 rounded-full font-mono"
           style={{ color: "#8b8fa8", background: "#1c1f24", border: "1px solid #2a2e3a" }}>
           Inject {num}
