@@ -9,8 +9,10 @@ import { useEffect, useRef, useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import {
   Plus, PlayCircle, FileText, BookOpen, ChevronRight, Clock,
-  AlertTriangle, Zap, Target, BarChart3, Users, Download, Upload,
+  AlertTriangle, Zap, Target, BarChart3, Users, Download, Upload, Github,
 } from "lucide-react";
+
+const GITHUB_URL = "https://github.com/SamHoughton/CrisisSimulation";
 import { SCENARIO_TYPE_LABELS, DIFFICULTY_COLOUR, DIFFICULTY_LABEL, formatDuration } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -78,7 +80,7 @@ export function Home() {
                 <span className="text-rtr-red ml-2">worst day</span>
               </h1>
               <p className="text-sm text-rtr-muted max-w-lg leading-relaxed">
-                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal under pressure, and generate AI-powered post-exercise reports.
+                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal consequences under pressure, and walk away with a structured debrief that shows exactly where your response held — and where it didn't.
               </p>
               <div className="flex items-center gap-3 mt-5">
                 <button
@@ -99,6 +101,15 @@ export function Home() {
                   <Plus className="w-3.5 h-3.5" />
                   Build Custom
                 </button>
+                <a
+                  href={GITHUB_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-xs text-rtr-dim hover:text-rtr-muted transition"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  Open source
+                </a>
               </div>
             </div>
 
@@ -190,7 +201,7 @@ export function Home() {
               step={3}
               icon={<BarChart3 className="w-5 h-5" />}
               title="Review the report"
-              description="AI-generated gap analysis scores every decision. See what went right, what went wrong, and what to train next."
+              description="A structured debrief scores every decision against best-practice response principles. See what held under pressure, where gaps appeared, and what to prioritise in your next training cycle."
             />
           </div>
         </section>
@@ -309,6 +320,23 @@ export function Home() {
             </div>
           </section>
         )}
+
+        {/* ── Open source footer ──────────────────────────────────────────── */}
+        <div className="mt-12 pt-6 border-t border-rtr-border flex items-center justify-between">
+          <p className="text-[11px] text-rtr-dim leading-relaxed max-w-md">
+            Built for practitioners, not vendors. No accounts, no data collection, no cost — everything runs in your browser.
+          </p>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs text-rtr-dim hover:text-rtr-muted border border-rtr-border hover:border-rtr-border-light px-3 py-2 rounded-lg transition-colors shrink-0 ml-8"
+          >
+            <Github className="w-3.5 h-3.5" />
+            View on GitHub
+          </a>
+        </div>
+
       </div>
     </div>
   );
