@@ -4,7 +4,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
   id: "tpl-ransomware-001",
   title: "Ransomware: The Quiet Beacon",
   description:
-    "A single low-confidence outbound DNS beacon at 03:14 from a treasury workstation grows over five days into the worst week in Veridian Power's history. Rebuilt 25-inject arc with 9 decision points and 4 score-routed endings. Tests detection instinct, ICO notification timing, RNS obligations, ransom negotiation, PSR outreach, insurance coupling and parliamentary exposure — from the first quiet alert to long-term recovery.",
+    "A single low-confidence outbound DNS beacon at 03:14 from a treasury workstation grows over five days into the worst week in Veridian Power's history. Covers detection instinct, ICO notification timing, RNS obligations, ransom negotiation, PSR outreach, insurance coupling and parliamentary exposure.",
   type: "RANSOMWARE",
   difficulty: "CRITICAL",
   durationMin: 180,

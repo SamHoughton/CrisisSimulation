@@ -961,7 +961,7 @@ function EmailCard({ inject, artifact: art }: { inject: Inject; artifact: Inject
           <span className="text-sm" style={{ color: "#8b8fa8" }}>{art.emailTo ?? "leadership@company.com"}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>Re</span>
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>Subj</span>
           <span className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>{art.emailSubject ?? inject.title}</span>
         </div>
       </div>
@@ -1067,12 +1067,12 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
             <div className="w-8 h-8 rounded flex items-center justify-center text-lg font-bold" style={{ background: "#1a0000", color: "#ff3333", border: "1px solid #330000" }}>⚠</div>
             <div>
               <p className="text-sm font-bold tracking-widest uppercase" style={{ color: "#cc2200" }}>{siteName}</p>
-              <p className="text-xs" style={{ color: "#2a2a2a" }}>Verified leak marketplace - No logs. No KYC.</p>
+              <p className="text-xs" style={{ color: "#666" }}>Verified leak marketplace · No logs · No KYC</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs" style={{ color: "#1e3a1e" }}>Active users: <span style={{ color: "#2a6a2a" }}>1,247</span></p>
-            <p className="text-xs mt-0.5" style={{ color: "#1e3a1e" }}>Listings today: <span style={{ color: "#2a6a2a" }}>38</span></p>
+            <p className="text-xs" style={{ color: "#4a7a4a" }}>Active users: <span style={{ color: "#4afe91" }}>1,247</span></p>
+            <p className="text-xs mt-0.5" style={{ color: "#4a7a4a" }}>Listings today: <span style={{ color: "#4afe91" }}>38</span></p>
           </div>
         </div>
       </div>
@@ -1223,7 +1223,7 @@ function StockChart({ inject, artifact: art }: { inject: Inject; artifact: Injec
       <div className="grid grid-cols-4 gap-px" style={{ background: "#1a1f2e", borderTop: "1px solid #1a1f2e" }}>
         {[
           { label: "OPEN", value: open.toFixed(2) },
-          { label: "LOW", value: current.toFixed(2) },
+          { label: "LOW", value: (Math.min(open, current) * 0.994).toFixed(2) },
           { label: "CHG %", value: `${changePct.toFixed(2)}%`, colour: lineColour },
           { label: "VOL", value: volume },
         ].map((s) => (
@@ -1236,7 +1236,7 @@ function StockChart({ inject, artifact: art }: { inject: Inject; artifact: Injec
 
       {/* Body text */}
       <div className="px-6 py-4" style={{ background: "#0d1117", borderTop: "1px solid #1a1f2e" }}>
-        <p className="text-sm leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
       </div>
     </div>
   );
@@ -1364,7 +1364,7 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
 
       {/* Body text */}
       <div className="px-6 py-4" style={{ background: "#0d0d0d", borderTop: "1px solid #1a1a1a" }}>
-        <p className="text-sm leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
       </div>
     </div>
   );
