@@ -241,6 +241,63 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     },
 
     {
+      id: "rw-board",
+      order: 22,
+      scenarioDay: 1,
+      scenarioTime: "05:30",
+      title: "05:30 — The Chairman Is Asleep",
+      body: "05:30. The Company Secretary has left you a voicemail. Sir David Hartley — the Board Chair — has been forwarded a screenshot of the Defender alert by one of the NEDs who has a contact in the SOC. The Chairman's PA says he is awake and asking what is happening. You have not yet confirmed whether this is a real incident. The ICO notification window is running. The board does not have an established incident notification protocol below the level of a confirmed material breach.\n\nDo you brief the Chairman now, or hold until you have something confirmed to say?",
+      facilitatorNotes:
+        "This is about governance under uncertainty. The trap: briefing the Chairman before you know what you're saying creates a second stakeholder to manage who now has incomplete information and may act on it. Not briefing him when he is already asking creates a governance failure and a trust problem. Option B is the strongest answer for most organisations. Option A creates a well-informed board but risks panic. Option C is defensible but requires the Company Secretary to carry an uncomfortable message. Option D is the trap — regulatory guidance is clear that boards must be informed promptly of material cyber incidents.",
+      delayMinutes: 15,
+      isDecisionPoint: true,
+      artifact: {
+        type: "voicemail",
+        voicemailCaller: "Margaret Osei",
+        voicemailCallerNumber: "Company Secretary",
+        voicemailDuration: "0:53",
+        voicemailTime: "05:28",
+        voicemailTranscript:
+          "It's Margaret. Sir David has had a message from Peter Cranfield — I don't know how Peter found out, but the Chairman is awake and he wants to know what's happening. I've told him you're assessing. He said 'assessing what, exactly'. I need to know what to say to him. Call me back.",
+      },
+      targetRoles: ["CEO", "CLO", "CCO"],
+      decisionOptions: [
+        {
+          key: "A",
+          label: "Brief the Chairman now — full picture as we know it",
+          consequence:
+            "Board is informed early but with incomplete information. Chairman may convene an emergency board call before you are ready.",
+          rank: 2,
+          recapFragment: "an early board briefing before scope was confirmed",
+        },
+        {
+          key: "B",
+          label: "Brief the Chairman at 08:00 — commit to a structured update when we know more",
+          consequence:
+            "Buys two hours to confirm scope. Risk: if the incident escalates publicly before 08:00, the board finds out from the market.",
+          rank: 1,
+          recapFragment: "a structured hold until 08:00 to brief from a confirmed position",
+        },
+        {
+          key: "C",
+          label: "Ask the Company Secretary to hold the Chairman — 'nothing confirmed yet'",
+          consequence:
+            "Governance risk: the Chairman has already been told something is happening. A 'nothing to see here' message will not hold.",
+          rank: 3,
+          recapFragment: "a holding response through the Company Secretary",
+        },
+        {
+          key: "D",
+          label: "Wait — board notification is only required once a material incident is confirmed",
+          consequence:
+            "Technically defensible but practically dangerous. The Chairman is already awake and asking. Silence now reads as concealment.",
+          rank: 4,
+          recapFragment: "a decision to withhold until materiality was confirmed",
+        },
+      ],
+    },
+
+    {
       id: "rw-i2x",
       order: 25,
       scenarioDay: 1,
@@ -362,6 +419,63 @@ export const RANSOMWARE_SCENARIO: Scenario = {
             "Encryption continues to spread for another 90 minutes. By 05:45 the trading book reconciliation is unrecoverable from production. Mandiant arrive to find a worse situation than they were briefed on.",
           rank: 4,
           recapFragment: "holding and observing while the encryption spread",
+        },
+      ],
+    },
+
+    {
+      id: "rw-insurance",
+      order: 32,
+      scenarioDay: 1,
+      scenarioTime: "07:45",
+      title: "07:45 — The Beazley Clock Is Running",
+      body: "07:45. Your General Counsel has just flagged the cyber insurance retainer. Veridian Power holds a £20m cyber policy with Beazley. The policy requires notification of a potential claim within 4 hours of discovery of an incident — and the incident retainer with Mandiant was activated at 04:30. That window closes at 08:30. The policy also specifies that Beazley's panel law firm (Weightmans) must be the primary legal adviser on any matter with regulatory or litigation exposure — which means your current instruction to external counsel may need to be restructured. Beazley's duty officer is available now.",
+      facilitatorNotes:
+        "Classic insurance coupling problem. The 4-hour notification requirement is real in most UK cyber policies and is frequently missed. Key tensions: (1) calling Beazley now means telling an insurer you have a live ransomware incident before you know the scope — that's fine legally but creates a paper trail and hands control partly to the insurer; (2) the panel counsel clause is significant — most boards don't know this exists until they're in an incident; (3) Option C is the trap — missing the notification window is a coverage risk. Option A is the right answer. Note for facilitators: this is often the moment in real incidents where organisations discover their insurance policy is 3 years old and has never been read by anyone in the room.",
+      delayMinutes: 10,
+      isDecisionPoint: true,
+      artifact: {
+        type: "internal_memo",
+        memoTitle: "Cyber Insurance — Notification Obligations and Panel Counsel Instruction",
+        memoClassification: "PRIVILEGED AND CONFIDENTIAL — LEGAL ADVICE",
+        memoTo: "CEO, CFO, CISO",
+        memoFrom: "General Counsel",
+        memoDate: "07:43 Day 1",
+        memoRef: "VPL/LEGAL/CI-001",
+      },
+      targetRoles: ["CEO", "CFO", "CLO"],
+      decisionOptions: [
+        {
+          key: "A",
+          label: "Notify Beazley now — activate the retainer and engage panel counsel",
+          consequence:
+            "Coverage protected. Insurer's panel lawyers take a seat at the table. Mandiant instruction may need restructuring.",
+          rank: 1,
+          recapFragment: "early Beazley notification and panel counsel activation",
+        },
+        {
+          key: "B",
+          label: "Call Beazley but request 24 hours before formal notification — scope still unknown",
+          consequence:
+            "Beazley will not agree. The notification requirement is in the policy. This call will be logged and used if coverage is disputed.",
+          rank: 3,
+          recapFragment: "an attempt to negotiate the notification timeline with Beazley",
+        },
+        {
+          key: "C",
+          label: "Wait until scope is confirmed — notify Beazley once we know what we're claiming",
+          consequence:
+            "Coverage risk. The 4-hour window will close at 08:30. Missing it gives Beazley grounds to contest the claim.",
+          rank: 4,
+          recapFragment: "a decision to delay Beazley notification until scope was confirmed",
+        },
+        {
+          key: "D",
+          label: "Notify Beazley but retain existing external counsel — review panel clause later",
+          consequence:
+            "Notification is timely but the panel counsel clause creates a coverage dispute risk if litigation follows.",
+          rank: 2,
+          recapFragment: "timely Beazley notification while retaining existing counsel",
         },
       ],
     },

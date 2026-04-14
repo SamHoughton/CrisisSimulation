@@ -75,6 +75,13 @@ export type ArtifactType =
   | "stock_chart"
   | "slack_thread"
   | "tv_broadcast"
+  | "voicemail"
+  | "internal_memo"
+  | "sms_thread"
+  | "regulator_portal"
+  | "negotiation_chat"
+  | "linkedin_post"
+  | "board_portal"
   | "default";
 
 export interface InjectArtifact {
@@ -122,6 +129,45 @@ export interface InjectArtifact {
   tvHeadline?: string;           // main chyron headline
   tvTicker?: string;             // scrolling bottom ticker
   tvReporter?: string;           // reporter name / location
+  // voicemail
+  voicemailCaller?: string;      // e.g. "James Whitfield, CFO"
+  voicemailCallerNumber?: string; // e.g. "+44 7700 900142"
+  voicemailDuration?: string;    // e.g. "0:47"
+  voicemailTranscript?: string;  // transcribed text of the message
+  voicemailTime?: string;        // when it was left, e.g. "03:31"
+  // internal memo / board paper
+  memoTitle?: string;
+  memoClassification?: string;   // e.g. "STRICTLY CONFIDENTIAL — LEGAL PRIVILEGE"
+  memoTo?: string;
+  memoFrom?: string;
+  memoDate?: string;
+  memoRef?: string;
+  // sms thread (two-person mobile exchange)
+  smsParticipants?: [string, string]; // [left-name, right-name]
+  smsMessages?: Array<{ sender: string; text: string; time: string }>;
+  // regulator portal (ICO / FCA submission receipt)
+  regulatorName?: string;        // e.g. "Information Commissioner's Office"
+  regulatorPortalUrl?: string;   // e.g. "report.ico.org.uk"
+  regulatorCaseRef?: string;     // e.g. "IC-247831-X9K2"
+  regulatorStatus?: "SUBMITTED" | "ACKNOWLEDGED" | "UNDER_REVIEW" | "ESCALATED" | "CLOSED";
+  regulatorSubmittedAt?: string;
+  regulatorDeadline?: string;    // e.g. "72 hours from discovery"
+  regulatorOfficerName?: string; // assigned case officer
+  // negotiation chat (threat actor portal)
+  negotiationThreatAlias?: string; // e.g. "ALPHV SUPPORT"
+  negotiationMessages?: Array<{ side: "negotiator" | "threat"; text: string; time: string }>;
+  // linkedin post
+  linkedinAuthor?: string;
+  linkedinAuthorTitle?: string;  // e.g. "Head of People, Apex Dynamics"
+  linkedinText?: string;
+  linkedinLikes?: number;
+  linkedinComments?: number;
+  linkedinShares?: number;
+  // board portal
+  boardPortalOrgName?: string;
+  boardPortalMembers?: Array<{ name: string; role: string; loggedInAt?: string; isOnline?: boolean }>;
+  boardPortalAlertCount?: number;
+  boardPortalAlertTitle?: string; // e.g. "Unscheduled board meeting request"
 }
 
 export interface Inject {

@@ -299,6 +299,64 @@ export const DEEPFAKE_SCENARIO: Scenario =
         expectedKeywords: ["convergence", "market open", "BBC", "investors", "staff", "CEO"],
       },
 
+      // ── INJECT df-linkedin: Employee defends CEO on LinkedIn ────────────
+      {
+        id: "df-linkedin",
+        order: 21,
+        scenarioDay: 1,
+        scenarioTime: "07:45",
+        title: "07:45 — An Employee Defends You (Before You Have)",
+        body: "A well-meaning employee has just posted on LinkedIn. The post is already getting traction — 340 likes in 11 minutes, shares into PR and comms circles. The employee has been at Apex for nine years and is clearly acting out of loyalty. The problem: the post implies the video is fake before your forensics team has confirmed it. If the forensics come back ambiguous, this post becomes evidence of premature denial. Your social media team is watching the notifications climb.",
+        facilitatorNotes:
+          "This is a human comms problem, not a technical one. The employee is doing the right thing by instinct but creating legal and reputational exposure. The correct answer depends on what the team has already decided about external comms — if they have issued a statement, the post is now consistent with it; if they haven't, the post has jumped the gun. Key coaching point: ask the room 'who owns this decision?' Most organisations have no protocol for employee social media during an active crisis. Option A is right but must be handled with care — you cannot ask someone to delete a supportive post without it becoming a story. Option B is the trap in disguise — leaving it exposes the company if forensics are slow.",
+        delayMinutes: 5,
+        isDecisionPoint: true,
+        artifact: {
+          type: "linkedin_post",
+          linkedinAuthor: "Sarah Chowdhury",
+          linkedinAuthorTitle: "Senior Programme Manager, Apex Dynamics · 9 years",
+          linkedinText: "I don't normally post about work but I have to say something. I've worked with Marcus Webb for nine years. The video circulating this morning is not him. I don't know who made it or why but anyone who has spent five minutes in a room with him knows this is fabricated. Our values are not a PR exercise. Please think before you share. #ApexDynamics",
+          linkedinLikes: 347,
+          linkedinComments: 28,
+          linkedinShares: 61,
+        },
+        targetRoles: ["CEO", "CCO", "HR_LEAD"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Contact Sarah directly — thank her privately and ask her to add a note that the company is investigating",
+            consequence:
+              "Protects the employee while slightly hedging the post. Requires a fast, careful message. Risk of the DM being screenshotted.",
+            rank: 1,
+            recapFragment: "a direct personal contact with the employee to add a careful caveat",
+          },
+          {
+            key: "B",
+            label: "Leave it — employee advocacy is helpful and the post is factually consistent with our position",
+            consequence:
+              "Fine if forensics confirm quickly. A liability if forensics take longer or are inconclusive — the post is now cited as evidence of premature denial.",
+            rank: 2,
+            recapFragment: "a decision to leave the employee post in place as consistent with company position",
+          },
+          {
+            key: "C",
+            label: "Ask HR to contact Sarah and request she deletes the post",
+            consequence:
+              "She will ask why. If she deletes, the deletion will be screenshotted and reported as 'Apex silences own staff'. This will not end well.",
+            rank: 4,
+            recapFragment: "an HR request to delete the employee post",
+          },
+          {
+            key: "D",
+            label: "Share the post internally to demonstrate staff confidence — send to all-company",
+            consequence:
+              "Amplifies a post that has not been legally reviewed and asserts the video is fake before forensics have confirmed it. High risk.",
+            rank: 3,
+            recapFragment: "internal amplification of the employee's post before forensic confirmation",
+          },
+        ],
+      },
+
       // ── INJECT 3d: Priority decision. 4 options, re-diverges. ──────────
       {
         id: "df-i3d",
@@ -361,6 +419,70 @@ export const DEEPFAKE_SCENARIO: Scenario =
           { optionKey: "B", nextInjectId: "df-i4a" },
           { optionKey: "C", nextInjectId: "df-i4b" },
           { optionKey: "D", nextInjectId: "df-i4b" },
+        ],
+      },
+
+      // ── INJECT df-board: Board portal lights up ──────────────────────────
+      {
+        id: "df-board",
+        order: 26,
+        scenarioDay: 1,
+        scenarioTime: "07:15",
+        title: "07:15 — Five Board Members Are Online",
+        body: "07:15. The board portal has lit up. Five of the seven non-executive directors are logged in — three of them before 07:00. One has forwarded the video link to two investor relations contacts. The Chairman has sent a message through the portal flagged HIGH PRIORITY: 'Have seen the video. Assume fake but market opens in 75 minutes. Need a call. Where are we?' The CFO has not yet been briefed on the full position. Two major institutional shareholders have emailed the investor relations team directly.",
+        facilitatorNotes:
+          "The key tension here is that the board found out the same way the market did — through social media — before management had a chance to shape the narrative. The Chairman's message is measured but the 75-minute market open clock is now explicit. Option A is the right answer for governance but it requires the CEO to front a board call without all the facts yet. Option C is tempting but 'we'll call at 08:00' with the market opening at 08:00 is too late. The inject is designed to surface whether the team has a board escalation protocol and whether the CFO is properly looped in. Note: one NED forwarding the link to investor contacts is a real governance risk that often gets missed in the heat.",
+        delayMinutes: 10,
+        isDecisionPoint: true,
+        artifact: {
+          type: "board_portal",
+          boardPortalOrgName: "Apex Dynamics plc",
+          boardPortalAlertCount: 3,
+          boardPortalAlertTitle: "URGENT: CEO video — board members requesting briefing",
+          boardPortalMembers: [
+            { name: "Sir Charles Whitmore", role: "Chairman", isOnline: true, loggedInAt: "06:48" },
+            { name: "Priya Nair", role: "Senior Independent Director", isOnline: true, loggedInAt: "06:52" },
+            { name: "James Caldwell", role: "Non-Executive Director", isOnline: true, loggedInAt: "07:01" },
+            { name: "Fiona McCready", role: "Non-Executive Director", isOnline: true, loggedInAt: "07:09" },
+            { name: "Robert Baines", role: "Non-Executive Director", isOnline: true, loggedInAt: "07:14" },
+            { name: "Dr Amara Osei", role: "Non-Executive Director", isOnline: false },
+            { name: "Henrik Larsson", role: "Non-Executive Director", isOnline: false },
+          ],
+        },
+        targetRoles: ["CEO", "CFO", "CLO"],
+        decisionOptions: [
+          {
+            key: "A",
+            label: "Call the Chairman now — short verbal briefing before the board portal explodes",
+            consequence:
+              "Reestablishes management control of the narrative. Requires the CEO to brief from an incomplete position but that is better than silence.",
+            rank: 1,
+            recapFragment: "an immediate call to the Chairman to brief ahead of the board portal",
+          },
+          {
+            key: "B",
+            label: "Send a written update to all board members via the portal — 'forensics ongoing'",
+            consequence:
+              "Buys time and is on the record. Risk: a written update without a call feels like a holding position and the Chairman has explicitly asked for a call.",
+            rank: 2,
+            recapFragment: "a written board portal update without a direct call to the Chairman",
+          },
+          {
+            key: "C",
+            label: "Request a board call at 08:30 — after market open and first statement issued",
+            consequence:
+              "Too late. Market opens at 08:00. The board will be watching the share price move without having spoken to management.",
+            rank: 4,
+            recapFragment: "a board call request timed after market open",
+          },
+          {
+            key: "D",
+            label: "Ask the Company Secretary to acknowledge the Chairman's message and hold",
+            consequence:
+              "The Chairman will not accept a Company Secretary relay for a crisis of this scale. This will damage the CEO-Chairman relationship.",
+            rank: 3,
+            recapFragment: "routing the Chairman's request through the Company Secretary",
+          },
         ],
       },
 

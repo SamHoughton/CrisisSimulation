@@ -739,6 +739,13 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
   if (art.type === "stock_chart")     return <StockChart         inject={inject} artifact={art} />;
   if (art.type === "slack_thread")    return <SlackThread        inject={inject} artifact={art} />;
   if (art.type === "tv_broadcast")    return <TvBroadcast        inject={inject} artifact={art} />;
+  if (art.type === "voicemail")       return <Voicemail          inject={inject} artifact={art} />;
+  if (art.type === "internal_memo")   return <InternalMemo       inject={inject} artifact={art} />;
+  if (art.type === "sms_thread")      return <SmsThread          inject={inject} artifact={art} />;
+  if (art.type === "regulator_portal") return <RegulatorPortal  inject={inject} artifact={art} />;
+  if (art.type === "negotiation_chat") return <NegotiationChat  inject={inject} artifact={art} />;
+  if (art.type === "linkedin_post")   return <LinkedInPost       inject={inject} artifact={art} />;
+  if (art.type === "board_portal")    return <BoardPortal        inject={inject} artifact={art} />;
 
   return (
     <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
@@ -1365,6 +1372,426 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
       {/* Body text */}
       <div className="px-6 py-4" style={{ background: "#0d0d0d", borderTop: "1px solid #1a1a1a" }}>
         <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Voicemail ────────────────────────────────────────────────────────────────
+
+function Voicemail({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const caller       = art.voicemailCaller       ?? "Unknown Caller";
+  const callerNumber = art.voicemailCallerNumber ?? "+44 000 000 0000";
+  const duration     = art.voicemailDuration     ?? "0:00";
+  const transcript   = art.voicemailTranscript   ?? inject.body;
+  const time         = art.voicemailTime         ?? new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+  return (
+    <div className="rounded-xl overflow-hidden font-mono"
+      style={{ background: "#0d0d12", border: "1px solid #2a2a3a", boxShadow: "0 0 30px rgba(232,34,34,0.1)" }}>
+      {/* Top bar */}
+      <div className="px-5 py-3 flex items-center gap-3" style={{ background: "#12121a", borderBottom: "1px solid #2a2a3a" }}>
+        <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" stroke="#E82222" strokeWidth="2">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.08 9.72a19.79 19.79 0 01-3.07-8.57A2 2 0 012 .13h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+        </svg>
+        <span className="text-sm font-bold tracking-widest" style={{ color: "#E82222" }}>MISSED CALL</span>
+        <span className="ml-auto text-xs" style={{ color: "#4a4f65" }}>{time}</span>
+      </div>
+
+      {/* Caller info */}
+      <div className="px-6 py-5 flex items-center gap-4" style={{ borderBottom: "1px solid #1e1e2a" }}>
+        <div className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: "#1e1e2a", border: "1px solid #3a3a4a" }}>
+          <svg viewBox="0 0 24 24" className="w-7 h-7" fill="none" stroke="#6b7280" strokeWidth="1.5">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>
+          </svg>
+        </div>
+        <div className="flex-1">
+          <p className="text-2xl font-bold" style={{ color: "#e8eaf0" }}>{caller}</p>
+          <p className="text-sm mt-0.5" style={{ color: "#6b7280" }}>{callerNumber}</p>
+        </div>
+        <div className="px-3 py-1.5 rounded-full text-sm font-bold"
+          style={{ background: "rgba(59,130,246,0.15)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.3)" }}>
+          {duration}
+        </div>
+      </div>
+
+      {/* Transcript */}
+      <div className="px-6 py-5">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs font-bold tracking-widest px-2 py-0.5 rounded"
+            style={{ background: "#1e2a1e", color: "#4ade80", border: "1px solid #2a3a2a" }}>TRANSCRIBED</span>
+        </div>
+        <p className="text-lg leading-relaxed" style={{ color: "#a0a4b8", fontFamily: "monospace" }}>
+          &ldquo;{transcript}&rdquo;
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Internal memo ────────────────────────────────────────────────────────────
+
+function InternalMemo({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const title          = art.memoTitle          ?? inject.title;
+  const classification = art.memoClassification ?? "CONFIDENTIAL";
+  const to             = art.memoTo             ?? "Senior Leadership Team";
+  const from           = art.memoFrom           ?? "Chief Information Security Officer";
+  const date           = art.memoDate           ?? new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const ref            = art.memoRef            ?? `REF-${new Date().getFullYear()}-0001`;
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#fafaf8", color: "#1a1a1a" }}>
+      {/* Classification stamp */}
+      <div className="px-8 pt-5 pb-2 text-center">
+        <span className="text-base font-black tracking-[0.3em] uppercase px-4 py-1 border-2"
+          style={{ color: "#cc0000", borderColor: "#cc0000" }}>
+          {classification}
+        </span>
+      </div>
+
+      {/* Letterhead */}
+      <div className="px-8 py-4 flex items-start justify-between" style={{ borderBottom: "2px solid #1a1a1a" }}>
+        <div className="flex items-center gap-3">
+          <div className="px-3 py-2 text-center" style={{ border: "2px solid #1a1a1a" }}>
+            <p className="text-xs font-bold tracking-wider uppercase" style={{ fontFamily: "Georgia, serif" }}>INTERNAL</p>
+          </div>
+          <div>
+            <p className="text-lg font-bold tracking-wide uppercase" style={{ fontFamily: "Georgia, serif" }}>{title}</p>
+          </div>
+        </div>
+        <div className="text-right text-xs" style={{ color: "#555", fontFamily: "Georgia, serif" }}>
+          <p className="font-bold">{ref}</p>
+        </div>
+      </div>
+
+      {/* Fields */}
+      <div className="px-8 py-4" style={{ borderBottom: "1px solid #ccc" }}>
+        {[
+          ["TO", to],
+          ["FROM", from],
+          ["DATE", date],
+          ["RE", title],
+        ].map(([label, value]) => (
+          <div key={label} className="flex gap-4 mb-2">
+            <span className="text-sm font-bold w-12 shrink-0" style={{ fontFamily: "Georgia, serif", color: "#333" }}>{label}:</span>
+            <span className="text-sm" style={{ fontFamily: "Georgia, serif", color: "#1a1a1a" }}>{value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Body */}
+      <div className="px-8 py-6">
+        <p className="text-lg leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#222" }}>
+          {inject.body}
+        </p>
+      </div>
+
+      {/* Footer */}
+      <div className="px-8 py-3" style={{ borderTop: "1px solid #ccc", background: "#f0ede6" }}>
+        <p className="text-xs text-center" style={{ color: "#777" }}>
+          {classification} — FOR AUTHORISED RECIPIENTS ONLY — DO NOT DISTRIBUTE
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── SMS thread ───────────────────────────────────────────────────────────────
+
+function SmsThread({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const participants = art.smsParticipants ?? ["Unknown", "You"];
+  const messages: Array<{ sender: string; text: string; time: string }> =
+    art.smsMessages ?? [{ sender: "left", text: inject.body, time: "Now" }];
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#1c1c1e", border: "1px solid #2a2a2e" }}>
+      {/* Top bar */}
+      <div className="px-5 py-3 flex items-center justify-center gap-2" style={{ background: "#2c2c2e", borderBottom: "1px solid #3a3a3e" }}>
+        <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="#8b8fa8" strokeWidth="2">
+          <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <span className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>
+          {participants.slice(0, 2).join(" · ")}
+        </span>
+      </div>
+
+      {/* Messages */}
+      <div className="px-4 py-4 space-y-3 overflow-y-auto" style={{ maxHeight: "420px" }}>
+        {messages.map((msg, i) => {
+          const isRight = msg.sender === "right" || msg.sender === participants[1];
+          return (
+            <div key={i} className={`flex flex-col ${isRight ? "items-end" : "items-start"}`}>
+              <div className="px-4 py-2.5 rounded-2xl max-w-[75%]"
+                style={isRight
+                  ? { background: "#007aff", color: "#fff" }
+                  : { background: "#3a3a3c", color: "#e8eaf0" }}>
+                <p className="text-lg leading-snug">{msg.text}</p>
+              </div>
+              <span className="text-xs mt-1 px-1" style={{ color: "#6b7280" }}>{msg.time}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Regulator portal ─────────────────────────────────────────────────────────
+
+function RegulatorPortal({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const regulatorName      = art.regulatorName        ?? "Information Commissioner's Office";
+  const portalUrl          = art.regulatorPortalUrl   ?? "ico.org.uk/report";
+  const caseRef            = art.regulatorCaseRef     ?? "ICO-2024-000000";
+  const status             = (art.regulatorStatus     ?? "SUBMITTED").toUpperCase();
+  const submittedAt        = art.regulatorSubmittedAt ?? new Date().toLocaleDateString("en-GB");
+  const deadline           = art.regulatorDeadline    ?? "72 hours from notification";
+  const officerName        = art.regulatorOfficerName ?? "Unassigned";
+
+  const statusColour: Record<string, { bg: string; text: string; border: string }> = {
+    SUBMITTED:      { bg: "rgba(245,158,11,0.15)",  text: "#fcd34d", border: "rgba(245,158,11,0.4)"  },
+    ACKNOWLEDGED:   { bg: "rgba(59,130,246,0.15)",  text: "#93c5fd", border: "rgba(59,130,246,0.4)"  },
+    UNDER_REVIEW:   { bg: "rgba(249,115,22,0.15)",  text: "#fdba74", border: "rgba(249,115,22,0.4)"  },
+    ESCALATED:      { bg: "rgba(232,34,34,0.15)",   text: "#f87171", border: "rgba(232,34,34,0.4)"   },
+    CLOSED:         { bg: "rgba(16,185,129,0.15)",  text: "#6ee7b7", border: "rgba(16,185,129,0.4)"  },
+  };
+  const sc = statusColour[status] ?? statusColour.SUBMITTED;
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#f3f4f6", border: "1px solid #d1d5db" }}>
+      {/* Gov portal header */}
+      <div className="px-6 py-3 flex items-center justify-between" style={{ background: "#1d3557", borderBottom: "4px solid #e8b400" }}>
+        <div className="flex items-center gap-3">
+          <span className="text-xl">👑</span>
+          <div>
+            <p className="text-xs font-bold tracking-widest text-white/60 uppercase">GOV.UK</p>
+            <p className="text-sm font-bold text-white">{regulatorName}</p>
+          </div>
+        </div>
+        <div className="text-xs font-mono" style={{ color: "#93c5fd" }}>{portalUrl}</div>
+      </div>
+
+      {/* Case banner */}
+      <div className="px-6 py-3 flex items-center justify-between" style={{ background: "#e8edf4", borderBottom: "1px solid #d1d5db" }}>
+        <div>
+          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#6b7280" }}>Case Reference</span>
+          <p className="text-base font-bold font-mono" style={{ color: "#1d3557" }}>{caseRef}</p>
+        </div>
+        <div className="px-3 py-1.5 rounded text-sm font-bold"
+          style={{ background: sc.bg, color: sc.text, border: `1px solid ${sc.border}` }}>
+          {status.replace("_", " ")}
+        </div>
+      </div>
+
+      {/* Fields table */}
+      <div className="px-6 py-4" style={{ background: "#fff", borderBottom: "1px solid #e5e7eb" }}>
+        {[
+          ["Submitted", submittedAt],
+          ["Response Deadline", deadline],
+          ["Case Officer", officerName],
+        ].map(([label, value]) => (
+          <div key={label} className="flex gap-4 py-2" style={{ borderBottom: "1px solid #f3f4f6" }}>
+            <span className="text-sm font-semibold w-44 shrink-0" style={{ color: "#374151" }}>{label}</span>
+            <span className="text-sm" style={{ color: "#1f2937" }}>{value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Body */}
+      <div className="px-6 py-5" style={{ background: "#fff" }}>
+        <p className="text-lg leading-relaxed" style={{ color: "#1f2937" }}>{inject.body}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Negotiation chat ─────────────────────────────────────────────────────────
+
+function NegotiationChat({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const threatAlias = art.negotiationThreatAlias ?? "THREAT ACTOR";
+  const messages: Array<{ side: string; text: string; time: string }> =
+    art.negotiationMessages ?? [{ side: "threat", text: inject.body, time: "00:00" }];
+
+  return (
+    <div className="rounded-xl overflow-hidden font-mono" style={{ background: "#050508", border: "1px solid #1a1a2a" }}>
+      {/* Header panes */}
+      <div className="grid grid-cols-2" style={{ borderBottom: "1px solid #1a1a2a" }}>
+        <div className="px-5 py-2.5 flex items-center gap-2" style={{ borderRight: "1px solid #1a1a2a", background: "#0a0a10" }}>
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#22c55e" }} />
+          <span className="text-xs font-bold tracking-widest" style={{ color: "#22c55e" }}>NEGOTIATOR</span>
+        </div>
+        <div className="px-5 py-2.5 flex items-center gap-2" style={{ background: "#0a0a10" }}>
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#E82222" }} />
+          <span className="text-xs font-bold tracking-widest" style={{ color: "#E82222" }}>{threatAlias}</span>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="p-4 space-y-3 overflow-y-auto" style={{ maxHeight: "400px" }}>
+        {messages.map((msg, i) => {
+          const isNegotiator = msg.side === "negotiator";
+          return (
+            <div key={i} className={`flex flex-col ${isNegotiator ? "items-start" : "items-end"}`}>
+              <div className="px-4 py-2 rounded max-w-[80%]"
+                style={isNegotiator
+                  ? { background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#86efac" }
+                  : { background: "rgba(232,34,34,0.08)", border: "1px solid rgba(232,34,34,0.2)", color: "#fca5a5" }}>
+                <p className="text-base leading-snug">{msg.text}</p>
+              </div>
+              <span className="text-xs mt-1 px-1" style={{ color: "#4a4a5a" }}>{msg.time}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Input bar (decorative) */}
+      <div className="px-4 py-3 flex items-center gap-3" style={{ borderTop: "1px solid #1a1a2a", background: "#0a0a10" }}>
+        <div className="flex-1 px-3 py-1.5 rounded text-sm" style={{ background: "#12121c", border: "1px solid #2a2a3a", color: "#4a4a6a" }}>
+          Type message…
+        </div>
+        <div className="px-3 py-1.5 rounded text-xs font-bold" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>
+          SEND
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── LinkedIn post ────────────────────────────────────────────────────────────
+
+function LinkedInPost({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const author   = art.linkedinAuthor      ?? "Executive";
+  const title    = art.linkedinAuthorTitle ?? "Chief Executive Officer";
+  const text     = art.linkedinText        ?? inject.body;
+  const likes    = art.linkedinLikes       ?? 0;
+  const comments = art.linkedinComments    ?? 0;
+  const shares   = art.linkedinShares      ?? 0;
+
+  const initials = author
+    .split(" ")
+    .map((w: string) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#fff", border: "1px solid #e0e0e0" }}>
+      {/* LinkedIn brand bar */}
+      <div className="px-5 py-2.5 flex items-center gap-2" style={{ background: "#0a66c2", borderBottom: "1px solid #0855a4" }}>
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#fff">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        <span className="text-sm font-bold text-white tracking-wide">LinkedIn</span>
+      </div>
+
+      {/* Author */}
+      <div className="px-5 py-4 flex items-center gap-3" style={{ borderBottom: "1px solid #f3f3f3" }}>
+        <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 text-white font-bold text-base"
+          style={{ background: "#0a66c2" }}>
+          {initials}
+        </div>
+        <div>
+          <p className="font-bold text-base" style={{ color: "#1a1a1a" }}>{author}</p>
+          <p className="text-sm" style={{ color: "#6b7280" }}>{title}</p>
+        </div>
+        <div className="ml-auto px-3 py-1 rounded-full text-sm font-semibold"
+          style={{ border: "1px solid #0a66c2", color: "#0a66c2" }}>
+          + Follow
+        </div>
+      </div>
+
+      {/* Post text */}
+      <div className="px-5 py-4" style={{ borderBottom: "1px solid #f3f3f3" }}>
+        <p className="text-lg leading-relaxed" style={{ color: "#1a1a1a" }}>{text}</p>
+      </div>
+
+      {/* Reactions bar */}
+      <div className="px-5 py-3 flex items-center gap-6">
+        <div className="flex items-center gap-1.5">
+          <span className="text-lg">👍</span>
+          <span className="text-sm font-semibold" style={{ color: "#6b7280" }}>{likes.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-lg">💬</span>
+          <span className="text-sm font-semibold" style={{ color: "#6b7280" }}>{comments.toLocaleString()} comments</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-lg">↗</span>
+          <span className="text-sm font-semibold" style={{ color: "#6b7280" }}>{shares.toLocaleString()} shares</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Board portal ─────────────────────────────────────────────────────────────
+
+function BoardPortal({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const orgName    = art.boardPortalOrgName   ?? "Organisation";
+  const members: Array<{ name: string; role: string; loggedInAt: string; isOnline: boolean }> =
+    art.boardPortalMembers ?? [];
+  const alertCount = art.boardPortalAlertCount ?? 0;
+  const alertTitle = art.boardPortalAlertTitle ?? inject.title;
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#0a0e1a", border: "1px solid #1a2030" }}>
+      {/* Header */}
+      <div className="px-6 py-4 flex items-center justify-between" style={{ background: "#0d1120", borderBottom: "1px solid #1a2030" }}>
+        <div>
+          <p className="text-xs font-bold tracking-widest uppercase mb-0.5" style={{ color: "#4a5568" }}>Board Portal</p>
+          <p className="text-xl font-bold" style={{ color: "#e8eaf0" }}>{orgName}</p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded"
+          style={{ background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)" }}>
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#3b82f6" }} />
+          <span className="text-xs font-bold" style={{ color: "#93c5fd" }}>SECURE SESSION</span>
+        </div>
+      </div>
+
+      {/* Alert banner */}
+      {alertCount > 0 && (
+        <div className="px-6 py-3 flex items-center gap-3"
+          style={{ background: "rgba(245,158,11,0.12)", borderBottom: "1px solid rgba(245,158,11,0.3)" }}>
+          <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" stroke="#f59e0b" strokeWidth="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/>
+          </svg>
+          <span className="text-sm font-bold" style={{ color: "#fcd34d" }}>
+            {alertCount} URGENT ALERT{alertCount > 1 ? "S" : ""} — {alertTitle}
+          </span>
+        </div>
+      )}
+
+      {/* Members list */}
+      {members.length > 0 && (
+        <div style={{ borderBottom: "1px solid #1a2030" }}>
+          <div className="px-6 py-2" style={{ background: "#0d1120" }}>
+            <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "#4a5568" }}>Board Members</span>
+          </div>
+          {members.map((m, i) => (
+            <div key={i} className="px-6 py-3 flex items-center gap-3"
+              style={{ borderTop: "1px solid #1a2030" }}>
+              <span className="w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ background: m.isOnline ? "#22c55e" : "#4a5568" }} />
+              <div className="flex-1">
+                <p className="text-base font-semibold" style={{ color: "#e8eaf0" }}>{m.name}</p>
+                <p className="text-sm" style={{ color: "#6b7280" }}>{m.role}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs" style={{ color: m.isOnline ? "#22c55e" : "#4a5568" }}>
+                  {m.isOnline ? "Online" : "Offline"}
+                </p>
+                {m.loggedInAt && (
+                  <p className="text-xs" style={{ color: "#4a5568" }}>Last: {m.loggedInAt}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Body */}
+      <div className="px-6 py-5">
+        <p className="text-lg leading-relaxed" style={{ color: "#a0a8c0" }}>{inject.body}</p>
       </div>
     </div>
   );
