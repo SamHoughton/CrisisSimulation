@@ -7,9 +7,9 @@
  * titles (e.g. "General Counsel" instead of "Chief Legal Officer").
  */
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useStore, getAllScenarios } from "@/store";
-import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert } from "lucide-react";
+import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert, Plus, X } from "lucide-react";
 import { cn, ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration } from "@/lib/utils";
 import type { Participant, ExecRole } from "@/types";
 
@@ -26,6 +26,21 @@ export function Setup() {
   const [participants, setParticipants] = useState<Participant[]>(
     scenario?.roles.map((r) => ({ role: r as ExecRole, name: "" })) ?? []
   );
+  const [showAddRole, setShowAddRole] = useState(false);
+  const addRoleRef = useRef<HTMLDivElement>(null);
+
+  const ALL_ROLES: ExecRole[] = ["CEO", "CFO", "CISO", "CLO", "CCO", "COO", "CTO", "BOARD_REP", "HR_LEAD"];
+
+  useEffect(() => {
+    if (!showAddRole) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (addRoleRef.current && !addRoleRef.current.contains(e.target as Node)) {
+        setShowAddRole(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showAddRole]);
 
   if (!scenario) {
     return (
@@ -40,6 +55,17 @@ export function Setup() {
 
   const update = (role: ExecRole, field: "name" | "customTitle", value: string) =>
     setParticipants((p) => p.map((x) => (x.role === role ? { ...x, [field]: value } : x)));
+
+  const removeRole = (role: ExecRole) =>
+    setParticipants((p) => p.filter((x) => x.role !== role));
+
+  const addRole = (role: ExecRole) => {
+    setParticipants((p) => [...p, { role, name: "" }]);
+    setShowAddRole(false);
+  };
+
+  const activeRoles = new Set(participants.map((p) => p.role));
+  const availableRoles = ALL_ROLES.filter((r) => !activeRoles.has(r));
 
   const handleStart = () => {
     startSession(scenario, participants);
@@ -132,11 +158,12 @@ export function Setup() {
           <Users className="w-4 h-4 text-rtr-muted" />
           <h2 className="text-sm font-semibold text-rtr-text">Participants</h2>
           <span className="text-xs text-rtr-dim ml-1">(role titles and names optional - click a title to rename)</span>
-          {namedCount > 0 && (
-            <span className="ml-auto text-xs text-rtr-green font-medium">
-              {namedCount}/{participants.length} named
-            </span>
-          )}
+          <span className="ml-auto text-xs text-rtr-muted font-medium">
+            {participants.length} role{participants.length !== 1 ? "s" : ""} active
+            {namedCount > 0 && (
+              <span className="text-rtr-green"> · {namedCount}/{participants.length} named</span>
+            )}
+          </span>
         </div>
         <div className="divide-y divide-rtr-border stagger">
           {participants.map((p) => (
@@ -156,8 +183,56 @@ export function Setup() {
                 placeholder="Participant name (optional)"
                 className="flex-1 text-sm bg-rtr-elevated border border-rtr-border-light text-rtr-text rounded px-3 py-1.5 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors"
               />
+              <button
+                onClick={() => removeRole(p.role)}
+                title="Remove role"
+                className="shrink-0 w-6 h-6 flex items-center justify-center rounded text-rtr-dim opacity-0 group-hover:opacity-100 hover:!text-red-400 hover:bg-red-500/10 transition-all"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
           ))}
+        </div>
+
+        {/* Add role row */}
+        <div className="px-5 py-3 border-t border-rtr-border bg-rtr-elevated/50">
+          <div className="relative inline-block" ref={addRoleRef}>
+            <button
+              onClick={() => setShowAddRole((v) => !v)}
+              disabled={availableRoles.length === 0}
+              className={cn(
+                "flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded border transition-colors",
+                availableRoles.length === 0
+                  ? "border-rtr-border text-rtr-dim cursor-not-allowed opacity-50"
+                  : "border-rtr-border text-rtr-muted hover:text-rtr-text hover:border-rtr-green/50 hover:bg-rtr-elevated"
+              )}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add role
+            </button>
+
+            {showAddRole && availableRoles.length > 0 && (
+              <div className="absolute left-0 top-full mt-1.5 z-20 min-w-[180px] bg-rtr-elevated border border-rtr-border rounded-lg shadow-xl overflow-hidden">
+                <p className="px-3 py-2 text-[10px] font-semibold text-rtr-dim uppercase tracking-wider border-b border-rtr-border">
+                  Available roles
+                </p>
+                <div className="py-1">
+                  {availableRoles.map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => addRole(r)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-left hover:bg-rtr-panel transition-colors"
+                    >
+                      <div className={`w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono shrink-0 ${ROLE_COLOUR[r]}`}>
+                        {ROLE_SHORT[r]}
+                      </div>
+                      <span className="text-sm text-rtr-text">{ROLE_LONG[r]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

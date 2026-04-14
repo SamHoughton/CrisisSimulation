@@ -26,7 +26,7 @@ import { generateReport } from "@/lib/claude";
 import { format } from "date-fns";
 import type { GapDimension, Session } from "@/types";
 
-type Tab = "summary" | "timeline" | "gaps" | "roles" | "recommendations" | "log" | "dashboard";
+type Tab = "summary" | "timeline" | "gaps" | "roles" | "recommendations" | "log" | "dashboard" | "outcome";
 
 /** Counts up from 0 to target over `duration` ms */
 function useCountUp(target: number, duration = 900) {
@@ -116,6 +116,7 @@ export function Report() {
     { id: "gaps",            label: "Gap Analysis",   requiresReport: true  },
     { id: "roles",           label: "Role Feedback",  requiresReport: true  },
     { id: "recommendations", label: "Recommendations",requiresReport: true  },
+    ...(session.scenario.realOutcome ? [{ id: "outcome" as Tab, label: "Real Outcome", requiresReport: false }] : []),
   ];
 
   return (
@@ -229,6 +230,9 @@ export function Report() {
             {report && activeTab === "gaps"            && <GapsTab gaps={report.gapAnalysis} />}
             {report && activeTab === "roles"           && <RolesTab feedback={report.roleFeedback} participants={session.participants} />}
             {report && activeTab === "recommendations" && <RecsTab recs={report.recommendations} />}
+            {activeTab === "outcome" && session.scenario.realOutcome && (
+              <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
+            )}
           </div>
 
           {/* Print: render all report sections at once */}
@@ -240,11 +244,23 @@ export function Report() {
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Gap Analysis</h2><GapsTab gaps={report.gapAnalysis} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Role Feedback</h2><RolesTab feedback={report.roleFeedback} participants={session.participants} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Recommendations</h2><RecsTab recs={report.recommendations} /></div>
+              {session.scenario.realOutcome && (
+                <div>
+                  <h2 className="text-lg font-bold mb-4 print-section-title">Real Outcome</h2>
+                  <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
+                </div>
+              )}
             </div>
           )}
           {!report && (
             <div className="hidden print:block">
               <DecisionLogTab session={session} />
+              {session.scenario.realOutcome && (
+                <div>
+                  <h2 className="text-lg font-bold mb-4 print-section-title">Real Outcome</h2>
+                  <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -260,6 +276,25 @@ function AnimatedScoreBadge({ score, scoreColour }: { score: number; scoreColour
     <div className={`score-reveal flex flex-col items-center justify-center w-16 h-16 rounded-xl border text-2xl font-bold font-mono ${scoreColour}`}>
       {displayed}
       <span className="text-xs font-normal">/ 100</span>
+    </div>
+  );
+}
+
+function RealOutcomeTab({ realOutcome }: { realOutcome: string }) {
+  return (
+    <div className="max-w-2xl mx-auto fade-in-up">
+      <div className="bg-rtr-panel border border-rtr-border rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-2 h-2 rounded-full bg-rtr-green" />
+          <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">
+            What actually happened
+          </p>
+        </div>
+        <p className="text-sm text-rtr-text leading-relaxed">{realOutcome}</p>
+        <p className="text-xs text-rtr-dim mt-4 border-t border-rtr-border pt-3">
+          This scenario is based on a real incident. The above describes the actual response and outcome.
+        </p>
+      </div>
     </div>
   );
 }

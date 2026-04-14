@@ -57,8 +57,9 @@ export function Runner() {
   const addNote          = useStore((s) => s.addNote);
   const setView          = useStore((s) => s.setView);
 
-  const [elapsed, setElapsed]       = useState("00:00");
-  const [noteText, setNoteText]     = useState("");
+  const [elapsed, setElapsed]           = useState("00:00");
+  const [injectElapsed, setInjectElapsed] = useState("0:00");
+  const [noteText, setNoteText]         = useState("");
   const [adHocText, setAdHocText]   = useState("");
   const [showAdHoc, setShowAdHoc]   = useState(false);
   const [voteRevealed, setVoteRevealed]     = useState<Record<string, boolean>>({});
@@ -92,6 +93,23 @@ export function Runner() {
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, [session?.status, session?.startedAt]);
+
+  // Per-inject elapsed timer — resets when a new inject is released
+  useEffect(() => {
+    setInjectElapsed("0:00");
+    if (!currentLive?.releasedAt) return;
+    const releasedAt = currentLive.releasedAt;
+    const tick = () => {
+      const diffMs = Date.now() - new Date(releasedAt).getTime();
+      const totalSecs = Math.floor(diffMs / 1000);
+      const mins = Math.floor(totalSecs / 60);
+      const secs = totalSecs % 60;
+      setInjectElapsed(`${mins}:${String(secs).padStart(2, "0")}`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [currentLive?.injectId, currentLive?.releasedAt]);
 
   // Open present window on mount
   useEffect(() => {
@@ -745,7 +763,8 @@ export function Runner() {
                 <div className="flex items-start justify-between mb-2">
                   <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
                   <p className="text-xs text-rtr-dim font-mono">
-                    {new Date(currentLive.releasedAt).toLocaleTimeString()}
+                    Released {new Date(currentLive.releasedAt).toLocaleTimeString()}
+                    <span className="text-amber-400/70"> · on inject for {injectElapsed}</span>
                   </p>
                 </div>
                 {(() => {

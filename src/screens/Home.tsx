@@ -428,6 +428,15 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
         </div>
         <p className="text-sm font-semibold text-rtr-text mb-1">{scenario.title}</p>
         <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{scenario.description}</p>
+        {scenario.regulatoryFrameworks && scenario.regulatoryFrameworks.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {scenario.regulatoryFrameworks.map((fw: string) => (
+              <span key={fw} className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
+                {fw}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <span className="text-xs text-rtr-dim">
             {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}

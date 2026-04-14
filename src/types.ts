@@ -191,6 +191,18 @@ export interface Scenario {
   coverGradient?: string;         // CSS gradient fallback (e.g. "135deg, #1a1a2e, #e8002d")
   createdAt: string;
   updatedAt: string;
+  /**
+   * Regulatory / compliance frameworks this scenario covers.
+   * Displayed in the library and debrief report.
+   * e.g. ["NIS2", "NIST CSF 2.0", "ISO 27001", "DORA"]
+   */
+  regulatoryFrameworks?: string[];
+  /**
+   * What actually happened in the real-world incident this scenario is based on.
+   * Shown in the debrief report as a "what really happened" reveal.
+   * Omit for fictional scenarios.
+   */
+  realOutcome?: string;
 }
 
 // ─── Session ─────────────────────────────────────────────────────────────────

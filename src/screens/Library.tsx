@@ -213,6 +213,15 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
               </span>
               <span>{s.injects.length} injects</span>
             </div>
+            {s.regulatoryFrameworks && s.regulatoryFrameworks.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-3">
+                {s.regulatoryFrameworks.map((fw) => (
+                  <span key={fw} className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
+                    {fw}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="flex items-center gap-2">
               {owned && onEdit && (
                 <button
