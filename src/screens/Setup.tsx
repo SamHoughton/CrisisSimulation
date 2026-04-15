@@ -13,7 +13,7 @@ import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert, Plus, X } f
 import { cn, ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration, TIER_LABEL, TIER_SUBTITLE, TIER_COLOUR } from "@/lib/utils";
 import type { Participant, ExecRole, CommandTier } from "@/types";
 
-const ALL_TIERS: CommandTier[] = ["GOLD", "SILVER", "BRONZE"];
+const ALL_TIERS: CommandTier[] = ["STRATEGIC", "TACTICAL"];
 
 export function Setup() {
   const setView      = useStore((s) => s.setView);

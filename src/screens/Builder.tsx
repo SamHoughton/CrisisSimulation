@@ -25,7 +25,7 @@ import type {
   ScenarioType, Difficulty, ExecRole, CommandTier,
 } from "@/types";
 
-const ALL_TIERS: CommandTier[] = ["GOLD", "SILVER", "BRONZE"];
+const ALL_TIERS: CommandTier[] = ["STRATEGIC", "TACTICAL"];
 
 const DIFFICULTIES: Difficulty[] = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
@@ -545,9 +545,8 @@ function InjectCard({
               </div>
               {inject.commandTier && (
                 <p className="text-[10px] text-rtr-dim mt-1">
-                  {inject.commandTier === "GOLD" && "Strategic decisions - C-suite leadership"}
-                  {inject.commandTier === "SILVER" && "Tactical decisions - Management / cyber leads"}
-                  {inject.commandTier === "BRONZE" && "Operational decisions - Hands-on technical response"}
+                  {inject.commandTier === "STRATEGIC" && "Strategic decisions - Executive leadership"}
+                  {inject.commandTier === "TACTICAL" && "Tactical decisions - Management / coordination leads"}
                 </p>
               )}
             </div>

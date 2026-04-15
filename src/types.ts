@@ -17,22 +17,24 @@ export type ScenarioType =
   | "REGULATORY_INVESTIGATION"
   | "SOCIAL_MEDIA_CRISIS"
   | "INFRASTRUCTURE_OUTAGE"
+  | "DEEPFAKE"
   | "CUSTOM";
 
 export type Difficulty = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
 /**
- * Incident command tier - determines which level of the organisation
+ * Exercise audience tier - determines which level of the organisation
  * should lead discussion on this inject.
  *
- * GOLD   - Strategic / C-suite: board comms, pay decisions, regulatory filings,
- *          market disclosures, insurance, reputational calls.
- * SILVER - Tactical / Management: containment strategy, partner engagement,
- *          internal comms, cross-functional coordination (CISO, COO, CTO, CLO…).
- * BRONZE - Operational / Technical: hands-on triage, isolation, forensic capture,
- *          tooling decisions - the people actually at the keyboard.
+ * STRATEGIC - Executive / C-suite: board governance, pay decisions, regulatory
+ *             filings, market disclosures, insurance, reputational calls.
+ *             Typical roles: CEO, CFO, CLO, CCO, Board Representative.
+ *
+ * TACTICAL  - Management / coordination layer: containment strategy, partner
+ *             engagement, internal comms, cross-functional coordination.
+ *             Typical roles: CISO, COO, CTO, HR Lead, Head of Comms.
  */
-export type CommandTier = "GOLD" | "SILVER" | "BRONZE";
+export type CommandTier = "STRATEGIC" | "TACTICAL";
 
 export type ExecRole =
   | "CEO" | "CFO" | "CISO" | "CLO" | "CCO"
