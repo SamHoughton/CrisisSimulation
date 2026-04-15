@@ -40,8 +40,18 @@ function parseHash(): HashRoute {
 export function App() {
   const view = useStore((s) => s.view);
   const setView = useStore((s) => s.setView);
+  const theme = useStore((s) => s.settings.theme);
 
   const [route, setRoute] = useState<HashRoute>(() => parseHash());
+
+  // Sync light/dark class on <html> whenever theme setting changes.
+  useEffect(() => {
+    if (theme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  }, [theme]);
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash());

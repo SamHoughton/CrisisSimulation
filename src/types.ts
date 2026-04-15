@@ -401,6 +401,7 @@ export interface Settings {
   claudeApiKey: string;
   orgName: string;
   facilitatorName: string;
+  theme: "dark" | "light";
 }
 
 // ─── BroadcastChannel message types ─────────────────────────────────────────

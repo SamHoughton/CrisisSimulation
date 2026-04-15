@@ -7,7 +7,7 @@
 
 import { useState } from "react";
 import { useStore } from "@/store";
-import { Save, Eye, EyeOff, CheckCircle, Trash2 } from "lucide-react";
+import { Save, Eye, EyeOff, CheckCircle, Trash2, Moon, Sun } from "lucide-react";
 
 export function Settings() {
   const settings       = useStore((s) => s.settings);
@@ -99,6 +99,38 @@ export function Settings() {
               <CheckCircle className="w-3.5 h-3.5" />Using hosted proxy
             </p>
           )}
+        </Card>
+
+        {/* Appearance */}
+        <Card title="Appearance">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-rtr-text">Colour theme</p>
+              <p className="text-xs text-rtr-dim mt-0.5">Choose between dark and light mode</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setDraft({ ...draft, theme: "dark" })}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs border transition-colors ${
+                  draft.theme !== "light"
+                    ? "bg-rtr-elevated border-rtr-border-light text-rtr-text font-medium"
+                    : "border-rtr-border text-rtr-dim hover:text-rtr-muted"
+                }`}
+              >
+                <Moon className="w-3.5 h-3.5" />Dark
+              </button>
+              <button
+                onClick={() => setDraft({ ...draft, theme: "light" })}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs border transition-colors ${
+                  draft.theme === "light"
+                    ? "bg-rtr-elevated border-rtr-border-light text-rtr-text font-medium"
+                    : "border-rtr-border text-rtr-dim hover:text-rtr-muted"
+                }`}
+              >
+                <Sun className="w-3.5 h-3.5" />Light
+              </button>
+            </div>
+          </div>
         </Card>
 
         {/* Storage info */}

@@ -99,7 +99,7 @@ export const useStore = create<AppStore>()(
   persist(
     (set, get) => ({
       // ── Settings ──────────────────────────────────────────────────────────
-      settings: { claudeApiKey: "", orgName: "", facilitatorName: "" },
+      settings: { claudeApiKey: "", orgName: "", facilitatorName: "", theme: "dark" },
       updateSettings: (s) =>
         set((st) => ({ settings: { ...st.settings, ...s } })),
 

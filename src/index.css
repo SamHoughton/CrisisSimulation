@@ -11,13 +11,52 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * ─── Theme tokens (RGB channel triplets, no parentheses) ──────────────────
+   * Using raw RGB channels lets Tailwind's opacity modifiers work:
+   * bg-rtr-panel/50 → background: rgb(var(--rtr-panel) / 0.5)
+   */
+  :root {
+    /* Dark theme (default) */
+    --rtr-base:         15 14 14;
+    --rtr-sidebar:      17 18 21;
+    --rtr-panel:        21 23 26;
+    --rtr-elevated:     28 31 36;
+    --rtr-hover:        34 38 45;
+    --rtr-border:       30 33 40;
+    --rtr-border-light: 42 46 58;
+    --rtr-text:         232 234 240;
+    --rtr-muted:        139 143 168;
+    --rtr-dim:          74 79 101;
+    --rtr-cream:        242 237 232;
+    --rtr-green:        74 254 145;
+    --rtr-red:          232 34 34;
+  }
+
+  html.light {
+    /* Light theme */
+    --rtr-base:         248 249 252;
+    --rtr-sidebar:      240 242 247;
+    --rtr-panel:        255 255 255;
+    --rtr-elevated:     237 240 246;
+    --rtr-hover:        225 228 238;
+    --rtr-border:       215 219 232;
+    --rtr-border-light: 195 200 215;
+    --rtr-text:         13 15 22;
+    --rtr-muted:        82 87 112;
+    --rtr-dim:          148 153 172;
+    --rtr-cream:        242 237 232;
+    --rtr-green:        5 150 105;
+    --rtr-red:          220 38 38;
+  }
+
   *, *::before, *::after { box-sizing: border-box; }
   html, body, #root { height: 100%; margin: 0; padding: 0; }
   body {
-    font-family: - apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     font-size: 13px;
-    background: #0d0e10;
-    color: #e8eaf0;
+    background: rgb(var(--rtr-base));
+    color: rgb(var(--rtr-text));
   }
 }
 

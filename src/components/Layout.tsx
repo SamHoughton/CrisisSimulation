@@ -17,7 +17,7 @@ import type { View } from "@/types";
 function RedlineMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} xmlns="http://www.w3.org/2000/svg">
-      <rect width="32" height="32" rx="6" fill="#0f0e0e" />
+      <rect width="32" height="32" rx="6" fill="rgb(var(--rtr-base))" />
       <line x1="3" y1="23" x2="10" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
       <polyline points="10,23 15,8 20,23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       <line x1="20" y1="23" x2="29" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
