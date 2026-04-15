@@ -1769,7 +1769,7 @@ function LinkedInPost({ inject, artifact: art }: { inject: Inject; artifact: Inj
 
 function BoardPortal({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
   const orgName    = art.boardPortalOrgName   ?? "Organisation";
-  const members: Array<{ name: string; role: string; loggedInAt: string; isOnline: boolean }> =
+  const members: Array<{ name: string; role: string; loggedInAt?: string; isOnline?: boolean }> =
     art.boardPortalMembers ?? [];
   const alertCount = art.boardPortalAlertCount ?? 0;
   const alertTitle = art.boardPortalAlertTitle ?? inject.title;
