@@ -17,7 +17,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
 import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
-import type { DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
+import type { ArcRecap, DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
 
 // ─── Background ticker headlines (always scrolling) ───────────────────────────
@@ -670,6 +670,14 @@ function SupplyChainBriefingArtifact() {
   );
 }
 
+// Artifact types where inject.body is scene-setting narration that should appear
+// ABOVE the artifact frame rather than inside it.
+const DASHBOARD_ARTIFACT_TYPES = ["stock_chart", "tv_broadcast", "slack_thread", "regulator_portal", "board_portal"] as const;
+type DashboardArtifactType = typeof DASHBOARD_ARTIFACT_TYPES[number];
+// Allow includes() to accept any ArtifactType without a TS error.
+const dashboardIncludes = (type: string): type is DashboardArtifactType =>
+  (DASHBOARD_ARTIFACT_TYPES as readonly string[]).includes(type);
+
 // ─── Inject screen ────────────────────────────────────────────────────────────
 
 function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, timerUrgent, timerLabel }: {
@@ -732,6 +740,12 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
         {/* Left / main: artifact */}
         <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
           <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
+          {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
+          {/* For dashboard/broadcast artifacts the body is narrator context, not artifact content.
+              Show it above as a scene-setter so the artifact frame stays clean. */}
+          {inject.artifact && dashboardIncludes(inject.artifact.type) && (
+            <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
+          )}
           <ArtifactDisplay inject={inject} />
           {inject.targetRoles.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
@@ -749,6 +763,72 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
         {showVoting && (
           <VotingDisplay inject={inject} voteState={voteState} />
         )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Arc recap card ───────────────────────────────────────────────────────────
+
+function ArcRecapCard({ data }: { data: ArcRecap }) {
+  const { entries, score } = data;
+  if (entries.length === 0) return null;
+
+  const rankColour = (rank?: number) => {
+    if (rank === 1) return "#22c55e";
+    if (rank === 2) return "#f59e0b";
+    if (rank === 3) return "#f97316";
+    if (rank === 4) return "#E82222";
+    return "#4a4f65"; // unranked
+  };
+
+  const scoreTheme = (s: number) => {
+    if (s <= 1.5) return { label: "EXEMPLARY",  colour: "#22c55e", bg: "rgba(34,197,94,0.08)",   border: "rgba(34,197,94,0.25)"   };
+    if (s <= 2.5) return { label: "COMPETENT",  colour: "#f59e0b", bg: "rgba(245,158,11,0.08)",  border: "rgba(245,158,11,0.25)"  };
+    if (s <= 3.5) return { label: "MARGINAL",   colour: "#f97316", bg: "rgba(249,115,22,0.08)",  border: "rgba(249,115,22,0.25)"  };
+    return           { label: "INADEQUATE", colour: "#E82222",  bg: "rgba(232,34,34,0.08)",    border: "rgba(232,34,34,0.25)"   };
+  };
+
+  const theme = score !== null ? scoreTheme(score) : null;
+
+  return (
+    <div className="rounded-xl overflow-hidden shrink-0"
+      style={{ background: "#080a0e", border: "1px solid #1a1e28" }}>
+
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-3"
+        style={{ borderBottom: "1px solid #1a1e28", background: "#0a0c12" }}>
+        <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#E82222" }}>
+          Your Arc
+        </span>
+        {theme && score !== null && (
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono" style={{ color: "#3a3f55" }}>COMPOUND SCORE</span>
+            <span className="text-sm font-mono font-bold tabular-nums" style={{ color: theme.colour }}>
+              {score.toFixed(2)}<span className="text-xs font-normal" style={{ color: "#3a3f55" }}>/4.0</span>
+            </span>
+            <span className="px-2.5 py-0.5 rounded text-xs font-bold tracking-widest uppercase"
+              style={{ background: theme.bg, border: `1px solid ${theme.border}`, color: theme.colour }}>
+              {theme.label}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Decision entries */}
+      <div className="px-6 py-4 grid gap-3">
+        {entries.map((entry, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <span className="font-mono text-xs shrink-0 w-4 text-right mt-0.5"
+              style={{ color: "#2e3348" }}>{i + 1}</span>
+            <span className="w-2 h-2 rounded-full shrink-0 mt-1.5"
+              style={{ background: rankColour(entry.rank) }} />
+            <p className="text-sm leading-snug">
+              <span style={{ color: "#555d7a" }}>{entry.label} </span>
+              <span className="font-semibold" style={{ color: "#c5c8d8" }}>{entry.fragment}</span>
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -1282,10 +1362,6 @@ function StockChart({ inject, artifact: art }: { inject: Inject; artifact: Injec
         ))}
       </div>
 
-      {/* Body text */}
-      <div className="px-6 py-4" style={{ background: "#0d1117", borderTop: "1px solid #1a1f2e" }}>
-        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
-      </div>
     </div>
   );
 }
@@ -1347,10 +1423,6 @@ function SlackThread({ inject, artifact: art }: { inject: Inject; artifact: Inje
         <span>several people are typing…</span>
       </div>
 
-      {/* Body text */}
-      <div className="px-6 py-4" style={{ background: "#15171a", borderTop: "1px solid #2c2f33" }}>
-        <p className="text-sm leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
-      </div>
     </div>
   );
 }
@@ -1410,10 +1482,6 @@ function TvBroadcast({ inject, artifact: art }: { inject: Inject; artifact: Inje
         </div>
       </div>
 
-      {/* Body text */}
-      <div className="px-6 py-4" style={{ background: "#0d0d0d", borderTop: "1px solid #1a1a1a" }}>
-        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
-      </div>
     </div>
   );
 }
@@ -1638,10 +1706,6 @@ function RegulatorPortal({ inject, artifact: art }: { inject: Inject; artifact: 
         ))}
       </div>
 
-      {/* Body */}
-      <div className="px-6 py-5" style={{ background: "#fff" }}>
-        <p className="text-lg leading-relaxed" style={{ color: "#1f2937" }}>{inject.body}</p>
-      </div>
     </div>
   );
 }
@@ -1830,10 +1894,6 @@ function BoardPortal({ inject, artifact: art }: { inject: Inject; artifact: Inje
         </div>
       )}
 
-      {/* Body */}
-      <div className="px-6 py-5">
-        <p className="text-lg leading-relaxed" style={{ color: "#a0a8c0" }}>{inject.body}</p>
-      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
-import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } from "@/store";
+import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, buildScenarioRecap } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
   Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
@@ -147,15 +147,18 @@ export function Runner() {
       const reply = new BroadcastChannel("crisis-present");
       reply.postMessage({ type: "status", status: s.status, scenario: s.scenario });
       reply.close();
-      // Also replay the most recent inject if one is live so Present can catch up
+      // Also replay the most recent inject if one is live so Present can catch up.
+      // Re-attach arcRecap so the visual arc card shows correctly after reconnect.
       const live = s.liveInjects[s.liveInjects.length - 1];
       if (live) {
         const inj = s.scenario.injects.find((i) => i.id === live.injectId);
         if (inj) {
+          const arcRecap = inj.isEnding ? buildScenarioRecap(s) : null;
+          const renderedInject = arcRecap ? { ...inj, arcRecap } : inj;
           const reply2 = new BroadcastChannel("crisis-present");
           reply2.postMessage({
             type: "inject",
-            inject: inj,
+            inject: renderedInject,
             injectNum: s.liveInjects.length,
             totalInjects: s.scenario.injects.length,
           });
