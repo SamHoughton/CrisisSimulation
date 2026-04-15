@@ -707,8 +707,8 @@ function InjectScreen({ inject, num, contextSummaries, voteState, timerSeconds, 
             </span>
           </div>
           {/* Command tier badge */}
-          {inject.commandTier && (() => {
-            const tc = TIER_COLOUR[inject.commandTier];
+          {inject.commandTier && TIER_COLOUR[inject.commandTier] && (() => {
+            const tc = TIER_COLOUR[inject.commandTier!];
             return (
               <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${tc.bg} ${tc.border}`}>
                 <span className={`w-2 h-2 rounded-full ${tc.dot}`} />
