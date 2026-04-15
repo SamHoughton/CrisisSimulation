@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import QRCode from "qrcode";
 import {
-  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed,
+  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed, TIER_LABEL, TIER_COLOUR,
 } from "@/lib/utils";
 import type { ExecRole, DecisionEntry, Participant, ResponseEntry, RemoteSessionState } from "@/types";
 import {
@@ -756,6 +756,12 @@ export function Runner() {
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
                     <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
+                    {inj.commandTier && (
+                      <span
+                        title={TIER_LABEL[inj.commandTier]}
+                        className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${TIER_COLOUR[inj.commandTier].dot}`}
+                      />
+                    )}
                     <span className={cn("font-medium flex-1 truncate",
                       released && !isLive ? "text-rtr-green line-through"
                       : isLive ? "text-rtr-red" : isNext ? "text-rtr-text" : "text-rtr-muted"
@@ -831,7 +837,20 @@ export function Runner() {
             <>
               <div className="px-6 py-5 border-b border-rtr-border bg-rtr-panel">
                 <div className="flex items-start justify-between mb-2">
-                  <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
+                    {(() => {
+                      const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+                      if (!inj?.commandTier) return null;
+                      const tc = TIER_COLOUR[inj.commandTier];
+                      return (
+                        <span className={`flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded border ${tc.bg} ${tc.border} ${tc.text}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${tc.dot}`} />
+                          {TIER_LABEL[inj.commandTier]}
+                        </span>
+                      );
+                    })()}
+                  </div>
                   <p className="text-xs text-rtr-dim font-mono">
                     Released {new Date(currentLive.releasedAt).toLocaleTimeString()}
                     <span className="text-amber-400/70"> · on inject for {injectElapsed}</span>

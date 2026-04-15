@@ -32,6 +32,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i01",
+      commandTier: "BRONZE",
       order: 0,
       scenarioDay: 1,
       scenarioTime: "07:43",
@@ -55,6 +56,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i02",
+      commandTier: "SILVER",
       order: 5,
       scenarioDay: 1,
       scenarioTime: "07:51",
@@ -116,6 +118,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i03",
+      commandTier: "GOLD",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "08:05",
@@ -177,6 +180,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i04",
+      commandTier: "SILVER",
       order: 15,
       scenarioDay: 1,
       scenarioTime: "08:12",
@@ -229,6 +233,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i05",
+      commandTier: "GOLD",
       order: 20,
       scenarioDay: 1,
       scenarioTime: "09:00",
@@ -253,6 +258,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i06",
+      commandTier: "SILVER",
       order: 22,
       scenarioDay: 1,
       scenarioTime: "09:41",
@@ -278,6 +284,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i07",
+      commandTier: "SILVER",
       order: 25,
       scenarioDay: 1,
       scenarioTime: "09:48",
@@ -301,6 +308,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i08",
+      commandTier: "SILVER",
       order: 28,
       scenarioDay: 1,
       scenarioTime: "10:04",
@@ -365,6 +373,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i09",
+      commandTier: "SILVER",
       order: 32,
       scenarioDay: 1,
       scenarioTime: "10:22",
@@ -425,6 +434,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i10",
+      commandTier: "GOLD",
       order: 35,
       scenarioDay: 1,
       scenarioTime: "10:55",
@@ -450,6 +460,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i11",
+      commandTier: "SILVER",
       order: 40,
       scenarioDay: 1,
       scenarioTime: "11:45",
@@ -510,6 +521,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i12",
+      commandTier: "GOLD",
       order: 45,
       scenarioDay: 1,
       scenarioTime: "12:10",
@@ -568,6 +580,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i13",
+      commandTier: "GOLD",
       order: 50,
       scenarioDay: 1,
       scenarioTime: "12:35",
@@ -629,6 +642,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i14",
+      commandTier: "GOLD",
       order: 55,
       scenarioDay: 1,
       scenarioTime: "13:30",
@@ -688,6 +702,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i15",
+      commandTier: "GOLD",
       order: 60,
       scenarioDay: 1,
       scenarioTime: "14:17",
@@ -754,6 +769,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i16",
+      commandTier: "GOLD",
       order: 65,
       scenarioDay: 1,
       scenarioTime: "17:00",
@@ -823,6 +839,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i17",
+      commandTier: "SILVER",
       order: 70,
       scenarioDay: 1,
       scenarioTime: "15:48",
@@ -887,6 +904,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-i18",
+      commandTier: "GOLD",
       order: 75,
       scenarioDay: 1,
       scenarioTime: "17:30",
@@ -948,6 +966,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-end-strong",
+      commandTier: "GOLD",
       order: 80,
       scenarioDay: 2,
       scenarioTime: "08:00",
@@ -964,6 +983,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-end-moderate",
+      commandTier: "GOLD",
       order: 80,
       scenarioDay: 2,
       scenarioTime: "08:00",
@@ -980,6 +1000,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
 
     {
       id: "io-end-weak",
+      commandTier: "GOLD",
       order: 80,
       scenarioDay: 3,
       scenarioTime: "09:00",

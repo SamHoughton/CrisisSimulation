@@ -29,8 +29,16 @@ Built for facilitators who need to run realistic, high-pressure crisis exercises
 - Claude generates structured post-exercise reports: gap analysis, role feedback, recommendations, overall score
 - API calls route through a Netlify Function proxy by default (server-side key); users can optionally supply their own key in Settings
 
+**Command Tier System (Gold / Silver / Bronze)**
+- Every inject is tagged with an incident command tier to signal which level of the organisation should lead the discussion
+- Gold Command - strategic C-suite decisions: board comms, regulatory filings, market disclosure, ransom payment, insurance
+- Silver Command - tactical management decisions: containment strategy, partner engagement, internal comms, cross-functional coordination
+- Bronze Command - operational/technical decisions: initial alert triage, forensic capture, network isolation, hands-on response
+- Tier badge displayed prominently on the projector screen and in the facilitator's current-inject panel; a colour-coded dot appears in the inject queue for quick reference
+- Configurable per inject in the scenario builder; omit for injects where tier is not relevant
+
 **Facilitator Tools**
-- Live session control panel with inject queue, voting panel, and observation notes
+- Live session control panel with inject queue (with tier dots), voting panel, and observation notes
 - Pause/resume, ad-hoc injects, per-inject timer with present-screen sync
 - Decision log, reputation dashboard, and exportable JSON transcript
 - Print-optimised report view for PDF export
@@ -121,6 +129,8 @@ src/
 **Branching decision trees** - Each inject can define `branches: InjectBranch[]` mapping decision option keys to `nextInjectId`. When votes are revealed, the store follows the majority vote's branch. The inject queue dims off-path injects and highlights reachable ones. Endings can use `branchMode: "score"` to route by the compound average rank of all decisions taken in the session.
 
 **Artifact system** - Injects carry typed artifacts that render as styled components on the present screen with no images required, pure CSS and HTML. Supported types: `ransomware_note`, `siem_alert`, `tweet`, `email`, `legal_letter`, `news_headline`, `dark_web_listing`, `stock_chart`, `slack_thread`, `tv_broadcast`, `voicemail`, `internal_memo`, `sms_thread`, `regulator_portal`, `negotiation_chat`, `linkedin_post`, `board_portal`.
+
+**Command tier system** - Each inject carries an optional `commandTier` field (`"GOLD"`, `"SILVER"`, or `"BRONZE"`). Gold = strategic C-suite decisions. Silver = tactical management. Bronze = hands-on technical response. The tier badge is shown on the projector in amber/slate/orange respectively, directing the room's attention to the right audience for each inject. All 113 built-in injects are pre-classified; the Builder lets scenario authors set tiers on custom injects.
 
 **Remote voting** - A Netlify Blob acts as a lightweight shared state store. The Runner writes the current inject and vote state on every change; participant phones poll it via the `/session` function. This enables QR-based join without a WebSocket server or database.
 

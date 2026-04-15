@@ -18,12 +18,14 @@ import {
 import { suggestInjectText } from "@/lib/claude";
 import {
   cn, makeId, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL,
-  ROLE_SHORT, ALL_ROLES, ALL_SCENARIO_TYPES,
+  ROLE_SHORT, ALL_ROLES, ALL_SCENARIO_TYPES, TIER_LABEL, TIER_COLOUR,
 } from "@/lib/utils";
 import type {
   Scenario, Inject, DecisionOption, InjectBranch,
-  ScenarioType, Difficulty, ExecRole,
+  ScenarioType, Difficulty, ExecRole, CommandTier,
 } from "@/types";
+
+const ALL_TIERS: CommandTier[] = ["GOLD", "SILVER", "BRONZE"];
 
 const DIFFICULTIES: Difficulty[] = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
@@ -520,6 +522,34 @@ function InjectCard({
                 className={inputCls}
                 placeholder="https://… (optional)"
               />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-rtr-dim block mb-1">Command Tier</label>
+              <div className="flex gap-1.5">
+                {ALL_TIERS.map((tier) => {
+                  const tc = TIER_COLOUR[tier];
+                  const active = inject.commandTier === tier;
+                  return (
+                    <button
+                      key={tier}
+                      onClick={() => onUpdate({ commandTier: active ? undefined : tier })}
+                      className={cn(
+                        "flex-1 text-xs font-bold px-2 py-1 rounded border transition-colors",
+                        active ? `${tc.bg} ${tc.border} ${tc.text}` : "border-rtr-border text-rtr-dim bg-rtr-base hover:border-rtr-border-light"
+                      )}
+                    >
+                      {tier}
+                    </button>
+                  );
+                })}
+              </div>
+              {inject.commandTier && (
+                <p className="text-[10px] text-rtr-dim mt-1">
+                  {inject.commandTier === "GOLD" && "Strategic decisions - C-suite leadership"}
+                  {inject.commandTier === "SILVER" && "Tactical decisions - Management / cyber leads"}
+                  {inject.commandTier === "BRONZE" && "Operational decisions - Hands-on technical response"}
+                </p>
+              )}
             </div>
             <div className="w-28">
               <label className="text-xs font-medium text-rtr-dim block mb-1">Timer (mins)</label>

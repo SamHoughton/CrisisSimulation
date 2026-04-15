@@ -94,6 +94,31 @@ export const ALL_ROLES = [
   "CEO","CFO","CISO","CLO","CCO","COO","CTO","BOARD_REP","HR_LEAD",
 ] as const;
 
+// ─── Command tier ─────────────────────────────────────────────────────────────
+
+export const TIER_LABEL: Record<string, string> = {
+  GOLD:   "Gold Command",
+  SILVER: "Silver Command",
+  BRONZE: "Bronze Command",
+};
+
+/** Short subtitle shown beneath the tier badge on the present screen */
+export const TIER_SUBTITLE: Record<string, string> = {
+  GOLD:   "Strategic - C-Suite",
+  SILVER: "Tactical - Management",
+  BRONZE: "Operational - Technical",
+};
+
+/**
+ * Tailwind colour classes for tier badges.
+ * bg: badge background  |  text: badge text  |  border: badge border
+ */
+export const TIER_COLOUR: Record<string, { bg: string; text: string; border: string; dot: string }> = {
+  GOLD:   { bg: "bg-amber-500/20",  text: "text-amber-300",  border: "border-amber-500/40",  dot: "bg-amber-400"  },
+  SILVER: { bg: "bg-slate-400/20",  text: "text-slate-200",  border: "border-slate-400/40",  dot: "bg-slate-300"  },
+  BRONZE: { bg: "bg-orange-700/20", text: "text-orange-400", border: "border-orange-700/40", dot: "bg-orange-500" },
+};
+
 export const ALL_SCENARIO_TYPES = [
   "RANSOMWARE","DATA_BREACH","INSIDER_THREAT","SUPPLY_CHAIN",
   "DDOS","REGULATORY_INVESTIGATION","SOCIAL_MEDIA_CRISIS",

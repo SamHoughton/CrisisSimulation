@@ -23,6 +23,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i1",
+      commandTier: "BRONZE",
       order: 0,
       scenarioDay: 1,
       scenarioTime: "03:14",
@@ -88,6 +89,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2a",
+      commandTier: "BRONZE",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "05:30",
@@ -115,6 +117,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2b",
+      commandTier: "BRONZE",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "04:02",
@@ -140,6 +143,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2c",
+      commandTier: "SILVER",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "06:30",
@@ -164,6 +168,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2d",
+      commandTier: "SILVER",
       order: 10,
       scenarioDay: 2,
       scenarioTime: "04:11",
@@ -188,6 +193,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2v",
+      commandTier: "SILVER",
       order: 20,
       scenarioDay: 1,
       scenarioTime: "06:00",
@@ -246,6 +252,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-board",
+      commandTier: "GOLD",
       order: 22,
       scenarioDay: 1,
       scenarioTime: "05:30",
@@ -305,6 +312,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2x",
+      commandTier: "GOLD",
       order: 25,
       scenarioDay: 1,
       scenarioTime: "05:47",
@@ -373,6 +381,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3",
+      commandTier: "SILVER",
       order: 30,
       scenarioDay: 1,
       scenarioTime: "04:11",
@@ -431,6 +440,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-insurance",
+      commandTier: "GOLD",
       order: 32,
       scenarioDay: 1,
       scenarioTime: "07:45",
@@ -490,6 +500,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3b",
+      commandTier: "GOLD",
       order: 35,
       scenarioDay: 1,
       scenarioTime: "08:47",
@@ -522,6 +533,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3a",
+      commandTier: "GOLD",
       order: 38,
       scenarioDay: 1,
       scenarioTime: "09:12",
@@ -583,6 +595,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3d",
+      commandTier: "GOLD",
       order: 40,
       scenarioDay: 1,
       scenarioTime: "09:00",
@@ -641,6 +654,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4",
+      commandTier: "GOLD",
       order: 50,
       scenarioDay: 1,
       scenarioTime: "14:30",
@@ -699,6 +713,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4a",
+      commandTier: "GOLD",
       order: 55,
       scenarioDay: 1,
       scenarioTime: "15:19",
@@ -732,6 +747,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4x",
+      commandTier: "GOLD",
       order: 57,
       scenarioDay: 1,
       scenarioTime: "15:24",
@@ -790,6 +806,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4v",
+      commandTier: "GOLD",
       order: 60,
       scenarioDay: 1,
       scenarioTime: "15:42",
@@ -873,6 +890,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i5",
+      commandTier: "GOLD",
       order: 70,
       scenarioDay: 3,
       scenarioTime: "11:00",
@@ -966,6 +984,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i5a",
+      commandTier: "GOLD",
       order: 75,
       scenarioDay: 3,
       scenarioTime: "09:00",
@@ -991,6 +1010,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i6a",
+      commandTier: "GOLD",
       order: 80,
       scenarioDay: 3,
       scenarioTime: "16:30",
@@ -1054,6 +1074,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i6-strong",
+      commandTier: "SILVER",
       order: 90,
       scenarioDay: 4,
       scenarioTime: "08:00",
@@ -1078,6 +1099,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i6-weak",
+      commandTier: "SILVER",
       order: 90,
       scenarioDay: 4,
       scenarioTime: "08:00",
@@ -1099,6 +1121,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i7",
+      commandTier: "GOLD",
       order: 100,
       scenarioDay: 5,
       scenarioTime: "16:00",
@@ -1133,6 +1156,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end1",
+      commandTier: "GOLD",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - The Sector Standard",
@@ -1163,6 +1187,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end2",
+      commandTier: "GOLD",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - Quiet Lights On",
@@ -1195,6 +1220,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end3",
+      commandTier: "GOLD",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - The Long Tail",
@@ -1221,6 +1247,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end4",
+      commandTier: "GOLD",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - We Paid Twice",

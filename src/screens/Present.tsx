@@ -16,7 +16,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
-import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
+import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL, TIER_LABEL, TIER_SUBTITLE, TIER_COLOUR } from "@/lib/utils";
 import type { ArcRecap, DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
 
@@ -693,14 +693,33 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
     <div className="h-full flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 shrink-0">
-        <div className="flex items-center gap-3">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#E82222" }} />
-            <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: "#E82222" }} />
-          </span>
-          <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#E82222" }}>
-            New Development
-          </span>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#E82222" }} />
+              <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: "#E82222" }} />
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#E82222" }}>
+              New Development
+            </span>
+          </div>
+          {/* Command tier badge */}
+          {inject.commandTier && (() => {
+            const tc = TIER_COLOUR[inject.commandTier];
+            return (
+              <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${tc.bg} ${tc.border}`}>
+                <span className={`w-2 h-2 rounded-full ${tc.dot}`} />
+                <div className="flex flex-col leading-none">
+                  <span className={`text-xs font-bold uppercase tracking-wider font-mono ${tc.text}`}>
+                    {TIER_LABEL[inject.commandTier]}
+                  </span>
+                  <span className="text-[10px] font-mono" style={{ color: "#8b8fa8" }}>
+                    {TIER_SUBTITLE[inject.commandTier]}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Large countdown timer: visible to participants on the projector */}

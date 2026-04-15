@@ -21,6 +21,19 @@ export type ScenarioType =
 
 export type Difficulty = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
+/**
+ * Incident command tier - determines which level of the organisation
+ * should lead discussion on this inject.
+ *
+ * GOLD   - Strategic / C-suite: board comms, pay decisions, regulatory filings,
+ *          market disclosures, insurance, reputational calls.
+ * SILVER - Tactical / Management: containment strategy, partner engagement,
+ *          internal comms, cross-functional coordination (CISO, COO, CTO, CLO…).
+ * BRONZE - Operational / Technical: hands-on triage, isolation, forensic capture,
+ *          tooling decisions - the people actually at the keyboard.
+ */
+export type CommandTier = "GOLD" | "SILVER" | "BRONZE";
+
 export type ExecRole =
   | "CEO" | "CFO" | "CISO" | "CLO" | "CCO"
   | "COO" | "CTO" | "BOARD_REP" | "HR_LEAD" | "CUSTOM";
@@ -211,6 +224,7 @@ export interface Inject {
   targetRoles: ExecRole[];
   expectedKeywords?: string[];
   artifact?: InjectArtifact;      // styled display type for present screen
+  commandTier?: CommandTier;      // GOLD/SILVER/BRONZE incident command tier
   timerMinutes?: number;          // per-inject countdown (facilitator controlled)
   tickerHeadline?: string;        // added to news ticker when inject is released
   /**

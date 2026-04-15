@@ -28,6 +28,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 1: 07:22 - The first vendor call ────────────────────────
       {
         id: "sc-i1",
+        commandTier: "SILVER",
         order: 0,
         scenarioDay: 1,
         scenarioTime: "07:22",
@@ -89,6 +90,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 2A: Isolation Complete ──────────────────────────────────
       {
         id: "sc-i2a",
+        commandTier: "SILVER",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "07:40",
@@ -118,6 +120,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 2B: The CEO Call ────────────────────────────────────────
       {
         id: "sc-i2b",
+        commandTier: "SILVER",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "07:30",
@@ -141,6 +144,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 2C: The Board Chair ─────────────────────────────────────
       {
         id: "sc-i2c",
+        commandTier: "GOLD",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "07:30",
@@ -164,6 +168,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 2D: The Written Notice That Doesn't Come ────────────────
       {
         id: "sc-i2d",
+        commandTier: "SILVER",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "09:30",
@@ -191,6 +196,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 2V: The Notification Question ───────────────────────────
       {
         id: "sc-i2v",
+        commandTier: "GOLD",
         order: 20,
         scenarioDay: 1,
         scenarioTime: "09:45",
@@ -252,6 +258,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT ICO PORTAL: ICO Case Reference Received ─────────────────
       {
         id: "sc-ico-portal",
+        commandTier: "GOLD",
         order: 23,
         scenarioDay: 1,
         scenarioTime: "10:45",
@@ -277,6 +284,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT SMS: A Client CEO Is Texting ────────────────────────────
       {
         id: "sc-sms",
+        commandTier: "GOLD",
         order: 26,
         scenarioDay: 1,
         scenarioTime: "11:30",
@@ -337,6 +345,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 3: The Full Scope ──────────────────────────────────────
       {
         id: "sc-i3",
+        commandTier: "SILVER",
         order: 30,
         scenarioDay: 1,
         scenarioTime: "14:00",
@@ -405,6 +414,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 3D: The NHS Trust ──────────────────────────────────────
       {
         id: "sc-i3d",
+        commandTier: "GOLD",
         order: 40,
         scenarioDay: 1,
         scenarioTime: "15:30",
@@ -466,6 +476,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT FT VOICEMAIL: Financial Times Has the Story ─────────────
       {
         id: "sc-ft-voicemail",
+        commandTier: "GOLD",
         order: 45,
         scenarioDay: 1,
         scenarioTime: "17:22",
@@ -525,6 +536,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 4: PeopleCore Goes Public ───────────────────────────────
       {
         id: "sc-i4",
+        commandTier: "GOLD",
         order: 50,
         scenarioDay: 2,
         scenarioTime: "08:15",
@@ -554,6 +566,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 4V: The Commercial Question ─────────────────────────────
       {
         id: "sc-i4v",
+        commandTier: "GOLD",
         order: 60,
         scenarioDay: 2,
         scenarioTime: "11:00",
@@ -622,6 +635,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 5: The Legal Posture ────────────────────────────────────
       {
         id: "sc-i5",
+        commandTier: "GOLD",
         order: 70,
         scenarioDay: 15,
         title: "Week 3 - The ICO Investigation",
@@ -681,6 +695,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 6A: The Board Presentation ──────────────────────────────
       {
         id: "sc-i6a",
+        commandTier: "GOLD",
         order: 80,
         scenarioDay: 22,
         scenarioTime: "18:00",
@@ -737,6 +752,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 6-strong: Bridge narrative for strong play ──────────────
       {
         id: "sc-i6-strong",
+        commandTier: "GOLD",
         order: 90,
         scenarioDay: 29,
         title: "Week 5 - The Accountability Dividend",
@@ -756,6 +772,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 6-weak: Bridge narrative for weak play ──────────────────
       {
         id: "sc-i6-weak",
+        commandTier: "GOLD",
         order: 90,
         scenarioDay: 29,
         title: "Week 5 - The Credibility Gap",
@@ -775,6 +792,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── INJECT 7: How Does This End? (score-routed finale) ─────────────
       {
         id: "sc-i7",
+        commandTier: "GOLD",
         order: 100,
         scenarioDay: 90,
         title: "Month 3 - How Does This End?",
@@ -801,6 +819,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── ENDING 1: TRIUMPH ──────────────────────────────────────────────
       {
         id: "sc-end1",
+        commandTier: "GOLD",
         order: 110,
         scenarioDay: 180,
         title: "Month 6 - The New Standard",
@@ -832,6 +851,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── ENDING 2: RECOVERY ─────────────────────────────────────────────
       {
         id: "sc-end2",
+        commandTier: "GOLD",
         order: 110,
         scenarioDay: 180,
         title: "Month 6 - The Long Walk Back",
@@ -863,6 +883,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── ENDING 3: DIMINISHED ───────────────────────────────────────────
       {
         id: "sc-end3",
+        commandTier: "GOLD",
         order: 110,
         scenarioDay: 180,
         title: "Month 6 - The Slow Erosion",
@@ -894,6 +915,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       // ── ENDING 4: CATASTROPHIC ─────────────────────────────────────────
       {
         id: "sc-end4",
+        commandTier: "GOLD",
         order: 110,
         scenarioDay: 180,
         title: "Month 6 - The Reckoning",
