@@ -21,6 +21,19 @@ export type ScenarioType =
 
 export type Difficulty = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
+/**
+ * Incident command tier - determines which level of the organisation
+ * should lead discussion on this inject.
+ *
+ * GOLD   - Strategic / C-suite: board comms, pay decisions, regulatory filings,
+ *          market disclosures, insurance, reputational calls.
+ * SILVER - Tactical / Management: containment strategy, partner engagement,
+ *          internal comms, cross-functional coordination (CISO, COO, CTO, CLO…).
+ * BRONZE - Operational / Technical: hands-on triage, isolation, forensic capture,
+ *          tooling decisions - the people actually at the keyboard.
+ */
+export type CommandTier = "GOLD" | "SILVER" | "BRONZE";
+
 export type ExecRole =
   | "CEO" | "CFO" | "CISO" | "CLO" | "CCO"
   | "COO" | "CTO" | "BOARD_REP" | "HR_LEAD" | "CUSTOM";
@@ -170,6 +183,23 @@ export interface InjectArtifact {
   boardPortalAlertTitle?: string; // e.g. "Unscheduled board meeting request"
 }
 
+export interface ArcRecapEntry {
+  /** Text before {{recapFragment}} in the recapLine, e.g. "made the first call to" */
+  label: string;
+  /** The chosen option's recapFragment, e.g. "NCSC under NIS Regs" */
+  fragment: string;
+  /** Quality rank of the chosen option (1 = best, 4 = worst). Undefined if unranked. */
+  rank?: number;
+  /** Option key that won the vote: "A", "B", "C", or "D" */
+  optionKey: string;
+}
+
+export interface ArcRecap {
+  entries: ArcRecapEntry[];
+  /** Compound average rank across all ranked decisions. null if no ranked decisions. */
+  score: number | null;
+}
+
 export interface Inject {
   id: string;
   order: number;
@@ -194,6 +224,7 @@ export interface Inject {
   targetRoles: ExecRole[];
   expectedKeywords?: string[];
   artifact?: InjectArtifact;      // styled display type for present screen
+  commandTier?: CommandTier;      // GOLD/SILVER/BRONZE incident command tier
   timerMinutes?: number;          // per-inject countdown (facilitator controlled)
   tickerHeadline?: string;        // added to news ticker when inject is released
   /**
@@ -203,12 +234,18 @@ export interface Inject {
    */
   recapLine?: string;
   /**
-   * Mark this inject as a scenario ending. When true, the store prepends
-   * a computed "your arc" recap to the body of this inject at release
-   * time, so that Present and QR participants see the full journey recap
-   * alongside the ending body.
+   * Mark this inject as a scenario ending. When true, the store attaches
+   * a structured arcRecap to the rendered inject broadcast to Present so the
+   * arc card can be displayed visually. QR phones receive a plain-text
+   * fallback via liveInject.injectBody.
    */
   isEnding?: boolean;
+  /**
+   * Structured arc recap populated at release time for ending injects only.
+   * Never present on scenario definition objects - only on rendered injects
+   * broadcast to the Present screen.
+   */
+  arcRecap?: ArcRecap;
   /**
    * Fictional day number within the scenario (1 = Day 1, 2 = Day 2, etc.).
    * Used to power the scenario day strip on Runner and Present screens.

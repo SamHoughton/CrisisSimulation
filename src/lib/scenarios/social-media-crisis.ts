@@ -31,6 +31,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i01",
+      commandTier: "GOLD",
       order: 0,
       scenarioDay: 1,
       scenarioTime: "18:47",
@@ -56,6 +57,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i02",
+      commandTier: "GOLD",
       order: 5,
       scenarioDay: 1,
       scenarioTime: "19:02",
@@ -113,6 +115,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i03",
+      commandTier: "SILVER",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "19:04",
@@ -172,6 +175,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i04",
+      commandTier: "GOLD",
       order: 15,
       scenarioDay: 1,
       scenarioTime: "19:45",
@@ -234,6 +238,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i05",
+      commandTier: "GOLD",
       order: 18,
       scenarioDay: 1,
       scenarioTime: "21:12",
@@ -299,6 +304,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i06",
+      commandTier: "GOLD",
       order: 22,
       scenarioDay: 1,
       scenarioTime: "21:58",
@@ -361,6 +367,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i07",
+      commandTier: "GOLD",
       order: 25,
       scenarioDay: 2,
       scenarioTime: "08:10",
@@ -386,6 +393,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i08",
+      commandTier: "GOLD",
       order: 28,
       scenarioDay: 2,
       scenarioTime: "08:34",
@@ -413,6 +421,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i09",
+      commandTier: "SILVER",
       order: 30,
       scenarioDay: 2,
       scenarioTime: "08:52",
@@ -470,6 +479,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i10",
+      commandTier: "SILVER",
       order: 35,
       scenarioDay: 2,
       scenarioTime: "09:18",
@@ -533,6 +543,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i11",
+      commandTier: "GOLD",
       order: 40,
       scenarioDay: 2,
       scenarioTime: "10:05",
@@ -592,6 +603,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i12",
+      commandTier: "GOLD",
       order: 45,
       scenarioDay: 2,
       scenarioTime: "14:17",
@@ -653,6 +665,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i13",
+      commandTier: "SILVER",
       order: 50,
       scenarioDay: 2,
       scenarioTime: "15:30",
@@ -704,6 +717,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i14",
+      commandTier: "GOLD",
       order: 55,
       scenarioDay: 2,
       scenarioTime: "16:45",
@@ -767,6 +781,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-i15",
+      commandTier: "GOLD",
       order: 60,
       scenarioDay: 2,
       scenarioTime: "17:30",
@@ -790,6 +805,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-end-strong",
+      commandTier: "GOLD",
       order: 65,
       scenarioDay: 2,
       scenarioTime: "17:30",
@@ -808,6 +824,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-end-moderate",
+      commandTier: "GOLD",
       order: 65,
       scenarioDay: 2,
       scenarioTime: "17:30",
@@ -826,6 +843,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
 
     {
       id: "smc-end-weak",
+      commandTier: "GOLD",
       order: 65,
       scenarioDay: 2,
       scenarioTime: "17:30",

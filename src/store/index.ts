@@ -13,6 +13,7 @@ import type {
   Scenario, Session, Settings, View,
   Participant, LiveInject, ResponseEntry, DecisionEntry,
   GeneratedReport, FacilitatorNote, PresentMessage,
+  ArcRecap, ArcRecapEntry,
 } from "@/types";
 import { BUILT_IN_TEMPLATES } from "@/lib/templates";
 
@@ -161,15 +162,28 @@ export const useStore = create<AppStore>()(
         if (!session) return;
         const inj = session.scenario.injects.find((i) => i.id === injectId);
         if (!inj) return;
-        // For ending injects, prepend a computed "your arc" recap so the
-        // outcome references the specific journey that led here.
-        const recap = inj.isEnding ? buildScenarioRecap(session) : "";
-        const renderedBody = recap ? recap + inj.body : inj.body;
-        const renderedInject = recap ? { ...inj, body: renderedBody } : inj;
+
+        // For ending injects build structured arc recap for Present screen.
+        const arcRecap = inj.isEnding ? buildScenarioRecap(session) : null;
+
+        // Also build a plain-text version for QR phones / Runner panel.
+        let arcText = "";
+        if (arcRecap && arcRecap.entries.length > 0) {
+          const sentences = arcRecap.entries.map((e) => `${e.label} ${e.fragment}`);
+          const scorePart = arcRecap.score !== null
+            ? ` Compound decision score: ${arcRecap.score.toFixed(2)} (lower is better; 1.00 = perfect).`
+            : "";
+          arcText = `Your arc: ${sentences.join("; ")}.${scorePart}\n\n`;
+        }
+
+        // Present gets the clean body + structured arcRecap (no text prefix).
+        const renderedInject = arcRecap ? { ...inj, arcRecap } : inj;
+
+        // LiveInject keeps the text-prefixed body so QR phones/Runner still work.
         const liveInject: LiveInject = {
           injectId,
           injectTitle: inj.title,
-          injectBody: renderedBody,
+          injectBody: arcText + inj.body,
           releasedAt: new Date().toISOString(),
           responses: [],
           decisions: [],
@@ -355,14 +369,13 @@ export function getSessionAverageRank(session: Session): number | null {
 }
 
 /**
- * Build a short prose recap of the session's key choices, used as a prelude
- * to ending injects so that participants see the arc that led to their
- * outcome. Walks all released injects in release order and renders any that
- * have a recapLine template filled with the chosen option's recapFragment.
- * Returns an empty string if no recap-enabled decisions have been taken.
+ * Build a structured arc recap of the session's key choices for ending injects.
+ * Each entry captures the decision label, the chosen fragment, its rank, and
+ * the winning option key. The compound score is the average rank across all
+ * ranked decisions (lower is better; 1.0 = perfect).
  */
-export function buildScenarioRecap(session: Session): string {
-  const fragments: string[] = [];
+export function buildScenarioRecap(session: Session): ArcRecap {
+  const entries: ArcRecapEntry[] = [];
   for (const live of session.liveInjects) {
     if (live.decisions.length === 0) continue;
     const inj = session.scenario.injects.find((i) => i.id === live.injectId);
@@ -370,14 +383,11 @@ export function buildScenarioRecap(session: Session): string {
     const winningKey = getMajorityOption(live.decisions);
     const chosen = inj.decisionOptions.find((o) => o.key === winningKey);
     if (!chosen?.recapFragment) continue;
-    fragments.push(inj.recapLine.replace("{{recapFragment}}", chosen.recapFragment));
+    // Split label from fragment at the {{recapFragment}} placeholder.
+    const label = inj.recapLine.split("{{recapFragment}}")[0].trimEnd();
+    entries.push({ label, fragment: chosen.recapFragment, rank: chosen.rank, optionKey: winningKey });
   }
-  if (fragments.length === 0) return "";
-  const avg = getSessionAverageRank(session);
-  const scoreLine = avg !== null
-    ? ` Compound decision score: ${avg.toFixed(2)} (lower is better; 1.00 = perfect).`
-    : "";
-  return `Your arc: ${fragments.join("; ")}.${scoreLine}\n\n`;
+  return { entries, score: getSessionAverageRank(session) };
 }
 
 /**

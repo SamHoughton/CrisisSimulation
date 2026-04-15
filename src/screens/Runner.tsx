@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
-import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds } from "@/store";
+import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, buildScenarioRecap } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
   Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import QRCode from "qrcode";
 import {
-  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed,
+  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed, TIER_LABEL, TIER_COLOUR,
 } from "@/lib/utils";
 import type { ExecRole, DecisionEntry, Participant, ResponseEntry, RemoteSessionState } from "@/types";
 import {
@@ -147,15 +147,18 @@ export function Runner() {
       const reply = new BroadcastChannel("crisis-present");
       reply.postMessage({ type: "status", status: s.status, scenario: s.scenario });
       reply.close();
-      // Also replay the most recent inject if one is live so Present can catch up
+      // Also replay the most recent inject if one is live so Present can catch up.
+      // Re-attach arcRecap so the visual arc card shows correctly after reconnect.
       const live = s.liveInjects[s.liveInjects.length - 1];
       if (live) {
         const inj = s.scenario.injects.find((i) => i.id === live.injectId);
         if (inj) {
+          const arcRecap = inj.isEnding ? buildScenarioRecap(s) : null;
+          const renderedInject = arcRecap ? { ...inj, arcRecap } : inj;
           const reply2 = new BroadcastChannel("crisis-present");
           reply2.postMessage({
             type: "inject",
-            inject: inj,
+            inject: renderedInject,
             injectNum: s.liveInjects.length,
             totalInjects: s.scenario.injects.length,
           });
@@ -753,6 +756,12 @@ export function Runner() {
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
                     <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
+                    {inj.commandTier && (
+                      <span
+                        title={TIER_LABEL[inj.commandTier]}
+                        className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${TIER_COLOUR[inj.commandTier].dot}`}
+                      />
+                    )}
                     <span className={cn("font-medium flex-1 truncate",
                       released && !isLive ? "text-rtr-green line-through"
                       : isLive ? "text-rtr-red" : isNext ? "text-rtr-text" : "text-rtr-muted"
@@ -828,7 +837,20 @@ export function Runner() {
             <>
               <div className="px-6 py-5 border-b border-rtr-border bg-rtr-panel">
                 <div className="flex items-start justify-between mb-2">
-                  <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
+                    {(() => {
+                      const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
+                      if (!inj?.commandTier) return null;
+                      const tc = TIER_COLOUR[inj.commandTier];
+                      return (
+                        <span className={`flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded border ${tc.bg} ${tc.border} ${tc.text}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${tc.dot}`} />
+                          {TIER_LABEL[inj.commandTier]}
+                        </span>
+                      );
+                    })()}
+                  </div>
                   <p className="text-xs text-rtr-dim font-mono">
                     Released {new Date(currentLive.releasedAt).toLocaleTimeString()}
                     <span className="text-amber-400/70"> · on inject for {injectElapsed}</span>
@@ -899,17 +921,17 @@ export function Runner() {
               <div className="px-6 py-2 border-t border-rtr-border bg-rtr-panel flex items-center gap-3 flex-wrap">
                 {nextInject && session.status === "active" && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    Space — release next
+                    Space - release next
                   </span>
                 )}
                 {currentLive && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    T — {timerRunning ? "pause timer" : "start timer"}
+                    T - {timerRunning ? "pause timer" : "start timer"}
                   </span>
                 )}
                 {showAdHoc && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    Esc — close panel
+                    Esc - close panel
                   </span>
                 )}
               </div>

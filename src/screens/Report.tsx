@@ -634,7 +634,7 @@ function DecisionLogTab({ session }: { session: Session }) {
                     {ROLE_SHORT[d.role] ?? d.role}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs text-rtr-muted">{d.name || "—"}</td>
+                <td className="px-4 py-3 text-xs text-rtr-muted">{d.name || "-"}</td>
                 <td className="px-4 py-3">
                   <span className="inline-flex items-center gap-1.5">
                     <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center font-mono">{d.optionKey}</span>
