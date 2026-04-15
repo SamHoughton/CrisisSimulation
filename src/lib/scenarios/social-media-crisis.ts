@@ -116,6 +116,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
     {
       id: "smc-i03",
       commandTier: "SILVER",
+      tierSkipSummary: "Priya Patel, the senior analyst whose post triggered the crisis, left a voicemail for HR. Her message revealed the personal and professional context behind the post - information that would be material to any employment and legal decisions.",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "19:04",
@@ -422,6 +423,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
     {
       id: "smc-i09",
       commandTier: "SILVER",
+      tierSkipSummary: "Three client emails arrived asking for reassurance and clarity on whether the firm's conduct standards had been compromised. A coordinated client communication response was agreed, reinforcing confidence in the firm's governance.",
       order: 30,
       scenarioDay: 2,
       scenarioTime: "08:52",
@@ -480,6 +482,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
     {
       id: "smc-i10",
       commandTier: "SILVER",
+      tierSkipSummary: "Internal Slack channels were active with staff speculation, concern, and some expressions of solidarity with Priya. An internal communications response was drafted to address rumour, restate values, and signal that the matter was being handled fairly.",
       order: 35,
       scenarioDay: 2,
       scenarioTime: "09:18",
@@ -666,6 +669,7 @@ export const SOCIAL_MEDIA_CRISIS_SCENARIO: Scenario = {
     {
       id: "smc-i13",
       commandTier: "SILVER",
+      tierSkipSummary: "HR and Legal completed their deliberation on Priya Patel's employment situation. The disciplinary process followed the firm's standard procedure, with the outcome shaped by the legal advice received and the FCA's expectations around conduct.",
       order: 50,
       scenarioDay: 2,
       scenarioTime: "15:30",

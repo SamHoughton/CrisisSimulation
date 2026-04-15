@@ -225,6 +225,13 @@ export interface Inject {
   expectedKeywords?: string[];
   artifact?: InjectArtifact;      // styled display type for present screen
   commandTier?: CommandTier;      // GOLD/SILVER/BRONZE incident command tier
+  /**
+   * Short (1-3 sentence) narrator summary shown when this inject is filtered out
+   * due to tier selection (e.g. Bronze inject skipped in a Gold-only session).
+   * Displayed as a "Story so far..." briefing strip on the Present screen before
+   * the next in-scope inject, so the room retains narrative coherence.
+   */
+  tierSkipSummary?: string;
   timerMinutes?: number;          // per-inject countdown (facilitator controlled)
   tickerHeadline?: string;        // added to news ticker when inject is released
   /**
@@ -337,6 +344,13 @@ export interface Session {
   liveInjects: LiveInject[];
   notes: FacilitatorNote[];
   report?: GeneratedReport;
+  /**
+   * Which command tiers are active in this session. Injects whose commandTier
+   * is NOT in this array are skipped during the exercise. Their tierSkipSummary
+   * is shown as a "Story so far..." briefing before the next in-scope inject.
+   * Defaults to all tiers when omitted.
+   */
+  selectedTiers?: CommandTier[];
 }
 
 // ─── Report ──────────────────────────────────────────────────────────────────
@@ -392,7 +406,7 @@ export interface Settings {
 // ─── BroadcastChannel message types ─────────────────────────────────────────
 
 export type PresentMessage =
-  | { type: "inject"; inject: Inject; injectNum: number; totalInjects: number }
+  | { type: "inject"; inject: Inject; injectNum: number; totalInjects: number; contextSummaries?: Array<{ title: string; summary: string }> }
   | { type: "adhoc"; body: string }
   | { type: "status"; status: SessionStatus; scenario?: Scenario }
   | { type: "vote"; role: string; roleName: string; optionKey: string }

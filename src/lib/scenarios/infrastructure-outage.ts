@@ -33,6 +33,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i01",
       commandTier: "BRONZE",
+      tierSkipSummary: "At 02:47, the SIEM detected a cascading database failure on NexCore UK-PROD - the core infrastructure system supporting Clearpoint Bank's payment and account services. The COO and CISO were paged immediately.",
       order: 0,
       scenarioDay: 1,
       scenarioTime: "07:43",
@@ -57,6 +58,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i02",
       commandTier: "SILVER",
+      tierSkipSummary: "NexCore made first contact at 03:15 and initially indicated the issue would be resolved within 30 minutes. The COO and CISO escalated internally. The 30-minute commitment was not met.",
       order: 5,
       scenarioDay: 1,
       scenarioTime: "07:51",
@@ -181,6 +183,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i04",
       commandTier: "SILVER",
+      tierSkipSummary: "The communications team circulated three customer message drafts - ranging from minimal acknowledgement to proactive outreach with a service credit offer. A decision on tone and timing was reached before the salary payment deadline hit.",
       order: 15,
       scenarioDay: 1,
       scenarioTime: "08:12",
@@ -259,6 +262,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i06",
       commandTier: "SILVER",
+      tierSkipSummary: "The contact centre received 11,000 calls in 40 minutes as customers discovered their accounts and payments were unavailable. Queue times exceeded acceptable thresholds and call handlers were working without a confirmed resolution timeline.",
       order: 22,
       scenarioDay: 1,
       scenarioTime: "09:41",
@@ -285,6 +289,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i07",
       commandTier: "SILVER",
+      tierSkipSummary: "#ClearpointDown began trending on social media with customer frustration escalating publicly. The CCO agreed a social media holding response and a monitoring cadence, but the narrative was increasingly out of the bank's control.",
       order: 25,
       scenarioDay: 1,
       scenarioTime: "09:48",
@@ -309,6 +314,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i08",
       commandTier: "SILVER",
+      tierSkipSummary: "NexCore missed their first ETA commitment with no updated timeline provided. Vendor confidence was deteriorating rapidly. The COO initiated a formal escalation to NexCore's incident director and began assessing alternative recovery options.",
       order: 28,
       scenarioDay: 1,
       scenarioTime: "10:04",
@@ -374,6 +380,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i09",
       commandTier: "SILVER",
+      tierSkipSummary: "Customers began queueing outside the Manchester Deansgate branch, seeking cash access and reassurance. Branch staff were dealing with frustrated customers without a resolution timeline to offer. The reputational exposure was becoming visible on the street.",
       order: 32,
       scenarioDay: 1,
       scenarioTime: "10:22",
@@ -461,6 +468,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i11",
       commandTier: "SILVER",
+      tierSkipSummary: "NexCore missed a second ETA commitment at 14:00. The outage was now in its fifth hour with no confirmed resolution path. The COO began exploring emergency failover options and the incident was escalating to CEO-level vendor confrontation.",
       order: 40,
       scenarioDay: 1,
       scenarioTime: "11:45",
@@ -840,6 +848,7 @@ export const INFRASTRUCTURE_OUTAGE_SCENARIO: Scenario = {
     {
       id: "io-i17",
       commandTier: "SILVER",
+      tierSkipSummary: "Systems began coming back online following NexCore's emergency change window. The CISO immediately flagged an anomaly in the restoration logs - an unexplained access pattern that required investigation before full service restoration could be confirmed.",
       order: 70,
       scenarioDay: 1,
       scenarioTime: "15:48",
