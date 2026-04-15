@@ -592,9 +592,9 @@ function DeepfakeBriefingArtifact() {
 function SupplyChainBriefingArtifact() {
   const vendors = [
     { name: "PeopleCore",         status: "CRITICAL",  tenants: 140, records: "620K", risk: "Unaudited" },
-    { name: "CloudVault Backup",  status: "OK",        tenants: 1,   records: "—",    risk: "Audited" },
-    { name: "SecurePay Gateway",  status: "OK",        tenants: 1,   records: "—",    risk: "Audited" },
-    { name: "DataSync Analytics", status: "OK",        tenants: 1,   records: "—",    risk: "Pending" },
+    { name: "CloudVault Backup",  status: "OK",        tenants: 1,   records: "-",    risk: "Audited" },
+    { name: "SecurePay Gateway",  status: "OK",        tenants: 1,   records: "-",    risk: "Audited" },
+    { name: "DataSync Analytics", status: "OK",        tenants: 1,   records: "-",    risk: "Pending" },
   ];
 
   return (
@@ -615,7 +615,7 @@ function SupplyChainBriefingArtifact() {
       <div className="px-4 py-3" style={{ background: "#1a0000", borderBottom: "1px solid #330000" }}>
         <div className="flex items-center gap-2">
           <span style={{ color: "#ff4444" }}>⚠</span>
-          <span style={{ color: "#ff6644" }}>VENDOR BREACH NOTIFICATION RECEIVED — TLP:AMBER</span>
+          <span style={{ color: "#ff6644" }}>VENDOR BREACH NOTIFICATION RECEIVED - TLP:AMBER</span>
         </div>
       </div>
 
@@ -659,7 +659,7 @@ function SupplyChainBriefingArtifact() {
       <div className="px-4 py-3" style={{ background: "#0d0000", borderTop: "2px solid #E82222" }}>
         <div className="rounded-lg p-3" style={{ background: "#150000", border: "1px solid rgba(232,34,34,0.5)" }}>
           <p className="text-xs text-center" style={{ color: "#cc4422" }}>
-            ⚠ DPIA INCOMPLETE — PeopleCore sub-processor audit never conducted
+            ⚠ DPIA INCOMPLETE - PeopleCore sub-processor audit never conducted
           </p>
           <p className="text-xs text-center mt-1" style={{ color: "#663322" }}>
             140 client tenants · 620,000 records · incl. NHS trust data
@@ -1088,7 +1088,7 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
   const onionUrl    = artifact.darkWebOnionUrl    ?? "http://alphvmmm27o3abo3r2mlmjrpdmzle3rykajqc5xwn4bd3j4lujhpack3ad.onion";
   const title       = artifact.darkWebTitle       ?? inject.title;
   const price       = artifact.darkWebPrice       ?? "18 XMR";
-  const recordCount = artifact.darkWebRecordCount ?? "—";
+  const recordCount = artifact.darkWebRecordCount ?? "-";
   const rows        = artifact.darkWebSampleRows  ?? [];
 
   return (
@@ -1531,7 +1531,7 @@ function InternalMemo({ inject, artifact: art }: { inject: Inject; artifact: Inj
       {/* Footer */}
       <div className="px-8 py-3" style={{ borderTop: "1px solid #ccc", background: "#f0ede6" }}>
         <p className="text-xs text-center" style={{ color: "#777" }}>
-          {classification} — FOR AUTHORISED RECIPIENTS ONLY — DO NOT DISTRIBUTE
+          {classification} - FOR AUTHORISED RECIPIENTS ONLY - DO NOT DISTRIBUTE
         </p>
       </div>
     </div>
@@ -1797,7 +1797,7 @@ function BoardPortal({ inject, artifact: art }: { inject: Inject; artifact: Inje
             <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/>
           </svg>
           <span className="text-sm font-bold" style={{ color: "#fcd34d" }}>
-            {alertCount} URGENT ALERT{alertCount > 1 ? "S" : ""} — {alertTitle}
+            {alertCount} URGENT ALERT{alertCount > 1 ? "S" : ""} - {alertTitle}
           </span>
         </div>
       )}

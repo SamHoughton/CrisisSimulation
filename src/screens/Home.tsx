@@ -324,7 +324,7 @@ export function Home() {
         {/* ── Open source footer ──────────────────────────────────────────── */}
         <div className="mt-12 pt-6 border-t border-rtr-border flex items-center justify-between">
           <p className="text-[11px] text-rtr-dim leading-relaxed max-w-md">
-            Built for practitioners, not vendors. No accounts, no data collection, no cost — everything runs in your browser.
+            Built for practitioners, not vendors. No accounts, no data collection, no cost - everything runs in your browser.
           </p>
           <a
             href={GITHUB_URL}

@@ -63,7 +63,7 @@ export function Settings() {
           <p className="text-xs text-rtr-muted mb-4 leading-relaxed">
             Report generation uses Claude via a hosted proxy with usage limits. Add your own key if
             you want to use your own Anthropic account or remove the rate limits entirely.
-            Your key is stored only in this browser and sent directly to Anthropic — it never touches our servers.{" "}
+            Your key is stored only in this browser and sent directly to Anthropic - it never touches our servers.{" "}
             <a
               href="https://console.anthropic.com/"
               target="_blank"

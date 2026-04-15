@@ -797,7 +797,7 @@ function InjectCard({
                             className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1.5 focus:outline-none focus:border-rtr-green"
                             style={{ backgroundColor: "#0d0e10" }}
                           >
-                            <option value="" style={{ background: "#0d0e10" }}>— Follow linear order —</option>
+                            <option value="" style={{ background: "#0d0e10" }}>Follow linear order</option>
                             {otherInjects.map((i) => (
                               <option key={i.id} value={i.id} style={{ background: "#0d0e10" }}>
                                 {i.order + 1}. {i.title || `Inject ${i.order + 1}`}

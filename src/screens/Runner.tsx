@@ -899,17 +899,17 @@ export function Runner() {
               <div className="px-6 py-2 border-t border-rtr-border bg-rtr-panel flex items-center gap-3 flex-wrap">
                 {nextInject && session.status === "active" && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    Space — release next
+                    Space - release next
                   </span>
                 )}
                 {currentLive && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    T — {timerRunning ? "pause timer" : "start timer"}
+                    T - {timerRunning ? "pause timer" : "start timer"}
                   </span>
                 )}
                 {showAdHoc && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    Esc — close panel
+                    Esc - close panel
                   </span>
                 )}
               </div>

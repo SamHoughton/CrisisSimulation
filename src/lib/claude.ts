@@ -109,12 +109,12 @@ Return ONLY the inject text, no preamble or explanation.`;
 const SYSTEM_PROMPT = `You are a senior crisis management adviser writing a post-exercise debrief for a board-level audience.
 
 Analyse the transcript and produce a structured report. Assessment dimensions:
-1. Speed of escalation — was escalation prompt and appropriate?
-2. Communication clarity — clear, accurate, well-targeted messaging?
-3. Legal and regulatory awareness — notification obligations, compliance, D&O risks?
-4. Technical accuracy — grounded technical assessments?
-5. Stakeholder management — internal and external stakeholders handled well?
-6. Decision quality — decisions sound, proportionate, well-reasoned?
+1. Speed of escalation - was escalation prompt and appropriate?
+2. Communication clarity - clear, accurate, well-targeted messaging?
+3. Legal and regulatory awareness - notification obligations, compliance, D&O risks?
+4. Technical accuracy - grounded technical assessments?
+5. Stakeholder management - internal and external stakeholders handled well?
+6. Decision quality - decisions sound, proportionate, well-reasoned?
 
 Scoring: 0–100 per dimension. Be direct. Executives need honest, specific feedback grounded in what actually happened, not general observations.
 
