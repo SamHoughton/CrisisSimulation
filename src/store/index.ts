@@ -13,7 +13,7 @@ import type {
   Scenario, Session, Settings, View,
   Participant, LiveInject, ResponseEntry, DecisionEntry,
   GeneratedReport, FacilitatorNote, PresentMessage,
-  ArcRecap, ArcRecapEntry,
+  ArcRecap, ArcRecapEntry, CommandTier, Inject,
 } from "@/types";
 import { BUILT_IN_TEMPLATES } from "@/lib/templates";
 
@@ -33,6 +33,19 @@ function broadcast(msg: PresentMessage) {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function makeId() {
   return Math.random().toString(36).slice(2, 10);
+}
+
+/**
+ * Returns true if an inject should be run in the current session.
+ * An inject is in-scope when:
+ *  - selectedTiers is empty/undefined (all tiers active), OR
+ *  - the inject has no commandTier set, OR
+ *  - the inject's commandTier is included in selectedTiers.
+ */
+export function isInScope(inj: Inject, selectedTiers?: CommandTier[]): boolean {
+  if (!selectedTiers || selectedTiers.length === 0) return true;
+  if (!inj.commandTier) return true;
+  return selectedTiers.includes(inj.commandTier);
 }
 
 /** Tally decisions and return the winning option key (most votes wins). */
@@ -56,7 +69,7 @@ interface AppStore {
   pastSessions: Session[];
 
   session: Session | null;
-  startSession: (scenario: Scenario, participants: Participant[]) => void;
+  startSession: (scenario: Scenario, participants: Participant[], selectedTiers?: CommandTier[]) => void;
   launchSession: () => void;
   pauseSession: () => void;
   resumeSession: () => void;
@@ -111,7 +124,7 @@ export const useStore = create<AppStore>()(
       // ── Active session ────────────────────────────────────────────────────
       session: null,
 
-      startSession: (scenario, participants) => {
+      startSession: (scenario, participants, selectedTiers) => {
         const session: Session = {
           id: makeId(),
           scenario,
@@ -120,6 +133,8 @@ export const useStore = create<AppStore>()(
           status: "setup",
           liveInjects: [],
           notes: [],
+          // Only store selectedTiers if it's a partial selection (not all three)
+          selectedTiers: selectedTiers && selectedTiers.length < 3 ? selectedTiers : undefined,
         };
         set({ session, view: "runner" });
       },
@@ -179,6 +194,27 @@ export const useStore = create<AppStore>()(
         // Present gets the clean body + structured arcRecap (no text prefix).
         const renderedInject = arcRecap ? { ...inj, arcRecap } : inj;
 
+        // Collect tierSkipSummary from any filtered injects between the last
+        // released inject and this one (in linear order). These are shown as a
+        // "Story so far..." briefing strip on the Present screen so the room
+        // retains narrative coherence even when tiers are filtered out.
+        const sortedAll = [...session.scenario.injects].sort((a, b) => a.order - b.order);
+        const lastLive = session.liveInjects[session.liveInjects.length - 1];
+        const lastOrder = lastLive
+          ? (session.scenario.injects.find((i) => i.id === lastLive.injectId)?.order ?? -1)
+          : -1;
+        const contextSummaries = session.selectedTiers
+          ? sortedAll
+              .filter(
+                (i) =>
+                  i.order > lastOrder &&
+                  i.order < inj.order &&
+                  !isInScope(i, session.selectedTiers) &&
+                  i.tierSkipSummary
+              )
+              .map((i) => ({ title: i.title, summary: i.tierSkipSummary! }))
+          : undefined;
+
         // LiveInject keeps the text-prefixed body so QR phones/Runner still work.
         const liveInject: LiveInject = {
           injectId,
@@ -195,7 +231,13 @@ export const useStore = create<AppStore>()(
             ? { ...st.session, liveInjects: [...st.session.liveInjects, liveInject] }
             : st.session,
         }));
-        broadcast({ type: "inject", inject: renderedInject, injectNum, totalInjects });
+        broadcast({
+          type: "inject",
+          inject: renderedInject,
+          injectNum,
+          totalInjects,
+          ...(contextSummaries && contextSummaries.length > 0 ? { contextSummaries } : {}),
+        });
         if (session.status === "setup") get().launchSession();
       },
 
@@ -409,7 +451,7 @@ export function getNextInject(session: Session | null) {
   const sorted   = [...session.scenario.injects].sort((a, b) => a.order - b.order);
 
   if (session.liveInjects.length === 0) {
-    return sorted.find((i) => !released.has(i.id)) ?? null;
+    return sorted.find((i) => !released.has(i.id) && isInScope(i, session.selectedTiers)) ?? null;
   }
 
   const currentLive = getCurrentLiveInject(session);
@@ -432,7 +474,7 @@ export function getNextInject(session: Session | null) {
       const winning = ranked.find((b) => avgRank <= (b.scoreMax ?? Infinity));
       if (winning) {
         const next = session.scenario.injects.find(
-          (i) => i.id === winning.nextInjectId && !released.has(i.id)
+          (i) => i.id === winning.nextInjectId && !released.has(i.id) && isInScope(i, session.selectedTiers)
         );
         if (next) return next;
       }
@@ -445,7 +487,7 @@ export function getNextInject(session: Session | null) {
     const branch  = currentInject.branches.find((b) => b.optionKey === winning);
     if (branch) {
       const next = session.scenario.injects.find(
-        (i) => i.id === branch.nextInjectId && !released.has(i.id)
+        (i) => i.id === branch.nextInjectId && !released.has(i.id) && isInScope(i, session.selectedTiers)
       );
       if (next) return next;
     }
@@ -456,8 +498,15 @@ export function getNextInject(session: Session | null) {
     return null;
   }
 
-  // Linear fallback: next in order after current
-  return sorted.find((i) => !released.has(i.id) && i.order > currentInject.order) ?? null;
+  // Linear fallback: next in order after current, skipping out-of-scope injects
+  return (
+    sorted.find(
+      (i) =>
+        !released.has(i.id) &&
+        i.order > currentInject.order &&
+        isInScope(i, session.selectedTiers)
+    ) ?? null
+  );
 }
 
 /** Returns all injects reachable from the current position (for queue highlighting) */

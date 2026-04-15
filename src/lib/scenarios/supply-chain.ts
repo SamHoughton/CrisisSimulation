@@ -29,6 +29,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i1",
         commandTier: "SILVER",
+        tierSkipSummary: "PeopleCore issued a breach notification confirming their systems had been compromised and that Clearpoint HR data was within scope. Initial scope was unclear but data exfiltration was confirmed. The CISO and CLO began an immediate assessment.",
         order: 0,
         scenarioDay: 1,
         scenarioTime: "07:22",
@@ -91,6 +92,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2a",
         commandTier: "SILVER",
+        tierSkipSummary: "Technical isolation of PeopleCore's access was completed within the hour. However, log analysis confirmed the data had already left PeopleCore's systems before isolation - containment prevented further exposure but could not undo the breach.",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "07:40",
@@ -121,6 +123,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2b",
         commandTier: "SILVER",
+        tierSkipSummary: "The CEO of PeopleCore called personally to report that their internal investigation had revealed the breach was more extensive than their initial notification suggested. The scope and timeline were both worse than first disclosed.",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "07:30",
@@ -169,6 +172,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i2d",
         commandTier: "SILVER",
+        tierSkipSummary: "PeopleCore failed to provide the formal written breach notice within the expected window, complicating Clearpoint HR's own regulatory timeline. The legal team escalated with a formal demand for documentation.",
         order: 10,
         scenarioDay: 1,
         scenarioTime: "09:30",
@@ -346,6 +350,7 @@ export const SUPPLY_CHAIN_SCENARIO: Scenario =
       {
         id: "sc-i3",
         commandTier: "SILVER",
+        tierSkipSummary: "Full scope assessment confirmed 620,000 records affected across Clearpoint HR's client base - significantly larger than the initial estimate. The exposure included payroll, HR, and personal data across 140 client organisations.",
         order: 30,
         scenarioDay: 1,
         scenarioTime: "14:00",

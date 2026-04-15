@@ -202,6 +202,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     {
       id: "df-i2c",
       commandTier: "SILVER",
+      tierSkipSummary: "The forensics team began a rapid dual-track investigation into both videos, racing for technical confirmation that they were AI-generated. The window for a definitive denial remained open while analysis continued.",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "07:20",
@@ -259,6 +260,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     {
       id: "df-i2v",
       commandTier: "SILVER",
+      tierSkipSummary: "The management team debated speed versus confidence on the forensic response - whether to issue a technically uncertain denial immediately or hold for confirmed evidence. The decision shaped the credibility of everything that followed.",
       order: 15,
       scenarioDay: 1,
       scenarioTime: "07:50",
@@ -464,6 +466,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     {
       id: "df-i4a",
       commandTier: "SILVER",
+      tierSkipSummary: "Staff rallied around the CEO. Client-facing teams began reconfirming meetings, with at least one client explicitly stating they wanted to see how the company handled it. Internal confidence was holding, but required active management.",
       order: 30,
       scenarioDay: 1,
       scenarioTime: "08:45",
@@ -632,6 +635,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     {
       id: "df-i5",
       commandTier: "SILVER",
+      tierSkipSummary: "Forensic analysis confirmed both videos were AI-generated deepfakes. Technical vindication was now available as a public statement - the question became how and when to deploy it for maximum reputational recovery.",
       order: 40,
       scenarioDay: 1,
       scenarioTime: "09:30",
@@ -732,6 +736,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     {
       id: "df-i6",
       commandTier: "SILVER",
+      tierSkipSummary: "Investigation revealed a rival firm had been hit by a near-identical deepfake attack, and an internal access control gap had been identified - a potential insider element could not be ruled out. The picture was sharpening but remained complex.",
       order: 45,
       scenarioDay: 1,
       scenarioTime: "11:45",
@@ -872,6 +877,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     {
       id: "df-i6-weak",
       commandTier: "SILVER",
+      tierSkipSummary: "By Day 2, the team was managing multiple simultaneous strands with limited goodwill remaining from regulators, staff, and media. The response had been reactive rather than controlled, and credibility was under pressure.",
       order: 49,
       scenarioDay: 2,
       scenarioTime: "09:15",

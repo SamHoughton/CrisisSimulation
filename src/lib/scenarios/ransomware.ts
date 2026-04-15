@@ -24,6 +24,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i1",
       commandTier: "BRONZE",
+      tierSkipSummary: "At 03:14, the SOC detected a suspicious outbound DNS beacon from a Treasury workstation - precisely periodic, machine-driven, not human. The on-call analyst initiated a quiet forensic investigation rather than triggering a hard alert, preserving the intelligence advantage.",
       order: 0,
       scenarioDay: 1,
       scenarioTime: "03:14",
@@ -90,6 +91,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2a",
       commandTier: "BRONZE",
+      tierSkipSummary: "By 05:30, forensic imaging had confirmed an ALPHV intrusion via a compromised VPN credential used five days earlier. The attacker had touched 11 hosts including a jump box on the IT/OT boundary. Mandiant were called as a courtesy - ETA 06:30. Encryption had not yet begun.",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "05:30",
@@ -118,6 +120,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2b",
       commandTier: "BRONZE",
+      tierSkipSummary: "By 05:30, the team hard-segmented the Treasury VLAN - effective containment, but the move was visible to the attacker, who began accelerating. Mandiant were engaged. 11 hosts confirmed compromised; the encryption clock is now running faster.",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "04:02",
@@ -144,6 +147,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2c",
       commandTier: "SILVER",
+      tierSkipSummary: "Mandiant were engaged on retainer immediately and on-site by 06:30. They confirmed two additional compromised endpoints beyond the initial beacon host and provided a full scope picture before the first Gold-level decisions were needed.",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "06:30",
@@ -169,6 +173,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2d",
       commandTier: "SILVER",
+      tierSkipSummary: "A second alert followed the first. By the time the morning shift arrived at 07:30, the situation had escalated significantly. Mandiant were engaged. 11 hosts are confirmed compromised.",
       order: 10,
       scenarioDay: 2,
       scenarioTime: "04:11",
@@ -194,6 +199,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i2v",
       commandTier: "SILVER",
+      tierSkipSummary: "The CISO, COO, and CLO convened for a first call at 05:30. Initial containment had been established and Mandiant were en route. The question of whether to brief the CEO immediately or wait for a complete picture was discussed - the governance clock was already running.",
       order: 20,
       scenarioDay: 1,
       scenarioTime: "06:00",
@@ -382,6 +388,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i3",
       commandTier: "SILVER",
+      tierSkipSummary: "At 04:11, a bulk encryption event began across the network. The technical team moved immediately to isolate affected segments, notify Mandiant, and escalate. The incident had crossed from investigation to active ransomware attack.",
       order: 30,
       scenarioDay: 1,
       scenarioTime: "04:11",
@@ -1075,6 +1082,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i6-strong",
       commandTier: "SILVER",
+      tierSkipSummary: "By Day 4, the team had established a cooperation footing with the NCSC - sharing indicators of compromise and receiving threat intelligence in return. Recovery was proceeding with external technical support.",
       order: 90,
       scenarioDay: 4,
       scenarioTime: "08:00",
@@ -1100,6 +1108,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
     {
       id: "rw-i6-weak",
       commandTier: "SILVER",
+      tierSkipSummary: "By Day 4, the team was operating in a defensive posture with limited external engagement. Recovery was slower than hoped, with internal resources stretched and public confidence fragile.",
       order: 90,
       scenarioDay: 4,
       scenarioTime: "08:00",
