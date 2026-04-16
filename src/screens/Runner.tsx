@@ -55,6 +55,7 @@ export function Runner() {
   const revealVotes      = useStore((s) => s.revealVotes);
   const updateInjectNote = useStore((s) => s.updateInjectNote);
   const addNote          = useStore((s) => s.addNote);
+  const skipInject       = useStore((s) => s.skipInject);
   const setView          = useStore((s) => s.setView);
 
   const [elapsed, setElapsed]           = useState("00:00");
@@ -72,6 +73,8 @@ export function Runner() {
   const [remoteBusy, setRemoteBusy] = useState(false);
   const [showRemotePanel, setShowRemotePanel] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState<string>("");
+  const [skipPanelInjectId, setSkipPanelInjectId] = useState<string | null>(null);
+  const [skipChoice, setSkipChoice] = useState<string>("");
   const remoteSessionRef = useRef<RemoteSessionState | null>(null);
   remoteSessionRef.current = remoteSession;
 
@@ -472,6 +475,9 @@ export function Runner() {
   };
 
   const orderedInjects = [...session.scenario.injects].sort((a, b) => a.order - b.order);
+  const skipInj = skipPanelInjectId
+    ? (session.scenario.injects.find((i) => i.id === skipPanelInjectId) ?? null)
+    : null;
   const crisisPct = orderedInjects.length > 0
     ? Math.round((session.liveInjects.length / orderedInjects.length) * 100)
     : 0;
@@ -779,12 +785,40 @@ export function Runner() {
                     ) : released && !isLive ? (
                       <span className="text-rtr-green">✓ Done</span>
                     ) : isNext || (!released && !isLive && orderedInjects[0]?.id === inj.id && session.liveInjects.length === 0) ? (
-                      <button onClick={() => handleRelease(inj.id)}
-                        className="flex items-center gap-1 text-rtr-red font-semibold hover:underline">
-                        <Send className="w-3 h-3" />Release
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => handleRelease(inj.id)}
+                          className="flex items-center gap-1 text-rtr-red font-semibold hover:underline">
+                          <Send className="w-3 h-3" />Release
+                        </button>
+                        {inj.tierSkipSummary && (
+                          <button
+                            onClick={() => {
+                              const r1 = inj.decisionOptions.find((o) => o.rank === 1);
+                              setSkipChoice(r1?.key ?? inj.decisionOptions[0]?.key ?? "");
+                              setSkipPanelInjectId(inj.id);
+                            }}
+                            className="text-[10px] text-slate-400 border border-slate-500/30 rounded px-1.5 py-0.5 hover:bg-slate-500/10 hover:text-slate-300 transition-colors"
+                          >
+                            Skip
+                          </button>
+                        )}
+                      </div>
                     ) : isLive ? (
                       <span className="text-rtr-red font-mono">LIVE</span>
+                    ) : !released && onPath && inj.tierSkipSummary ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-rtr-dim">Queued</span>
+                        <button
+                          onClick={() => {
+                            const r1 = inj.decisionOptions.find((o) => o.rank === 1);
+                            setSkipChoice(r1?.key ?? inj.decisionOptions[0]?.key ?? "");
+                            setSkipPanelInjectId(inj.id);
+                          }}
+                          className="text-[10px] text-slate-400 border border-slate-500/30 rounded px-1.5 py-0.5 hover:bg-slate-500/10 hover:text-slate-300 transition-colors"
+                        >
+                          Skip
+                        </button>
+                      </div>
                     ) : (
                       <span className="text-rtr-dim">{onPath ? "Queued" : "Off-path"}</span>
                     )}
@@ -838,6 +872,68 @@ export function Runner() {
 
         {/* ── Centre: current inject ───────────────────────────────────────── */}
         <div className="flex-1 flex flex-col overflow-hidden">
+          {/* ── Skip panel — shown when facilitator queues a skip ─────────── */}
+          {skipInj && (
+            <div className="border-b border-slate-500/30 bg-slate-900/60 px-6 py-4 shrink-0">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-500/20 text-slate-400 border border-slate-500/30 font-mono">
+                    {skipInj.commandTier}
+                  </span>
+                  <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                    Skip — read aloud: {skipInj.title}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSkipPanelInjectId(null)}
+                  className="text-rtr-dim hover:text-rtr-text transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="bg-slate-800/60 border border-slate-600/40 rounded-lg px-4 py-3 mb-3 font-mono text-sm text-slate-200 leading-relaxed">
+                {skipInj.tierSkipSummary}
+              </div>
+              {skipInj.isDecisionPoint && skipInj.decisionOptions.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs text-rtr-dim mb-2">Which path did the group take?</p>
+                  <div className="flex flex-wrap gap-2">
+                    {skipInj.decisionOptions.map((opt, i) => (
+                      <button
+                        key={opt.key}
+                        onClick={() => setSkipChoice(opt.key)}
+                        className={cn(
+                          "flex items-center gap-1.5 text-xs border rounded-lg px-3 py-1.5 font-semibold transition-all",
+                          skipChoice === opt.key
+                            ? cn(OPTION_COLOURS[i] ?? OPTION_COLOURS[0], "ring-2 ring-white/20")
+                            : "border-rtr-border text-rtr-dim hover:text-rtr-muted",
+                        )}
+                      >
+                        <span className="font-mono">{opt.key}</span>
+                        <span className="font-normal opacity-80 max-w-[160px] truncate">{opt.label}</span>
+                        {opt.rank === 1 && (
+                          <span className="text-[9px] text-rtr-green font-mono">★</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={() => {
+                  skipInject(
+                    skipPanelInjectId!,
+                    skipInj.isDecisionPoint ? skipChoice : undefined,
+                  );
+                  setSkipPanelInjectId(null);
+                }}
+                className="flex items-center gap-1.5 text-xs bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded font-semibold transition-colors"
+              >
+                <Check className="w-3.5 h-3.5" />
+                Confirm skip
+              </button>
+            </div>
+          )}
           {currentLive ? (
             <>
               <div className="px-6 py-5 border-b border-rtr-border bg-rtr-panel">

@@ -327,6 +327,12 @@ export interface LiveInject {
   responses: ResponseEntry[];
   decisions: DecisionEntry[];
   facilitatorNote?: string;
+  /**
+   * True when a facilitator used the tier-skip feature. Skipped injects are
+   * recorded in the session log but excluded from the recap narrative and
+   * the post-exercise decision analysis.
+   */
+  skipped?: boolean;
 }
 
 export type SessionStatus = "setup" | "active" | "paused" | "ended";

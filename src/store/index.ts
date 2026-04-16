@@ -84,6 +84,15 @@ interface AppStore {
   addNote: (text: string) => void;
   setReport: (report: GeneratedReport) => void;
 
+  /**
+   * Skip a lower-tier inject without releasing it to the Present screen.
+   * Records the inject as skipped in the session log (excluded from recap and
+   * decision analysis). If the inject is a decision point with branches, the
+   * provided optionKey (or the rank-1 option) is recorded so that branch
+   * routing continues correctly.
+   */
+  skipInject: (injectId: string, chosenOptionKey?: string) => void;
+
   importSessions: (sessions: Session[]) => void;
 
   view: View;
@@ -324,6 +333,46 @@ export const useStore = create<AppStore>()(
             : st.session,
         })),
 
+      skipInject: (injectId, chosenOptionKey) => {
+        const { session } = get();
+        if (!session) return;
+        const inj = session.scenario.injects.find((i) => i.id === injectId);
+        if (!inj) return;
+        // Determine which branch to follow: use the supplied key, or fall back
+        // to whichever option has rank 1 (best), or the first option if unranked.
+        let effectiveKey = chosenOptionKey;
+        if (!effectiveKey && inj.decisionOptions.length > 0) {
+          const rank1 = inj.decisionOptions.find((o) => o.rank === 1);
+          effectiveKey = rank1?.key ?? inj.decisionOptions[0].key;
+        }
+        const chosenOption = inj.decisionOptions.find((o) => o.key === effectiveKey);
+        const liveInject: LiveInject = {
+          injectId,
+          injectTitle: inj.title,
+          injectBody: inj.tierSkipSummary ?? inj.body,
+          releasedAt: new Date().toISOString(),
+          responses: [],
+          // Record the effective decision so branching and recap work correctly
+          decisions: chosenOption
+            ? [
+                {
+                  role: "CUSTOM" as const,
+                  name: "Facilitator (skipped)",
+                  optionKey: chosenOption.key,
+                  optionLabel: chosenOption.label,
+                },
+              ]
+            : [],
+          skipped: true,
+        };
+        set((st) => ({
+          session: st.session
+            ? { ...st.session, liveInjects: [...st.session.liveInjects, liveInject] }
+            : st.session,
+        }));
+        if (session.status === "setup") get().launchSession();
+      },
+
       addNote: (text) =>
         set((st) => ({
           session: st.session
@@ -431,6 +480,8 @@ export function getSessionAverageRank(session: Session): number | null {
   let total = 0;
   let count = 0;
   for (const live of session.liveInjects) {
+    // Skipped injects are excluded from scoring
+    if (live.skipped) continue;
     if (live.decisions.length === 0) continue;
     const inj = session.scenario.injects.find((i) => i.id === live.injectId);
     if (!inj) continue;
@@ -453,6 +504,8 @@ export function getSessionAverageRank(session: Session): number | null {
 export function buildScenarioRecap(session: Session): ArcRecap {
   const entries: ArcRecapEntry[] = [];
   for (const live of session.liveInjects) {
+    // Skipped injects don't contribute to the recap narrative
+    if (live.skipped) continue;
     if (live.decisions.length === 0) continue;
     const inj = session.scenario.injects.find((i) => i.id === live.injectId);
     if (!inj?.recapLine) continue;

@@ -13,10 +13,12 @@
  *   TACTICAL  - Management / coordination layer (CISO, COO, CTO, HR, Comms)
  */
 import type { Scenario } from "@/types";
-import { RANSOMWARE_SCENARIO } from "./ransomware";
+import { RANSOMWARE_EXECUTIVE_SCENARIO } from "./ransomware-executive";
+import { RANSOMWARE_TECHNICAL_SCENARIO } from "./ransomware-technical";
 import { DEEPFAKE_SCENARIO } from "./deepfake";
 
 export const BUILT_IN_TEMPLATES: Scenario[] = [
-  RANSOMWARE_SCENARIO,
+  RANSOMWARE_EXECUTIVE_SCENARIO,
+  RANSOMWARE_TECHNICAL_SCENARIO,
   DEEPFAKE_SCENARIO,
 ];
