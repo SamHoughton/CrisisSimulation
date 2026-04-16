@@ -23,7 +23,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i1",
-      commandTier: "BRONZE",
+      commandTier: "TACTICAL",
       tierSkipSummary: "At 03:14, the SOC detected a suspicious outbound DNS beacon from a Treasury workstation - precisely periodic, machine-driven, not human. The on-call analyst initiated a quiet forensic investigation rather than triggering a hard alert, preserving the intelligence advantage.",
       order: 0,
       scenarioDay: 1,
@@ -90,7 +90,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2a",
-      commandTier: "BRONZE",
+      commandTier: "TACTICAL",
       tierSkipSummary: "By 05:30, forensic imaging had confirmed an ALPHV intrusion via a compromised VPN credential used five days earlier. The attacker had touched 11 hosts including a jump box on the IT/OT boundary. Mandiant were called as a courtesy - ETA 06:30. Encryption had not yet begun.",
       order: 10,
       scenarioDay: 1,
@@ -119,7 +119,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2b",
-      commandTier: "BRONZE",
+      commandTier: "TACTICAL",
       tierSkipSummary: "By 05:30, the team hard-segmented the Treasury VLAN - effective containment, but the move was visible to the attacker, who began accelerating. Mandiant were engaged. 11 hosts confirmed compromised; the encryption clock is now running faster.",
       order: 10,
       scenarioDay: 1,
@@ -146,7 +146,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2c",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "Mandiant were engaged on retainer immediately and on-site by 06:30. They confirmed two additional compromised endpoints beyond the initial beacon host and provided a full scope picture before the first Gold-level decisions were needed.",
       order: 10,
       scenarioDay: 1,
@@ -172,7 +172,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2d",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "A second alert followed the first. By the time the morning shift arrived at 07:30, the situation had escalated significantly. Mandiant were engaged. 11 hosts are confirmed compromised.",
       order: 10,
       scenarioDay: 2,
@@ -198,7 +198,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2v",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "The CISO, COO, and CLO convened for a first call at 05:30. Initial containment had been established and Mandiant were en route. The question of whether to brief the CEO immediately or wait for a complete picture was discussed - the governance clock was already running.",
       order: 20,
       scenarioDay: 1,
@@ -258,7 +258,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-board",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 22,
       scenarioDay: 1,
       scenarioTime: "05:30",
@@ -318,7 +318,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i2x",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 25,
       scenarioDay: 1,
       scenarioTime: "05:47",
@@ -387,7 +387,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "At 04:11, a bulk encryption event began across the network. The technical team moved immediately to isolate affected segments, notify Mandiant, and escalate. The incident had crossed from investigation to active ransomware attack.",
       order: 30,
       scenarioDay: 1,
@@ -447,7 +447,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-insurance",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 32,
       scenarioDay: 1,
       scenarioTime: "07:45",
@@ -507,7 +507,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3b",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 35,
       scenarioDay: 1,
       scenarioTime: "08:47",
@@ -540,7 +540,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3a",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 38,
       scenarioDay: 1,
       scenarioTime: "09:12",
@@ -602,7 +602,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i3d",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 40,
       scenarioDay: 1,
       scenarioTime: "09:00",
@@ -661,7 +661,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 50,
       scenarioDay: 1,
       scenarioTime: "14:30",
@@ -720,7 +720,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4a",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 55,
       scenarioDay: 1,
       scenarioTime: "15:19",
@@ -754,7 +754,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4x",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 57,
       scenarioDay: 1,
       scenarioTime: "15:24",
@@ -813,7 +813,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i4v",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 60,
       scenarioDay: 1,
       scenarioTime: "15:42",
@@ -897,7 +897,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i5",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 70,
       scenarioDay: 3,
       scenarioTime: "11:00",
@@ -991,7 +991,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i5a",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 75,
       scenarioDay: 3,
       scenarioTime: "09:00",
@@ -1017,7 +1017,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i6a",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 80,
       scenarioDay: 3,
       scenarioTime: "16:30",
@@ -1081,7 +1081,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i6-strong",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "By Day 4, the team had established a cooperation footing with the NCSC - sharing indicators of compromise and receiving threat intelligence in return. Recovery was proceeding with external technical support.",
       order: 90,
       scenarioDay: 4,
@@ -1107,7 +1107,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i6-weak",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "By Day 4, the team was operating in a defensive posture with limited external engagement. Recovery was slower than hoped, with internal resources stretched and public confidence fragile.",
       order: 90,
       scenarioDay: 4,
@@ -1130,7 +1130,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-i7",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 100,
       scenarioDay: 5,
       scenarioTime: "16:00",
@@ -1165,7 +1165,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end1",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - The Sector Standard",
@@ -1196,7 +1196,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end2",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - Quiet Lights On",
@@ -1229,7 +1229,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end3",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - The Long Tail",
@@ -1256,7 +1256,7 @@ export const RANSOMWARE_SCENARIO: Scenario = {
 
     {
       id: "rw-end4",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 110,
       scenarioDay: 30,
       title: "Day 30 - We Paid Twice",

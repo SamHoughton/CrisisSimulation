@@ -25,7 +25,7 @@ import type {
   ScenarioType, Difficulty, ExecRole, CommandTier,
 } from "@/types";
 
-const ALL_TIERS: CommandTier[] = ["GOLD", "SILVER", "BRONZE"];
+const ALL_TIERS: CommandTier[] = ["STRATEGIC", "TACTICAL"];
 
 const DIFFICULTIES: Difficulty[] = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 
@@ -176,10 +176,10 @@ export function Builder() {
               value={scenario.type}
               onChange={(e) => update({ type: e.target.value as ScenarioType })}
               className={inputCls}
-              style={{ backgroundColor: "#1c1f24" }}
+              style={{ backgroundColor: "rgb(var(--rtr-elevated))" }}
             >
               {ALL_SCENARIO_TYPES.map((t) => (
-                <option key={t} value={t} style={{ background: "#1c1f24" }}>{SCENARIO_TYPE_LABELS[t]}</option>
+                <option key={t} value={t} style={{ background: "rgb(var(--rtr-elevated))" }}>{SCENARIO_TYPE_LABELS[t]}</option>
               ))}
             </select>
           </Field>
@@ -545,9 +545,8 @@ function InjectCard({
               </div>
               {inject.commandTier && (
                 <p className="text-[10px] text-rtr-dim mt-1">
-                  {inject.commandTier === "GOLD" && "Strategic decisions - C-suite leadership"}
-                  {inject.commandTier === "SILVER" && "Tactical decisions - Management / cyber leads"}
-                  {inject.commandTier === "BRONZE" && "Operational decisions - Hands-on technical response"}
+                  {inject.commandTier === "STRATEGIC" && "Strategic decisions - Executive leadership"}
+                  {inject.commandTier === "TACTICAL" && "Tactical decisions - Management / coordination leads"}
                 </p>
               )}
             </div>
@@ -599,19 +598,19 @@ function InjectCard({
                 onUpdate({ artifact: { ...inject.artifact, type: t as any } });
               }}
               className={inputCls}
-              style={{ backgroundColor: "#0d0e10" }}
+              style={{ backgroundColor: "rgb(var(--rtr-base))" }}
             >
-              <option value="default" style={{ background: "#0d0e10" }}>Default (plain text)</option>
-              <option value="ransomware_note" style={{ background: "#0d0e10" }}>Ransomware Note</option>
-              <option value="siem_alert" style={{ background: "#0d0e10" }}>SIEM Alert</option>
-              <option value="tweet" style={{ background: "#0d0e10" }}>Tweet / X Post</option>
-              <option value="email" style={{ background: "#0d0e10" }}>Email</option>
-              <option value="legal_letter" style={{ background: "#0d0e10" }}>Legal Letter</option>
-              <option value="news_headline" style={{ background: "#0d0e10" }}>News Headline</option>
-              <option value="dark_web_listing" style={{ background: "#0d0e10" }}>Dark Web Listing</option>
-              <option value="stock_chart" style={{ background: "#0d0e10" }}>Stock Chart (Bloomberg)</option>
-              <option value="slack_thread" style={{ background: "#0d0e10" }}>Slack Thread</option>
-              <option value="tv_broadcast" style={{ background: "#0d0e10" }}>TV Broadcast (Breaking News)</option>
+              <option value="default" style={{ background: "rgb(var(--rtr-base))" }}>Default (plain text)</option>
+              <option value="ransomware_note" style={{ background: "rgb(var(--rtr-base))" }}>Ransomware Note</option>
+              <option value="siem_alert" style={{ background: "rgb(var(--rtr-base))" }}>SIEM Alert</option>
+              <option value="tweet" style={{ background: "rgb(var(--rtr-base))" }}>Tweet / X Post</option>
+              <option value="email" style={{ background: "rgb(var(--rtr-base))" }}>Email</option>
+              <option value="legal_letter" style={{ background: "rgb(var(--rtr-base))" }}>Legal Letter</option>
+              <option value="news_headline" style={{ background: "rgb(var(--rtr-base))" }}>News Headline</option>
+              <option value="dark_web_listing" style={{ background: "rgb(var(--rtr-base))" }}>Dark Web Listing</option>
+              <option value="stock_chart" style={{ background: "rgb(var(--rtr-base))" }}>Stock Chart (Bloomberg)</option>
+              <option value="slack_thread" style={{ background: "rgb(var(--rtr-base))" }}>Slack Thread</option>
+              <option value="tv_broadcast" style={{ background: "rgb(var(--rtr-base))" }}>TV Broadcast (Breaking News)</option>
             </select>
 
             {/* Conditional artifact fields */}
@@ -631,10 +630,10 @@ function InjectCard({
             {inject.artifact?.type === "siem_alert" && (
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <input value={inject.artifact.siemAlertId ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemAlertId: e.target.value } })} className={inputCls} placeholder="Alert ID (SOC-2024-001)" />
-                <select value={inject.artifact.siemSeverity ?? "HIGH"} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSeverity: e.target.value as any } })} className={inputCls} style={{ backgroundColor: "#0d0e10" }}>
-                  <option value="CRITICAL" style={{ background: "#0d0e10" }}>Critical</option>
-                  <option value="HIGH" style={{ background: "#0d0e10" }}>High</option>
-                  <option value="MEDIUM" style={{ background: "#0d0e10" }}>Medium</option>
+                <select value={inject.artifact.siemSeverity ?? "HIGH"} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSeverity: e.target.value as any } })} className={inputCls} style={{ backgroundColor: "rgb(var(--rtr-base))" }}>
+                  <option value="CRITICAL" style={{ background: "rgb(var(--rtr-base))" }}>Critical</option>
+                  <option value="HIGH" style={{ background: "rgb(var(--rtr-base))" }}>High</option>
+                  <option value="MEDIUM" style={{ background: "rgb(var(--rtr-base))" }}>Medium</option>
                 </select>
                 <input value={inject.artifact.siemSourceIp ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSourceIp: e.target.value } })} className={inputCls} placeholder="Source IP" />
                 <input value={inject.artifact.siemEventType ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemEventType: e.target.value } })} className={inputCls} placeholder="Event type" />
@@ -825,11 +824,11 @@ function InjectCard({
                             value={branch?.nextInjectId ?? ""}
                             onChange={(e) => onUpdateBranch(opt.key, e.target.value)}
                             className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1.5 focus:outline-none focus:border-rtr-green"
-                            style={{ backgroundColor: "#0d0e10" }}
+                            style={{ backgroundColor: "rgb(var(--rtr-base))" }}
                           >
-                            <option value="" style={{ background: "#0d0e10" }}>Follow linear order</option>
+                            <option value="" style={{ background: "rgb(var(--rtr-base))" }}>Follow linear order</option>
                             {otherInjects.map((i) => (
-                              <option key={i.id} value={i.id} style={{ background: "#0d0e10" }}>
+                              <option key={i.id} value={i.id} style={{ background: "rgb(var(--rtr-base))" }}>
                                 {i.order + 1}. {i.title || `Inject ${i.order + 1}`}
                               </option>
                             ))}

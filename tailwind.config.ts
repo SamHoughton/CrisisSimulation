@@ -5,20 +5,24 @@ export default {
   theme: {
     extend: {
       colors: {
+        // All rtr-* colors reference CSS custom properties (defined in index.css).
+        // Using the `rgb(var(--rtr-XXX) / <alpha-value>)` pattern allows Tailwind's
+        // opacity modifiers (e.g. bg-rtr-panel/50, border-rtr-green/20) to work.
+        // The CSS vars are toggled between dark (default) and light (html.light) values.
         rtr: {
-          base:     "#0f0e0e",
-          sidebar:  "#111215",
-          panel:    "#15171a",
-          elevated: "#1c1f24",
-          hover:    "#22262d",
-          border:   "#1e2128",
-          "border-light": "#2a2e3a",
-          text:     "#e8eaf0",
-          muted:    "#8b8fa8",
-          dim:      "#4a4f65",
-          cream:    "#f2ede8",
-          green:    "#4afe91",
-          red:      "#E82222",
+          base:           "rgb(var(--rtr-base)           / <alpha-value>)",
+          sidebar:        "rgb(var(--rtr-sidebar)        / <alpha-value>)",
+          panel:          "rgb(var(--rtr-panel)          / <alpha-value>)",
+          elevated:       "rgb(var(--rtr-elevated)       / <alpha-value>)",
+          hover:          "rgb(var(--rtr-hover)          / <alpha-value>)",
+          border:         "rgb(var(--rtr-border)         / <alpha-value>)",
+          "border-light": "rgb(var(--rtr-border-light)   / <alpha-value>)",
+          text:           "rgb(var(--rtr-text)           / <alpha-value>)",
+          muted:          "rgb(var(--rtr-muted)          / <alpha-value>)",
+          dim:            "rgb(var(--rtr-dim)            / <alpha-value>)",
+          cream:          "rgb(var(--rtr-cream)          / <alpha-value>)",
+          green:          "rgb(var(--rtr-green)          / <alpha-value>)",
+          red:            "rgb(var(--rtr-red)            / <alpha-value>)",
         },
       },
       fontFamily: {

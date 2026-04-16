@@ -4,18 +4,19 @@
  * Each scenario lives in its own file so large decision trees remain
  * maintainable. Add new scenarios here and they'll appear in the library
  * automatically.
+ *
+ * Scenario naming convention:
+ *   INCIDENT_TIER  e.g. RANSOMWARE_STRATEGIC, DEEPFAKE_TACTICAL
+ *
+ * Tier definitions:
+ *   STRATEGIC - Executive / C-suite audience (CEO, CFO, CLO, CCO, Board)
+ *   TACTICAL  - Management / coordination layer (CISO, COO, CTO, HR, Comms)
  */
 import type { Scenario } from "@/types";
 import { RANSOMWARE_SCENARIO } from "./ransomware";
 import { DEEPFAKE_SCENARIO } from "./deepfake";
-import { SUPPLY_CHAIN_SCENARIO } from "./supply-chain";
-import { SOCIAL_MEDIA_CRISIS_SCENARIO } from "./social-media-crisis";
-import { INFRASTRUCTURE_OUTAGE_SCENARIO } from "./infrastructure-outage";
 
 export const BUILT_IN_TEMPLATES: Scenario[] = [
   RANSOMWARE_SCENARIO,
   DEEPFAKE_SCENARIO,
-  SUPPLY_CHAIN_SCENARIO,
-  SOCIAL_MEDIA_CRISIS_SCENARIO,
-  INFRASTRUCTURE_OUTAGE_SCENARIO,
 ];

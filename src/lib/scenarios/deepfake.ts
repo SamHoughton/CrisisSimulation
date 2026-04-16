@@ -35,7 +35,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 1: T+0. Video goes viral. Four-way branch. ──────────────
     {
       id: "df-i1",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 0,
       scenarioDay: 1,
       scenarioTime: "06:04",
@@ -104,7 +104,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 1b: Board activates. Atmosphere beat, no vote. ──────────
     {
       id: "df-i1b",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 3,
       scenarioDay: 1,
       scenarioTime: "06:11",
@@ -140,7 +140,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 2a: Path A narrative. Denial under siege. ───────────────
     {
       id: "df-i2a",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "07:00",
@@ -169,7 +169,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 2b: Path B narrative. The silence deafens. ──────────────
     {
       id: "df-i2b",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "07:45",
@@ -201,7 +201,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 2c: Path C narrative. The measured path holds. ──────────
     {
       id: "df-i2c",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "The forensics team began a rapid dual-track investigation into both videos, racing for technical confirmation that they were AI-generated. The window for a definitive denial remained open while analysis continued.",
       order: 10,
       scenarioDay: 1,
@@ -230,7 +230,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 2d: Path D narrative. The family statement gamble. ──────
     {
       id: "df-i2d",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 10,
       scenarioDay: 1,
       scenarioTime: "07:15",
@@ -259,7 +259,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // All four Act 1 paths hit this before converging at df-i3.
     {
       id: "df-i2v",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "The management team debated speed versus confidence on the forensic response - whether to issue a technically uncertain denial immediately or hold for confirmed evidence. The decision shaped the credibility of everything that followed.",
       order: 15,
       scenarioDay: 1,
@@ -334,7 +334,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 3: All paths converge. CEO reached, staff crisis. ────────
     {
       id: "df-i3",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 20,
       scenarioDay: 1,
       scenarioTime: "08:15",
@@ -364,7 +364,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 3b: LinkedIn problem. No vote. ───────────────────────────
     {
       id: "df-i3b",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 23,
       scenarioDay: 1,
       scenarioTime: "08:52",
@@ -396,7 +396,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 3d: Priority decision. 4 options, re-diverges. ──────────
     {
       id: "df-i3d",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 22,
       scenarioDay: 1,
       scenarioTime: "08:20",
@@ -465,7 +465,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 4a: Staff-led path narrative ─────────────────────────────
     {
       id: "df-i4a",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "Staff rallied around the CEO. Client-facing teams began reconfirming meetings, with at least one client explicitly stating they wanted to see how the company handled it. Internal confidence was holding, but required active management.",
       order: 30,
       scenarioDay: 1,
@@ -497,7 +497,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 4b: Market-led path narrative ────────────────────────────
     {
       id: "df-i4b",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 30,
       scenarioDay: 1,
       scenarioTime: "08:45",
@@ -528,7 +528,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // Both Act 2 paths (i4a and i4b) route through this before i4h.
     {
       id: "df-i4v",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 33,
       scenarioDay: 1,
       scenarioTime: "09:05",
@@ -596,7 +596,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 4h: The personal cost. Character test. Both paths see this.
     {
       id: "df-i4h",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 35,
       scenarioDay: 1,
       scenarioTime: "08:55",
@@ -634,7 +634,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 5: Forensic vindication + short-selling intelligence ─────
     {
       id: "df-i5",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "Forensic analysis confirmed both videos were AI-generated deepfakes. Technical vindication was now available as a public statement - the question became how and when to deploy it for maximum reputational recovery.",
       order: 40,
       scenarioDay: 1,
@@ -704,7 +704,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 5b: FCA Market Oversight confirms case opened. No vote. ──
     {
       id: "df-i5b",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 43,
       scenarioDay: 1,
       scenarioTime: "09:52",
@@ -735,7 +735,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── INJECT 6: Copycat + internal leak (narrative convergence) ───────
     {
       id: "df-i6",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "Investigation revealed a rival firm had been hit by a near-identical deepfake attack, and an internal access control gap had been identified - a potential insider element could not be ruled out. The picture was sharpening but remained complex.",
       order: 45,
       scenarioDay: 1,
@@ -767,7 +767,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // Helix outreach + comms manager handling, both in the same 30-minute window.
     {
       id: "df-i6a",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 48,
       scenarioDay: 1,
       scenarioTime: "12:15",
@@ -842,7 +842,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // cooperation case is the strongest it can be going into the endgame.
     {
       id: "df-i6-strong",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 49,
       scenarioDay: 2,
       scenarioTime: "09:15",
@@ -876,7 +876,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // going into the endgame.
     {
       id: "df-i6-weak",
-      commandTier: "SILVER",
+      commandTier: "TACTICAL",
       tierSkipSummary: "By Day 2, the team was managing multiple simultaneous strands with limited goodwill remaining from regulators, staff, and media. The response had been reactive rather than controlled, and credibility was under pressure.",
       order: 49,
       scenarioDay: 2,
@@ -915,7 +915,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // throughout cannot buy their way out with one final good choice.
     {
       id: "df-i7",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 50,
       scenarioDay: 2,
       scenarioTime: "16:00",
@@ -987,7 +987,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── ENDING 1: TRIUMPH ───────────────────────────────────────────────
     {
       id: "df-end1",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 60,
       scenarioDay: 42,
       title: "Ending: The Industry Test Case",
@@ -1021,7 +1021,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── ENDING 2: RECOVERY ──────────────────────────────────────────────
     {
       id: "df-end2",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 60,
       scenarioDay: 42,
       title: "Ending: Quiet Competence",
@@ -1056,7 +1056,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── ENDING 3: DIMINISHED ────────────────────────────────────────────
     {
       id: "df-end3",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 60,
       scenarioDay: 42,
       title: "Ending: The Long Shadow",
@@ -1085,7 +1085,7 @@ export const DEEPFAKE_SCENARIO: Scenario = {
     // ── ENDING 4: CATASTROPHIC ──────────────────────────────────────────
     {
       id: "df-end4",
-      commandTier: "GOLD",
+      commandTier: "STRATEGIC",
       order: 60,
       scenarioDay: 42,
       title: "Ending: The Counter-Attack That Backfired",

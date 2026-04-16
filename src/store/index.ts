@@ -99,7 +99,7 @@ export const useStore = create<AppStore>()(
   persist(
     (set, get) => ({
       // ── Settings ──────────────────────────────────────────────────────────
-      settings: { claudeApiKey: "", orgName: "", facilitatorName: "" },
+      settings: { claudeApiKey: "", orgName: "", facilitatorName: "", theme: "dark" },
       updateSettings: (s) =>
         set((st) => ({ settings: { ...st.settings, ...s } })),
 
@@ -133,8 +133,8 @@ export const useStore = create<AppStore>()(
           status: "setup",
           liveInjects: [],
           notes: [],
-          // Only store selectedTiers if it's a partial selection (not all three)
-          selectedTiers: selectedTiers && selectedTiers.length < 3 ? selectedTiers : undefined,
+          // Only store selectedTiers if it's a partial selection (not all tiers active)
+          selectedTiers: selectedTiers && selectedTiers.length < 2 ? selectedTiers : undefined,
         };
         set({ session, view: "runner" });
       },
@@ -362,6 +362,40 @@ export const useStore = create<AppStore>()(
     }),
     {
       name: "crisis-tabletop",
+      version: 2,
+      /**
+       * Migrate persisted state across breaking schema changes.
+       * v0/v1 → v2: renamed tiers GOLD→STRATEGIC, SILVER/BRONZE→TACTICAL;
+       *             added settings.theme field.
+       */
+      migrate: (raw: unknown, fromVersion: number) => {
+        const state = raw as Record<string, unknown>;
+        if (fromVersion < 2) {
+          const OLD: Record<string, string> = {
+            GOLD: "STRATEGIC", SILVER: "TACTICAL", BRONZE: "TACTICAL",
+          };
+          const migrateTiers = (tiers?: unknown) =>
+            Array.isArray(tiers)
+              ? [...new Set((tiers as string[]).map((t) => OLD[t] ?? t))]
+              : tiers;
+
+          // Migrate active session selectedTiers
+          const session = state.session as Record<string, unknown> | null;
+          if (session) session.selectedTiers = migrateTiers(session.selectedTiers);
+
+          // Migrate past sessions
+          if (Array.isArray(state.pastSessions)) {
+            state.pastSessions = (state.pastSessions as Array<Record<string, unknown>>).map(
+              (s) => ({ ...s, selectedTiers: migrateTiers(s.selectedTiers) })
+            );
+          }
+
+          // Ensure settings.theme exists
+          const settings = state.settings as Record<string, unknown> | undefined;
+          if (settings && !settings.theme) settings.theme = "dark";
+        }
+        return state;
+      },
       partialize: (st) => ({
         settings: st.settings,
         scenarios: st.scenarios,

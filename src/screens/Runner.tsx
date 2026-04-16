@@ -758,7 +758,7 @@ export function Runner() {
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
                     <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
-                    {inj.commandTier && (
+                    {inj.commandTier && TIER_COLOUR[inj.commandTier] && (
                       <span
                         title={TIER_LABEL[inj.commandTier]}
                         className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${TIER_COLOUR[inj.commandTier].dot}`}
@@ -846,7 +846,7 @@ export function Runner() {
                     <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
                     {(() => {
                       const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
-                      if (!inj?.commandTier) return null;
+                      if (!inj?.commandTier || !TIER_COLOUR[inj.commandTier]) return null;
                       const tc = TIER_COLOUR[inj.commandTier];
                       return (
                         <span className={`flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded border ${tc.bg} ${tc.border} ${tc.text}`}>
