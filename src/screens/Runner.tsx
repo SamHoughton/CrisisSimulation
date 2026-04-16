@@ -873,7 +873,7 @@ export function Runner() {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                    Skip — read aloud: {skipInj.title}
+                    Skip - read aloud: {skipInj.title}
                   </p>
                 </div>
                 <button

@@ -703,7 +703,7 @@ function InfraOutageBriefingArtifact() {
       <div className="px-4 py-2.5 flex items-center gap-2"
         style={{ background: "#1a0000", borderBottom: "1px solid #330000" }}>
         <span style={{ color: "#ff4444" }}>⚠</span>
-        <span style={{ color: "#ff5544" }}>CORE-DB-CLUSTER-01 — ALL NODES CRITICAL</span>
+        <span style={{ color: "#ff5544" }}>CORE-DB-CLUSTER-01 - ALL NODES CRITICAL</span>
       </div>
 
       {/* Node table */}
@@ -752,7 +752,7 @@ function InfraOutageBriefingArtifact() {
       <div className="px-4 py-3" style={{ background: "#0d0000", borderTop: "2px solid #E82222" }}>
         <div className="rounded-lg p-3" style={{ background: "#150000", border: "1px solid rgba(232,34,34,0.5)" }}>
           <p className="text-center" style={{ color: "#cc4422" }}>
-            ⚠ SALARY BATCH DUE 09:00 — 47 SERVICES BLOCKED
+            ⚠ SALARY BATCH DUE 09:00 - 47 SERVICES BLOCKED
           </p>
           <p className="text-center mt-1" style={{ color: "#663322" }}>
             1.2M employee payments · £4.8B settlement value · SLA breach in 00:00
