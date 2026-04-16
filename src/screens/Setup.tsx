@@ -10,10 +10,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useStore, getAllScenarios } from "@/store";
 import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert, Plus, X } from "lucide-react";
-import { cn, ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration, TIER_LABEL, TIER_SUBTITLE, TIER_COLOUR } from "@/lib/utils";
-import type { Participant, ExecRole, CommandTier } from "@/types";
-
-const ALL_TIERS: CommandTier[] = ["STRATEGIC", "TACTICAL"];
+import { cn, ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration } from "@/lib/utils";
+import type { Participant, ExecRole } from "@/types";
 
 export function Setup() {
   const setView      = useStore((s) => s.setView);
@@ -28,7 +26,6 @@ export function Setup() {
   const [participants, setParticipants] = useState<Participant[]>(
     scenario?.roles.map((r) => ({ role: r as ExecRole, name: "" })) ?? []
   );
-  const [selectedTiers, setSelectedTiers] = useState<CommandTier[]>([...ALL_TIERS]);
   const [showAddRole, setShowAddRole] = useState(false);
   const addRoleRef = useRef<HTMLDivElement>(null);
 
@@ -70,14 +67,8 @@ export function Setup() {
   const activeRoles = new Set(participants.map((p) => p.role));
   const availableRoles = ALL_ROLES.filter((r) => !activeRoles.has(r));
 
-  const toggleTier = (tier: CommandTier) => {
-    setSelectedTiers((prev) =>
-      prev.includes(tier) ? prev.filter((t) => t !== tier) : [...prev, tier]
-    );
-  };
-
   const handleStart = () => {
-    startSession(scenario, participants, selectedTiers);
+    startSession(scenario, participants);
     setView("runner");
   };
 
@@ -245,66 +236,6 @@ export function Setup() {
         </div>
       </div>
 
-      {/* Command tier selection */}
-      <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden mb-6 fade-in-up">
-        <div className="px-5 py-3 bg-rtr-elevated border-b border-rtr-border">
-          <h2 className="text-sm font-semibold text-rtr-text">Command Tiers</h2>
-          <p className="text-xs text-rtr-dim mt-0.5">
-            Select which tiers are active in this session. Injects from unselected tiers are skipped,
-            but a brief "Story so far" briefing is shown before each in-scope inject so the narrative stays coherent.
-          </p>
-        </div>
-        <div className="divide-y divide-rtr-border">
-          {ALL_TIERS.map((tier) => {
-            const tc = TIER_COLOUR[tier];
-            const active = selectedTiers.includes(tier);
-            return (
-              <button
-                key={tier}
-                onClick={() => toggleTier(tier)}
-                className={cn(
-                  "w-full flex items-center gap-4 px-5 py-3.5 text-left transition-colors",
-                  active ? "bg-rtr-base" : "bg-rtr-panel opacity-50 hover:opacity-70"
-                )}
-              >
-                <div className={cn(
-                  "w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border",
-                  active ? `${tc.bg} ${tc.border}` : "border-rtr-border"
-                )}>
-                  <span className={cn("w-3 h-3 rounded-full", active ? tc.dot : "bg-rtr-dim")} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-semibold", active ? tc.text : "text-rtr-dim")}>
-                    {TIER_LABEL[tier]}
-                  </p>
-                  <p className="text-xs text-rtr-dim">{TIER_SUBTITLE[tier]}</p>
-                </div>
-                <div className={cn(
-                  "w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors",
-                  active ? `border-current ${tc.text}` : "border-rtr-border"
-                )}>
-                  {active && <span className="w-2.5 h-2.5 rounded-sm bg-current" />}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-        {selectedTiers.length === 0 && (
-          <div className="px-5 py-3 bg-red-500/8 border-t border-red-500/20">
-            <p className="text-xs text-red-400">Select at least one tier to run the exercise.</p>
-          </div>
-        )}
-        {selectedTiers.length < 3 && selectedTiers.length > 0 && (
-          <div className="px-5 py-3 bg-amber-500/8 border-t border-amber-500/20">
-            <p className="text-xs text-amber-400">
-              {selectedTiers.length === 1
-                ? `${TIER_LABEL[selectedTiers[0]]} session only - injects from other tiers will be summarised automatically.`
-                : `${selectedTiers.map((t) => TIER_LABEL[t]).join(" + ")} session - ${ALL_TIERS.filter((t) => !selectedTiers.includes(t)).map((t) => TIER_LABEL[t]).join(", ")} injects will be summarised automatically.`}
-            </p>
-          </div>
-        )}
-      </div>
-
       {/* Present window tip */}
       <div className="bg-rtr-elevated border border-rtr-border rounded-xl p-4 mb-6 text-sm text-rtr-muted fade-in-up">
         <p className="font-medium text-rtr-text mb-1">How the shared screen works</p>
@@ -318,7 +249,6 @@ export function Setup() {
       <div className="flex justify-end fade-in-up">
         <button
           onClick={handleStart}
-          disabled={selectedTiers.length === 0}
           className="flex items-center gap-2 bg-rtr-red text-white px-6 py-2.5 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors hover:shadow-lg hover:shadow-rtr-red/20 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <PlayCircle className="w-4 h-4" />

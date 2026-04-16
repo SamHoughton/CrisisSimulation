@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
-import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, buildScenarioRecap, isInScope } from "@/store";
+import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, buildScenarioRecap } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
   Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import QRCode from "qrcode";
 import {
-  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed, TIER_LABEL, TIER_COLOUR,
+  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed,
 } from "@/lib/utils";
 import type { ExecRole, DecisionEntry, Participant, ResponseEntry, RemoteSessionState } from "@/types";
 import {
@@ -745,18 +745,16 @@ export function Runner() {
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {orderedInjects.map((inj, idx) => {
-              const released   = allReleased.has(inj.id);
-              const isNext     = inj.id === nextInject?.id;
-              const isLive     = currentLive?.injectId === inj.id;
-              const onPath     = reachable.has(inj.id);
-              const hasBranch  = inj.branches && inj.branches.length > 0;
-              const filtered   = !isInScope(inj, session.selectedTiers);
+              const released  = allReleased.has(inj.id);
+              const isNext    = inj.id === nextInject?.id;
+              const isLive    = currentLive?.injectId === inj.id;
+              const onPath    = reachable.has(inj.id);
+              const hasBranch = inj.branches && inj.branches.length > 0;
 
               return (
                 <div key={inj.id} className={cn(
                   "rounded border p-3 text-xs transition-colors",
-                  filtered      ? "border-rtr-border/30 bg-rtr-base opacity-40"
-                  : released && !isLive ? "border-rtr-green/20 bg-rtr-green/5 opacity-60"
+                  released && !isLive ? "border-rtr-green/20 bg-rtr-green/5 opacity-60"
                   : isLive  ? "border-rtr-red/40 bg-rtr-red/8"
                   : isNext  ? "border-rtr-red/30 bg-rtr-red/5"
                   : !onPath ? "border-rtr-border/40 bg-rtr-base opacity-35"
@@ -764,25 +762,16 @@ export function Runner() {
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
                     <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
-                    {inj.commandTier && TIER_COLOUR[inj.commandTier] && (
-                      <span
-                        title={TIER_LABEL[inj.commandTier]}
-                        className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${TIER_COLOUR[inj.commandTier].dot}`}
-                      />
-                    )}
                     <span className={cn("font-medium flex-1 truncate",
-                      filtered ? "text-rtr-dim line-through"
-                      : released && !isLive ? "text-rtr-green line-through"
+                      released && !isLive ? "text-rtr-green line-through"
                       : isLive ? "text-rtr-red" : isNext ? "text-rtr-text" : "text-rtr-muted"
                     )}>
                       {inj.title}
                     </span>
-                    {hasBranch && !filtered && <GitBranch className="w-3 h-3 text-amber-400 shrink-0" />}
+                    {hasBranch && <GitBranch className="w-3 h-3 text-amber-400 shrink-0" />}
                   </div>
                   <div className="flex items-center justify-between">
-                    {filtered ? (
-                      <span className="text-rtr-dim italic">Filtered</span>
-                    ) : released && !isLive ? (
+                    {released && !isLive ? (
                       <span className="text-rtr-green">✓ Done</span>
                     ) : isNext || (!released && !isLive && orderedInjects[0]?.id === inj.id && session.liveInjects.length === 0) ? (
                       <div className="flex items-center gap-1.5">
@@ -822,7 +811,7 @@ export function Runner() {
                     ) : (
                       <span className="text-rtr-dim">{onPath ? "Queued" : "Off-path"}</span>
                     )}
-                    {inj.timerMinutes && !filtered && (
+                    {inj.timerMinutes && (
                       <span className="text-rtr-dim font-mono text-xs">{inj.timerMinutes}m</span>
                     )}
                   </div>
@@ -877,9 +866,6 @@ export function Runner() {
             <div className="border-b border-slate-500/30 bg-slate-900/60 px-6 py-4 shrink-0">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-500/20 text-slate-400 border border-slate-500/30 font-mono">
-                    {skipInj.commandTier}
-                  </span>
                   <p className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
                     Skip — read aloud: {skipInj.title}
                   </p>
@@ -940,17 +926,6 @@ export function Runner() {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
-                    {(() => {
-                      const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
-                      if (!inj?.commandTier || !TIER_COLOUR[inj.commandTier]) return null;
-                      const tc = TIER_COLOUR[inj.commandTier];
-                      return (
-                        <span className={`flex items-center gap-1.5 text-xs font-bold px-2 py-0.5 rounded border ${tc.bg} ${tc.border} ${tc.text}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${tc.dot}`} />
-                          {TIER_LABEL[inj.commandTier]}
-                        </span>
-                      );
-                    })()}
                   </div>
                   <p className="text-xs text-rtr-dim font-mono">
                     Released {new Date(currentLive.releasedAt).toLocaleTimeString()}

@@ -415,7 +415,7 @@ export interface Settings {
 // ─── BroadcastChannel message types ─────────────────────────────────────────
 
 export type PresentMessage =
-  | { type: "inject"; inject: Inject; injectNum: number; totalInjects: number; contextSummaries?: Array<{ title: string; summary: string }> }
+  | { type: "inject"; inject: Inject; injectNum: number; totalInjects: number }
   | { type: "adhoc"; body: string }
   | { type: "status"; status: SessionStatus; scenario?: Scenario }
   | { type: "vote"; role: string; roleName: string; optionKey: string }

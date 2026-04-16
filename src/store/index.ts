@@ -203,27 +203,6 @@ export const useStore = create<AppStore>()(
         // Present gets the clean body + structured arcRecap (no text prefix).
         const renderedInject = arcRecap ? { ...inj, arcRecap } : inj;
 
-        // Collect tierSkipSummary from any filtered injects between the last
-        // released inject and this one (in linear order). These are shown as a
-        // "Story so far..." briefing strip on the Present screen so the room
-        // retains narrative coherence even when tiers are filtered out.
-        const sortedAll = [...session.scenario.injects].sort((a, b) => a.order - b.order);
-        const lastLive = session.liveInjects[session.liveInjects.length - 1];
-        const lastOrder = lastLive
-          ? (session.scenario.injects.find((i) => i.id === lastLive.injectId)?.order ?? -1)
-          : -1;
-        const contextSummaries = session.selectedTiers
-          ? sortedAll
-              .filter(
-                (i) =>
-                  i.order > lastOrder &&
-                  i.order < inj.order &&
-                  !isInScope(i, session.selectedTiers) &&
-                  i.tierSkipSummary
-              )
-              .map((i) => ({ title: i.title, summary: i.tierSkipSummary! }))
-          : undefined;
-
         // LiveInject keeps the text-prefixed body so QR phones/Runner still work.
         const liveInject: LiveInject = {
           injectId,
@@ -240,13 +219,7 @@ export const useStore = create<AppStore>()(
             ? { ...st.session, liveInjects: [...st.session.liveInjects, liveInject] }
             : st.session,
         }));
-        broadcast({
-          type: "inject",
-          inject: renderedInject,
-          injectNum,
-          totalInjects,
-          ...(contextSummaries && contextSummaries.length > 0 ? { contextSummaries } : {}),
-        });
+        broadcast({ type: "inject", inject: renderedInject, injectNum, totalInjects });
         if (session.status === "setup") get().launchSession();
       },
 

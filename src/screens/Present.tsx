@@ -16,7 +16,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
-import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL, TIER_LABEL, TIER_SUBTITLE, TIER_COLOUR } from "@/lib/utils";
+import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
 import type { ArcRecap, DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
 
@@ -50,7 +50,7 @@ type PresentPhase =
   | { phase: "waiting";  scenario: Scenario | null }
   | { phase: "splash";   scenario: Scenario | null }
   | { phase: "briefing"; scenario: Scenario }
-  | { phase: "inject";   inject: Inject; num: number; contextSummaries?: Array<{ title: string; summary: string }> }
+  | { phase: "inject";   inject: Inject; num: number }
   | { phase: "adhoc";    body: string }
   | { phase: "paused" }
   | { phase: "ended" };
@@ -72,7 +72,7 @@ export function Present() {
   /** Holds the scenario received during splash so we can transition correctly when splash ends. */
   const pendingScenarioRef = useRef<Scenario | null>(null);
   /** Queued inject that arrived while briefing was still showing. */
-  const pendingInjectRef = useRef<{ inject: Inject; num: number; totalInjects: number; contextSummaries?: Array<{ title: string; summary: string }> } | null>(null);
+  const pendingInjectRef = useRef<{ inject: Inject; num: number; totalInjects: number } | null>(null);
 
   // Track fullscreen state changes (e.g. user presses Escape)
   useEffect(() => {
@@ -105,11 +105,11 @@ export function Present() {
         // immediately overriding - let the splash/briefing finish first.
         setPhase((prev) => {
           if (prev.phase === "splash" || prev.phase === "briefing") {
-            pendingInjectRef.current = { inject: msg.inject, num: injectNum, totalInjects: msg.totalInjects, contextSummaries: msg.contextSummaries };
+            pendingInjectRef.current = { inject: msg.inject, num: injectNum, totalInjects: msg.totalInjects };
             return prev;
           }
           setVoteState({ votes: [], revealed: false, winner: null });
-          return { phase: "inject", inject: msg.inject, num: injectNum, contextSummaries: msg.contextSummaries };
+          return { phase: "inject", inject: msg.inject, num: injectNum };
         });
       } else if (msg.type === "adhoc") {
         setPhase({ phase: "adhoc", body: msg.body });
@@ -204,7 +204,7 @@ export function Present() {
       if (pending) {
         pendingInjectRef.current = null;
         setVoteState({ votes: [], revealed: false, winner: null });
-        setPhase({ phase: "inject", inject: pending.inject, num: pending.num, contextSummaries: pending.contextSummaries });
+        setPhase({ phase: "inject", inject: pending.inject, num: pending.num });
       }
     }, 8000);
 
@@ -215,7 +215,7 @@ export function Present() {
       if (pending) {
         pendingInjectRef.current = null;
         setVoteState({ votes: [], revealed: false, winner: null });
-        setPhase({ phase: "inject", inject: pending.inject, num: pending.num, contextSummaries: pending.contextSummaries });
+        setPhase({ phase: "inject", inject: pending.inject, num: pending.num });
         clearInterval(poll);
       }
     }, 500);
@@ -301,7 +301,6 @@ export function Present() {
           <InjectScreen
             inject={phase.inject}
             num={phase.num}
-            contextSummaries={phase.contextSummaries}
             voteState={voteState}
             timerSeconds={timerSeconds}
             timerRunning={timerRunning}
@@ -681,9 +680,8 @@ const dashboardIncludes = (type: string): type is DashboardArtifactType =>
 
 // ─── Inject screen ────────────────────────────────────────────────────────────
 
-function InjectScreen({ inject, num, contextSummaries, voteState, timerSeconds, timerRunning, timerUrgent, timerLabel }: {
+function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, timerUrgent, timerLabel }: {
   inject: Inject; num: number;
-  contextSummaries?: Array<{ title: string; summary: string }>;
   voteState: VoteState;
   timerSeconds: number | null; timerRunning: boolean; timerUrgent: boolean; timerLabel: string | null;
 }) {
@@ -706,23 +704,6 @@ function InjectScreen({ inject, num, contextSummaries, voteState, timerSeconds, 
               New Development
             </span>
           </div>
-          {/* Command tier badge */}
-          {inject.commandTier && TIER_COLOUR[inject.commandTier] && (() => {
-            const tc = TIER_COLOUR[inject.commandTier!];
-            return (
-              <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${tc.bg} ${tc.border}`}>
-                <span className={`w-2 h-2 rounded-full ${tc.dot}`} />
-                <div className="flex flex-col leading-none">
-                  <span className={`text-xs font-bold uppercase tracking-wider font-mono ${tc.text}`}>
-                    {TIER_LABEL[inject.commandTier]}
-                  </span>
-                  <span className="text-[10px] font-mono" style={{ color: "#8b8fa8" }}>
-                    {TIER_SUBTITLE[inject.commandTier]}
-                  </span>
-                </div>
-              </div>
-            );
-          })()}
         </div>
 
         {/* Large countdown timer: visible to participants on the projector */}
@@ -761,25 +742,6 @@ function InjectScreen({ inject, num, contextSummaries, voteState, timerSeconds, 
       <div className={cn("flex gap-8 flex-1 min-h-0", showVoting ? "items-start" : "flex-col")}>
         {/* Left / main: artifact */}
         <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
-          {/* "Story so far" briefing strip - shown when preceding injects were filtered */}
-          {contextSummaries && contextSummaries.length > 0 && (
-            <div className="rounded-xl border shrink-0 overflow-hidden" style={{ borderColor: "#2a2e3a", background: "#13151a" }}>
-              <div className="flex items-center gap-2 px-4 py-2 border-b" style={{ borderColor: "#2a2e3a", background: "#1a1d24" }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#8b8fa8" }}>
-                  Story so far
-                </span>
-              </div>
-              <div className="px-4 py-3 space-y-2.5">
-                {contextSummaries.map((item, i) => (
-                  <div key={i}>
-                    <p className="text-xs font-semibold font-mono uppercase tracking-wider mb-0.5" style={{ color: "#4a4f65" }}>{item.title}</p>
-                    <p className="text-sm leading-relaxed" style={{ color: "#8b8fa8" }}>{item.summary}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
           <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
           {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
           {/* For dashboard/broadcast artifacts the body is narrator context, not artifact content.
