@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import QRCode from "qrcode";
 import {
-  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed,
+  cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG, formatElapsed, TIER_COLOUR, TIER_LABEL,
 } from "@/lib/utils";
 import type { ExecRole, DecisionEntry, Participant, ResponseEntry, RemoteSessionState } from "@/types";
 import {
@@ -762,6 +762,12 @@ export function Runner() {
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
                     <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
+                    {inj.commandTier && TIER_COLOUR[inj.commandTier] && (
+                      <span
+                        title={TIER_LABEL[inj.commandTier]}
+                        className={`mt-1 w-1.5 h-1.5 rounded-full shrink-0 ${TIER_COLOUR[inj.commandTier].dot}`}
+                      />
+                    )}
                     <span className={cn("font-medium flex-1 truncate",
                       released && !isLive ? "text-rtr-green line-through"
                       : isLive ? "text-rtr-red" : isNext ? "text-rtr-text" : "text-rtr-muted"

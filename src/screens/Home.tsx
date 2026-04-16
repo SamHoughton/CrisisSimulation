@@ -170,7 +170,7 @@ export function Home() {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger">
-            {allScenarios.filter((s) => s.isTemplate).slice(0, 4).map((s) => (
+            {allScenarios.filter((s) => s.isTemplate).slice(0, 6).map((s) => (
               <ScenarioCard key={s.id} scenario={s} onRun={() => {
                 useStore.getState().setEditingScenario(s.id);
                 setView("setup");

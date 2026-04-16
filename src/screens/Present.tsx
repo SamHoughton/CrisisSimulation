@@ -419,7 +419,7 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
 // ─── Briefing screen ──────────────────────────────────────────────────────────
 
 function BriefingScreen({ scenario }: { scenario: Scenario }) {
-  const hasArtifact = scenario.type === "RANSOMWARE" || scenario.type === "SOCIAL_MEDIA_CRISIS";
+  const hasArtifact = (["RANSOMWARE", "SOCIAL_MEDIA_CRISIS", "SUPPLY_CHAIN", "INFRASTRUCTURE_OUTAGE"] as const).includes(scenario.type as any);
 
   return (
     <div className="h-full flex items-center justify-center px-10 py-8 overflow-auto">
@@ -450,9 +450,10 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
         </div>
 
         {/* ── Right: scenario artifact ── */}
-        {scenario.type === "RANSOMWARE" && <RansomwareBriefingArtifact />}
-        {scenario.type === "SOCIAL_MEDIA_CRISIS" && <DeepfakeBriefingArtifact />}
-        {scenario.type === "SUPPLY_CHAIN" && <SupplyChainBriefingArtifact />}
+        {scenario.type === "RANSOMWARE"           && <RansomwareBriefingArtifact />}
+        {scenario.type === "SOCIAL_MEDIA_CRISIS"  && <DeepfakeBriefingArtifact />}
+        {scenario.type === "SUPPLY_CHAIN"         && <SupplyChainBriefingArtifact />}
+        {scenario.type === "INFRASTRUCTURE_OUTAGE" && <InfraOutageBriefingArtifact />}
       </div>
     </div>
   );
@@ -670,9 +671,101 @@ function SupplyChainBriefingArtifact() {
   );
 }
 
+// Infrastructure outage briefing - NexCore CORE-DB-CLUSTER-01 monitoring console
+function InfraOutageBriefingArtifact() {
+  const nodes = [
+    { id: "CORE-DB-01", role: "PRIMARY",   dc: "LON-DC1", cpu: "98%", mem: "99%", status: "CRITICAL" },
+    { id: "CORE-DB-02", role: "REPLICA-A", dc: "LON-DC1", cpu: "97%", mem: "98%", status: "CRITICAL" },
+    { id: "CORE-DB-03", role: "REPLICA-B", dc: "LON-DC2", cpu: "96%", mem: "99%", status: "CRITICAL" },
+  ];
+  const services = [
+    { name: "Salary Batch Processor",  affected: 47, status: "BLOCKED" },
+    { name: "Direct Debit Gateway",    affected: 12, status: "DEGRADED" },
+    { name: "CHAPS Settlement Feed",    affected:  8, status: "DEGRADED" },
+    { name: "Real-Time Payments API",  affected: 31, status: "BLOCKED" },
+  ];
+
+  return (
+    <div className="w-[480px] shrink-0 rounded-xl overflow-hidden font-mono text-xs shadow-2xl"
+      style={{ border: "1px solid rgba(232,34,34,0.35)", boxShadow: "0 0 60px rgba(232,34,34,0.1)" }}>
+
+      {/* Title bar */}
+      <div className="flex items-center justify-between px-4 py-2.5"
+        style={{ background: "#080c08", borderBottom: "1px solid #1a2a1a" }}>
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          <span style={{ color: "#4afe91" }}>NexCore Infrastructure Monitor</span>
+        </div>
+        <span style={{ color: "#3a5a3a" }}>09:00:12 UTC</span>
+      </div>
+
+      {/* Cluster alert */}
+      <div className="px-4 py-2.5 flex items-center gap-2"
+        style={{ background: "#1a0000", borderBottom: "1px solid #330000" }}>
+        <span style={{ color: "#ff4444" }}>⚠</span>
+        <span style={{ color: "#ff5544" }}>CORE-DB-CLUSTER-01 — ALL NODES CRITICAL</span>
+      </div>
+
+      {/* Node table */}
+      <div style={{ background: "#06090a" }}>
+        <div className="grid grid-cols-5 gap-2 px-4 py-1.5"
+          style={{ borderBottom: "1px solid #151e15", color: "#2a4a2a" }}>
+          <span className="col-span-2">Node</span><span>DC</span><span>CPU</span><span>Mem</span>
+        </div>
+        {nodes.map((n) => (
+          <div key={n.id} className="grid grid-cols-5 gap-2 px-4 py-2.5 items-center"
+            style={{ borderBottom: "1px solid #0d140d", background: "rgba(232,34,34,0.05)" }}>
+            <div className="col-span-2">
+              <p style={{ color: "#ff4444" }}>{n.id}</p>
+              <p style={{ color: "#3a5a3a" }}>{n.role}</p>
+            </div>
+            <span style={{ color: "#4a6a4a" }}>{n.dc}</span>
+            <span style={{ color: "#ff6644" }}>{n.cpu}</span>
+            <span style={{ color: "#ff6644" }}>{n.mem}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Dependent services */}
+      <div className="px-4 py-2.5" style={{ background: "#050908", borderTop: "1px solid #1a2a1a" }}>
+        <p className="mb-2" style={{ color: "#2a4a2a" }}>Dependent Services</p>
+        {services.map((s) => (
+          <div key={s.name} className="flex items-center justify-between py-1.5"
+            style={{ borderBottom: "1px solid #0d150d" }}>
+            <span style={{ color: s.status === "BLOCKED" ? "#ff4444" : "#cc8833" }}>{s.name}</span>
+            <div className="flex items-center gap-2">
+              <span style={{ color: "#4a6a4a" }}>{s.affected} svc</span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold"
+                style={{
+                  color:       s.status === "BLOCKED" ? "#ff2222" : "#cc8833",
+                  background:  s.status === "BLOCKED" ? "rgba(232,34,34,0.15)" : "rgba(204,136,51,0.12)",
+                  border:      `1px solid ${s.status === "BLOCKED" ? "rgba(232,34,34,0.3)" : "rgba(204,136,51,0.25)"}`,
+                }}>
+                {s.status}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom alert */}
+      <div className="px-4 py-3" style={{ background: "#0d0000", borderTop: "2px solid #E82222" }}>
+        <div className="rounded-lg p-3" style={{ background: "#150000", border: "1px solid rgba(232,34,34,0.5)" }}>
+          <p className="text-center" style={{ color: "#cc4422" }}>
+            ⚠ SALARY BATCH DUE 09:00 — 47 SERVICES BLOCKED
+          </p>
+          <p className="text-center mt-1" style={{ color: "#663322" }}>
+            1.2M employee payments · £4.8B settlement value · SLA breach in 00:00
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Artifact types where inject.body is scene-setting narration that should appear
 // ABOVE the artifact frame rather than inside it.
-const DASHBOARD_ARTIFACT_TYPES = ["stock_chart", "tv_broadcast", "slack_thread", "regulator_portal", "board_portal", "siem_alert"] as const;
+const DASHBOARD_ARTIFACT_TYPES = ["stock_chart", "tv_broadcast", "slack_thread", "regulator_portal", "board_portal", "siem_alert", "news_headline"] as const;
 type DashboardArtifactType = typeof DASHBOARD_ARTIFACT_TYPES[number];
 // Allow includes() to accept any ArtifactType without a TS error.
 const dashboardIncludes = (type: string): type is DashboardArtifactType =>
@@ -1633,7 +1726,7 @@ function SmsThread({ inject, artifact: art }: { inject: Inject; artifact: Inject
       {/* Messages */}
       <div className="px-4 py-4 space-y-3 overflow-y-auto" style={{ maxHeight: "420px" }}>
         {messages.map((msg, i) => {
-          const isRight = msg.sender === "right" || msg.sender === participants[1];
+          const isRight = msg.sender !== participants[0];
           return (
             <div key={i} className={`flex flex-col ${isRight ? "items-end" : "items-start"}`}>
               <div className="px-4 py-2.5 rounded-2xl max-w-[75%]"
