@@ -109,7 +109,13 @@ export interface InjectArtifact {
   // email
   emailFrom?: string;
   emailTo?: string;
+  emailCc?: string;
   emailSubject?: string;
+  emailDate?: string;
+  emailOrgName?: string;    // sender organisation letterhead (e.g. "The Times", "NCSC")
+  emailBody?: string;       // explicit letter body; if omitted inject.body is used
+  emailSalutation?: string; // e.g. "Dear Press Office,"
+  emailSignOff?: string;    // e.g. "Yours sincerely,\n\nJames Whitfield\nNews Editor"
   // legal
   legalCaseRef?: string;
   legalAuthority?: string;

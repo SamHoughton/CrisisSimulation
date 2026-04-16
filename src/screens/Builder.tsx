@@ -622,9 +622,15 @@ function InjectCard({
             )}
             {inject.artifact?.type === "email" && (
               <div className="mt-2 space-y-2">
-                <input value={inject.artifact.emailFrom ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailFrom: e.target.value } })} className={inputCls} placeholder="From: ceo@company.com" />
-                <input value={inject.artifact.emailTo ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailTo: e.target.value } })} className={inputCls} placeholder="To: board@company.com" />
-                <input value={inject.artifact.emailSubject ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSubject: e.target.value } })} className={inputCls} placeholder="Subject: URGENT -…" />
+                <input value={inject.artifact.emailOrgName ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailOrgName: e.target.value } })} className={inputCls} placeholder="Org letterhead – e.g. The Times, NCSC (leave blank for plain)" />
+                <input value={inject.artifact.emailFrom ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailFrom: e.target.value } })} className={inputCls} placeholder="From: reporter@thetimes.co.uk" />
+                <input value={inject.artifact.emailTo ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailTo: e.target.value } })} className={inputCls} placeholder="To: press@company.com" />
+                <input value={inject.artifact.emailCc ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailCc: e.target.value } })} className={inputCls} placeholder="Cc: (optional)" />
+                <input value={inject.artifact.emailDate ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailDate: e.target.value } })} className={inputCls} placeholder="Date: e.g. 16 April 2026 (leave blank for today)" />
+                <input value={inject.artifact.emailSubject ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSubject: e.target.value } })} className={inputCls} placeholder="Subject / Re:" />
+                <input value={inject.artifact.emailSalutation ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSalutation: e.target.value } })} className={inputCls} placeholder="Salutation – e.g. Dear Press Office," />
+                <textarea value={inject.artifact.emailBody ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailBody: e.target.value } })} className={inputCls} rows={5} placeholder="Letter body (leave blank to show inject body text as scene context only)" style={{ resize: "vertical" }} />
+                <textarea value={inject.artifact.emailSignOff ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, emailSignOff: e.target.value } })} className={inputCls} rows={3} placeholder={"Sign-off – e.g.\nYours sincerely,\n\nJames Whitfield\nNews Editor, The Times"} style={{ resize: "vertical" }} />
               </div>
             )}
             {inject.artifact?.type === "siem_alert" && (
