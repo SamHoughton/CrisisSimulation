@@ -409,7 +409,7 @@ export function Runner() {
   async function handleDisableParticipantDevices() {
     const rs = remoteSessionRef.current;
     if (!rs) return;
-    if (!confirm("Disable participant devices? Joined phones will be disconnected.")) return;
+    if (!confirm("Stop participant devices? Anyone who has joined will be disconnected.")) return;
     try {
       await endRemoteSession(rs.code);
     } catch {
@@ -717,7 +717,7 @@ export function Runner() {
                 </p>
                 {remoteSession.participants.length === 0 ? (
                   <p className="text-xs text-rtr-dim">
-                    Waiting for participants to scan and join...
+                    Waiting for participants to join…
                   </p>
                 ) : (
                   <div className="flex flex-wrap gap-1.5">
@@ -833,7 +833,7 @@ export function Runner() {
                 <textarea
                   value={adHocText}
                   onChange={(e) => setAdHocText(e.target.value)}
-                  placeholder="Unplanned development…"
+                  placeholder="Something has just happened…"
                   rows={3}
                   className="w-full text-xs bg-rtr-base border border-rtr-border-light text-rtr-text rounded px-2.5 py-2 resize-none focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
                 />
@@ -1003,17 +1003,17 @@ export function Runner() {
               <div className="px-6 py-2 border-t border-rtr-border bg-rtr-panel flex items-center gap-3 flex-wrap">
                 {nextInject && session.status === "active" && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    Space - release next
+                    Space: release next
                   </span>
                 )}
                 {currentLive && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    T - {timerRunning ? "pause timer" : "start timer"}
+                    T: {timerRunning ? "pause timer" : "start timer"}
                   </span>
                 )}
                 {showAdHoc && (
                   <span className="text-rtr-dim text-xs font-mono">
-                    Esc - close panel
+                    Esc: close panel
                   </span>
                 )}
               </div>

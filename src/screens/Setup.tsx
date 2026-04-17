@@ -259,7 +259,7 @@ export function Setup() {
         <p className="text-xs text-rtr-muted leading-relaxed">
           When you launch, a <strong className="text-rtr-text">Present window</strong> will open in a new browser tab.
           Put that tab full-screen on your shared display or projector.
-          Keep this window on your laptop for controls - it will never be visible to participants.
+          Keep this window on your laptop. Participants will not see it.
         </p>
       </div>
 

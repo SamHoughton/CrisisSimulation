@@ -80,7 +80,7 @@ export function Home() {
                 <span className="text-rtr-red ml-2">worst day</span>
               </h1>
               <p className="text-sm text-rtr-muted max-w-lg leading-relaxed">
-                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal consequences under pressure, and leave knowing exactly where the team held and where the gaps are.
+                Run branching crisis tabletop exercises with your executive team. Score decisions in real time, reveal consequences under pressure, and finish knowing exactly where the team held firm and where the gaps are.
               </p>
               <div className="flex items-center gap-3 mt-5">
                 <button
@@ -224,7 +224,7 @@ export function Home() {
         {/* Import button when no past sessions exist */}
         {pastSessions.length === 0 && (
           <section className="mb-8 fade-in-up">
-            <p className="text-xs text-rtr-dim text-center mb-2">Have sessions from a previous export?</p>
+            <p className="text-xs text-rtr-dim text-center mb-2">Returning from a previous session?</p>
             <label className="flex items-center justify-center gap-1.5 text-xs text-rtr-muted hover:text-rtr-text border border-dashed border-rtr-border px-3 py-2.5 rounded-lg transition-colors cursor-pointer mx-auto w-fit">
               <Upload className="w-3.5 h-3.5" />Import session archive
               <input type="file" accept=".json" className="hidden" onChange={(e) => {
@@ -324,7 +324,7 @@ export function Home() {
         {/* ── Open source footer ──────────────────────────────────────────── */}
         <div className="mt-12 pt-6 border-t border-rtr-border flex items-center justify-between">
           <p className="text-[11px] text-rtr-dim leading-relaxed max-w-md">
-            Built for practitioners, not vendors. No accounts, no data collection, no cost - everything runs in your browser.
+            Built for practitioners, not vendors. No accounts, no data collection, no cost. Everything runs in your browser.
           </p>
           <a
             href={GITHUB_URL}

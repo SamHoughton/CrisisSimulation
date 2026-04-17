@@ -59,7 +59,7 @@ export function Report() {
   const [activeTab, setActiveTab]   = useState<Tab>("log");
 
   if (!session) {
-    return <div className="p-8 text-center text-rtr-muted">No session to report on.</div>;
+    return <div className="p-8 text-center text-rtr-muted">No session selected.</div>;
   }
 
   const report   = session.report;
@@ -150,7 +150,7 @@ export function Report() {
             {generating && (
               <div className="flex items-center gap-2 text-sm text-rtr-muted">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Analysing transcript…
+                Analysing the transcript…
               </div>
             )}
             {report && (
@@ -293,7 +293,7 @@ function RealOutcomeTab({ realOutcome }: { realOutcome: string }) {
         </div>
         <p className="text-sm text-rtr-text leading-relaxed">{realOutcome}</p>
         <p className="text-xs text-rtr-dim mt-4 border-t border-rtr-border pt-3">
-          Based on real incidents. Names and details have been changed.
+          Based on real incidents. We have changed names and details.
         </p>
       </div>
     </div>
@@ -603,7 +603,7 @@ function DecisionLogTab({ session }: { session: Session }) {
       <div className="text-center py-16 fade-in-up">
         <ClipboardList className="w-10 h-10 text-rtr-dim mx-auto mb-3" />
         <p className="text-sm text-rtr-muted">No decisions recorded in this session.</p>
-        <p className="text-xs text-rtr-dim mt-1">Decisions appear when participants vote at decision-point injects.</p>
+        <p className="text-xs text-rtr-dim mt-1">Decisions are recorded when participants vote during the exercise.</p>
       </div>
     );
   }
@@ -677,7 +677,7 @@ function DashboardTab({ session, pastSessions }: { session: Session; pastSession
     return (
       <div className="text-center py-16 fade-in-up">
         <BarChart2 className="w-10 h-10 text-rtr-dim mx-auto mb-3" />
-        <p className="text-sm text-rtr-muted">No injects released yet - dashboard will populate as the session runs.</p>
+        <p className="text-sm text-rtr-muted">No injects released yet. The dashboard will fill in as the session runs.</p>
       </div>
     );
   }
@@ -778,7 +778,7 @@ function DashboardTab({ session, pastSessions }: { session: Session; pastSession
             </g>
           ))}
         </svg>
-        <p className="text-xs text-rtr-dim mt-2">Score: starts at 100, −8 per inject, +3 per response, +4 per decision. Hover points for detail.</p>
+        <p className="text-xs text-rtr-dim mt-2">Score: starts at 100, −8 per inject, +3 per response, +4 per decision. Hover each point for detail.</p>
       </div>
 
       {/* Per-inject breakdown */}

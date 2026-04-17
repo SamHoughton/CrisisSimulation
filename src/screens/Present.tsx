@@ -1017,7 +1017,7 @@ function RansomwareNote({ inject, artifact: art }: { inject: Inject; artifact: I
           )}
         </div>
         <p className="text-xs text-center" style={{ color: "#660000" }}>
-          After deadline all data will be published publicly. Do not contact law enforcement.
+          After the deadline, all data will be published. Do not contact law enforcement.
         </p>
       </div>
     </div>
