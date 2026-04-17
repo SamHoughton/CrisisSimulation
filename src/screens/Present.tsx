@@ -763,7 +763,13 @@ function InfraOutageBriefingArtifact() {
   );
 }
 
-
+// Artifact types where inject.body is scene-setting narration that should appear
+// ABOVE the artifact frame rather than inside it.
+const DASHBOARD_ARTIFACT_TYPES = ["stock_chart", "tv_broadcast", "slack_thread", "regulator_portal", "board_portal", "siem_alert", "news_headline"] as const;
+type DashboardArtifactType = typeof DASHBOARD_ARTIFACT_TYPES[number];
+// Allow includes() to accept any ArtifactType without a TS error.
+const dashboardIncludes = (type: string): type is DashboardArtifactType =>
+  (DASHBOARD_ARTIFACT_TYPES as readonly string[]).includes(type);
 
 // ─── Inject screen ────────────────────────────────────────────────────────────
 
@@ -831,9 +837,9 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
         <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
           <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
           {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
-          {/* Always show inject.body above the artifact as scene-setting context.
-              The artifact itself is the engagement piece; the body is the narrator briefing. */}
-          {inject.artifact && inject.artifact.type !== "default" && inject.body && (
+          {/* For dashboard/broadcast artifacts the body is narrator context, not artifact content.
+              Show it above as a scene-setter so the artifact frame stays clean. */}
+          {inject.artifact && dashboardIncludes(inject.artifact.type) && (
             <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
           )}
           <ArtifactDisplay inject={inject} />
@@ -1167,105 +1173,42 @@ function TweetCard({ inject, artifact: art }: { inject: Inject; artifact: Inject
 
 // ── Email card ─────────────────────────────────────────────────────────────────
 
-/** Derive a rough sender category from org name or email domain for letterhead styling. */
-function emailSenderCategory(orgName?: string, from?: string): "newspaper" | "government" | "financial" | "ir_firm" | "internal" | "generic" {
-  const haystack = `${(orgName ?? "").toLowerCase()} ${(from ?? "").toLowerCase()}`;
-  if (/times|guardian|ft\.com|bbc|reuters|bloomberg|telegraph|mail|mirror|sun\.|sky news|independent/.test(haystack)) return "newspaper";
-  if (/\.gov\.uk|ncsc|ico|fca|ofgem|ofwat|cma|hmrc|met police|nca\.gov/.test(haystack)) return "government";
-  if (/blackrock|vanguard|fidelity|schroders|aviva|l&g|legal & general|jp morgan|goldman|morgan stanley/.test(haystack)) return "financial";
-  if (/mandiant|crowdstrike|palo alto|fireeye|secureworks|kpmg|deloitte|pwc|ey\.com|accenture/.test(haystack)) return "ir_firm";
-  return "generic";
-}
-
 function EmailCard({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
-  const category = emailSenderCategory(art.emailOrgName, art.emailFrom);
-  const bodyText = art.emailBody ?? null;
-  const dateText = art.emailDate ?? new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-
-  // Letterhead colour scheme per sender category
-  const letterhead: Record<typeof category, { bg: string; border: string; accent: string; orgColor: string; font: string }> = {
-    newspaper:  { bg: "#faf8f4", border: "#1a1a1a", accent: "#8b0000",  orgColor: "#1a1a1a", font: "Georgia, 'Times New Roman', serif" },
-    government: { bg: "#f5f7fb", border: "#003082", accent: "#003082",  orgColor: "#003082", font: "'Arial', sans-serif" },
-    financial:  { bg: "#f8f9fb", border: "#1c2b3a", accent: "#1c2b3a",  orgColor: "#1c2b3a", font: "'Arial', sans-serif" },
-    ir_firm:    { bg: "#fafafa", border: "#2d2d2d", accent: "#E82222",  orgColor: "#2d2d2d", font: "'Arial', sans-serif" },
-    internal:   { bg: "#f9fafb", border: "#374151", accent: "#374151",  orgColor: "#374151", font: "'Arial', sans-serif" },
-    generic:    { bg: "#f9fafb", border: "#374151", accent: "#374151",  orgColor: "#374151", font: "'Arial', sans-serif" },
-  };
-
-  const lh = letterhead[category];
-
+  const bodyText = art.emailBody ?? inject.body;
+  const paragraphs = bodyText.split(/\n\n+/).filter(Boolean);
   return (
-    <div className="rounded-xl overflow-hidden shadow-lg" style={{ background: lh.bg, border: `2px solid ${lh.border}`, color: "#1a1a1a" }}>
-
-      {/* Letterhead */}
-      {art.emailOrgName && (
-        <div className="px-8 py-5 flex items-end justify-between" style={{ borderBottom: `3px solid ${lh.border}`, background: lh.bg }}>
-          <div>
-            {category === "newspaper" ? (
-              <p className="text-3xl font-black tracking-tight leading-none" style={{ fontFamily: lh.font, color: lh.orgColor, letterSpacing: "-0.02em" }}>
-                {art.emailOrgName}
-              </p>
-            ) : (
-              <p className="text-xl font-bold tracking-wide uppercase" style={{ fontFamily: lh.font, color: lh.orgColor }}>
-                {art.emailOrgName}
-              </p>
-            )}
-            {art.emailFrom && (
-              <p className="text-xs mt-1" style={{ color: "#6b7280", fontFamily: lh.font }}>{art.emailFrom}</p>
-            )}
-          </div>
-          <div className="text-right text-sm" style={{ color: "#6b7280", fontFamily: lh.font }}>
-            <p>{dateText}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Email metadata */}
-      <div className="px-8 py-4 space-y-1.5" style={{ borderBottom: `1px solid ${lh.border}22`, background: `${lh.bg}`, opacity: 0.95 }}>
-        {!art.emailOrgName && (
-          <div className="flex items-baseline gap-3 pb-1">
-            <span className="text-xs font-semibold uppercase tracking-wider w-12 shrink-0 text-right" style={{ color: "#9ca3af" }}>Date</span>
-            <span className="text-sm" style={{ color: "#374151", fontFamily: lh.font }}>{dateText}</span>
+    <div className="rounded-xl overflow-hidden" style={{ background: "#15171a", border: "1px solid #2a2e3a" }}>
+      {/* Email header */}
+      <div className="px-5 py-3 border-b" style={{ borderColor: "#2a2e3a", background: "#1c1f24" }}>
+        {art.emailOrgName && (
+          <div className="mb-2 pb-2 border-b" style={{ borderColor: "#2a2e3a" }}>
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#4a4f65" }}>{art.emailOrgName}</span>
           </div>
         )}
-        <div className="flex items-baseline gap-3">
-          <span className="text-xs font-semibold uppercase tracking-wider w-12 shrink-0 text-right" style={{ color: "#9ca3af" }}>From</span>
-          <span className="text-sm font-medium" style={{ color: "#111827", fontFamily: lh.font }}>{art.emailFrom ?? "unknown@sender.com"}</span>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>From</span>
+          <span className="text-sm font-medium" style={{ color: "#e8eaf0" }}>{art.emailFrom ?? "unknown@sender.com"}</span>
         </div>
-        <div className="flex items-baseline gap-3">
-          <span className="text-xs font-semibold uppercase tracking-wider w-12 shrink-0 text-right" style={{ color: "#9ca3af" }}>To</span>
-          <span className="text-sm" style={{ color: "#374151", fontFamily: lh.font }}>{art.emailTo ?? "leadership@company.com"}</span>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>To</span>
+          <span className="text-sm" style={{ color: "#8b8fa8" }}>{art.emailTo ?? "leadership@company.com"}</span>
         </div>
-        {art.emailCc && (
-          <div className="flex items-baseline gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wider w-12 shrink-0 text-right" style={{ color: "#9ca3af" }}>Cc</span>
-            <span className="text-sm" style={{ color: "#374151", fontFamily: lh.font }}>{art.emailCc}</span>
-          </div>
-        )}
-        <div className="flex items-baseline gap-3 pt-1" style={{ borderTop: `1px solid ${lh.border}18` }}>
-          <span className="text-xs font-semibold uppercase tracking-wider w-12 shrink-0 text-right" style={{ color: "#9ca3af" }}>Re</span>
-          <span className="text-sm font-semibold" style={{ color: "#111827", fontFamily: lh.font }}>{art.emailSubject ?? inject.title}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs w-10 text-right shrink-0" style={{ color: "#4a4f65" }}>Subj</span>
+          <span className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>{art.emailSubject ?? inject.title}</span>
         </div>
       </div>
-
-      {/* Letter body */}
-      {bodyText && (
-        <div className="px-8 py-6 space-y-4" style={{ fontFamily: lh.font }}>
-          {art.emailSalutation && (
-            <p className="text-base" style={{ color: "#111827" }}>{art.emailSalutation}</p>
-          )}
-          {bodyText.split("\n\n").map((para, i) => (
-            <p key={i} className="text-base leading-relaxed" style={{ color: "#1f2937" }}>{para}</p>
-          ))}
-          {art.emailSignOff && (
-            <div className="pt-2 space-y-0.5">
-              {art.emailSignOff.split("\n").map((line, i) => (
-                <p key={i} className="text-base" style={{ color: "#111827" }}>{line}</p>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      <div className="p-6 space-y-4">
+        {art.emailSalutation && (
+          <p className="text-base" style={{ color: "#c5c8d8" }}>{art.emailSalutation}</p>
+        )}
+        {paragraphs.map((p, i) => (
+          <p key={i} className="text-base leading-relaxed" style={{ color: "#c5c8d8" }}>{p}</p>
+        ))}
+        {art.emailSignOff && (
+          <p className="text-base pt-2 whitespace-pre-line" style={{ color: "#8b8fa8" }}>{art.emailSignOff}</p>
+        )}
+      </div>
     </div>
   );
 }
