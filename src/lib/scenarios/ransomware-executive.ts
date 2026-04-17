@@ -2,7 +2,7 @@ import type { Scenario } from "../../types";
 
 export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
   id: "tpl-ransomware-gold-001",
-  title: "Ransomware: The Quiet Beacon — Executive Response",
+  title: "Ransomware: The Quiet Beacon - Executive Response",
   description:
     "05:30. Your CISO has confirmed it. The trading systems are encrypted, the PSR replica is in the attacker's hands, and the markets open in three hours. Every decision you make today will be in front of Parliament, regulators, and the press. Focused executive arc for CEO, CFO, CLO, CCO, COO. Tests governance, regulatory posture, market disclosure, ransom authority, PSR accountability, insurance coupling, and the decisions that define careers.",
   type: "RANSOMWARE",
@@ -20,7 +20,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
   ],
   roles: ["CEO", "CFO", "CLO", "CCO", "COO"],
   briefing:
-    "You are the executive leadership team of Veridian Power plc — a FTSE 250 UK energy retailer and designated Operator of Essential Services. Your trading desk runs £2.1B of day-ahead wholesale positions. Your front-office holds the Priority Services Register: 84,000 vulnerable customers who depend on uninterrupted power for medical equipment, dialysis, and oxygen.\n\nYour CISO called you at 05:30. The incident is confirmed: ALPHV have been inside your systems for six days. Bulk encryption fired overnight. A read-replica of the PSR has almost certainly been exfiltrated.\n\nThe technical team is working the problem. Your job is everything else: who you call, what you tell them, how you move in the markets, what authority you give the negotiators, and whether the decisions you make in the next 48 hours hold up in front of Ofgem, the ICO, and the Treasury Select Committee.\n\nThe markets open in three hours and twenty-two minutes.",
+    "You are the executive leadership team of Veridian Power plc - a FTSE 250 UK energy retailer and designated Operator of Essential Services. Your trading desk runs £2.1B of day-ahead wholesale positions. Your front-office holds the Priority Services Register: 84,000 vulnerable customers who depend on uninterrupted power for medical equipment, dialysis, and oxygen.\n\nYour CISO called you at 05:30. The incident is confirmed: ALPHV have been inside your systems for six days. Bulk encryption fired overnight. A read-replica of the PSR has almost certainly been exfiltrated.\n\nThe technical team is working the problem. Your job is everything else: who you call, what you tell them, how you move in the markets, what authority you give the negotiators, and whether the decisions you make in the next 48 hours hold up in front of Ofgem, the ICO, and the Treasury Select Committee.\n\nThe markets open in three hours and twenty-two minutes.",
   injects: [
     {
       id: "rwg-i1",
@@ -28,24 +28,24 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 10,
       scenarioDay: 1,
       scenarioTime: "05:30",
-      title: "05:30 — The Call",
+      title: "05:30 - The Call",
       tierSkipSummary:
         "At 05:30 the CISO confirmed an active ALPHV ransomware incident. Bulk encryption had hit 217 servers. A PSR read-replica was confirmed exfiltrated. The Gold team convened for their first decision: who gets called first.",
       body: "Your phone goes at 05:30. You were asleep.\n\nIt's your CISO. She needs sixty seconds.",
       facilitatorNotes:
-        "The most important question this inject asks isn't technical — it's about who the CEO treats as a priority stakeholder at 05:30 when the information is incomplete.\n\nOption A (CISO to continue technical response) is correct: calling the CISO back immediately to authorise the next steps keeps the technical response moving. The CISO is the one person who can slow the damage and they need authority to do it.\n\nOption B (General Counsel) is the instinct of legally cautious leaders. Not wrong, but the notification clock doesn't stop while you're still doing technical triage.\n\nOption C (Chairman) is a governance reflex. Correct instinct, wrong sequence. The Chairman needs to know, but not before the CISO has authorisation to act.\n\nOption D (CFO) is understandable given the financial exposure, but premature.\n\nVeridian supplies power to 84,000 customers who depend on it for medical equipment. That's the human weight behind every decision today. Ask the room: if one of those customers loses power tonight because the team spent forty minutes briefing the wrong person first, who bears that?",
+        "The most important question this inject asks isn't technical - it's about who the CEO treats as a priority stakeholder at 05:30 when the information is incomplete.\n\nOption A (CISO to continue technical response) is correct: calling the CISO back immediately to authorise the next steps keeps the technical response moving. The CISO is the one person who can slow the damage and they need authority to do it.\n\nOption B (General Counsel) is the instinct of legally cautious leaders. Not wrong, but the notification clock doesn't stop while you're still doing technical triage.\n\nOption C (Chairman) is a governance reflex. Correct instinct, wrong sequence. The Chairman needs to know, but not before the CISO has authorisation to act.\n\nOption D (CFO) is understandable given the financial exposure, but premature.\n\nVeridian supplies power to 84,000 customers who depend on it for medical equipment. That's the human weight behind every decision today. Ask the room: if one of those customers loses power tonight because the team spent forty minutes briefing the wrong person first, who bears that?",
       delayMinutes: 0,
       timerMinutes: 8,
       tickerHeadline:
         "Energy retailers face 'cyber resilience year' as Ofgem raises NIS reporting bar",
       artifact: {
         type: "voicemail",
-        voicemailCaller: "Sarah Khatun — Chief Information Security Officer",
+        voicemailCaller: "Sarah Khatun - Chief Information Security Officer",
         voicemailCallerNumber: "+44 7700 900112",
         voicemailDuration: "1:52",
         voicemailTime: "05:30",
         voicemailTranscript:
-          "It's Sarah. I need sixty seconds and then you'll understand why I'm calling at this hour. Six days ago, someone got into our systems using a stolen password from one of our contractors. They've been moving quietly ever since. At just after four this morning, they ran the trigger. Two hundred and seventeen servers encrypted — billing, trading reconciliation, payroll, all gone. Before they encrypted it, they copied the Priority Services Register. The list of all our vulnerable customers. We don't know for certain it's in criminal hands but Mandiant assess it as highly likely. The lights are still on. No customer has lost power. This is a systems crisis, not a supply crisis. Mandiant are already on their way in. I need to know who you're calling first so I can brief them or hold. I'm so sorry. Call me back.",
+          "It's Sarah. I need sixty seconds and then you'll understand why I'm calling at this hour. Six days ago, someone got into our systems using a stolen password from one of our contractors. They've been moving quietly ever since. At just after four this morning, they ran the trigger. Two hundred and seventeen servers encrypted - billing, trading reconciliation, payroll, all gone. Before they encrypted it, they copied the Priority Services Register. The list of all our vulnerable customers. We don't know for certain it's in criminal hands but Mandiant assess it as highly likely. The lights are still on. No customer has lost power. This is a systems crisis, not a supply crisis. Mandiant are already on their way in. I need to know who you're calling first so I can brief them or hold. I'm so sorry. Call me back.",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CLO", "COO"],
@@ -63,7 +63,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "NCSC first — honour the NIS statutory obligation, file the notification, ask for technical support, lock in the cooperative posture",
+            "NCSC first - honour the NIS statutory obligation, file the notification, ask for technical support, lock in the cooperative posture",
           consequence:
             "NCSC respond within 40 minutes with a named incident handler. The notification clock is on record. Ofgem later note the proactive NCSC escalation as evidence of good NIS culture.",
           rank: 1,
@@ -72,7 +72,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Board chair first — this is a material risk event and the chair must be in the room from the start",
+            "Board chair first - this is a material risk event and the chair must be in the room from the start",
           consequence:
             "The chair is on holiday in Italy and reachable in 90 minutes. NCSC notification happens at hour 4 instead of hour 1. Defensible governance, slower regulatory posture.",
           rank: 3,
@@ -81,7 +81,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "CFO and CEO — lock down the trading and financial exposure before anything goes external",
+            "CFO and CEO - lock down the trading and financial exposure before anything goes external",
           consequence:
             "Ninety minutes of internal pre-meeting before any regulator is told. Notification clock stressed. Internal alignment high. External posture set late.",
           rank: 2,
@@ -90,7 +90,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Ofgem first — the sector regulator should hear it from you before NCSC routes it",
+            "Ofgem first - the sector regulator should hear it from you before NCSC routes it",
           consequence:
             "Ofgem appreciate the call but explain that under NIS the first call is to NCSC. You have inverted the chain of command. Ofgem note this in their later assessment.",
           rank: 4,
@@ -104,10 +104,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 20,
       scenarioDay: 1,
       scenarioTime: "05:47",
-      title: "05:47 — The Lawyer's Message",
+      title: "05:47 - The Lawyer's Message",
       body: "Seventeen minutes later, your phone lights up again. Your General Counsel. She's also been awake for a while.",
       facilitatorNotes:
-        "The question is whether to file early with incomplete information or wait. Experienced CLOs know the regulator prefers early and incomplete over late and complete — filing early is treated as evidence of good culture. Waiting feels safer but burns time and looks evasive. Watch for teams that try to avoid filing altogether, or who want to route it through a different regulator. They are separate obligations.",
+        "The question is whether to file early with incomplete information or wait. Experienced CLOs know the regulator prefers early and incomplete over late and complete - filing early is treated as evidence of good culture. Waiting feels safer but burns time and looks evasive. Watch for teams that try to avoid filing altogether, or who want to route it through a different regulator. They are separate obligations.",
       delayMinutes: 0,
       timerMinutes: 8,
       tickerHeadline:
@@ -115,28 +115,28 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       artifact: {
         type: "sms_thread",
         smsParticipants: [
-          "Rachel Winters — General Counsel",
+          "Rachel Winters - General Counsel",
           "You",
         ],
         smsMessages: [
           {
-            sender: "Rachel Winters — General Counsel",
+            sender: "Rachel Winters - General Counsel",
             text: "I need five minutes before you call anyone else. It's about the data regulator. Can you call me now?",
             time: "05:44",
           },
           {
-            sender: "Rachel Winters — General Counsel",
+            sender: "Rachel Winters - General Counsel",
             text: "We have a legal obligation to notify the data protection regulator within 72 hours of becoming aware of a breach. That clock started at 05:30 when the CISO called you.",
             time: "05:47",
           },
           {
-            sender: "Rachel Winters — General Counsel",
-            text: "Filing early with incomplete information is fine — they actually prefer it. Waiting feels safer but it burns through our window while we're still in the dark.",
+            sender: "Rachel Winters - General Counsel",
+            text: "Filing early with incomplete information is fine - they actually prefer it. Waiting feels safer but it burns through our window while we're still in the dark.",
             time: "05:48",
           },
           {
-            sender: "Rachel Winters — General Counsel",
-            text: "What do you want to do — file something now or wait until we know more?",
+            sender: "Rachel Winters - General Counsel",
+            text: "What do you want to do - file something now or wait until we know more?",
             time: "05:49",
           },
         ],
@@ -157,7 +157,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "File a holding notification to the ICO now — we have enough to trigger Art. 33 and the ICO prefers phased notifications",
+            "File a holding notification to the ICO now - we have enough to trigger Art. 33 and the ICO prefers phased notifications",
           consequence:
             "ICO acknowledge within 2 hours and assign a case officer. The notification is on-time. The ICO final report notes 'prompt and transparent engagement'.",
           rank: 1,
@@ -166,7 +166,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Wait until scope is confirmed — filing a premature notification risks errors that will need correcting",
+            "Wait until scope is confirmed - filing a premature notification risks errors that will need correcting",
           consequence:
             "Scope confirmed at Day 3. ICO notification filed at hour 62. Technically within 72 hours. The ICO asks why it took so long. The delay features in their enforcement assessment.",
           rank: 3,
@@ -184,7 +184,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Notify Ofgem under network security regulations and ask them to coordinate with the ICO — one notification, two regulators",
+            "Notify Ofgem under network security regulations and ask them to coordinate with the ICO - one notification, two regulators",
           consequence:
             "Ofgem explain patiently that NIS and GDPR are separate regimes. The ICO clock is now at 1h30m. The confusion is noted.",
           rank: 4,
@@ -198,21 +198,21 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 30,
       scenarioDay: 1,
       scenarioTime: "06:15",
-      title: "06:15 — Seal It or Let It Run",
+      title: "06:15 - Seal It or Let It Run",
       body: "06:15. You've been on calls for 45 minutes. The CISO rings again. She has four options and needs your authority on one of them in the next five minutes.",
       facilitatorNotes:
-        "The CEO, CFO, and COO own this. The CISO is presenting options, not making the call. Ask the room: what does 'the lights are still on' actually protect you from? It means this is a systems crisis, not a power outage — a lower threshold for regulators and politicians. Aggressive containment (A) costs money but gives certainty. Selective containment (B) feels cheaper but gives the attacker more time. Ask the CFO: have you modelled a day of manual trading?",
+        "The CEO, CFO, and COO own this. The CISO is presenting options, not making the call. Ask the room: what does 'the lights are still on' actually protect you from? It means this is a systems crisis, not a power outage - a lower threshold for regulators and politicians. Aggressive containment (A) costs money but gives certainty. Selective containment (B) feels cheaper but gives the attacker more time. Ask the CFO: have you modelled a day of manual trading?",
       delayMinutes: 0,
       timerMinutes: 10,
       tickerHeadline:
-        "BREAKING: Major UK energy retailer reportedly hit by overnight cyber incident — supply unaffected",
+        "BREAKING: Major UK energy retailer reportedly hit by overnight cyber incident - supply unaffected",
       artifact: {
         type: "email",
         emailFrom: "s.khatun@veridianpower.co.uk",
         emailTo: "crisis-leadership@veridianpower.co.uk",
-        emailSubject: "URGENT — Containment authority needed — 5 min window",
+        emailSubject: "URGENT - Containment authority needed - 5 min window",
         emailBody:
-          "The attacker's encryption has already hit the back office — 217 servers. Customer-facing systems are still up. Power is unaffected. We need to decide what happens to the rest of the estate right now.\n\nOption A — Hard lockdown. All back-office systems offline, trading desk on manual fallback. Spread stops. Estimated £1.8M in suboptimal trading positions.\n\nOption B — Selective containment. Protect billing and the PSR master database. Let trading continue on the affected infrastructure. Cheaper, but if the attacker is still moving they get another route in.\n\nOption C — Full shutdown. Everything dark, including customer-facing systems. Effective, but 740,000 customers will see an error page.\n\nOption D — Hold. Wait for Mandiant to finish their sweep before we move anything. Risk: every minute of inaction is another minute if they are still active inside.\n\nI need your call. What do you authorise?\n\n— Sarah",
+          "The attacker's encryption has already hit the back office - 217 servers. Customer-facing systems are still up. Power is unaffected. We need to decide what happens to the rest of the estate right now.\n\nOption A - Hard lockdown. All back-office systems offline, trading desk on manual fallback. Spread stops. Estimated £1.8M in suboptimal trading positions.\n\nOption B - Selective containment. Protect billing and the PSR master database. Let trading continue on the affected infrastructure. Cheaper, but if the attacker is still moving they get another route in.\n\nOption C - Full shutdown. Everything dark, including customer-facing systems. Effective, but 740,000 customers will see an error page.\n\nOption D - Hold. Wait for Mandiant to finish their sweep before we move anything. Risk: every minute of inaction is another minute if they are still active inside.\n\nI need your call. What do you authorise?\n\n- Sarah",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CFO", "COO"],
@@ -230,7 +230,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Aggressive containment: all back-office systems down, trading on the manual fallback book — seal the estate",
+            "Aggressive containment: all back-office systems down, trading on the manual fallback book - seal the estate",
           consequence:
             "Spread halted. Trading desk runs manual. Estimated £1.8M in suboptimal hedging. The attacker is locked out cleanly. The CISO calls it 'the right call at the right moment'.",
           rank: 1,
@@ -248,7 +248,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Full shutdown including customer-facing systems — until Mandiant gives all-clear",
+            "Full shutdown including customer-facing systems - until Mandiant gives all-clear",
           consequence:
             "740,000 customers get an error page. Spread halted. The customer portal going dark becomes a separate reputational crisis within 6 hours.",
           rank: 2,
@@ -257,7 +257,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Hold and observe — let Mandiant complete their loop before you make a containment call that cannot be reversed",
+            "Hold and observe - let Mandiant complete their loop before you make a containment call that cannot be reversed",
           consequence:
             "Encryption spreads for another 90 minutes. By 05:45 the trading book reconciliation is unrecoverable from production. Mandiant arrive to a worse situation than briefed.",
           rank: 4,
@@ -271,24 +271,24 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 40,
       scenarioDay: 1,
       scenarioTime: "07:15",
-      title: "07:15 — The Chairman",
+      title: "07:15 - The Chairman",
       tierSkipSummary:
         "The Chairman called at 07:15 having been tipped off by the company secretary. The CEO called back and briefed him with what was known at that point.",
       body: "07:15. A missed call on your phone.\n\nSir David Ashworth. Non-Executive Chairman. He's left a voicemail.",
       facilitatorNotes:
-        "The Chairman calling at 07:15 before the CEO has had time to prepare is a governance test, not a media one. The right answer is A — call back now with an honest incomplete picture. Chairmen of listed companies are adults who can handle 'we don't know everything yet.' What they cannot handle is finding out from the BBC. Option C is the most common trap: teams want to wait until they have more to say. By 08:42, the BBC is already running the story and he's seen it. Ask: at what point does the Chairman hearing this from someone else become unrecoverable?",
+        "The Chairman calling at 07:15 before the CEO has had time to prepare is a governance test, not a media one. The right answer is A - call back now with an honest incomplete picture. Chairmen of listed companies are adults who can handle 'we don't know everything yet.' What they cannot handle is finding out from the BBC. Option C is the most common trap: teams want to wait until they have more to say. By 08:42, the BBC is already running the story and he's seen it. Ask: at what point does the Chairman hearing this from someone else become unrecoverable?",
       delayMinutes: 0,
       timerMinutes: 8,
       tickerHeadline:
-        "Veridian Power — no pre-market disclosure — board status unknown",
+        "Veridian Power - no pre-market disclosure - board status unknown",
       artifact: {
         type: "voicemail",
-        voicemailCaller: "Sir David Ashworth — Non-Executive Chairman",
+        voicemailCaller: "Sir David Ashworth - Non-Executive Chairman",
         voicemailCallerNumber: "+44 7700 900041",
         voicemailDuration: "0:52",
         voicemailTime: "07:13",
         voicemailTranscript:
-          "Robert. It's David Ashworth. It's just after quarter past seven. The company secretary has left me a message — something about a significant systems failure overnight. I understand you're in the middle of something serious. I have one question: do you want me to hear about this from you, or am I going to read about it in the Financial Times? Call me when you can. I can wait if you're busy. But please don't make me wait too long.",
+          "Robert. It's David Ashworth. It's just after quarter past seven. The company secretary has left me a message - something about a significant systems failure overnight. I understand you're in the middle of something serious. I have one question: do you want me to hear about this from you, or am I going to read about it in the Financial Times? Call me when you can. I can wait if you're busy. But please don't make me wait too long.",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CLO"],
@@ -305,7 +305,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Call back now — give him what you know, incomplete as it is. He needs to hear it from you first.",
+            "Call back now - give him what you know, incomplete as it is. He needs to hear it from you first.",
           consequence:
             "The Chairman appreciates the direct call. He has an incomplete picture but he's with you. Later he tells the board: 'The CEO called me at seven-fifteen. We were in this together from the start.' That sentence is worth more than any single decision you'll make today.",
           rank: 1,
@@ -315,7 +315,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Ask the company secretary to brief him — she has the facts, and you need your bandwidth for the crisis.",
+            "Ask the company secretary to brief him - she has the facts, and you need your bandwidth for the crisis.",
           consequence:
             "The company secretary briefs him at 07:45. Accurate, professional, second-hand. The Chairman later notes in his board review that he'd have preferred to hear directly from the CEO in those first hours.",
           rank: 2,
@@ -324,7 +324,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Wait until 09:00 when you have a clearer picture — it's better to say something meaningful than something incomplete.",
+            "Wait until 09:00 when you have a clearer picture - it's better to say something meaningful than something incomplete.",
           consequence:
             "At 08:42 the BBC runs 'Veridian Power hit by ransomware attack.' The Chairman sees it. He calls the CEO before the CEO calls him. The dynamic has shifted and it will not shift back.",
           rank: 3,
@@ -333,7 +333,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Post a brief written note to the board portal — it creates a record and keeps him informed without using your time.",
+            "Post a brief written note to the board portal - it creates a record and keeps him informed without using your time.",
           consequence:
             "The Chairman reads the note and calls anyway. He does not understand why the CEO chose to write rather than call. The note is accurate. The relationship is slightly cooler.",
           rank: 4,
@@ -347,24 +347,24 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 50,
       scenarioDay: 1,
       scenarioTime: "08:20",
-      title: "08:20 — The Insurer Calls First",
+      title: "08:20 - The Insurer Calls First",
       tierSkipSummary:
         "Beazley made first contact at 08:20 via voicemail, alerting Veridian to the policy notification obligation. The CLO was briefed and the insurer was called back with a carefully managed initial response.",
       body: "08:20. Your insurer is calling before your PR team has finished their first coffee.\n\nBeazley. Cyber claims. They've been alerted by their threat intelligence feed. They know.",
       facilitatorNotes:
-        "This inject tests whether the team understands the difference between notifying an insurer and telling them everything. Option B (confirm incident, nothing more, CLO in loop) and Option C (CLO handles entirely) are equally valid rank-1 answers — the critical thing is keeping legal counsel in the notification chain before anything substantive is said. Option A sounds cooperative but creates an information record before scope is confirmed. Option D risks a policy notification breach — Beazley's voicemail is explicit about the prompt notification obligation. Ask the CLO: what does your policy actually require at this stage?",
+        "This inject tests whether the team understands the difference between notifying an insurer and telling them everything. Option B (confirm incident, nothing more, CLO in loop) and Option C (CLO handles entirely) are equally valid rank-1 answers - the critical thing is keeping legal counsel in the notification chain before anything substantive is said. Option A sounds cooperative but creates an information record before scope is confirmed. Option D risks a policy notification breach - Beazley's voicemail is explicit about the prompt notification obligation. Ask the CLO: what does your policy actually require at this stage?",
       delayMinutes: 0,
       timerMinutes: 8,
       tickerHeadline:
-        "Veridian Power — pre-market quiet — insurer monitoring services on alert",
+        "Veridian Power - pre-market quiet - insurer monitoring services on alert",
       artifact: {
         type: "voicemail",
-        voicemailCaller: "James Hartwell — Head of Cyber Claims, Beazley",
+        voicemailCaller: "James Hartwell - Head of Cyber Claims, Beazley",
         voicemailCallerNumber: "+44 20 7667 0623",
         voicemailDuration: "1:18",
         voicemailTime: "08:19",
         voicemailTranscript:
-          "Good morning, this message is for Mr Kaye or whoever is managing Veridian Power's crisis response this morning. My name is James Hartwell. I head cyber claims at Beazley. We've been alerted overnight through our threat intelligence feed that Veridian may be experiencing a significant ransomware incident. Your policy carries a prompt notification obligation — the sooner you're in contact with us, the better, both for your coverage position and because we have resources that can help. We have a standing Mandiant relationship and an active incident response team. I want to be direct: early engagement is in your interest here. This is not a call you want to return tomorrow morning. Please call me back as soon as you're able. Thank you.",
+          "Good morning, this message is for Mr Kaye or whoever is managing Veridian Power's crisis response this morning. My name is James Hartwell. I head cyber claims at Beazley. We've been alerted overnight through our threat intelligence feed that Veridian may be experiencing a significant ransomware incident. Your policy carries a prompt notification obligation - the sooner you're in contact with us, the better, both for your coverage position and because we have resources that can help. We have a standing Mandiant relationship and an active incident response team. I want to be direct: early engagement is in your interest here. This is not a call you want to return tomorrow morning. Please call me back as soon as you're able. Thank you.",
       },
       isDecisionPoint: true,
       targetRoles: ["CLO", "CFO", "CEO"],
@@ -382,7 +382,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Call back with full transparency — tell them everything you know so far. Early disclosure is always better.",
+            "Call back with full transparency - tell them everything you know so far. Early disclosure is always better.",
           consequence:
             "Beazley log a comprehensive first-notification record. But you've said things before the CLO has reviewed the policy terms. Three weeks later, several of those statements become relevant to the coverage dispute in ways you didn't anticipate.",
           rank: 2,
@@ -391,7 +391,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Call back promptly — confirm an incident has occurred and that you'll provide a fuller notification within the hour once your CLO has reviewed the policy terms.",
+            "Call back promptly - confirm an incident has occurred and that you'll provide a fuller notification within the hour once your CLO has reviewed the policy terms.",
           consequence:
             "Hartwell accepts this readily. He's heard it many times. Beazley's record shows a prompt initial notification and a CLO-reviewed follow-up. The notification obligation is met. The coverage conversation starts on a professional footing.",
           rank: 1,
@@ -400,7 +400,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Ask the CLO to handle the insurer call entirely — this is a legal and contractual conversation, not an executive one.",
+            "Ask the CLO to handle the insurer call entirely - this is a legal and contractual conversation, not an executive one.",
           consequence:
             "CLO calls Hartwell at 08:45. The conversation is precise and well-managed. Beazley's file notes a professional initial response. The CLO briefs the CEO at 09:00.",
           rank: 1,
@@ -409,7 +409,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Don't respond yet — you don't have enough scope clarity to file a proper notification. Better to wait and get it right.",
+            "Don't respond yet - you don't have enough scope clarity to file a proper notification. Better to wait and get it right.",
           consequence:
             "By 09:30, Beazley has left a second voicemail. Their claims team notes a delayed response to a prompt notification obligation. When the coverage dispute arises three weeks later, this delay features in their assessment.",
           rank: 4,
@@ -423,16 +423,16 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 55,
       scenarioDay: 1,
       scenarioTime: "08:47",
-      title: "08:47 — What Your Staff Can See",
+      title: "08:47 - What Your Staff Can See",
       tierSkipSummary:
         "By 08:47 staff had arrived to find all systems dark and no communication from leadership. The #general Slack channel filled with confusion and the BBC story appeared in-thread before the company had said anything publicly.",
       body: "08:47. Three thousand two hundred staff arrived this morning to find their computers dead and their email offline.\n\nNobody has told them anything. This is what they can see instead.",
       facilitatorNotes:
-        "No formal vote on this inject. Let it sit in the room for a moment.\n\nThe PHANTOMCOIL_README.txt appearing on individual desktops is a classic ransomware technique — staff have found the ransom note before the CEO has told them anything. The BBC story landing in the Slack thread before any internal communication is the direct consequence of the silence in the last two hours.\n\nAsk the room: what would you have wanted your call centre agents to see instead of this? What does a good version of this same 30 minutes look like — and what decision earlier this morning would have made it possible?",
+        "No formal vote on this inject. Let it sit in the room for a moment.\n\nThe PHANTOMCOIL_README.txt appearing on individual desktops is a classic ransomware technique - staff have found the ransom note before the CEO has told them anything. The BBC story landing in the Slack thread before any internal communication is the direct consequence of the silence in the last two hours.\n\nAsk the room: what would you have wanted your call centre agents to see instead of this? What does a good version of this same 30 minutes look like - and what decision earlier this morning would have made it possible?",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "#VeridianDown — staff reporting system outages — company silent — BBC inquiry filed",
+        "#VeridianDown - staff reporting system outages - company silent - BBC inquiry filed",
       artifact: {
         type: "slack_thread",
         slackChannel: "#general",
@@ -441,7 +441,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             author: "Helen Marsh",
             role: "Head of Payments Operations",
             time: "08:31",
-            text: "IT — systems are completely dark. Can't log into anything. What's happening?",
+            text: "IT - systems are completely dark. Can't log into anything. What's happening?",
           },
           {
             author: "IT Status Bot",
@@ -465,7 +465,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             author: "Tom Burridge",
             role: "Finance Director",
             time: "08:41",
-            text: "Colleagues — I have a file on my desktop called PHANTOMCOIL_README.txt. I have not opened it. IT — do you know about this?",
+            text: "Colleagues - I have a file on my desktop called PHANTOMCOIL_README.txt. I have not opened it. IT - do you know about this?",
           },
           {
             author: "Rachel Okafor",
@@ -500,10 +500,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 60,
       scenarioDay: 1,
       scenarioTime: "09:00",
-      title: "09:00 — The Times",
+      title: "09:00 - The Times",
       body: "09:00. Your head of communications has just forwarded this to the leadership group.",
       facilitatorNotes:
-        "Brief order is a values question. There is no right answer here — only an honest one. Push the CCO: if you pick staff first, what does the briefing actually say? Can you give 3,200 people enough to handle customer calls without creating a new information asymmetry problem?",
+        "Brief order is a values question. There is no right answer here - only an honest one. Push the CCO: if you pick staff first, what does the briefing actually say? Can you give 3,200 people enough to handle customer calls without creating a new information asymmetry problem?",
       delayMinutes: 0,
       timerMinutes: 10,
       tickerHeadline:
@@ -512,7 +512,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         type: "email",
         emailFrom: "n.curtis@thetimes.co.uk",
         emailTo: "press@veridianpower.co.uk",
-        emailSubject: "Veridian Power — request for comment — filing 10:30",
+        emailSubject: "Veridian Power - request for comment - filing 10:30",
         emailOrgName: "The Times",
         emailSalutation: "To the Veridian Power press office,",
         emailBody:
@@ -535,7 +535,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Staff first — all-hands at 09:30, before the Times story drops, with the unvarnished truth",
+            "Staff first - all-hands at 09:30, before the Times story drops, with the unvarnished truth",
           consequence:
             "Staff trust is preserved. Call centre agents handle the inbound noise with dignity because they were told first.",
           rank: 1,
@@ -544,7 +544,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Customers first — statement on the website and an SMS to the PSR cohort confirming services are unaffected",
+            "Customers first - statement on the website and an SMS to the PSR cohort confirming services are unaffected",
           consequence:
             "Vulnerable customers are reassured. But staff find out via a Times push notification. Internal trust takes a real hit.",
           rank: 2,
@@ -553,7 +553,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Counterparties first — call the wholesale market makers and the Bank of England before the FT clears its throat",
+            "Counterparties first - call the wholesale market makers and the Bank of England before the FT clears its throat",
           consequence:
             "Market integrity preserved. Two counterparties pull back from the day-ahead auction. Staff and customers find out from the news.",
           rank: 3,
@@ -562,7 +562,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Investors first — call the top 5 institutional shareholders before any other group gets a brief",
+            "Investors first - call the top 5 institutional shareholders before any other group gets a brief",
           consequence:
             "Two of the five leak the call to the FT within 20 minutes. The narrative becomes 'Veridian briefed the City before its own people'.",
           rank: 4,
@@ -576,14 +576,14 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 70,
       scenarioDay: 1,
       scenarioTime: "09:12",
-      title: "09:12 — The Share Price",
+      title: "09:12 - The Share Price",
       body: "09:12. The markets have been open for seventy-two minutes.\n\nYour share price has dropped 12.7%. Volume is seven times the daily average. Someone in the market knew last night.\n\nThe financial regulator has called the company secretary. Your broker is on the phone to the CFO. You have about twenty minutes before the regulator stops waiting for you to act and starts acting themselves.\n\nListed companies are required to tell the market when something material has happened. The question is what you say and when.",
       facilitatorNotes:
-        "A ransomware attack on a listed company is almost certainly information the market needs to know — the regulator takes this seriously and moves quickly. Options A and B are both defensible. The key distinction is whether to request suspension while you prepare a fuller statement. Option D — waiting while the stock falls on heavy volume — is the most dangerous; it looks like the company knew and chose not to say.",
+        "A ransomware attack on a listed company is almost certainly information the market needs to know - the regulator takes this seriously and moves quickly. Options A and B are both defensible. The key distinction is whether to request suspension while you prepare a fuller statement. Option D - waiting while the stock falls on heavy volume - is the most dangerous; it looks like the company knew and chose not to say.",
       delayMinutes: 0,
       timerMinutes: 10,
       tickerHeadline:
-        "VRD.L down 12.7% — volumes 7x average — markets await Veridian Power statement",
+        "VRD.L down 12.7% - volumes 7x average - markets await Veridian Power statement",
       artifact: {
         type: "stock_chart",
         stockTicker: "VRD.L",
@@ -618,7 +618,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Issue RNS immediately, no suspension — let the market price the risk transparently",
+            "Issue RNS immediately, no suspension - let the market price the risk transparently",
           consequence:
             "RNS out at 09:22. VRD.L drops another 4.1% in the hour after the statement. No regulatory concern raised. Stock finds a floor by midday.",
           rank: 1,
@@ -627,7 +627,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Request voluntary suspension while preparing a fuller announcement — no RNS until we have a clearer picture",
+            "Request voluntary suspension while preparing a fuller announcement - no RNS until we have a clearer picture",
           consequence:
             "Suspension granted at 09:21. Fuller RNS at 11:00. Some investors frustrated by the 2-hour blackout. The FCA note the suspension was appropriate.",
           rank: 2,
@@ -636,7 +636,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Hold the RNS — premature disclosure will crystallise panic before we understand the full picture",
+            "Hold the RNS - premature disclosure will crystallise panic before we understand the full picture",
           consequence:
             "VRD.L falls 19.3% by close. The FCA issue a formal query at 11:00. Two institutional shareholders file complaints.",
           rank: 4,
@@ -650,10 +650,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 80,
       scenarioDay: 1,
       scenarioTime: "14:30",
-      title: "14:30 — The Demand",
-      body: "YOUR NETWORK HAS BEEN COMPROMISED BY ALPHV.\n\nWe have been inside your systems for six days. We hold your customer billing records, your wholesale trading book, your payroll system, and a complete copy of your Priority Services Register — 84,247 people, with their medical conditions, home addresses, and emergency contacts.\n\nDemand: $9.4 million US dollars in Bitcoin.\nDeadline: 48 hours.\nWallet: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\n\nFailure to pay will result in the full Priority Services Register being published. The sample you have already seen is a courtesy.\n\nDo not contact law enforcement. Do not attempt further restoration. We are watching.",
+      title: "14:30 - The Demand",
+      body: "YOUR NETWORK HAS BEEN COMPROMISED BY ALPHV.\n\nWe have been inside your systems for six days. We hold your customer billing records, your wholesale trading book, your payroll system, and a complete copy of your Priority Services Register - 84,247 people, with their medical conditions, home addresses, and emergency contacts.\n\nDemand: $9.4 million US dollars in Bitcoin.\nDeadline: 48 hours.\nWallet: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\n\nFailure to pay will result in the full Priority Services Register being published. The sample you have already seen is a courtesy.\n\nDo not contact law enforcement. Do not attempt further restoration. We are watching.",
       facilitatorNotes:
-        "The executives own this call. Option A (refuse) is the strongest answer for reasons the CISO has outlined: restoration is possible without payment, and paying is no guarantee of deletion.\n\nThe sanctions question: HM Treasury maintains a list of sanctioned individuals and organisations. Paying a group on that list — even unknowingly — can carry serious legal consequences. The CLO should be asking whether ALPHV is currently sanctioned before any payment conversation goes further. This is a live question, not a theoretical one.\n\nAsk the room: if you pay and ALPHV publish the PSR anyway — which happens in roughly half of cases — what do you tell Margaret Thornton? What do you tell the regulator? The ransom payment decision isn't just financial. It's about what you can honestly say you did to protect 84,247 people.\n\nAsk the CFO: have you modelled the cost of restoration without payment versus the cost of the ransom plus the reputational and regulatory exposure of having paid?",
+        "The executives own this call. Option A (refuse) is the strongest answer for reasons the CISO has outlined: restoration is possible without payment, and paying is no guarantee of deletion.\n\nThe sanctions question: HM Treasury maintains a list of sanctioned individuals and organisations. Paying a group on that list - even unknowingly - can carry serious legal consequences. The CLO should be asking whether ALPHV is currently sanctioned before any payment conversation goes further. This is a live question, not a theoretical one.\n\nAsk the room: if you pay and ALPHV publish the PSR anyway - which happens in roughly half of cases - what do you tell Margaret Thornton? What do you tell the regulator? The ransom payment decision isn't just financial. It's about what you can honestly say you did to protect 84,247 people.\n\nAsk the CFO: have you modelled the cost of restoration without payment versus the cost of the ransom plus the reputational and regulatory exposure of having paid?",
       delayMinutes: 0,
       timerMinutes: 14,
       tickerHeadline:
@@ -682,7 +682,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Refuse to engage — announce internally we are not paying, focus 100% on restoration and notification",
+            "Refuse to engage - announce internally we are not paying, focus 100% on restoration and notification",
           consequence:
             "Clean moral and legal posture. Restoration timeline 5-9 days. The PSR sample will publish. You will need to call Margaret Thornton before she reads about herself. The CCO turns pale.",
           rank: 1,
@@ -691,7 +691,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Stall — open a chat to buy 24 hours of investigation time, commit to nothing",
+            "Stall - open a chat to buy 24 hours of investigation time, commit to nothing",
           consequence:
             "ALPHV respond in 11 minutes. They give exactly 24 hours. Mandiant warn that ALPHV's 'good faith' is a polished negotiating routine.",
           rank: 2,
@@ -700,7 +700,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Negotiate in good faith — engage Coveware, target a 60% reduction, retain the right to walk",
+            "Negotiate in good faith - engage Coveware, target a 60% reduction, retain the right to walk",
           consequence:
             "Coveware engaged. ALPHV accept engagement and counter at $7.8M. The OFSI sanctions risk is being assessed in parallel by external counsel.",
           rank: 3,
@@ -709,7 +709,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Pay in full immediately — end the extortion clock and protect the PSR cohort",
+            "Pay in full immediately - end the extortion clock and protect the PSR cohort",
           consequence:
             "Beazley refuse to authorise without OFSI clearance. The CFO bridges from corporate cash. Keys work on 62% of files. The PSR mirrors to a fourth site within the hour.",
           rank: 4,
@@ -723,20 +723,20 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 85,
       scenarioDay: 1,
       scenarioTime: "15:19",
-      title: "15:19 — They've Put Her Name Online",
+      title: "15:19 - They've Put Her Name Online",
       body: "15:19. They've stopped waiting.\n\nALPHV have posted a preview on their leak site. Five names from the Priority Services Register, with full details, visible to anyone who looks.\n\nThe first name is Margaret Elaine Thornton. She's 77. She lives in Carlisle. She depends on a home oxygen concentrator. Her emergency contact is her daughter Sandra.\n\nShe does not know this yet.",
       facilitatorNotes:
         "No vote. A horror reveal. Let it sit.\n\nRead the listing aloud, slowly. This is the moment the abstract regulatory question becomes a human crisis. Ask: what does the room feel right now? What is the first thing the CEO wants to do?\n\nThe next inject forces the authority decision on outreach. This one exists to make that decision feel like a moral obligation, not a comms calculation.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "ALPHV post samples of Veridian Power Priority Services Register — medical data of vulnerable customers visible",
+        "ALPHV post samples of Veridian Power Priority Services Register - medical data of vulnerable customers visible",
       artifact: {
         type: "dark_web_listing",
         darkWebSiteName: "ALPHV-BLACKCAT Data Market",
         darkWebOnionUrl: "alphvblkz9mnfxt6.onion/veridian-psr-full",
         darkWebTitle:
-          "Veridian Power plc — Priority Services Register — FULL DATASET — 84,247 Records",
+          "Veridian Power plc - Priority Services Register - FULL DATASET - 84,247 Records",
         darkWebPrice: "18 XMR (~£120,000) or included in $9.4M settlement",
         darkWebRecordCount: "84,247 verified records",
         darkWebSampleRows: [
@@ -791,7 +791,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 90,
       scenarioDay: 1,
       scenarioTime: "15:24",
-      title: "15:24 — Do I Go?",
+      title: "15:24 - Do I Go?",
       body: "15:24. Your head of customer operations has been ready and waiting for twenty minutes. She has a plan, a team, and a script. She needs one thing from you.",
       facilitatorNotes:
         "The Gold team authorises; the technical team executes.\n\nOption A (immediate Cat 1) is the morally and reputationally right answer. No reasonable journalist writes critically about a company proactively calling oxygen-dependent patients. The Mandiant concern about media timing is secondary.\n\nOption D (delay 24 hours) looks safe in the room and is the most regrettable in retrospect.\n\nAsk the CEO: if you wait 24 hours and Margaret Thornton reads it in the paper, what do you say to her daughter on the phone?",
@@ -803,9 +803,9 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         type: "email",
         emailFrom: "t.osei@veridianpower.co.uk",
         emailTo: "crisis-leadership@veridianpower.co.uk",
-        emailSubject: "PSR outreach — ready — awaiting your go",
+        emailSubject: "PSR outreach - ready - awaiting your go",
         emailBody:
-          "We are ready to begin.\n\n84,247 people on the Priority Services Register. 4,218 are Category 1 — medically dependent. Home oxygen, dialysis, powered wheelchairs, insulin refrigeration.\n\nAt full capacity: all Category 1 customers reached within two hours of your authority. Full list within twelve hours with agency support.\n\nOne flag. Your insurer has asked us to wait — they're concerned that a call programme at this scale effectively confirms the breach publicly before communications has the message locked. They want more time.\n\nSeparate note: the depot manager in Carlisle called Margaret Thornton personally twenty minutes ago. She knew her from a service visit.\n\nThat's one. 84,246 are waiting.\n\nDo I go?\n\n— Taiwo Osei, Head of Customer Operations",
+          "We are ready to begin.\n\n84,247 people on the Priority Services Register. 4,218 are Category 1 - medically dependent. Home oxygen, dialysis, powered wheelchairs, insulin refrigeration.\n\nAt full capacity: all Category 1 customers reached within two hours of your authority. Full list within twelve hours with agency support.\n\nOne flag. Your insurer has asked us to wait - they're concerned that a call programme at this scale effectively confirms the breach publicly before communications has the message locked. They want more time.\n\nSeparate note: the depot manager in Carlisle called Margaret Thornton personally twenty minutes ago. She knew her from a service visit.\n\nThat's one. 84,246 are waiting.\n\nDo I go?\n\n- Taiwo Osei, Head of Customer Operations",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "COO", "CCO"],
@@ -823,7 +823,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Authorise immediate Cat 1 outreach — all 4,218 medically-dependent customers today, media risk accepted",
+            "Authorise immediate Cat 1 outreach - all 4,218 medically-dependent customers today, media risk accepted",
           consequence:
             "4,218 calls completed by 18:00. The Times runs the PSR angle but leads with 'Veridian calls vulnerable customers personally'. The narrative shifts from breach to response.",
           rank: 1,
@@ -841,7 +841,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Authorise mass SMS to all 84,247 PSR customers tonight alongside a press statement — full transparency at scale",
+            "Authorise mass SMS to all 84,247 PSR customers tonight alongside a press statement - full transparency at scale",
           consequence:
             "SMS sent at 22:00. 14,000 calls to the emergency line before midnight. Three major newspapers lead with PSR. Outreach seen as reactive but comprehensive.",
           rank: 2,
@@ -850,7 +850,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Hold 24 hours — restoration may deliver decryption keys, early outreach locks in the breach narrative",
+            "Hold 24 hours - restoration may deliver decryption keys, early outreach locks in the breach narrative",
           consequence:
             "Margaret Thornton reads about herself in The Times. Her daughter calls the company in distress. The Ombudsman receives a formal complaint before she has been contacted.",
           rank: 4,
@@ -864,14 +864,14 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 95,
       scenarioDay: 1,
       scenarioTime: "15:42",
-      title: "15:42 — The Chat Window",
+      title: "15:42 - The Chat Window",
       body: "15:42. The window is open. ALPHV have someone on the other end.\n\nBefore anyone types, your CISO has sent one message: 'I need the mandate from you. Ceiling, floor, and what happens if they threaten to release Margaret Thornton's data tonight unless we pay by midnight. I need your answer now, not after we've started.'",
       facilitatorNotes:
-        "The technical team makes the operational keyboard decision. The Gold team's decision is the mandate — the parameters within which the negotiation is authorised to proceed.\n\nAsk each executive: what is your hard limit? What happens if ALPHV threaten to release Margaret Thornton's data in the next 24 hours unless they receive $1M by tonight?\n\nThe most useful debrief moment is when the team realises they have to answer that question out loud.",
+        "The technical team makes the operational keyboard decision. The Gold team's decision is the mandate - the parameters within which the negotiation is authorised to proceed.\n\nAsk each executive: what is your hard limit? What happens if ALPHV threaten to release Margaret Thornton's data in the next 24 hours unless they receive $1M by tonight?\n\nThe most useful debrief moment is when the team realises they have to answer that question out loud.",
       delayMinutes: 0,
       timerMinutes: 10,
       tickerHeadline:
-        "ALPHV leak site posts countdown: 'Veridian Power — PSR drop in 24 hours unless payment received'",
+        "ALPHV leak site posts countdown: 'Veridian Power - PSR drop in 24 hours unless payment received'",
       artifact: {
         type: "negotiation_chat",
         negotiationThreatAlias: "ALPHV-SUPPORT",
@@ -914,7 +914,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Full mandate to Mandiant: engage professionally, explore scope reduction, hard ceiling at Beazley's $4M coverage limit — no payment above without board sign-off",
+            "Full mandate to Mandiant: engage professionally, explore scope reduction, hard ceiling at Beazley's $4M coverage limit - no payment above without board sign-off",
           consequence:
             "Mandiant have clear parameters. ALPHV recognise the professional cadence. The ceiling creates a natural negotiating floor.",
           rank: 1,
@@ -923,7 +923,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Narrow mandate: Mandiant may stall and gather information only — no financial engagement at this stage",
+            "Narrow mandate: Mandiant may stall and gather information only - no financial engagement at this stage",
           consequence:
             "Mandiant buy time. ALPHV's patience contracts. At 20:00 they post a fresh PSR sample to a third forum. The Carlisle customer's name is now on a Telegram channel.",
           rank: 2,
@@ -932,7 +932,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Open mandate: Mandiant may negotiate on price freely up to $6.2M — we want this resolved",
+            "Open mandate: Mandiant may negotiate on price freely up to $6.2M - we want this resolved",
           consequence:
             "Mandiant flag the OFSI risk on any payment without weekly UK sanctions consolidated list clearance. An open mandate without parameters creates liability. The CLO is visibly uncomfortable.",
           rank: 3,
@@ -941,11 +941,11 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "No mandate — close the window, accept the PSR publishes, focus 100% on restoration",
+            "No mandate - close the window, accept the PSR publishes, focus 100% on restoration",
           consequence:
             "Brave. The window closes. The PSR will publish in 24 hours. Mandiant's tone shifts: 'We need the Carlisle customer on the phone this afternoon.'",
           rank: 4,
-          recapFragment: "refusing the chat — no mandate to negotiate",
+          recapFragment: "refusing the chat - no mandate to negotiate",
         },
       ],
     },
@@ -955,24 +955,24 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 100,
       scenarioDay: 1,
       scenarioTime: "17:00",
-      title: "17:00 — The Regulator Calls",
+      title: "17:00 - The Regulator Calls",
       tierSkipSummary:
         "At 17:00, Ofgem's Energy Security Director called personally before taking any formal steps. The team agreed a coordinated response and called back within the evening.",
-      body: "17:00. The energy regulator has called. Not a formal letter — a personal voicemail from the Energy Security Director.\n\nShe's offering you the chance to speak to her before she takes any formal steps.",
+      body: "17:00. The energy regulator has called. Not a formal letter - a personal voicemail from the Energy Security Director.\n\nShe's offering you the chance to speak to her before she takes any formal steps.",
       facilitatorNotes:
-        "Ofgem's Catherine Marsh is calling because this is what regulators do when they're giving you a chance — a personal call before the formal process starts. This is cooperative posture from them. The right call here is A or B: call back promptly and proactively, with or without the CLO on the line.\n\nOption C (written holding statement) is bureaucratic when the regulator has specifically extended a human hand. Option D (wait until morning) burns the cooperative window Marsh is offering. By morning she'll have filed the formal request and the tone will have changed.\n\nAsk the CLO: what does Ofgem's first contact tell you about how they're treating this? What does it signal to them if you don't call back today?",
+        "Ofgem's Catherine Marsh is calling because this is what regulators do when they're giving you a chance - a personal call before the formal process starts. This is cooperative posture from them. The right call here is A or B: call back promptly and proactively, with or without the CLO on the line.\n\nOption C (written holding statement) is bureaucratic when the regulator has specifically extended a human hand. Option D (wait until morning) burns the cooperative window Marsh is offering. By morning she'll have filed the formal request and the tone will have changed.\n\nAsk the CLO: what does Ofgem's first contact tell you about how they're treating this? What does it signal to them if you don't call back today?",
       delayMinutes: 0,
       timerMinutes: 10,
       tickerHeadline:
-        "Energy regulator monitoring Veridian Power incident — sector watching",
+        "Energy regulator monitoring Veridian Power incident - sector watching",
       artifact: {
         type: "voicemail",
-        voicemailCaller: "Catherine Marsh — Energy Security Director, Ofgem",
+        voicemailCaller: "Catherine Marsh - Energy Security Director, Ofgem",
         voicemailCallerNumber: "+44 20 7901 7000",
         voicemailDuration: "1:24",
         voicemailTime: "16:58",
         voicemailTranscript:
-          "Good afternoon. I'm calling for Robert Kaye or whoever is handling communications from Veridian Power's leadership team today. My name is Catherine Marsh, I'm the Energy Security Director at Ofgem. We've been monitoring developments through public reporting and through our own sector intelligence. Given Veridian's designation as an Operator of Essential Services, we have a supervisory interest in this matter. I want to be clear that this is not a formal enforcement call — I'm calling personally because I would like to hear from your team directly before we take any formal steps. I understand today has been extremely difficult. I'm available this evening until nine o'clock and from eight tomorrow morning. I would strongly encourage you to call me back. This is the kind of thing that's better to talk about before it becomes a formal process.",
+          "Good afternoon. I'm calling for Robert Kaye or whoever is handling communications from Veridian Power's leadership team today. My name is Catherine Marsh, I'm the Energy Security Director at Ofgem. We've been monitoring developments through public reporting and through our own sector intelligence. Given Veridian's designation as an Operator of Essential Services, we have a supervisory interest in this matter. I want to be clear that this is not a formal enforcement call - I'm calling personally because I would like to hear from your team directly before we take any formal steps. I understand today has been extremely difficult. I'm available this evening until nine o'clock and from eight tomorrow morning. I would strongly encourage you to call me back. This is the kind of thing that's better to talk about before it becomes a formal process.",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CLO"],
@@ -990,7 +990,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Call Marsh back tonight, now — this is a cooperative hand being extended and you take it directly.",
+            "Call Marsh back tonight, now - this is a cooperative hand being extended and you take it directly.",
           consequence:
             "Marsh takes the call at 17:20. The conversation is twenty minutes. She notes internally: 'CEO engaged directly, candid about scope, no defensiveness.' That note shapes every subsequent interaction. The formal request that arrives two days later uses different language than it would have.",
           rank: 1,
@@ -1000,7 +1000,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Brief the CLO, then call back within the hour — this is a regulatory conversation and counsel should be on the line.",
+            "Brief the CLO, then call back within the hour - this is a regulatory conversation and counsel should be on the line.",
           consequence:
             "CLO briefed at 17:10. Both on the call to Marsh at 17:35. The conversation is slightly more formal but equally well-received. Marsh notes the CLO's presence as a sign the company is taking this seriously.",
           rank: 1,
@@ -1009,7 +1009,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Send a written holding statement tonight — confirm you're aware of the supervisory interest and will engage in the morning.",
+            "Send a written holding statement tonight - confirm you're aware of the supervisory interest and will engage in the morning.",
           consequence:
             "The statement is received at 18:10. Marsh reads it and files it. She does not follow up personally. The formal process begins as scheduled. The cooperative window she offered has closed.",
           rank: 2,
@@ -1019,7 +1019,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Wait until morning — you've had an extraordinarily difficult day and a considered response is better than a rushed one.",
+            "Wait until morning - you've had an extraordinarily difficult day and a considered response is better than a rushed one.",
           consequence:
             "By 09:00 the next morning, Ofgem's formal information request has been filed. The personal voicemail from Catherine Marsh was the cooperative approach. The letter is the formal one. The tone has changed.",
           rank: 3,
@@ -1033,23 +1033,23 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 105,
       scenarioDay: 1,
       scenarioTime: "19:00",
-      title: "19:00 — The Evening News",
+      title: "19:00 - The Evening News",
       tierSkipSummary:
         "ITV ran the story as their second item at 19:00. The CEO issued a written statement. The decision on a live media appearance was made during the broadcast window.",
-      body: "19:00. You've been dealing with this for thirteen and a half hours.\n\nITV News are running it as their second item. Not a brief mention — the second item. Two minutes of airtime, a reporter outside your Canary Wharf offices, and a lower-third that reads: RANSOMWARE ATTACK EXPOSES MEDICAL DATA OF 84,000 VULNERABLE ENERGY CUSTOMERS.\n\nThey've asked for an interview. They want the CEO.",
+      body: "19:00. You've been dealing with this for thirteen and a half hours.\n\nITV News are running it as their second item. Not a brief mention - the second item. Two minutes of airtime, a reporter outside your Canary Wharf offices, and a lower-third that reads: RANSOMWARE ATTACK EXPOSES MEDICAL DATA OF 84,000 VULNERABLE ENERGY CUSTOMERS.\n\nThey've asked for an interview. They want the CEO.",
       facilitatorNotes:
-        "The evening news is the moment a corporate crisis becomes a public one in the eyes of people who weren't previously paying attention. 13.5 hours into the incident, the company still has no CEO on camera.\n\nOption A (CEO live interview) is the strongest signal — it puts the top of the house on camera, demonstrates accountability, and is harder for journalists to sustain a 'company refuses to comment' narrative around. The risk is that the CEO must say something meaningful, not just 'we're sorry and working on it.'\n\nAsk the CCO: what does a good CEO interview look like at 19:00 when the systems aren't back up? It's not an apology for the system. It's an account of what the company is doing for the 84,000 people on that list.\n\nOption D (no comment) has already been tried for 13 hours. Ask the room: how has that worked?",
+        "The evening news is the moment a corporate crisis becomes a public one in the eyes of people who weren't previously paying attention. 13.5 hours into the incident, the company still has no CEO on camera.\n\nOption A (CEO live interview) is the strongest signal - it puts the top of the house on camera, demonstrates accountability, and is harder for journalists to sustain a 'company refuses to comment' narrative around. The risk is that the CEO must say something meaningful, not just 'we're sorry and working on it.'\n\nAsk the CCO: what does a good CEO interview look like at 19:00 when the systems aren't back up? It's not an apology for the system. It's an account of what the company is doing for the 84,000 people on that list.\n\nOption D (no comment) has already been tried for 13 hours. Ask the room: how has that worked?",
       delayMinutes: 0,
       timerMinutes: 10,
       tickerHeadline:
-        "ITV NEWS — Ransomware attack exposes medical data of 84,000 Veridian Power customers — CEO interview requested",
+        "ITV NEWS - Ransomware attack exposes medical data of 84,000 Veridian Power customers - CEO interview requested",
       artifact: {
         type: "tv_broadcast",
         tvNetwork: "ITV NEWS AT TEN",
         tvHeadline:
           "RANSOMWARE ATTACK EXPOSES MEDICAL DATA OF 84,000 VULNERABLE ENERGY CUSTOMERS",
         tvTicker:
-          "ITV NEWS — Veridian Power systems encrypted overnight — 84,000 Priority Services Register customers at risk — criminal group ALPHV claims responsibility — CEO has not made public statement — Home Secretary 'extremely concerned'",
+          "ITV NEWS - Veridian Power systems encrypted overnight - 84,000 Priority Services Register customers at risk - criminal group ALPHV claims responsibility - CEO has not made public statement - Home Secretary 'extremely concerned'",
         tvReporter: "Sarah Benson, ITV News, Canary Wharf",
       },
       isDecisionPoint: true,
@@ -1068,7 +1068,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "CEO does a live interview — 'we owe our customers an explanation and I'm going to give one.'",
+            "CEO does a live interview - 'we owe our customers an explanation and I'm going to give one.'",
           consequence:
             "Four-minute interview. No system ETA. The CEO says what is true: the company caused this through inadequate vendor oversight, 84,000 people are on a list they should never have been on, and every resource is on it. The clip is broadly well-received. The morning coverage is softer than the evening.",
           rank: 1,
@@ -1077,7 +1077,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Issue a detailed written statement to ITV — thorough, accurate, no interview.",
+            "Issue a detailed written statement to ITV - thorough, accurate, no interview.",
           consequence:
             "ITV use two sentences from the statement and note three times during the broadcast that 'Veridian Power's CEO was not available for interview.' The written statement is the footnote. The declined interview is the headline.",
           rank: 2,
@@ -1087,7 +1087,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "The CCO does the interview — save the CEO for the board and the regulator tomorrow.",
+            "The CCO does the interview - save the CEO for the board and the regulator tomorrow.",
           consequence:
             "The CCO performs well and delivers clear messaging. ITV note the CEO did not appear. The following morning's coverage includes: 'Chief Executive Robert Kaye was not available for interview during the crisis.' The board raises it.",
           rank: 3,
@@ -1096,7 +1096,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Decline all media contact until the incident is resolved — the company isn't ready to speak.",
+            "Decline all media contact until the incident is resolved - the company isn't ready to speak.",
           consequence:
             "Thirteen and a half hours of no CEO on camera becomes a second story running parallel to the original. 'Veridian refuses to comment' becomes a recurring phrase in every bulletin through the night.",
           rank: 4,
@@ -1110,7 +1110,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 150,
       scenarioDay: 2,
       scenarioTime: "07:30",
-      title: "Day 2, 07:30 — The Overnight Numbers",
+      title: "Day 2, 07:30 - The Overnight Numbers",
       tierSkipSummary:
         "Day 2 opened with systems at 42% restoration and 31,000 of 84,247 PSR customers contacted. The share price opened for a second day. The trading desk remained on the manual fallback book.",
       body: "Day 2, 07:30. The first full night of the crisis is over.\n\nYour COO has sent the overnight brief. Systems restoration: 42%. PSR outreach: 31,000 of 84,247 customers contacted, with eleven welfare visits completed overnight by local engineers. VRD.L opens in thirty minutes.\n\nThe trading desk is still on the manual fallback book. The call centre handled 22,000 inbound calls yesterday and is currently at double normal volume. The #general Slack thread has 847 messages since yesterday morning.\n\nThis is where you are.",
@@ -1119,11 +1119,11 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "Veridian Power Day 2 — markets open at 08:00 — restoration at 42% — PSR outreach ongoing",
+        "Veridian Power Day 2 - markets open at 08:00 - restoration at 42% - PSR outreach ongoing",
       artifact: {
         type: "internal_memo",
-        memoTitle: "Day 2 Overnight Situation Report — 07:30",
-        memoClassification: "RESTRICTED — CRISIS LEADERSHIP TEAM ONLY",
+        memoTitle: "Day 2 Overnight Situation Report - 07:30",
+        memoClassification: "RESTRICTED - CRISIS LEADERSHIP TEAM ONLY",
         memoFrom: "L. Brennan, Chief Operating Officer",
         memoTo: "Executive Crisis Team",
         memoDate: "Tuesday 15 April 2026, 07:30",
@@ -1147,23 +1147,23 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 160,
       scenarioDay: 2,
       scenarioTime: "11:00",
-      title: "Day 2, 11:00 — What Do We Owe Them?",
+      title: "Day 2, 11:00 - What Do We Owe Them?",
       tierSkipSummary:
         "On Day 2 the team agreed a customer remediation approach for the 84,247 people on the Priority Services Register. The decision was a proactive financial gesture rather than a complaint-led model.",
       body: "Day 2, 11:00. The CCO has called a short session. There's a question that's been sitting unanswered since yesterday afternoon, and it can't wait any longer.\n\nWhat do Veridian Power owe the 84,247 people whose data was taken?",
       facilitatorNotes:
-        "This is the Consumer Duty decision in its clearest form. Ofgem's Consumer Duty obligations under the Energy Supply Licence are explicit: companies must act in the genuine financial interest of affected customers. A complaint-led model — generous to those who complain but passive to those who don't — is the minimum legal position and is likely to be challenged by Ofgem.\n\nOption A (proactive £50 credit) is bold, operationally complex, and sends the clearest possible signal. It costs roughly £4.2M if fully paid. Option B (three months free) is creative and delivers real value but doesn't address customers who have already incurred costs from the breach. Option C is the minimum legal position. Option D is almost certainly inadequate under Consumer Duty.\n\nAsk the CFO: what is the cost of each option? Ask the CLO: what do Ofgem's enforcement cases on Consumer Duty say about passive remediation models?",
+        "This is the Consumer Duty decision in its clearest form. Ofgem's Consumer Duty obligations under the Energy Supply Licence are explicit: companies must act in the genuine financial interest of affected customers. A complaint-led model - generous to those who complain but passive to those who don't - is the minimum legal position and is likely to be challenged by Ofgem.\n\nOption A (proactive £50 credit) is bold, operationally complex, and sends the clearest possible signal. It costs roughly £4.2M if fully paid. Option B (three months free) is creative and delivers real value but doesn't address customers who have already incurred costs from the breach. Option C is the minimum legal position. Option D is almost certainly inadequate under Consumer Duty.\n\nAsk the CFO: what is the cost of each option? Ask the CLO: what do Ofgem's enforcement cases on Consumer Duty say about passive remediation models?",
       delayMinutes: 0,
       timerMinutes: 12,
       tickerHeadline:
-        "Veridian Power — customer groups call for compensation — Ofgem monitoring situation",
+        "Veridian Power - customer groups call for compensation - Ofgem monitoring situation",
       artifact: {
         type: "email",
         emailFrom: "c.okafor@veridianpower.co.uk",
         emailTo: "crisis-leadership@veridianpower.co.uk",
-        emailSubject: "Customer remediation — four options — decision needed by 14:00",
+        emailSubject: "Customer remediation - four options - decision needed by 14:00",
         emailBody:
-          "We are thirty hours into the incident. 31,000 of 84,247 PSR customers have been reached. The question of what we owe them — beyond a phone call — needs to be answered today before we fall further behind the media narrative.\n\nFour options.\n\nOption A — Proactive £50 credit to all 84,247 affected PSR customers, automatic, no claim required. Clearest Consumer Duty signal available. Cost: approximately £4.2M.\n\nOption B — Three months' free energy supply for all PSR customers on our network. Broader reach, different message, no cash element. Cost: approximately £2.8M in foregone revenue.\n\nOption C — Complaint-led model: generous individual responses to every customer who contacts us, but no proactive outreach. This is the minimum legal position under our supply licence. Likely to be challenged by Ofgem.\n\nOption D — Formal apology from the CEO, a commitment to operational improvement, and a free annual safety check for all PSR customers. No financial element.\n\nOfgem's Consumer Duty guidance is clear: redress must be fair and proportionate to the harm. Passive models have been challenged in recent enforcement action. I need your call by 14:00.\n\n— C. Okafor, Chief Communications Officer",
+          "We are thirty hours into the incident. 31,000 of 84,247 PSR customers have been reached. The question of what we owe them - beyond a phone call - needs to be answered today before we fall further behind the media narrative.\n\nFour options.\n\nOption A - Proactive £50 credit to all 84,247 affected PSR customers, automatic, no claim required. Clearest Consumer Duty signal available. Cost: approximately £4.2M.\n\nOption B - Three months' free energy supply for all PSR customers on our network. Broader reach, different message, no cash element. Cost: approximately £2.8M in foregone revenue.\n\nOption C - Complaint-led model: generous individual responses to every customer who contacts us, but no proactive outreach. This is the minimum legal position under our supply licence. Likely to be challenged by Ofgem.\n\nOption D - Formal apology from the CEO, a commitment to operational improvement, and a free annual safety check for all PSR customers. No financial element.\n\nOfgem's Consumer Duty guidance is clear: redress must be fair and proportionate to the harm. Passive models have been challenged in recent enforcement action. I need your call by 14:00.\n\n- C. Okafor, Chief Communications Officer",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CFO", "CLO", "CCO"],
@@ -1181,7 +1181,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Proactive £50 credit to all 84,247 PSR customers — automatic, no claim required.",
+            "Proactive £50 credit to all 84,247 PSR customers - automatic, no claim required.",
           consequence:
             "Cost: £4.2M. Ofgem note this as a concrete demonstration of Consumer Duty in action. Media coverage the following morning shifts from 'data breach' to 'company does the right thing.' 94% of affected customers receive the credit within 72 hours.",
           rank: 1,
@@ -1191,7 +1191,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Three months' free energy for all PSR customers on our network — a goodwill gesture for the community.",
+            "Three months' free energy for all PSR customers on our network - a goodwill gesture for the community.",
           consequence:
             "Cost: approximately £2.8M. Well-received and generates positive press. The CLO notes it does not specifically address customers who incurred charges as a direct consequence of the breach, which may not fully satisfy Consumer Duty in those individual cases.",
           rank: 2,
@@ -1211,9 +1211,9 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Formal apology from the CEO and a free annual safety check — no financial element.",
+            "Formal apology from the CEO and a free annual safety check - no financial element.",
           consequence:
-            "Ofgem's Consumer Duty review finds the response inadequate. The company is required to conduct a retrospective review of all affected customers and retrospectively pay compensation — at higher operational cost than a proactive scheme would have been. The review takes eleven months.",
+            "Ofgem's Consumer Duty review finds the response inadequate. The company is required to conduct a retrospective review of all affected customers and retrospectively pay compensation - at higher operational cost than a proactive scheme would have been. The review takes eleven months.",
           rank: 4,
           recapFragment:
             "a formal apology and safety check without financial compensation",
@@ -1226,7 +1226,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 170,
       scenarioDay: 2,
       scenarioTime: "15:00",
-      title: "Day 2, 15:00 — 3,200 People Are Waiting",
+      title: "Day 2, 15:00 - 3,200 People Are Waiting",
       tierSkipSummary:
         "Thirty-six hours into the incident, the CEO sent an all-company email giving staff the honest picture and telling them what to say if approached by media. The internal Slack thread quietened significantly.",
       body: "Day 2, 15:00. Thirty-six hours into the incident.\n\nYour CCO has sent you a message. She's been watching the Slack thread all day.",
@@ -1235,23 +1235,23 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       delayMinutes: 0,
       timerMinutes: 8,
       tickerHeadline:
-        "Veridian Power staff — internal communications gap — 36 hours with no CEO message",
+        "Veridian Power staff - internal communications gap - 36 hours with no CEO message",
       artifact: {
         type: "sms_thread",
-        smsParticipants: ["C. Okafor — CCO", "You"],
+        smsParticipants: ["C. Okafor - CCO", "You"],
         smsMessages: [
           {
-            sender: "C. Okafor — CCO",
+            sender: "C. Okafor - CCO",
             text: "Robert. It's been 36 hours. Our people have had nothing from you directly. The Slack thread is at 847 messages. Three senior managers have messaged me privately asking if they should be worried about redundancies.",
             time: "14:48",
           },
           {
-            sender: "C. Okafor — CCO",
+            sender: "C. Okafor - CCO",
             text: "A journalist from the Guardian has messaged two of our senior people directly asking for off-the-record comments about the internal situation. That means our staff are a leakage risk now.",
             time: "14:50",
           },
           {
-            sender: "C. Okafor — CCO",
+            sender: "C. Okafor - CCO",
             text: "I have four options ready. All-company email from you now. Virtual all-hands this afternoon. Line manager cascade. Or we hold until systems are more stable. I need your call.",
             time: "14:52",
           },
@@ -1274,7 +1274,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "CEO sends an all-company email within the hour — honest, personal, and tells staff exactly what to do if approached by journalists.",
+            "CEO sends an all-company email within the hour - honest, personal, and tells staff exactly what to do if approached by journalists.",
           consequence:
             "The email lands at 15:50. Staff respond positively to the directness. Several share it with family members. The Slack thread quietens significantly. The Guardian receives no off-the-record comments from Veridian staff.",
           rank: 1,
@@ -1283,7 +1283,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Call a virtual all-hands for 17:00 today — CEO leads, takes questions, treats staff as adults.",
+            "Call a virtual all-hands for 17:00 today - CEO leads, takes questions, treats staff as adults.",
           consequence:
             "The session is well-attended. Seven people can't join due to client commitments. A question about job security creates a difficult moment the CEO handles honestly. The session is broadly well-received but runs long.",
           rank: 2,
@@ -1292,7 +1292,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Ask line managers to brief their teams — consistent message, no all-hands risk.",
+            "Ask line managers to brief their teams - consistent message, no all-hands risk.",
           consequence:
             "Fourteen line managers deliver fourteen versions of the same message. By 17:00 two members of staff believe the CEO is resigning, one believes the company is being sold. The Guardian receives an off-the-record comment at 16:30.",
           rank: 3,
@@ -1301,7 +1301,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Hold — wait until systems are more stable before making internal communications. You don't want to say something that turns out to be wrong.",
+            "Hold - wait until systems are more stable before making internal communications. You don't want to say something that turns out to be wrong.",
           consequence:
             "The CCO's warning about the Guardian proves accurate. A staff member speaks off the record at 16:45. Tomorrow morning's Guardian runs: 'Inside Veridian's crisis: staff left in the dark for two days.' That headline is harder to manage than the original breach story.",
           rank: 4,
@@ -1316,24 +1316,24 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 200,
       scenarioDay: 3,
       scenarioTime: "09:00",
-      title: "Day 3 — Three Things Before Breakfast",
-      body: "Day 3, 09:00. Four hours of sleep.\n\nThe Secretary of State for Energy is live on Sky News. She's describing the Priority Services Register as 'the list of people this government exists to protect.' Parliamentary questions have been tabled.\n\nThe energy regulator has written formally — they want a full written account of the incident within fourteen days and are considering enforcement action.\n\nAnd then there's this.",
+      title: "Day 3 - Three Things Before Breakfast",
+      body: "Day 3, 09:00. Four hours of sleep.\n\nThe Secretary of State for Energy is live on Sky News. She's describing the Priority Services Register as 'the list of people this government exists to protect.' Parliamentary questions have been tabled.\n\nThe energy regulator has written formally - they want a full written account of the incident within fourteen days and are considering enforcement action.\n\nAnd then there's this.",
       facilitatorNotes:
-        "No vote on this inject. It is a scene-setter. The three threads — insurer, politician, regulator — all run through the same fact: the penetration test finding was known and deferred. Let the room sit with that before you move to the board session. Ask: if you were called before a Select Committee tomorrow and asked 'did you know about this vulnerability before the attack', what is your honest answer?",
+        "No vote on this inject. It is a scene-setter. The three threads - insurer, politician, regulator - all run through the same fact: the penetration test finding was known and deferred. Let the room sit with that before you move to the board session. Ask: if you were called before a Select Committee tomorrow and asked 'did you know about this vulnerability before the attack', what is your honest answer?",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "Energy secretary: 'deeply concerned' — parliamentary questions tabled — Ofgem signals NIS enforcement",
+        "Energy secretary: 'deeply concerned' - parliamentary questions tabled - Ofgem signals NIS enforcement",
       artifact: {
         type: "email",
         emailFrom: "cyber.claims@beazley.com",
         emailTo: "r.kaye@veridianpower.co.uk",
         emailSubject:
-          "Policy coverage query — Veridian Power — penetration test findings",
+          "Policy coverage query - Veridian Power - penetration test findings",
         emailOrgName: "Beazley",
         emailSalutation: "Dear Mr Kaye,",
         emailBody:
-          "We are writing in connection with the cyber security incident currently affecting your operations.\n\nIn the course of our standard claims review, our team has obtained third-party intelligence indicating that a penetration test conducted approximately fourteen months ago identified a vulnerability in your remote access infrastructure. The finding was categorised as medium risk and subsequently deferred without remediation.\n\nIf this vulnerability represents the access vector exploited in the current incident, a specific policy exclusion clause — relating to known and unmitigated risks — may be engaged.\n\nWe are not at this stage making a coverage determination. We are requesting that you provide us with the penetration test report in full and any documentation relating to the remediation decision, including who was informed and by whom the deferral was authorised.\n\nPlease treat this request as urgent. Our claims team is available to speak today.",
+          "We are writing in connection with the cyber security incident currently affecting your operations.\n\nIn the course of our standard claims review, our team has obtained third-party intelligence indicating that a penetration test conducted approximately fourteen months ago identified a vulnerability in your remote access infrastructure. The finding was categorised as medium risk and subsequently deferred without remediation.\n\nIf this vulnerability represents the access vector exploited in the current incident, a specific policy exclusion clause - relating to known and unmitigated risks - may be engaged.\n\nWe are not at this stage making a coverage determination. We are requesting that you provide us with the penetration test report in full and any documentation relating to the remediation decision, including who was informed and by whom the deferral was authorised.\n\nPlease treat this request as urgent. Our claims team is available to speak today.",
         emailSignOff: "Yours sincerely,\n\nBeazley Cyber Claims Division",
       },
       isDecisionPoint: false,
@@ -1356,20 +1356,20 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 210,
       scenarioDay: 3,
       scenarioTime: "10:30",
-      title: "Day 3, 10:30 — The Board",
-      body: "Day 3, 10:30. Every non-executive director has joined the call.\n\nBefore the meeting formally starts, the chair of the Audit Committee — Caroline Wu — has posted this in the shared space.",
+      title: "Day 3, 10:30 - The Board",
+      body: "Day 3, 10:30. Every non-executive director has joined the call.\n\nBefore the meeting formally starts, the chair of the Audit Committee - Caroline Wu - has posted this in the shared space.",
       facilitatorNotes:
-        "No vote — atmosphere beat.\n\nCaroline Wu is asking exactly the questions the NIS enforcement team will ask. Ask the CEO: what do you say when you log in? Do you answer Wu's questions immediately or open the formal session? What does the board chair need to hear from you in the next 30 seconds?",
+        "No vote - atmosphere beat.\n\nCaroline Wu is asking exactly the questions the NIS enforcement team will ask. Ask the CEO: what do you say when you log in? Do you answer Wu's questions immediately or open the formal session? What does the board chair need to hear from you in the next 30 seconds?",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "Veridian Power emergency board session underway — NEDs request answers on MFA vulnerability knowledge",
+        "Veridian Power emergency board session underway - NEDs request answers on MFA vulnerability knowledge",
       artifact: {
         type: "board_portal",
-        boardPortalOrgName: "Veridian Power plc — Board Portal",
+        boardPortalOrgName: "Veridian Power plc - Board Portal",
         boardPortalAlertCount: 3,
         boardPortalAlertTitle:
-          "EMERGENCY BOARD SESSION — Day 3 Incident Review — MFA Disclosure Question — Ofgem Enforcement Risk",
+          "EMERGENCY BOARD SESSION - Day 3 Incident Review - MFA Disclosure Question - Ofgem Enforcement Risk",
         boardPortalMembers: [
           {
             name: "Sir David Ashworth",
@@ -1379,19 +1379,19 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
           },
           {
             name: "Caroline Wu",
-            role: "NED — Audit Committee Chair",
+            role: "NED - Audit Committee Chair",
             loggedInAt: "10:18",
             isOnline: true,
           },
           {
             name: "James Okafor",
-            role: "NED — Remuneration Committee",
+            role: "NED - Remuneration Committee",
             loggedInAt: "10:24",
             isOnline: true,
           },
           {
             name: "Priya Mehta",
-            role: "NED — Risk Committee Chair",
+            role: "NED - Risk Committee Chair",
             loggedInAt: "10:21",
             isOnline: true,
           },
@@ -1434,22 +1434,22 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 220,
       scenarioDay: 3,
       scenarioTime: "11:00",
-      title: "Day 3, 11:00 — The Counter",
+      title: "Day 3, 11:00 - The Counter",
       body: "Day 3, 11:00. Mandiant have sent through their update on the counter-offer.",
       facilitatorNotes:
-        "The Mandiant credibility assessment on the deletion commitment is the pivotal piece of evidence: paying $6.2M does not guarantee the PSR is protected.\n\nThe CLO should be tracking the OFSI UK sanctions consolidated list review date. The CFO should be tracking the Beazley coverage limit. The CEO should be asking: if we pay and ALPHV publish anyway, what do we tell the Ombudsman?\n\nGood moment to let both teams interact if running in parallel — Silver team are managing the negotiation, Gold team are authorising the position.",
+        "The Mandiant credibility assessment on the deletion commitment is the pivotal piece of evidence: paying $6.2M does not guarantee the PSR is protected.\n\nThe CLO should be tracking the OFSI UK sanctions consolidated list review date. The CFO should be tracking the Beazley coverage limit. The CEO should be asking: if we pay and ALPHV publish anyway, what do we tell the Ombudsman?\n\nGood moment to let both teams interact if running in parallel - Silver team are managing the negotiation, Gold team are authorising the position.",
       delayMinutes: 0,
       timerMinutes: 14,
       tickerHeadline:
-        "Reuters: 'Veridian Power in active ransom negotiation — sources put demand near $9M'",
+        "Reuters: 'Veridian Power in active ransom negotiation - sources put demand near $9M'",
       artifact: {
         type: "email",
         emailFrom: "incident@mandiant.com",
         emailTo: "crisis-leadership@veridianpower.co.uk",
         emailSubject:
-          "ALPHV counter received — $6.2M — 12hr fuse — your authority needed",
+          "ALPHV counter received - $6.2M - 12hr fuse - your authority needed",
         emailBody:
-          "Counter received at 10:47 this morning.\n\nALPHV are offering $6.2M. They're giving you twelve hours. In the chat window, in writing, they have promised that on payment all copies of the PSR data will be permanently deleted and nothing will be published.\n\nOur assessment of that promise: low credibility. This group publishes data in approximately 40-60% of cases even after payment. The deletion commitment is unenforceable and they know it.\n\nWe have confirmed they are not on the current international sanctions list. That clears the legal pathway to pay if you choose that route.\n\nYour insurer has confirmed they will cover up to $4M subject to conditions. You would need to bridge the remainder.\n\nRestoration is currently at 60%. We are making progress, but full restoration is still days away.\n\nThis is your authority call.\n\n— Mandiant Incident Response, UK",
+          "Counter received at 10:47 this morning.\n\nALPHV are offering $6.2M. They're giving you twelve hours. In the chat window, in writing, they have promised that on payment all copies of the PSR data will be permanently deleted and nothing will be published.\n\nOur assessment of that promise: low credibility. This group publishes data in approximately 40-60% of cases even after payment. The deletion commitment is unenforceable and they know it.\n\nWe have confirmed they are not on the current international sanctions list. That clears the legal pathway to pay if you choose that route.\n\nYour insurer has confirmed they will cover up to $4M subject to conditions. You would need to bridge the remainder.\n\nRestoration is currently at 60%. We are making progress, but full restoration is still days away.\n\nThis is your authority call.\n\n- Mandiant Incident Response, UK",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CFO", "CLO", "COO"],
@@ -1468,7 +1468,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Instruct Mandiant to lowball back at $2.4M with independent deletion verification — we have negotiating room we have not used",
+            "Instruct Mandiant to lowball back at $2.4M with independent deletion verification - we have negotiating room we have not used",
           consequence:
             "ALPHV laugh in chat and counter at $5.4M. The negotiation continues. The 12-hour fuse extends informally to 18 hours.",
           rank: 1,
@@ -1477,7 +1477,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Instruct a 6-hour stall — board approval is needed, use the time to push restoration to 75%",
+            "Instruct a 6-hour stall - board approval is needed, use the time to push restoration to 75%",
           consequence:
             "The fuse contracts to 6 hours. Mandiant push restoration to 72%. ALPHV post a fresh PSR sample to a fourth forum. The Carlisle customer's name appears on Reddit.",
           rank: 2,
@@ -1486,7 +1486,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Escalate to OFSI and the NCA in writing — signal that any payment is under sanctions and law enforcement scrutiny",
+            "Escalate to OFSI and the NCA in writing - signal that any payment is under sanctions and law enforcement scrutiny",
           consequence:
             "OFSI acknowledge. The NCA engage. ALPHV detect the increased noise and post the full PSR replica to their leak site at 16:20.",
           rank: 3,
@@ -1495,7 +1495,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Accept the $6.2M counter — Beazley covers $4M, we bridge the rest, end the clock",
+            "Accept the $6.2M counter - Beazley covers $4M, we bridge the rest, end the clock",
           consequence:
             "Beazley cover $4M. We bridge $2.2M. Keys arrive and work on 62% of files. The PSR mirrors to a fourth site within the hour. The deletion commitment is broken before the wire clears.",
           rank: 4,
@@ -1509,16 +1509,16 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 225,
       scenarioDay: 3,
       scenarioTime: "14:00",
-      title: "Day 3, 14:00 — The Secretary of State",
+      title: "Day 3, 14:00 - The Secretary of State",
       tierSkipSummary:
         "The Secretary of State's office contacted the CEO directly on Day 3 afternoon, requesting a personal call at 16:00 regarding the Priority Services Register. The CEO took the call directly.",
       body: "Day 3, 14:00. Two and a half days in.\n\nYour phone. Two texts from a number you don't recognise.",
       facilitatorNotes:
-        "A personal call from the Secretary of State is a different category of engagement from a parliamentary question or a formal intervention. She's offering a conversation, not issuing a direction.\n\nOption A (CEO takes the call directly) is the right answer — declining or delegating a personal call from a Cabinet minister sends a message about how seriously the company takes its public responsibilities. Option B (brief first, then confirm) is also strong — briefing the CLO and COO before the call is prudent.\n\nOption C (request delay) wastes the window she's offering. By the time the call happens tomorrow morning, the parliamentary questions will have been answered and the Secretary of State will have formed her public view without your input.\n\nOption D (send the CLO) signals that the CEO treats a personal call from a Cabinet minister as a legal formality. That signal travels.",
+        "A personal call from the Secretary of State is a different category of engagement from a parliamentary question or a formal intervention. She's offering a conversation, not issuing a direction.\n\nOption A (CEO takes the call directly) is the right answer - declining or delegating a personal call from a Cabinet minister sends a message about how seriously the company takes its public responsibilities. Option B (brief first, then confirm) is also strong - briefing the CLO and COO before the call is prudent.\n\nOption C (request delay) wastes the window she's offering. By the time the call happens tomorrow morning, the parliamentary questions will have been answered and the Secretary of State will have formed her public view without your input.\n\nOption D (send the CLO) signals that the CEO treats a personal call from a Cabinet minister as a legal formality. That signal travels.",
       delayMinutes: 0,
       timerMinutes: 8,
       tickerHeadline:
-        "Government monitors Veridian Power situation — parliamentary questions due Thursday — SoS to 'respond urgently'",
+        "Government monitors Veridian Power situation - parliamentary questions due Thursday - SoS to 'respond urgently'",
       artifact: {
         type: "sms_thread",
         smsParticipants: [
@@ -1528,7 +1528,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         smsMessages: [
           {
             sender: "Office of the Secretary of State for Energy",
-            text: "Mr Kaye — the Secretary of State would like to speak with you personally at 16:00 today. She is concerned specifically about the Priority Services Register and about communications to vulnerable customers. This is a personal call, not a formal notice. Please confirm your availability.",
+            text: "Mr Kaye - the Secretary of State would like to speak with you personally at 16:00 today. She is concerned specifically about the Priority Services Register and about communications to vulnerable customers. This is a personal call, not a formal notice. Please confirm your availability.",
             time: "14:07",
           },
           {
@@ -1554,7 +1554,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Confirm immediately — take the call at 16:00 directly, without conditions.",
+            "Confirm immediately - take the call at 16:00 directly, without conditions.",
           consequence:
             "The call lasts twenty-two minutes. The Secretary of State asks two questions: what happened to the 84,000 people on the list, and what has the company done about it. The CEO answers both directly. She says: 'That's what I needed to hear.' The parliamentary questions are still asked on Thursday. The government's public tone is slightly different.",
           rank: 1,
@@ -1564,7 +1564,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Confirm the call — but brief the CLO and COO first. Take the call with prepared positions.",
+            "Confirm the call - but brief the CLO and COO first. Take the call with prepared positions.",
           consequence:
             "CLO and COO briefed by 14:45. The call is substantive and well-prepared. The Secretary of State notes the CEO's readiness. The outcome is similar to A but with better internal alignment going into the conversation.",
           rank: 1,
@@ -1574,7 +1574,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Request a delay to tomorrow morning — you need more time to prepare a proper briefing pack.",
+            "Request a delay to tomorrow morning - you need more time to prepare a proper briefing pack.",
           consequence:
             "The Secretary of State's office acknowledges. The call happens the following morning. By then, the parliamentary questions have been tabled and her public position is already formed. The conversation is more formal and less useful.",
           rank: 3,
@@ -1583,9 +1583,9 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Send the CLO — this is a regulatory and legal matter and the CLO is best placed to handle it.",
+            "Send the CLO - this is a regulatory and legal matter and the CLO is best placed to handle it.",
           consequence:
-            "The Secretary of State's office notes that the CEO was not available for a personal call. The CLO handles it professionally. The signal — that the CEO treats a personal call from a Cabinet minister as a legal formality — is noted in the Secretary of State's private briefing.",
+            "The Secretary of State's office notes that the CEO was not available for a personal call. The CLO handles it professionally. The signal - that the CEO treats a personal call from a Cabinet minister as a legal formality - is noted in the Secretary of State's private briefing.",
           rank: 4,
           recapFragment:
             "sending the CLO to take the Secretary of State's personal call",
@@ -1598,10 +1598,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 230,
       scenarioDay: 3,
       scenarioTime: "16:30",
-      title: "Day 3, 16:30 — Two Fronts, One Hour",
-      body: "Day 3, 16:30. Two letters on the General Counsel's desk. One from your insurer — their coverage position is hardening after finding the penetration test report. One from the energy regulator — formal, fourteen-day deadline, enforcement action under consideration.\n\nBoth letters are asking about the same fourteen-month-old decision. Your General Counsel has one hour to decide whether to handle them together or separately.",
+      title: "Day 3, 16:30 - Two Fronts, One Hour",
+      body: "Day 3, 16:30. Two letters on the General Counsel's desk. One from your insurer - their coverage position is hardening after finding the penetration test report. One from the energy regulator - formal, fourteen-day deadline, enforcement action under consideration.\n\nBoth letters are asking about the same fourteen-month-old decision. Your General Counsel has one hour to decide whether to handle them together or separately.",
       facilitatorNotes:
-        "The pen test report will come out regardless — both the insurer and the regulator have the right to request it. The only question is whether the company controls the disclosure. Proactive and coupled (A) saves time, saves legal cost, and signals honesty. The side-letter (D) looks clever in the room and is catastrophic when it surfaces. Push the CLO: what is the difference between proactive disclosure and an admission of liability?",
+        "The pen test report will come out regardless - both the insurer and the regulator have the right to request it. The only question is whether the company controls the disclosure. Proactive and coupled (A) saves time, saves legal cost, and signals honesty. The side-letter (D) looks clever in the room and is catastrophic when it surfaces. Push the CLO: what is the difference between proactive disclosure and an admission of liability?",
       delayMinutes: 0,
       timerMinutes: 14,
       tickerHeadline:
@@ -1609,7 +1609,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       artifact: {
         type: "legal_letter",
         legalCaseRef: "OFGEM/ENF/2026/VRD-0441",
-        legalAuthority: "Office of Gas and Electricity Markets — Energy Security Division",
+        legalAuthority: "Office of Gas and Electricity Markets - Energy Security Division",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CLO", "CFO"],
@@ -1628,7 +1628,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Coupled proactive disclosure — full transparency to both Beazley and Ofgem with the same evidence pack including the pen test and the deferral",
+            "Coupled proactive disclosure - full transparency to both Beazley and Ofgem with the same evidence pack including the pen test and the deferral",
           consequence:
             "Coverage counsel shift from exclusion to mitigation. Ofgem note the proactive posture. The single evidence pack saves 200 hours of legal work. The narrative is coherent.",
           rank: 1,
@@ -1637,7 +1637,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Decouple — fight Beazley on the exclusion clause, engage Ofgem cooperatively in a separate track",
+            "Decouple - fight Beazley on the exclusion clause, engage Ofgem cooperatively in a separate track",
           consequence:
             "Two legal workstreams at significant cost. Beazley initiate a formal coverage dispute. Ofgem inquiry continues cleanly. Total legal spend triples.",
           rank: 2,
@@ -1646,7 +1646,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Ofgem first, stall Beazley — the regulator matters more right now than the insurer",
+            "Ofgem first, stall Beazley - the regulator matters more right now than the insurer",
           consequence:
             "Ofgem cooperative. Beazley feel sandbagged when they discover the parallel disclosure. They harden. The exclusion bites for $4M.",
           rank: 3,
@@ -1675,10 +1675,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 300,
       scenarioDay: 4,
       scenarioTime: "08:00",
-      title: "Day 4 — The Ground Is Steadier",
+      title: "Day 4 - The Ground Is Steadier",
       body: "Day 4, 08:00. Four hours of sleep.\n\nYour insurer has shifted from dispute to negotiation. The regulator acknowledged your submission. The customer outreach team has reached 79,000 people. The depot manager in Carlisle visited Margaret Thornton in person. Her daughter called yesterday to say thank you.\n\nYou are not out of the woods. But this morning feels different.",
       facilitatorNotes:
-        "Strong decisions across the exercise bring you here. Let the specific details land — Margaret Thornton's daughter calling, Beazley shifting from exclusion to mitigation.\n\nThe score-routed finale (rwg-i7) follows.",
+        "Strong decisions across the exercise bring you here. Let the specific details land - Margaret Thornton's daughter calling, Beazley shifting from exclusion to mitigation.\n\nThe score-routed finale (rwg-i7) follows.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
@@ -1691,8 +1691,8 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         regulatorStatus: "ACKNOWLEDGED",
         regulatorSubmittedAt: "Monday 14 April 2026 at 06:11 UTC",
         regulatorDeadline:
-          "72 hours from discovery — expires Wednesday 16 April 2026 at 05:30 UTC",
-        regulatorOfficerName: "J. Whitmore, Senior Case Officer — Data Breach Team",
+          "72 hours from discovery - expires Wednesday 16 April 2026 at 05:30 UTC",
+        regulatorOfficerName: "J. Whitmore, Senior Case Officer - Data Breach Team",
       },
       isDecisionPoint: false,
       decisionOptions: [],
@@ -1713,10 +1713,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 300,
       scenarioDay: 4,
       scenarioTime: "08:00",
-      title: "Day 4 — Bunker Week",
+      title: "Day 4 - Bunker Week",
       body: "Day 4, 08:00.\n\nThis is what the morning papers look like.",
       facilitatorNotes:
-        "Weaker decisions across the exercise bring you here. Let the Caroline Wu message land last — the board is now doing their own discovery.",
+        "Weaker decisions across the exercise bring you here. Let the Caroline Wu message land last - the board is now doing their own discovery.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
@@ -1743,14 +1743,14 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 400,
       scenarioDay: 5,
       scenarioTime: "16:00",
-      title: "Day 5 — How Does This End?",
+      title: "Day 5 - How Does This End?",
       body: "Day 5, 16:00.\n\nThe technical crisis is nearly over. Twenty-seven thousand names from the Priority Services Register were scraped before the listing came down. The regulator has a draft enforcement notice. Your insurer has a final position. The board has a question.\n\nThe week-one update is due at 17:00. Every decision your team made is about to have a cost attached to it.",
       facilitatorNotes:
         "Score-routed finale. Compound average rank of all ranked decisions. Thresholds: ≤1.6 → rwg-end1, ≤2.3 → rwg-end2, ≤3.0 → rwg-end3, >3.0 → rwg-end4.\n\nDo not announce the threshold or the score. Let the ending reveal it.",
       delayMinutes: 0,
       timerMinutes: 6,
       tickerHeadline:
-        "Veridian Power week-one update due 17:00 — Ofgem and ICO watching",
+        "Veridian Power week-one update due 17:00 - Ofgem and ICO watching",
       artifact: {
         type: "stock_chart",
         stockTicker: "VRD.L",
@@ -1784,10 +1784,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 500,
       scenarioDay: 30,
       isEnding: true,
-      title: "Day 30 — The Sector Standard",
-      body: "Thirty days on.\n\nThe energy regulator closed their file. No fine, no public enforcement notice. Their closing letter said Veridian had shown cooperation that went beyond what was required, and that the company's response would be used as a reference case in their sector guidance.\n\nYour insurer paid the claim in full.\n\nThe customer outreach programme finished. All 84,247 people on the list were contacted. Forty-seven welfare visits were completed by local engineers. Margaret Thornton received a personal letter from the CEO and a call from the company's customer director. Her daughter wrote back.\n\nThe Times ran a follow-up piece three weeks after the incident. The headline was: 'How Veridian's worst week became the energy sector's model response.'\n\nThe NCSC has invited your team to contribute to their guidance for other energy companies.\n\nYour share price has recovered. Not all the way. But it's moving in the right direction.\n\nOne last vote. Looking back across the whole exercise — which single decision made the biggest difference?",
+      title: "Day 30 - The Sector Standard",
+      body: "Thirty days on.\n\nThe energy regulator closed their file. No fine, no public enforcement notice. Their closing letter said Veridian had shown cooperation that went beyond what was required, and that the company's response would be used as a reference case in their sector guidance.\n\nYour insurer paid the claim in full.\n\nThe customer outreach programme finished. All 84,247 people on the list were contacted. Forty-seven welfare visits were completed by local engineers. Margaret Thornton received a personal letter from the CEO and a call from the company's customer director. Her daughter wrote back.\n\nThe Times ran a follow-up piece three weeks after the incident. The headline was: 'How Veridian's worst week became the energy sector's model response.'\n\nThe NCSC has invited your team to contribute to their guidance for other energy companies.\n\nYour share price has recovered. Not all the way. But it's moving in the right direction.\n\nOne last vote. Looking back across the whole exercise - which single decision made the biggest difference?",
       facilitatorNotes:
-        "The reflection vote is unranked — let the team find the thread. Most Gold teams land on the NCSC first-call decision or the Beazley/Ofgem coupling.",
+        "The reflection vote is unranked - let the team find the thread. Most Gold teams land on the NCSC first-call decision or the Beazley/Ofgem coupling.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
@@ -1797,7 +1797,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         tvNetwork: "BBC NEWS",
         tvHeadline: "VERIDIAN POWER NAMED OFGEM CYBER COOPERATION AWARD WINNER",
         tvTicker:
-          "Enforcement file closed — Beazley paid in full — 84,247 PSR customers contacted — CEO to speak at NCSC roundtable — sector playbook adopted",
+          "Enforcement file closed - Beazley paid in full - 84,247 PSR customers contacted - CEO to speak at NCSC roundtable - sector playbook adopted",
         tvReporter: "WESTMINSTER",
       },
       isDecisionPoint: true,
@@ -1807,11 +1807,11 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Calling NCSC first — and the tone that set for every regulator conversation that followed",
+            "Calling NCSC first - and the tone that set for every regulator conversation that followed",
         },
         {
           key: "B",
-          label: "Filing the ICO notification promptly — and amending rather than waiting",
+          label: "Filing the ICO notification promptly - and amending rather than waiting",
         },
         {
           key: "C",
@@ -1821,7 +1821,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "The coupled Beazley and Ofgem disclosure — the decision that saved $4M and a regulatory relationship",
+            "The coupled Beazley and Ofgem disclosure - the decision that saved $4M and a regulatory relationship",
         },
       ],
     },
@@ -1831,14 +1831,14 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 500,
       scenarioDay: 30,
       isEnding: true,
-      title: "Day 30 — Quiet Lights On",
-      body: "Thirty days on.\n\nYour insurer settled at seventy percent of the claim. The argument about the unfixed security gap cost you ground, but the mitigation case was strong enough to avoid a full refusal. You recovered £2.8 million against a £4 million policy.\n\nThe energy regulator sent a private letter of concern. No public enforcement, but the letter described your cooperation as 'adequate rather than exemplary,' and recommended improvements to your approach for future incidents.\n\nThe customer outreach programme finished in eleven days. One formal complaint was filed and later withdrawn after the customer was personally contacted. No welfare emergencies were missed.\n\nYour share price is down seven percent from where it was before the incident. The CEO survived the AGM. Seventy-one percent support — a fourteen point drop on last year.\n\nThe boardroom is quiet now. The lights are on.\n\nOne last vote. Looking back — what was the most important thing you got right?",
+      title: "Day 30 - Quiet Lights On",
+      body: "Thirty days on.\n\nYour insurer settled at seventy percent of the claim. The argument about the unfixed security gap cost you ground, but the mitigation case was strong enough to avoid a full refusal. You recovered £2.8 million against a £4 million policy.\n\nThe energy regulator sent a private letter of concern. No public enforcement, but the letter described your cooperation as 'adequate rather than exemplary,' and recommended improvements to your approach for future incidents.\n\nThe customer outreach programme finished in eleven days. One formal complaint was filed and later withdrawn after the customer was personally contacted. No welfare emergencies were missed.\n\nYour share price is down seven percent from where it was before the incident. The CEO survived the AGM. Seventy-one percent support - a fourteen point drop on last year.\n\nThe boardroom is quiet now. The lights are on.\n\nOne last vote. Looking back - what was the most important thing you got right?",
       facilitatorNotes:
-        "Good choices overall, but at least one material misstep — likely the ICO notification timing, the brief order, or the Beazley/Ofgem coupling. Reflection vote asks the positive question.",
+        "Good choices overall, but at least one material misstep - likely the ICO notification timing, the brief order, or the Beazley/Ofgem coupling. Reflection vote asks the positive question.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "Veridian Power: 'closing the chapter — focused on customer trust and resilience investment'",
+        "Veridian Power: 'closing the chapter - focused on customer trust and resilience investment'",
       artifact: {
         type: "stock_chart",
         stockTicker: "VRD.L",
@@ -1858,7 +1858,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         },
         {
           key: "B",
-          label: "Honest internal posture — briefing staff before the Times story dropped",
+          label: "Honest internal posture - briefing staff before the Times story dropped",
         },
         {
           key: "C",
@@ -1876,14 +1876,14 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 500,
       scenarioDay: 30,
       isEnding: true,
-      title: "Day 30 — The Long Tail",
-      body: "ENERGY REGULATOR FINES VERIDIAN POWER £8.7M OVER RANSOMWARE ATTACK\n\nThe energy regulator has issued its first enforcement notice against a UK retail energy company following the ransomware attack last month that exposed the medical data of 84,000 vulnerable customers.\n\nThe penalty — £8.7 million — was imposed for failures in notification timing, the delayed outreach to customers on the Priority Services Register, and what the regulator described as 'a fragmented approach to regulatory engagement that prioritised the company's insurance position over its obligations to affected individuals.'\n\nA class action covering 47,000 affected customers was filed in the High Court last week.",
+      title: "Day 30 - The Long Tail",
+      body: "ENERGY REGULATOR FINES VERIDIAN POWER £8.7M OVER RANSOMWARE ATTACK\n\nThe energy regulator has issued its first enforcement notice against a UK retail energy company following the ransomware attack last month that exposed the medical data of 84,000 vulnerable customers.\n\nThe penalty - £8.7 million - was imposed for failures in notification timing, the delayed outreach to customers on the Priority Services Register, and what the regulator described as 'a fragmented approach to regulatory engagement that prioritised the company's insurance position over its obligations to affected individuals.'\n\nA class action covering 47,000 affected customers was filed in the High Court last week.",
       facilitatorNotes:
-        "Multiple weak calls, no single catastrophic one. Reflection vote asks the specific 'which decision' question — always the most useful debrief prompt.",
+        "Multiple weak calls, no single catastrophic one. Reflection vote asks the specific 'which decision' question - always the most useful debrief prompt.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "Ofgem issues NIS enforcement notice and £8.7M penalty against Veridian Power — class action filed",
+        "Ofgem issues NIS enforcement notice and £8.7M penalty against Veridian Power - class action filed",
       artifact: {
         type: "news_headline",
       },
@@ -1893,19 +1893,19 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       decisionOptions: [
         {
           key: "A",
-          label: "The ICO notification timing — we should have filed earlier and amended",
+          label: "The ICO notification timing - we should have filed earlier and amended",
         },
         {
           key: "B",
-          label: "The brief order — counterparties and investors before staff",
+          label: "The brief order - counterparties and investors before staff",
         },
         {
           key: "C",
-          label: "The ransom posture — we kept payment too live for too long",
+          label: "The ransom posture - we kept payment too live for too long",
         },
         {
           key: "D",
-          label: "The Beazley and Ofgem handling — the coupling decision",
+          label: "The Beazley and Ofgem handling - the coupling decision",
         },
       ],
     },
@@ -1915,21 +1915,21 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       order: 500,
       scenarioDay: 30,
       isEnding: true,
-      title: "Day 30 — We Paid Twice",
-      body: "Thirty days on.\n\nThe payment went through. ALPHV acknowledged it and sent the decryption keys. The keys worked on sixty-two percent of the encrypted files — the rest had to be restored from backups anyway. Three days later, ALPHV came back and said they had additional data. They wanted more. When the company refused, they published everything.\n\nThe full Priority Services Register — all 84,247 names, medical conditions, bank details, emergency contacts — was posted across five sites and a messaging channel before law enforcement could act. Twenty-seven thousand records have been scraped by data brokers.\n\nThe payment itself is now under investigation. The criminal group was added to a sanctions list four days after the transfer cleared. Paying a sanctioned entity, even unknowingly, carries legal consequences.\n\nThe CEO resigned on Monday. The CLO resigned on Tuesday. The CFO resigned on Wednesday.\n\nThis morning's stock market announcement confirmed that Veridian Power is exploring all options, including a sale.\n\nThe trading desk is profitable. Nothing else is.\n\nOne last vote. Looking back — which call do you most regret?",
+      title: "Day 30 - We Paid Twice",
+      body: "Thirty days on.\n\nThe payment went through. ALPHV acknowledged it and sent the decryption keys. The keys worked on sixty-two percent of the encrypted files - the rest had to be restored from backups anyway. Three days later, ALPHV came back and said they had additional data. They wanted more. When the company refused, they published everything.\n\nThe full Priority Services Register - all 84,247 names, medical conditions, bank details, emergency contacts - was posted across five sites and a messaging channel before law enforcement could act. Twenty-seven thousand records have been scraped by data brokers.\n\nThe payment itself is now under investigation. The criminal group was added to a sanctions list four days after the transfer cleared. Paying a sanctioned entity, even unknowingly, carries legal consequences.\n\nThe CEO resigned on Monday. The CLO resigned on Tuesday. The CFO resigned on Wednesday.\n\nThis morning's stock market announcement confirmed that Veridian Power is exploring all options, including a sale.\n\nThe trading desk is profitable. Nothing else is.\n\nOne last vote. Looking back - which call do you most regret?",
       facilitatorNotes:
         "Compound average rank exceeded 3.0. The reflection vote produces the most useful debrief material.\n\nCommon answers: the NCSC notification delay, paying the counter under PSR pressure, the Beazley side-letter. Each tells you something different about where the team's default instincts sat.",
       delayMinutes: 0,
       timerMinutes: 0,
       tickerHeadline:
-        "Veridian Power chair: 'exploring all strategic options' — CEO, CLO, CFO resign — OFSI inquiry active",
+        "Veridian Power chair: 'exploring all strategic options' - CEO, CLO, CFO resign - OFSI inquiry active",
       artifact: {
         type: "tv_broadcast",
         tvNetwork: "BBC NEWS",
         tvHeadline:
-          "VERIDIAN POWER IN CRISIS: EXEC TEAM RESIGNS — OFSI INQUIRY — ENTIRE PSR PUBLISHED",
+          "VERIDIAN POWER IN CRISIS: EXEC TEAM RESIGNS - OFSI INQUIRY - ENTIRE PSR PUBLISHED",
         tvTicker:
-          "OFSI investigating ransom payment — 84,247 vulnerable customers' data on dark web — CEO, CLO, CFO resign — strategic review launched — shares suspended",
+          "OFSI investigating ransom payment - 84,247 vulnerable customers' data on dark web - CEO, CLO, CFO resign - strategic review launched - shares suspended",
         tvReporter: "CITY OF LONDON",
       },
       isDecisionPoint: true,
@@ -1938,7 +1938,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       decisionOptions: [
         {
           key: "A",
-          label: "Calling Ofgem before NCSC — and the regulatory tone that set",
+          label: "Calling Ofgem before NCSC - and the regulatory tone that set",
         },
         {
           key: "B",
