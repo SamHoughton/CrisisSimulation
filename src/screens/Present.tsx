@@ -837,9 +837,14 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
         <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
           <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
           {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
-          {/* For dashboard/broadcast artifacts the body is narrator context, not artifact content.
-              Show it above as a scene-setter so the artifact frame stays clean. */}
-          {inject.artifact && dashboardIncludes(inject.artifact.type) && (
+          {/* inject.body is scene-setting narration — show it above the artifact for all types
+              except: ransomware_note (body IS the note text), internal_memo (body IS the memo
+              content in existing scenarios), and email without an explicit emailBody (body
+              is the email text rendered inside the card). */}
+          {inject.artifact &&
+            inject.artifact.type !== "ransomware_note" &&
+            inject.artifact.type !== "internal_memo" &&
+            !(inject.artifact.type === "email" && !inject.artifact.emailBody) && (
             <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
           )}
           <ArtifactDisplay inject={inject} />
@@ -1232,12 +1237,6 @@ function LegalLetter({ inject, artifact: art }: { inject: Inject; artifact: Inje
           <p>OFFICIAL</p>
           <p>{new Date().toLocaleDateString([], { day: "numeric", month: "long", year: "numeric" })}</p>
         </div>
-      </div>
-      {/* Body */}
-      <div className="px-8 py-6">
-        <p className="text-base leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#222" }}>
-          {inject.body}
-        </p>
       </div>
       {/* Footer */}
       <div className="px-8 py-4" style={{ borderTop: "1px solid #ccc", background: "#f0ede6" }}>
