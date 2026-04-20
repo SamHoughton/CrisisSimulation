@@ -114,7 +114,7 @@ export function Setup() {
                   "w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono border transition-colors cursor-default",
                   inj.isDecisionPoint
                     ? tc
-                      ? `${tc.border} ${tc.bg} ${tc.text} ring-1 ring-amber-500/40`
+                      ? `${tc.border} ${tc.bg} ${tc.text} ring-1 ring-white/40`
                       : "border-amber-500/50 bg-amber-500/15 text-amber-400"
                     : tc
                     ? `${tc.border} ${tc.bg} ${tc.text} opacity-70`
@@ -132,7 +132,7 @@ export function Setup() {
             <span className="text-xs text-rtr-dim">Inject</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3.5 h-3.5 rounded border border-amber-500/50 bg-amber-500/15 ring-1 ring-amber-500/40" />
+            <div className="w-3.5 h-3.5 rounded border border-amber-500/50 bg-amber-500/15 ring-1 ring-white/40" />
             <span className="text-xs text-amber-400/80">Decision point</span>
           </div>
           {Object.keys(TIER_COLOUR).some((t) => scenario.injects.some((i: any) => i.commandTier === t)) && (
