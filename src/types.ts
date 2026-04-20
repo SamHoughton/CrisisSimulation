@@ -75,6 +75,12 @@ export interface InjectBranch {
    * Ignored in vote mode.
    */
   scoreMax?: number;
+  /**
+   * Optional narrative label describing the story track that results from
+   * taking this branch (e.g. "CEO went on camera. The morning is different.").
+   * Shown as a track summary in the facilitator runner view.
+   */
+  trackLabel?: string;
 }
 
 // ─── Inject artifact ─────────────────────────────────────────────────────────
@@ -164,7 +170,7 @@ export interface InjectArtifact {
   memoDate?: string;
   memoRef?: string;
   // sms thread (two-person mobile exchange)
-  smsParticipants?: [string, string]; // [left-name, right-name]
+  smsParticipants?: string[]; // [left-name, right-name] or empty for auto-derived names
   smsMessages?: Array<{ sender: string; text: string; time: string }>;
   // regulator portal (ICO / FCA submission receipt)
   regulatorName?: string;        // e.g. "Information Commissioner's Office"
@@ -215,7 +221,7 @@ export interface Inject {
   body: string;                   // what appears on screen
   facilitatorNotes?: string;      // private - never shown to participants
   imageUrl?: string;              // optional image shown on present screen
-  delayMinutes: number;
+  delayMinutes?: number;    // default 0 — minutes after release before inject is shown
   isDecisionPoint: boolean;
   decisionOptions: DecisionOption[];
   branches?: InjectBranch[];      // tree branching: per-option next inject overrides
@@ -272,6 +278,12 @@ export interface Inject {
    * Shown alongside the day strip to orient participants in the story timeline.
    */
   scenarioTime?: string;
+  /**
+   * Narrative track label for this inject, set by the branch that routed here.
+   * Describes which story path is currently active (e.g. "CEO on camera").
+   * Used to orient the facilitator during branched scenarios.
+   */
+  storyTrack?: string;
 }
 
 export interface Scenario {
