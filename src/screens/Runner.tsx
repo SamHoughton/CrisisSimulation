@@ -754,15 +754,27 @@ export function Runner() {
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {orderedInjects.map((inj, idx) => {
-              const released  = allReleased.has(inj.id);
+              const released     = allReleased.has(inj.id);
               const isNext       = inj.id === nextInject?.id;
               const isLive       = currentLive?.injectId === inj.id;
               const onPath       = reachable.has(inj.id);
               const hasBranch    = inj.branches && inj.branches.length > 0;
               const isScoreRoute = inj.branchMode === "score";
+              const prevTrack    = idx > 0 ? orderedInjects[idx - 1].storyTrack : undefined;
+              const showTrack    = inj.storyTrack && inj.storyTrack !== prevTrack;
 
               return (
-                <div key={inj.id} className={cn(
+                <div key={inj.id}>
+                  {showTrack && (
+                    <div className="flex items-center gap-1.5 pt-1 pb-0.5 px-1">
+                      <div className="flex-1 h-px bg-amber-500/20" />
+                      <span className="text-[9px] font-mono font-semibold text-amber-400/70 uppercase tracking-wider truncate max-w-[140px]">
+                        {inj.storyTrack}
+                      </span>
+                      <div className="flex-1 h-px bg-amber-500/20" />
+                    </div>
+                  )}
+                <div className={cn(
                   "rounded border p-3 text-xs transition-colors",
                   released && !isLive ? "border-rtr-green/20 bg-rtr-green/5 opacity-60"
                   : isLive  ? "border-rtr-red/40 bg-rtr-red/8"
@@ -834,6 +846,7 @@ export function Runner() {
                       <span className="text-rtr-dim font-mono text-xs">{inj.timerMinutes}m</span>
                     )}
                   </div>
+                </div>
                 </div>
               );
             })}
