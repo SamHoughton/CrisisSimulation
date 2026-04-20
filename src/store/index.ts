@@ -583,11 +583,28 @@ export function getReachableInjectIds(session: Session | null): Set<string> {
   while (cursor && !visited.has(cursor.id)) {
     reachable.add(cursor.id);
     visited.add(cursor.id);
-    // Add all branches as potentially reachable
     if (cursor.branches) {
-      for (const b of cursor.branches) {
-        const target = session.scenario.injects.find((i) => i.id === b.nextInjectId);
-        if (target && !reachable.has(target.id)) reachable.add(target.id);
+      if (cursor.branchMode === "score") {
+        // Score-routed: only mark the score-computed winner as reachable,
+        // not all branch targets (system picks automatically).
+        const avgRank = getSessionAverageRank(session);
+        if (avgRank !== null) {
+          const ranked = [...cursor.branches]
+            .filter((b) => typeof b.scoreMax === "number")
+            .sort((a, b) => (a.scoreMax ?? Infinity) - (b.scoreMax ?? Infinity));
+          const winner = ranked.find((b) => avgRank <= (b.scoreMax ?? Infinity));
+          if (winner) {
+            const target = session.scenario.injects.find((i) => i.id === winner.nextInjectId);
+            if (target) reachable.add(target.id);
+          }
+        }
+        // If score not yet computable, add nothing — endings stay hidden.
+      } else {
+        // Vote-routed: add all branch targets as potentially reachable.
+        for (const b of cursor.branches) {
+          const target = session.scenario.injects.find((i) => i.id === b.nextInjectId);
+          if (target && !reachable.has(target.id)) reachable.add(target.id);
+        }
       }
     }
     // Linear next
@@ -598,4 +615,31 @@ export function getReachableInjectIds(session: Session | null): Set<string> {
   }
 
   return reachable;
+}
+
+/**
+ * Returns the set of inject IDs that are exclusively reachable as targets of
+ * score-routed branches (branchMode: "score"). These are managed automatically
+ * by the system and should be hidden from the facilitator queue.
+ */
+export function getScoreRoutedTargetIds(session: Session | null): Set<string> {
+  if (!session) return new Set();
+
+  // Collect all score-routed branch targets.
+  const scoreTargets = new Set<string>();
+  for (const inj of session.scenario.injects) {
+    if (inj.branchMode === "score" && inj.branches) {
+      for (const b of inj.branches) scoreTargets.add(b.nextInjectId);
+    }
+  }
+
+  // Remove any that are also reachable via vote-routing or linear order,
+  // so injects linked from multiple places still appear in the queue.
+  for (const inj of session.scenario.injects) {
+    if (inj.branchMode !== "score" && inj.branches) {
+      for (const b of inj.branches) scoreTargets.delete(b.nextInjectId);
+    }
+  }
+
+  return scoreTargets;
 }

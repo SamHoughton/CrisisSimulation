@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
-import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, buildScenarioRecap } from "@/store";
+import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, getScoreRoutedTargetIds, buildScenarioRecap } from "@/store";
 import {
   Send, Pause, Play, Square, Plus, GitBranch,
   Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
@@ -480,7 +480,10 @@ export function Runner() {
     else setPresentBlocked(true);
   };
 
-  const orderedInjects = [...session.scenario.injects].sort((a, b) => a.order - b.order);
+  const scoreRoutedTargets = getScoreRoutedTargetIds(session);
+  const orderedInjects = [...session.scenario.injects]
+    .sort((a, b) => a.order - b.order)
+    .filter((i) => !scoreRoutedTargets.has(i.id));
   const skipInj = skipPanelInjectId
     ? (session.scenario.injects.find((i) => i.id === skipPanelInjectId) ?? null)
     : null;
@@ -752,10 +755,11 @@ export function Runner() {
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {orderedInjects.map((inj, idx) => {
               const released  = allReleased.has(inj.id);
-              const isNext    = inj.id === nextInject?.id;
-              const isLive    = currentLive?.injectId === inj.id;
-              const onPath    = reachable.has(inj.id);
-              const hasBranch = inj.branches && inj.branches.length > 0;
+              const isNext       = inj.id === nextInject?.id;
+              const isLive       = currentLive?.injectId === inj.id;
+              const onPath       = reachable.has(inj.id);
+              const hasBranch    = inj.branches && inj.branches.length > 0;
+              const isScoreRoute = inj.branchMode === "score";
 
               return (
                 <div key={inj.id} className={cn(
@@ -780,7 +784,10 @@ export function Runner() {
                     )}>
                       {inj.title}
                     </span>
-                    {hasBranch && <GitBranch className="w-3 h-3 text-amber-400 shrink-0" />}
+                    {isScoreRoute
+                      ? <span className="text-[9px] font-mono font-bold text-amber-400 bg-amber-500/15 border border-amber-500/30 rounded px-1 shrink-0">AUTO</span>
+                      : hasBranch && <GitBranch className="w-3 h-3 text-amber-400 shrink-0" />
+                    }
                   </div>
                   <div className="flex items-center justify-between">
                     {released && !isLive ? (
