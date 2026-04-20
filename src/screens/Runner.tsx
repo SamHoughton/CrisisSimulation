@@ -463,6 +463,12 @@ export function Runner() {
   const handleReveal = (injectId: string) => {
     revealVotes(injectId);
     setVoteRevealed((v) => ({ ...v, [injectId]: true }));
+    const live = session?.liveInjects.find((l) => l.injectId === injectId);
+    if (live) {
+      const bc = new BroadcastChannel("crisis-present");
+      bc.postMessage({ type: "vote-reveal", decisions: live.decisions });
+      bc.close();
+    }
   };
 
   const openPresent = () => {
