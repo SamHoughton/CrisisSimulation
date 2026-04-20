@@ -13,9 +13,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
+import { StoryMapDrawer } from "@/components/StoryMapDrawer";
 import { useStore, getCurrentLiveInject, getNextInject, getReachableInjectIds, getScoreRoutedTargetIds, buildScenarioRecap } from "@/store";
 import {
-  Send, Pause, Play, Square, Plus, GitBranch,
+  Send, Pause, Play, Square, Plus, GitBranch, Map,
   Clock, Monitor, Pencil, Check, Eye, Timer, RotateCcw, MessageSquare,
   Smartphone, QrCode, Copy, X,
 } from "lucide-react";
@@ -75,6 +76,7 @@ export function Runner() {
   const [copyFeedback, setCopyFeedback] = useState<string>("");
   const [skipPanelInjectId, setSkipPanelInjectId] = useState<string | null>(null);
   const [skipChoice, setSkipChoice] = useState<string>("");
+  const [showStoryMap, setShowStoryMap] = useState(false);
   const remoteSessionRef = useRef<RemoteSessionState | null>(null);
   remoteSessionRef.current = remoteSession;
 
@@ -85,7 +87,7 @@ export function Runner() {
 
   const currentLive  = getCurrentLiveInject(session);
   const nextInject   = getNextInject(session);
-  const allReleased  = session ? new Set(session.liveInjects.map((l) => l.injectId)) : new Set();
+  const allReleased  = session ? new Set(session.liveInjects.map((l) => l.injectId)) : new Set<string>();
   const reachable    = getReachableInjectIds(session);
 
   // Session elapsed clock
@@ -615,6 +617,18 @@ export function Runner() {
             {session.status.toUpperCase()}
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowStoryMap((v) => !v)}
+              className={cn(
+                "flex items-center gap-1.5 text-xs border px-3 py-1.5 rounded transition-colors",
+                showStoryMap
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
+                  : "border-rtr-border-light text-rtr-muted hover:bg-rtr-elevated"
+              )}
+              title="Story Map — see the full scenario branch structure"
+            >
+              <Map className="w-3.5 h-3.5" />Story Map
+            </button>
             <button onClick={openPresent}
               className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted">
               <Monitor className="w-3.5 h-3.5" />Present
@@ -1052,6 +1066,19 @@ export function Runner() {
             </div>
           )}
         </div>
+
+        {/* ── Story Map drawer ─────────────────────────────────────────────── */}
+        {showStoryMap && (
+          <StoryMapDrawer
+            session={session}
+            released={allReleased}
+            reachable={reachable}
+            currentId={currentLive?.injectId}
+            nextId={nextInject?.id}
+            scoreRoutedTargets={scoreRoutedTargets}
+            onClose={() => setShowStoryMap(false)}
+          />
+        )}
 
         {/* ── Right: session notes ─────────────────────────────────────────── */}
         <div className="hidden md:flex md:w-48 lg:w-56 border-l border-rtr-border flex-col overflow-hidden shrink-0 bg-rtr-panel">
