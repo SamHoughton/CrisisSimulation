@@ -7,7 +7,8 @@
  * titles (e.g. "General Counsel" instead of "Chief Legal Officer").
  */
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useStore, getAllScenarios } from "@/store";
 import { ChevronLeft, PlayCircle, Users, Clock, Layers, ShieldAlert, Plus, X } from "lucide-react";
 import { cn, ROLE_LONG, ROLE_SHORT, ROLE_COLOUR, DIFFICULTY_LABEL, DIFFICULTY_COLOUR, formatDuration, TIER_COLOUR, TIER_LABEL } from "@/lib/utils";
@@ -27,19 +28,31 @@ export function Setup() {
     scenario?.roles.map((r) => ({ role: r as ExecRole, name: "" })) ?? []
   );
   const [showAddRole, setShowAddRole] = useState(false);
-  const addRoleRef = useRef<HTMLDivElement>(null);
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
+  const addBtnRef  = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const ALL_ROLES: ExecRole[] = ["CEO", "CFO", "CISO", "CLO", "CCO", "COO", "CTO", "BOARD_REP", "HR_LEAD"];
 
+  const openDropdown = useCallback(() => {
+    if (!addBtnRef.current) return;
+    const rect = addBtnRef.current.getBoundingClientRect();
+    setDropdownPos({ top: rect.bottom + 6, left: rect.left });
+    setShowAddRole(true);
+  }, []);
+
   useEffect(() => {
     if (!showAddRole) return;
-    function handleClickOutside(e: MouseEvent) {
-      if (addRoleRef.current && !addRoleRef.current.contains(e.target as Node)) {
+    function handleClose(e: MouseEvent) {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
+        addBtnRef.current  && !addBtnRef.current.contains(e.target as Node)
+      ) {
         setShowAddRole(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClose);
+    return () => document.removeEventListener("mousedown", handleClose);
   }, [showAddRole]);
 
   if (!scenario) {
@@ -213,44 +226,49 @@ export function Setup() {
 
         {/* Add role row */}
         <div className="px-5 py-3 border-t border-rtr-border bg-rtr-elevated/50 rounded-b-xl">
-          <div className="relative inline-block" ref={addRoleRef}>
-            <button
-              onClick={() => setShowAddRole((v) => !v)}
-              disabled={availableRoles.length === 0}
-              className={cn(
-                "flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded border transition-colors",
-                availableRoles.length === 0
-                  ? "border-rtr-border text-rtr-dim cursor-not-allowed opacity-50"
-                  : "border-rtr-border text-rtr-muted hover:text-rtr-text hover:border-rtr-green/50 hover:bg-rtr-elevated"
-              )}
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Add role
-            </button>
-
-            {showAddRole && availableRoles.length > 0 && (
-              <div className="absolute left-0 top-full mt-1.5 z-50 min-w-[180px] bg-rtr-elevated border border-rtr-border rounded-lg shadow-xl overflow-hidden">
-                <p className="px-3 py-2 text-[10px] font-semibold text-rtr-dim uppercase tracking-wider border-b border-rtr-border">
-                  Available roles
-                </p>
-                <div className="py-1">
-                  {availableRoles.map((r) => (
-                    <button
-                      key={r}
-                      onClick={() => addRole(r)}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-left hover:bg-rtr-panel transition-colors"
-                    >
-                      <div className={`w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono shrink-0 ${ROLE_COLOUR[r]}`}>
-                        {ROLE_SHORT[r]}
-                      </div>
-                      <span className="text-sm text-rtr-text">{ROLE_LONG[r]}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <button
+            ref={addBtnRef}
+            onClick={openDropdown}
+            disabled={availableRoles.length === 0}
+            className={cn(
+              "flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded border transition-colors",
+              availableRoles.length === 0
+                ? "border-rtr-border text-rtr-dim cursor-not-allowed opacity-50"
+                : "border-rtr-border text-rtr-muted hover:text-rtr-text hover:border-rtr-green/50 hover:bg-rtr-elevated"
             )}
-          </div>
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Add role
+          </button>
         </div>
+
+        {/* Portal dropdown — renders into document.body to escape stacking contexts */}
+        {showAddRole && availableRoles.length > 0 && dropdownPos && createPortal(
+          <div
+            ref={dropdownRef}
+            style={{ position: "fixed", top: dropdownPos.top, left: dropdownPos.left, zIndex: 9999 }}
+            className="min-w-[200px] bg-rtr-elevated border border-rtr-border rounded-lg shadow-2xl overflow-hidden"
+          >
+            <p className="px-3 py-2 text-[10px] font-semibold text-rtr-dim uppercase tracking-wider border-b border-rtr-border">
+              Available roles
+            </p>
+            <div className="py-1">
+              {availableRoles.map((r) => (
+                <button
+                  key={r}
+                  onClick={() => addRole(r)}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-left hover:bg-rtr-panel transition-colors"
+                >
+                  <div className={`w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono shrink-0 ${ROLE_COLOUR[r]}`}>
+                    {ROLE_SHORT[r]}
+                  </div>
+                  <span className="text-sm text-rtr-text">{ROLE_LONG[r]}</span>
+                </button>
+              ))}
+            </div>
+          </div>,
+          document.body
+        )}
       </div>
 
       {/* Present window tip */}
