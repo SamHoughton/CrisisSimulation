@@ -170,8 +170,8 @@ export function Setup() {
       )}
 
       {/* Participants */}
-      <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden mb-6 fade-in-up">
-        <div className="px-5 py-3 bg-rtr-elevated border-b border-rtr-border flex items-center gap-2">
+      <div className="bg-rtr-panel border border-rtr-border rounded-xl mb-6 fade-in-up">
+        <div className="px-5 py-3 bg-rtr-elevated border-b border-rtr-border flex items-center gap-2 rounded-t-xl">
           <Users className="w-4 h-4 text-rtr-muted" />
           <h2 className="text-sm font-semibold text-rtr-text">Participants</h2>
           <span className="text-xs text-rtr-dim ml-1">(role titles and names optional - click a title to rename)</span>
@@ -212,7 +212,7 @@ export function Setup() {
         </div>
 
         {/* Add role row */}
-        <div className="px-5 py-3 border-t border-rtr-border bg-rtr-elevated/50">
+        <div className="px-5 py-3 border-t border-rtr-border bg-rtr-elevated/50 rounded-b-xl">
           <div className="relative inline-block" ref={addRoleRef}>
             <button
               onClick={() => setShowAddRole((v) => !v)}
