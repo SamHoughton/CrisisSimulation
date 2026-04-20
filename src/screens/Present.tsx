@@ -73,6 +73,11 @@ export function Present() {
   const pendingScenarioRef = useRef<Scenario | null>(null);
   /** Queued inject that arrived while briefing was still showing. */
   const pendingInjectRef = useRef<{ inject: Inject; num: number; totalInjects: number } | null>(null);
+  /** Story track of the most recently shown inject — used to detect track transitions. */
+  const prevStoryTrackRef = useRef<string | undefined>(undefined);
+  /** When set, a track-transition banner is shown full-width for 3 seconds. */
+  const [trackBanner, setTrackBanner] = useState<string | null>(null);
+  const trackBannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Track fullscreen state changes (e.g. user presses Escape)
   useEffect(() => {
@@ -101,6 +106,14 @@ export function Present() {
         if (msg.inject.tickerHeadline) {
           setHeadlines((h) => [msg.inject.tickerHeadline, ...h]);
         }
+        // Fire a track-transition banner when the story track changes.
+        const incomingTrack: string | undefined = msg.inject.storyTrack;
+        if (incomingTrack && incomingTrack !== prevStoryTrackRef.current) {
+          if (trackBannerTimerRef.current) clearTimeout(trackBannerTimerRef.current);
+          setTrackBanner(incomingTrack);
+          trackBannerTimerRef.current = setTimeout(() => setTrackBanner(null), 3000);
+        }
+        prevStoryTrackRef.current = incomingTrack;
         // If we're still in splash or briefing, queue the inject instead of
         // immediately overriding - let the splash/briefing finish first.
         setPhase((prev) => {
@@ -311,6 +324,16 @@ export function Present() {
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
         {phase.phase === "paused"   && <PausedScreen />}
         {phase.phase === "ended"    && <EndedScreen />}
+
+        {/* ── Story-track transition banner ────────────────────────────────── */}
+        {trackBanner && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50 animate-fade-in">
+            <div className="bg-black/80 border border-amber-500/30 rounded-xl px-10 py-6 text-center max-w-lg backdrop-blur-sm">
+              <p className="text-[10px] font-mono font-semibold text-amber-500/60 uppercase tracking-[0.2em] mb-2">Story track</p>
+              <p className="text-xl font-semibold text-amber-300 tracking-wide">{trackBanner}</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── News ticker ─────────────────────────────────────────────────────── */}
