@@ -12,6 +12,7 @@ export const RANSOMWARE_TECHNICAL_SCENARIO: Scenario = {
   createdAt: "2024-01-01T00:00:00Z",
   updatedAt: "2026-04-16T00:00:00Z",
   coverGradient: "135deg, #050508 0%, #0a1a05 40%, #1a4a10 100%",
+  audienceLabel: "For your CISO and technical incident response team. Tests containment decisions, negotiation posture, and operational recovery under pressure.",
   regulatoryFrameworks: [
     "Network security regulations",
     "72-hour data breach notification",

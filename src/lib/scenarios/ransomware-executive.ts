@@ -12,6 +12,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
   createdAt: "2024-01-01T00:00:00Z",
   updatedAt: "2026-04-14T00:00:00Z",
   coverGradient: "135deg, #050508 0%, #1a0008 40%, #E82222 100%",
+  audienceLabel: "For your board and executive team. Tests governance, market disclosure, and ransom authority. No technical knowledge needed.",
   regulatoryFrameworks: [
     "Network security regulations",
     "72-hour data breach notification",

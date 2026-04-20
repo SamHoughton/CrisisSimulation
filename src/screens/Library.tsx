@@ -201,6 +201,9 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
               )}
             </div>
             <h3 className="font-semibold text-rtr-text text-sm mb-1">{s.title}</h3>
+            {s.audienceLabel && (
+              <p className="text-xs text-amber-400/80 mb-1.5 line-clamp-2">{s.audienceLabel}</p>
+            )}
             {s.description && (
               <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{s.description}</p>
             )}

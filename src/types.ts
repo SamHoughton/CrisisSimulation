@@ -299,6 +299,12 @@ export interface Scenario {
   isTemplate?: boolean;
   imageUrl?: string;              // cover image for library/cards
   coverGradient?: string;         // CSS gradient fallback (e.g. "135deg, #1a1a2e, #e8002d")
+  /**
+   * One-sentence plain-English description of who this scenario is designed for.
+   * Shown on library cards and home screen to help facilitators self-select.
+   * e.g. "For your board and executive team. No technical knowledge needed."
+   */
+  audienceLabel?: string;
   createdAt: string;
   updatedAt: string;
   /**

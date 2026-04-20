@@ -427,6 +427,9 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
           </span>
         </div>
         <p className="text-sm font-semibold text-rtr-text mb-1">{scenario.title}</p>
+        {scenario.audienceLabel && (
+          <p className="text-xs text-amber-400/80 mb-1 line-clamp-2">{scenario.audienceLabel}</p>
+        )}
         <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{scenario.description}</p>
         {scenario.regulatoryFrameworks && scenario.regulatoryFrameworks.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
