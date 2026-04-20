@@ -229,7 +229,7 @@ export function Setup() {
             </button>
 
             {showAddRole && availableRoles.length > 0 && (
-              <div className="absolute left-0 top-full mt-1.5 z-20 min-w-[180px] bg-rtr-elevated border border-rtr-border rounded-lg shadow-xl overflow-hidden">
+              <div className="absolute left-0 top-full mt-1.5 z-50 min-w-[180px] bg-rtr-elevated border border-rtr-border rounded-lg shadow-xl overflow-hidden">
                 <p className="px-3 py-2 text-[10px] font-semibold text-rtr-dim uppercase tracking-wider border-b border-rtr-border">
                   Available roles
                 </p>
