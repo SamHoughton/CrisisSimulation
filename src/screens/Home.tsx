@@ -398,60 +398,95 @@ function ScorePill({ score }: { score: number }) {
 }
 
 function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void }) {
-  const hasCover = scenario.imageUrl || scenario.coverGradient;
+  const frameworks: string[] = scenario.regulatoryFrameworks ?? [];
+  const visibleFw = frameworks.slice(0, 2);
+  const extraFw   = frameworks.length - visibleFw.length;
+
   return (
-    <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden card-lift group fade-in-up cursor-pointer"
+    <div
+      className="group relative rounded-xl overflow-hidden border border-rtr-border card-lift fade-in-up cursor-pointer bg-[#0f1114]"
       onClick={onRun}
     >
-      {hasCover && (
-        <div className="relative h-28 overflow-hidden"
-          style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}>
-          {scenario.imageUrl && (
-            <img src={scenario.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity group-hover:opacity-60 transition-opacity" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-rtr-panel to-transparent" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-            <span className="flex items-center gap-1.5 text-xs text-white font-semibold bg-rtr-red/90 px-3 py-1.5 rounded-full">
-              <PlayCircle className="w-3.5 h-3.5" /> Run scenario
-            </span>
-          </div>
-        </div>
-      )}
-      <div className="p-4">
-        <div className="flex items-start gap-2 mb-2">
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded ${DIFFICULTY_COLOUR[scenario.difficulty]}`}>
+      {/* ── Cover ── */}
+      <div
+        className="relative h-44 overflow-hidden"
+        style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}
+      >
+        {scenario.imageUrl && (
+          <img
+            src={scenario.imageUrl} alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity group-hover:opacity-55 transition-opacity duration-500"
+          />
+        )}
+        {/* Vignette — heavier at bottom so title is readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1114] via-black/30 to-transparent" />
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
+        />
+
+        {/* Classification badges — top left */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm ${DIFFICULTY_COLOUR[scenario.difficulty]}`}>
             {DIFFICULTY_LABEL[scenario.difficulty]}
           </span>
-          <span className="text-xs text-rtr-dim bg-rtr-elevated px-2 py-0.5 rounded">
+          <span className="text-[10px] text-white/60 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10 font-medium">
             {SCENARIO_TYPE_LABELS[scenario.type]}
           </span>
         </div>
-        <p className="text-sm font-semibold text-rtr-text mb-1">{scenario.title}</p>
-        {scenario.audienceLabel && (
-          <p className="text-xs text-amber-400/80 mb-1 line-clamp-2">{scenario.audienceLabel}</p>
-        )}
-        <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{scenario.description}</p>
-        {scenario.regulatoryFrameworks && scenario.regulatoryFrameworks.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {scenario.regulatoryFrameworks.map((fw: string) => (
-              <span key={fw} className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
-                {fw}
-              </span>
-            ))}
+
+        {/* Hover play overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-12 h-12 rounded-full bg-rtr-red/90 flex items-center justify-center shadow-lg shadow-rtr-red/30 scale-90 group-hover:scale-100 transition-transform duration-200">
+            <PlayCircle className="w-6 h-6 text-white" />
           </div>
-        )}
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-rtr-dim">
+        </div>
+
+        {/* Title block — pinned to bottom of cover */}
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8">
+          <p className="text-sm font-bold text-white leading-snug">{scenario.title}</p>
+          {scenario.audienceLabel && (
+            <p className="text-[11px] text-white/50 mt-0.5 line-clamp-1 leading-snug">{scenario.audienceLabel}</p>
+          )}
+        </div>
+      </div>
+
+      {/* ── Footer ── */}
+      <div className="px-4 pt-3 pb-4">
+        {/* Description */}
+        <p className="text-xs text-rtr-muted line-clamp-2 leading-relaxed mb-3">
+          {scenario.description}
+        </p>
+
+        {/* Meta row */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs text-rtr-dim font-mono">
             {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
           </span>
-          <button
-            onClick={(e) => { e.stopPropagation(); onRun(); }}
-            className="flex items-center gap-1.5 text-xs text-white bg-rtr-red hover:brightness-110 px-3 py-1.5 rounded transition"
-          >
-            <PlayCircle className="w-3.5 h-3.5" />
-            Run
-          </button>
+          {visibleFw.length > 0 && (
+            <div className="flex items-center gap-1">
+              {visibleFw.map((fw: string) => (
+                <span key={fw} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400/80 border border-blue-500/15 font-medium">
+                  {fw}
+                </span>
+              ))}
+              {extraFw > 0 && (
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-rtr-elevated text-rtr-dim border border-rtr-border">
+                  +{extraFw}
+                </span>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Run button — full width */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onRun(); }}
+          className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-rtr-red hover:brightness-110 py-2 rounded-lg transition"
+        >
+          <PlayCircle className="w-3.5 h-3.5" />
+          Run scenario
+        </button>
       </div>
     </div>
   );
