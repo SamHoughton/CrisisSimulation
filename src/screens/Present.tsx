@@ -380,34 +380,50 @@ function SplashScreen({ scenario, onDone }: { scenario: Scenario | null; onDone:
   }, []);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center" style={{ background: "#080a0d" }}>
-      {/* Animated red ring */}
-      <div className="relative flex items-center justify-center mb-10">
-        <div className="absolute w-36 h-36 rounded-full animate-ping opacity-10" style={{ background: "#E82222" }} />
-        <div className="absolute w-28 h-28 rounded-full animate-ping opacity-15" style={{ background: "#E82222", animationDelay: "0.3s" }} />
-        <div className="relative w-20 h-20 rounded-2xl flex items-center justify-center"
-          style={{ background: "rgba(232,34,34,0.15)", border: "1px solid rgba(232,34,34,0.4)" }}>
-          <ShieldAlert className="w-10 h-10" style={{ color: "#E82222" }} />
-        </div>
+    <div className="h-full flex flex-col items-center justify-center relative overflow-hidden" style={{ background: "#080a0d" }}>
+
+      {/* Dot-grid texture */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: "radial-gradient(circle, rgba(232,34,34,0.12) 1px, transparent 1px)",
+        backgroundSize: "36px 36px",
+        maskImage: "radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%)",
+      }} />
+
+      {/* ECG mark */}
+      <div className="relative mb-8">
+        <svg viewBox="0 0 120 48" className="w-40 h-16" fill="none">
+          <line x1="0"   y1="36" x2="34"  y2="36" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
+          <polyline points="34,36 52,6 70,36" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="70"  y1="36" x2="120" y2="36" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="52" cy="6" r="4" fill="#E82222" />
+        </svg>
+        {/* Bloom beneath the ECG */}
+        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-32 h-6 rounded-full blur-xl pointer-events-none"
+          style={{ background: "rgba(232,34,34,0.35)" }} />
       </div>
 
       {/* Wordmark */}
-      <p className="brand-glow text-6xl mb-3">REDLINE</p>
-      <p className="text-[10px] tracking-[0.35em] uppercase mb-10" style={{ color: "rgba(255,255,255,0.28)", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      <p className="brand-glow text-7xl mb-2 tracking-wider" style={{ textShadow: "0 0 60px rgba(232,34,34,0.2)" }}>
+        REDLINE
+      </p>
+      <p className="text-[9px] tracking-[0.55em] uppercase mb-10"
+        style={{ color: "rgba(255,255,255,0.22)", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.55em" }}>
         CRISIS SIMULATION PLATFORM
       </p>
 
-      {/* Scenario pill */}
+      {/* Scenario name — plain, no pill box */}
       {scenario && (
-        <div className="px-5 py-2.5 rounded-full text-sm font-medium"
-          style={{ background: "rgba(232,34,34,0.08)", border: "1px solid rgba(232,34,34,0.2)", color: "#c5c8d8" }}>
+        <p className="text-sm mb-10 font-medium" style={{ color: "rgba(255,255,255,0.35)" }}>
           {scenario.title}
-        </div>
+        </p>
       )}
 
-      {/* Loading bar */}
-      <div className="mt-10 w-48 h-0.5 rounded-full overflow-hidden" style={{ background: "#1c1f24" }}>
-        <div className="h-full rounded-full" style={{ background: "#E82222", animation: "splash-fill 2.4s ease forwards" }} />
+      {/* Progress bar — pinned to screen bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#111318" }}>
+        <div className="h-full" style={{
+          background: "linear-gradient(90deg, #991111, #E82222, #ff5c5c)",
+          animation: "splash-fill 2.4s ease forwards",
+        }} />
       </div>
     </div>
   );
