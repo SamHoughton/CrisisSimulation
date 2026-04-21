@@ -55,19 +55,6 @@ Built for facilitators who need to run realistic, high-pressure crisis exercises
 | Remote voting | Netlify Blob storage via serverless function relay |
 | Icons | Lucide React |
 
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173). No accounts needed.
-
-**For AI features in local dev:** the Vite dev server does not run Netlify Functions. Either:
-- Run `netlify dev` instead of `npm run dev` (requires `npm i -g netlify-cli`) to get the proxy locally, with `ANTHROPIC_API_KEY` set in a `.env` file, **or**
-- Paste your own [Anthropic API key](https://console.anthropic.com/) into **Settings** to call the API directly from the browser.
-
 In production (deployed to Netlify), the proxy is always available, so the in-app key field stays optional.
 
 ## How It Works
