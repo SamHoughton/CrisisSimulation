@@ -650,30 +650,59 @@ function DecisionLogTab({ session }: { session: Session }) {
   );
 }
 
-// ── Dashboard / reputation chart tab ─────────────────────────────────────────
+// ── Dashboard tab ─────────────────────────────────────────────────────────────
 
 function DashboardTab({ session, pastSessions }: { session: Session; pastSessions: Session[] }) {
-  // Rule-based reputation score: starts at 100, each inject chips it down;
-  // responses and decisions partially offset the damage.
-  const points = session.liveInjects.map((li, i) => {
-    const baseDamage   = -8;
-    const responseGain = Math.min(li.responses.length * 3, 12);
-    const decisionGain = Math.min(li.decisions.length * 4, 8);
-    const prev = i === 0 ? 100 : 0; // accumulation handled below
-    return { label: li.injectTitle, delta: baseDamage + responseGain + decisionGain, responses: li.responses.length, decisions: li.decisions.length };
+  const totalResponses  = session.liveInjects.reduce((n, li) => n + li.responses.length, 0);
+  const totalDecisions  = session.liveInjects.reduce((n, li) => n + li.decisions.length, 0);
+  const decisionPoints  = session.liveInjects.filter((li) => li.decisions.length > 0).length;
+
+  // Build ranked decision rows: one row per decision that has an option with a known rank.
+  type QualityRow = {
+    injectTitle: string;
+    injectNum: number;
+    role: string;
+    name: string;
+    optionKey: string;
+    optionLabel: string;
+    rank: number | undefined;
+    maxRank: number;
+  };
+
+  const qualityRows: QualityRow[] = [];
+  session.liveInjects.forEach((li, liIdx) => {
+    const scenInject = session.scenario.injects.find((i) => i.id === li.injectId);
+    if (!scenInject?.isDecisionPoint) return;
+    const maxRank = Math.max(
+      0,
+      ...scenInject.decisionOptions.map((o) => o.rank ?? 0)
+    );
+    for (const dec of li.decisions) {
+      const opt = scenInject.decisionOptions?.find((o) => o.key === dec.optionKey);
+      qualityRows.push({
+        injectTitle: li.injectTitle,
+        injectNum: liIdx + 1,
+        role: dec.role,
+        name: dec.name,
+        optionKey: dec.optionKey,
+        optionLabel: dec.optionLabel,
+        rank: opt?.rank,
+        maxRank,
+      });
+    }
   });
 
-  // Build cumulative score series
-  let running = 100;
-  const series: { label: string; score: number; responses: number; decisions: number }[] = [
-    { label: "Start", score: 100, responses: 0, decisions: 0 },
-  ];
-  for (const p of points) {
-    running = Math.max(0, Math.min(100, running + p.delta));
-    series.push({ label: p.label, score: Math.round(running), responses: p.responses, decisions: p.decisions });
-  }
+  // Average rank across ranked decisions only
+  const rankedRows = qualityRows.filter((r) => r.rank !== undefined);
+  const avgRank = rankedRows.length > 0
+    ? rankedRows.reduce((sum, r) => sum + r.rank!, 0) / rankedRows.length
+    : null;
+  const qualityLabel = avgRank === null ? null
+    : avgRank <= 1.5 ? { label: "Strong", colour: "text-rtr-green" }
+    : avgRank <= 2.5 ? { label: "Mixed",  colour: "text-amber-400" }
+    : { label: "Needs work", colour: "text-red-400" };
 
-  if (series.length < 2) {
+  if (session.liveInjects.length === 0) {
     return (
       <div className="text-center py-16 fade-in-up">
         <BarChart2 className="w-10 h-10 text-rtr-dim mx-auto mb-3" />
@@ -682,104 +711,97 @@ function DashboardTab({ session, pastSessions }: { session: Session; pastSession
     );
   }
 
-  // SVG chart dimensions
-  const W = 680; const H = 240; const PAD = { top: 20, right: 20, bottom: 48, left: 44 };
-  const chartW = W - PAD.left - PAD.right;
-  const chartH = H - PAD.top  - PAD.bottom;
-  const n = series.length;
-  const xPos = (i: number) => PAD.left + (i / (n - 1)) * chartW;
-  const yPos = (score: number) => PAD.top + (1 - score / 100) * chartH;
-
-  // Build polyline points
-  const linePoints = series.map((s, i) => `${xPos(i)},${yPos(s.score)}`).join(" ");
-
-  // Colour of final score
-  const finalScore = series[series.length - 1].score;
-  const lineColor  = finalScore >= 70 ? "#4afe91" : finalScore >= 45 ? "#f59e0b" : "#E82222";
-
-  const [hovered, setHovered] = useState<number | null>(null);
-
   return (
     <div className="fade-in-up space-y-6">
-      {/* Score cards */}
+      {/* Summary stat cards */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold font-mono" style={{ color: lineColor }}>{finalScore}</p>
-          <p className="text-xs text-rtr-muted mt-1">Reputation Score</p>
+          <p className="text-2xl font-bold font-mono text-rtr-text">{totalResponses}</p>
+          <p className="text-xs text-rtr-muted mt-1">Responses logged</p>
         </div>
         <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold font-mono text-rtr-text">
-            {session.liveInjects.reduce((n, li) => n + li.responses.length, 0)}
-          </p>
-          <p className="text-xs text-rtr-muted mt-1">Total Responses</p>
+          <p className="text-2xl font-bold font-mono text-amber-400">{totalDecisions}</p>
+          <p className="text-xs text-rtr-muted mt-1">Decisions cast</p>
         </div>
         <div className="bg-rtr-panel border border-rtr-border rounded-xl p-4 text-center">
-          <p className="text-2xl font-bold font-mono text-amber-400">
-            {session.liveInjects.reduce((n, li) => n + li.decisions.length, 0)}
-          </p>
-          <p className="text-xs text-rtr-muted mt-1">Decisions Made</p>
+          {qualityLabel ? (
+            <>
+              <p className={`text-2xl font-bold font-mono ${qualityLabel.colour}`}>{avgRank!.toFixed(1)}</p>
+              <p className={`text-xs mt-1 ${qualityLabel.colour}`}>{qualityLabel.label} avg rank</p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl font-bold font-mono text-rtr-dim">{decisionPoints}</p>
+              <p className="text-xs text-rtr-muted mt-1">Decision points</p>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Line chart */}
-      <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5">
-        <h3 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-4">Reputation Over Session</h3>
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 280 }}>
-          {/* Grid lines */}
-          {[0, 25, 50, 75, 100].map((v) => (
-            <g key={v}>
-              <line
-                x1={PAD.left} y1={yPos(v)} x2={PAD.left + chartW} y2={yPos(v)}
-                stroke="#1e2128" strokeWidth="1"
-              />
-              <text x={PAD.left - 6} y={yPos(v) + 4} textAnchor="end" fontSize="9" fill="#4a4f65">{v}</text>
-            </g>
-          ))}
-
-          {/* Gradient fill under line */}
-          <defs>
-            <linearGradient id="rep-gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor={lineColor} stopOpacity="0.2" />
-              <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <polygon
-            points={`${xPos(0)},${yPos(0)} ${linePoints} ${xPos(n - 1)},${PAD.top + chartH} ${xPos(0)},${PAD.top + chartH}`}
-            fill="url(#rep-gradient)"
-          />
-
-          {/* Line */}
-          <polyline points={linePoints} fill="none" stroke={lineColor} strokeWidth="2" strokeLinejoin="round" />
-
-          {/* Data points + hover targets */}
-          {series.map((s, i) => (
-            <g key={i} onMouseEnter={() => setHovered(i)} onMouseLeave={() => setHovered(null)}>
-              <circle cx={xPos(i)} cy={yPos(s.score)} r={hovered === i ? 6 : 4} fill={lineColor} stroke="#0d0e10" strokeWidth="2" style={{ cursor: "pointer" }} />
-              {hovered === i && (
-                <g>
-                  <rect
-                    x={Math.min(xPos(i) - 48, W - 120)} y={yPos(s.score) - 54}
-                    width="110" height="48" rx="4"
-                    fill="#15171a" stroke="#2a2e3a"
-                  />
-                  <text x={Math.min(xPos(i) - 48, W - 120) + 8} y={yPos(s.score) - 36} fontSize="9" fill="#e8eaf0" fontWeight="bold">{s.score} rep</text>
-                  <text x={Math.min(xPos(i) - 48, W - 120) + 8} y={yPos(s.score) - 24} fontSize="8" fill="#8b8fa8">{s.responses} responses</text>
-                  <text x={Math.min(xPos(i) - 48, W - 120) + 8} y={yPos(s.score) - 13} fontSize="8" fill="#8b8fa8">{s.decisions} decisions</text>
-                </g>
-              )}
-              {/* X-axis label */}
-              <text
-                x={xPos(i)} y={H - 8}
-                textAnchor="middle" fontSize="8" fill="#4a4f65"
-                style={{ maxWidth: chartW / n }}
-              >
-                {i === 0 ? "Start" : `#${i}`}
-              </text>
-            </g>
-          ))}
-        </svg>
-        <p className="text-xs text-rtr-dim mt-2">Score: starts at 100, −8 per inject, +3 per response, +4 per decision. Hover each point for detail.</p>
-      </div>
+      {/* Decision quality table */}
+      {qualityRows.length > 0 ? (
+        <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-rtr-border flex items-center justify-between">
+            <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Decision Quality</p>
+            <p className="text-xs text-rtr-dim">Rank 1 = best option · lower is better</p>
+          </div>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-rtr-border text-xs text-rtr-dim uppercase tracking-wider">
+                <th className="px-4 py-3 text-left font-semibold">#</th>
+                <th className="px-4 py-3 text-left font-semibold">Inject</th>
+                <th className="px-4 py-3 text-left font-semibold">Role</th>
+                <th className="px-4 py-3 text-left font-semibold">Option chosen</th>
+                <th className="px-4 py-3 text-center font-semibold">Quality</th>
+              </tr>
+            </thead>
+            <tbody>
+              {qualityRows.map((row, i) => {
+                const rankColour = row.rank === undefined ? "text-rtr-dim"
+                  : row.rank === 1 ? "text-rtr-green"
+                  : row.rank === 2 ? "text-amber-400"
+                  : row.rank === 3 ? "text-orange-400"
+                  : "text-red-400";
+                const rankBg = row.rank === undefined ? ""
+                  : row.rank === 1 ? "bg-rtr-green/10 border-rtr-green/30"
+                  : row.rank === 2 ? "bg-amber-500/10 border-amber-500/30"
+                  : row.rank === 3 ? "bg-orange-500/10 border-orange-500/30"
+                  : "bg-red-500/10 border-red-500/30";
+                return (
+                  <tr key={i} className={cn("border-b border-rtr-border last:border-0", i % 2 === 0 ? "" : "bg-rtr-elevated/30")}>
+                    <td className="px-4 py-3 text-xs text-rtr-dim font-mono">{row.injectNum}</td>
+                    <td className="px-4 py-3 text-xs text-rtr-muted max-w-[160px] truncate">{row.injectTitle}</td>
+                    <td className="px-4 py-3">
+                      <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${ROLE_COLOUR[row.role] ?? "bg-rtr-elevated text-rtr-muted"}`}>
+                        {ROLE_SHORT[row.role] ?? row.role}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center font-mono">{row.optionKey}</span>
+                        <span className="text-xs text-rtr-text truncate max-w-[200px]">{row.optionLabel}</span>
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {row.rank !== undefined ? (
+                        <span className={`inline-flex items-center justify-center text-xs font-bold font-mono px-2 py-0.5 rounded border ${rankColour} ${rankBg}`}>
+                          #{row.rank}/{row.maxRank}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-rtr-dim">—</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="bg-rtr-panel border border-rtr-border rounded-xl p-6 text-center">
+          <p className="text-xs text-rtr-dim">No ranked decisions recorded. Decision quality analysis requires ranked options in the scenario design.</p>
+        </div>
+      )}
 
       {/* Per-inject breakdown */}
       <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden">
@@ -787,21 +809,16 @@ function DashboardTab({ session, pastSessions }: { session: Session; pastSession
           <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Inject Breakdown</p>
         </div>
         <div className="divide-y divide-rtr-border">
-          {session.liveInjects.map((li, i) => {
-            const s = series[i + 1];
-            const delta = s.score - series[i].score;
-            return (
-              <div key={li.injectId} className="flex items-center gap-4 px-4 py-3">
-                <span className="w-6 h-6 rounded-full bg-rtr-red/15 text-rtr-red text-xs font-bold flex items-center justify-center font-mono shrink-0">{i + 1}</span>
-                <span className="flex-1 text-xs text-rtr-text truncate">{li.injectTitle}</span>
-                <span className="text-xs text-rtr-muted">{li.responses.length} resp · {li.decisions.length} dec</span>
-                <span className={cn("text-xs font-mono font-semibold w-12 text-right", delta >= 0 ? "text-rtr-green" : "text-red-400")}>
-                  {delta >= 0 ? "+" : ""}{delta}
-                </span>
-                <span className="text-xs font-mono text-rtr-text w-8 text-right">{s.score}</span>
-              </div>
-            );
-          })}
+          {session.liveInjects.map((li, i) => (
+            <div key={li.injectId} className="flex items-center gap-4 px-4 py-3">
+              <span className="w-6 h-6 rounded-full bg-rtr-red/15 text-rtr-red text-xs font-bold flex items-center justify-center font-mono shrink-0">{i + 1}</span>
+              <span className="flex-1 text-xs text-rtr-text truncate">{li.injectTitle}</span>
+              <span className="text-xs text-rtr-muted">{li.responses.length} resp · {li.decisions.length} dec</span>
+              {li.skipped && (
+                <span className="text-xs text-rtr-dim border border-rtr-border px-1.5 py-0.5 rounded font-mono">skipped</span>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 

@@ -19,6 +19,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
     "Listed company disclosure obligations",
     "72-hour regulator notification",
   ],
+  pairedScenarioId: "tpl-ransomware-silver",
   roles: ["CEO", "CFO", "CLO", "CCO", "COO"],
   briefing:
     "You are the executive leadership team of Veridian Power plc - a FTSE 250 UK energy retailer that supplies power to over 740,000 homes. Your trading desk runs £2.1B of day-ahead wholesale positions. Your front-office holds the Priority Services Register: 84,000 vulnerable customers who depend on uninterrupted power for medical equipment, dialysis, and oxygen.\n\nYour CISO called you at 05:30. The incident is confirmed: ALPHV have been inside your systems for six days. Bulk encryption fired overnight. A read-replica of the PSR has almost certainly been exfiltrated.\n\nThe technical team is working the problem. Your job is everything else: who you call, what you tell them, how you move in the markets, what authority you give the negotiators, and whether the decisions you make in the next 48 hours hold up in front of Ofgem, the ICO, and the Treasury Select Committee.\n\nThe markets open in three hours and twenty-two minutes.",
@@ -487,6 +488,13 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
           },
         ],
       },
+      worldEvents: [
+        { type: "slack_message", delaySeconds: 8, author: "Jess Alderton · Legal PA", content: "Tom, do NOT open that file. IT confirmed it's a ransom note. Sit tight." },
+        { type: "slack_message", delaySeconds: 18, author: "Anonymous", content: "Someone just posted a screenshot of the ransom note on Twitter. It's circulating." },
+        { type: "ticker_headline", delaySeconds: 22, content: "Veridian Power staff report ransom note appearing on company desktops" },
+        { type: "slack_message", delaySeconds: 35, author: "Marcus Webb · Customer Services", content: "Call volumes up 400%. Customers are asking if their direct debits are safe. Scripts please — NOW." },
+        { type: "slack_message", delaySeconds: 55, author: "Ben Cole · IT Helpdesk", content: "We've had 600 tickets in the last 40 minutes. Please stop reopening your laptops." },
+      ],
       isDecisionPoint: false,
       decisionOptions: [],
       targetRoles: ["CCO", "COO", "CEO"],
@@ -599,6 +607,15 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         stockChangePercent: -12.7,
         stockVolume: "14.8M",
       },
+      worldEvents: [
+        { type: "stock_tick", delaySeconds: 15, stockDelta: -18 },
+        { type: "ticker_headline", delaySeconds: 20, content: "VRD.L accelerating south — volume surge continues on no company statement" },
+        { type: "stock_tick", delaySeconds: 35, stockDelta: -11 },
+        { type: "stock_tick", delaySeconds: 60, stockDelta: -9 },
+        { type: "ticker_headline", delaySeconds: 65, content: "Traders report stop-loss cascade in VRD.L as sell pressure intensifies" },
+        { type: "stock_tick", delaySeconds: 90, stockDelta: -14 },
+        { type: "stock_tick", delaySeconds: 120, stockDelta: 6 },
+      ],
       isDecisionPoint: true,
       targetRoles: ["CFO", "CLO", "CEO"],
       expectedKeywords: [

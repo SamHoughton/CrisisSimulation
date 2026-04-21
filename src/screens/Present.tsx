@@ -14,11 +14,12 @@
  * - News ticker, crisis escalation bar, countdown timer, fullscreen toggle
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ShieldAlert, GitBranch, CheckCircle2, Wifi, Maximize2, Minimize2 } from "lucide-react";
 import { cn, ROLE_SHORT, ROLE_COLOUR, SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL } from "@/lib/utils";
 import type { ArcRecap, DecisionEntry, Inject, InjectArtifact, Scenario } from "@/types";
 import { ScenarioDayStrip } from "@/components/ScenarioDayStrip";
+import { useWorldSimulation } from "@/hooks/useWorldSimulation";
 
 // ─── Background ticker headlines (always scrolling) ───────────────────────────
 const BG_HEADLINES = [
@@ -319,6 +320,7 @@ export function Present() {
             timerRunning={timerRunning}
             timerUrgent={timerUrgent}
             timerLabel={timerLabel}
+            onNewHeadline={(h) => setHeadlines((prev) => [h, ...prev])}
           />
         )}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
@@ -438,7 +440,7 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
         style={{ background: "rgba(232,34,34,0.1)", border: "1px solid rgba(232,34,34,0.25)" }}>
         <ShieldAlert className="w-10 h-10" style={{ color: "#E82222" }} />
       </div>
-      <h1 className="text-4xl font-bold mb-3">{scenario?.title ?? "REDLINE"}</h1>
+      <h1 className="text-5xl font-bold mb-3" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.03em" }}>{scenario?.title ?? "REDLINE"}</h1>
       {scenario && (
         <div className="flex items-center gap-3 mb-6">
           <span className="text-sm" style={{ color: "#8b8fa8" }}>{SCENARIO_TYPE_LABELS[scenario.type]}</span>
@@ -469,7 +471,8 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
           <p className="text-xs font-semibold uppercase tracking-widest mb-3 font-mono" style={{ color: "#4afe91" }}>
             Scenario Briefing
           </p>
-          <h1 className={cn("font-bold mb-6 leading-tight", hasArtifact ? "text-4xl" : "text-5xl")}>
+          <h1 className={cn("font-bold mb-6 leading-tight", hasArtifact ? "text-4xl" : "text-5xl")}
+            style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.03em" }}>
             {scenario.title}
           </h1>
           <div className="rounded-2xl p-7 mb-6 w-full" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
@@ -812,15 +815,46 @@ const dashboardIncludes = (type: string): type is DashboardArtifactType =>
 
 // ─── Inject screen ────────────────────────────────────────────────────────────
 
-function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, timerUrgent, timerLabel }: {
+function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, timerUrgent, timerLabel, onNewHeadline }: {
   inject: Inject; num: number;
   voteState: VoteState;
   timerSeconds: number | null; timerRunning: boolean; timerUrgent: boolean; timerLabel: string | null;
+  onNewHeadline?: (h: string) => void;
 }) {
   const showVoting = inject.isDecisionPoint && inject.decisionOptions.length > 0;
 
   // Whether to show the large timer: running, or paused with time remaining
   const showTimer = timerLabel !== null && (timerRunning || (timerSeconds !== null && timerSeconds > 0));
+
+  // ─── Live world simulation state ─────────────────────────────────────────
+  const [liveStockDelta, setLiveStockDelta] = useState(0);
+  const [liveSlackMessages, setLiveSlackMessages] = useState<Array<{ author: string; time: string; text: string }>>([]);
+
+  // Reset live state when inject changes
+  useEffect(() => {
+    setLiveStockDelta(0);
+    setLiveSlackMessages([]);
+  }, [inject.id]);
+
+  const handleStockTick = useCallback((delta: number) => {
+    setLiveStockDelta((prev) => prev + delta);
+  }, []);
+
+  const handleSlackMessage = useCallback((content: string, author?: string) => {
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    setLiveSlackMessages((prev) => [...prev, { author: author ?? "System", time: timeStr, text: content }]);
+  }, []);
+
+  const handleTickerHeadline = useCallback((content: string) => {
+    onNewHeadline?.(content);
+  }, [onNewHeadline]);
+
+  useWorldSimulation(inject.id, inject.worldEvents, {
+    onStockTick: handleStockTick,
+    onSlackMessage: handleSlackMessage,
+    onTickerHeadline: handleTickerHeadline,
+  });
 
   return (
     <div className="h-full flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-auto">
@@ -832,9 +866,23 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "#E82222" }} />
               <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: "#E82222" }} />
             </span>
-            <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#E82222" }}>
-              New Development
-            </span>
+            {inject.scenarioTime ? (
+              <span className="font-mono" style={{ color: "#E82222" }}>
+                <span className="text-lg font-black tracking-tight">{inject.scenarioTime}</span>
+                {inject.scenarioDay !== undefined && (
+                  <span className="text-sm font-normal ml-1.5 opacity-70">Day {inject.scenarioDay}</span>
+                )}
+              </span>
+            ) : (
+              <span className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#E82222" }}>
+                Inject {num}
+              </span>
+            )}
+            {inject.storyTrack && (
+              <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ color: "#fbbf24", background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)" }}>
+                {inject.storyTrack}
+              </span>
+            )}
           </div>
         </div>
 
@@ -874,7 +922,7 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
       <div className={cn("flex gap-8 flex-1 min-h-0", showVoting ? "items-start" : "flex-col")}>
         {/* Left / main: artifact */}
         <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
-          <h2 className="text-3xl font-bold shrink-0" style={{ color: "#e8eaf0" }}>{inject.title}</h2>
+          <h2 className="text-4xl font-bold shrink-0 leading-tight" style={{ color: "#e8eaf0", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.02em" }}>{inject.title}</h2>
           {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
           {/* inject.body is scene-setting narration — show above the artifact for all types
               except: ransomware_note (body IS the note text), internal_memo (body IS the memo
@@ -886,7 +934,7 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
             !(inject.artifact.type === "email" && !inject.artifact.emailBody) && (
             <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
           )}
-          <ArtifactDisplay inject={inject} />
+          <ArtifactDisplay inject={inject} liveStockDelta={liveStockDelta} liveSlackMessages={liveSlackMessages} />
           {inject.targetRoles.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-mono" style={{ color: "#4a4f65" }}>Directed at:</span>
@@ -976,7 +1024,15 @@ function ArcRecapCard({ data }: { data: ArcRecap }) {
 
 // ─── Artifact display ─────────────────────────────────────────────────────────
 
-function ArtifactDisplay({ inject }: { inject: Inject }) {
+function ArtifactDisplay({
+  inject,
+  liveStockDelta = 0,
+  liveSlackMessages = [],
+}: {
+  inject: Inject;
+  liveStockDelta?: number;
+  liveSlackMessages?: Array<{ author: string; time: string; text: string }>;
+}) {
   const art = inject.artifact;
 
   if (!art || art.type === "default") {
@@ -997,8 +1053,8 @@ function ArtifactDisplay({ inject }: { inject: Inject }) {
   if (art.type === "legal_letter")    return <LegalLetter        inject={inject} artifact={art} />;
   if (art.type === "news_headline")   return <NewsHeadline       inject={inject} />;
   if (art.type === "dark_web_listing") return <DarkWebListing   inject={inject} artifact={art} />;
-  if (art.type === "stock_chart")     return <StockChart         inject={inject} artifact={art} />;
-  if (art.type === "slack_thread")    return <SlackThread        inject={inject} artifact={art} />;
+  if (art.type === "stock_chart")     return <StockChart         inject={inject} artifact={art} liveStockDelta={liveStockDelta} />;
+  if (art.type === "slack_thread")    return <SlackThread        inject={inject} artifact={art} liveMessages={liveSlackMessages} />;
   if (art.type === "tv_broadcast")    return <TvBroadcast        inject={inject} artifact={art} />;
   if (art.type === "voicemail")       return <Voicemail          inject={inject} artifact={art} />;
   if (art.type === "internal_memo")   return <InternalMemo       inject={inject} artifact={art} />;
@@ -1433,14 +1489,15 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
 
 // ─── Stock chart (animated share price) ──────────────────────────────────────
 
-function StockChart({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+function StockChart({ inject, artifact: art, liveStockDelta = 0 }: { inject: Inject; artifact: InjectArtifact; liveStockDelta?: number }) {
   const ticker    = art.stockTicker        ?? "APEX.L";
   const company   = art.stockCompanyName   ?? "Apex Dynamics plc";
   const open      = art.stockOpenPrice     ?? 482.4;
-  const current   = art.stockCurrentPrice  ?? 447.7;
-  const changePct = art.stockChangePercent ?? -7.2;
+  const baseCurrent = art.stockCurrentPrice  ?? 447.7;
+  const current   = baseCurrent + liveStockDelta;
+  const changePct = open > 0 ? ((current - open) / open) * 100 : (art.stockChangePercent ?? -7.2);
   const volume    = art.stockVolume        ?? "14.2M";
-  const isDown    = changePct < 0;
+  const isDown    = current < open;
 
   // Generate a jagged downward-trending SVG path to animate the price line.
   // 24 points across a 600-wide viewBox. Start high, drift down with noise.
@@ -1476,9 +1533,17 @@ function StockChart({ inject, artifact: art }: { inject: Inject; artifact: Injec
           <p className="text-xs mt-0.5" style={{ color: "#6b7280" }}>{company}</p>
         </div>
         <div className="text-right">
-          <p className="text-4xl font-bold tabular-nums" style={{ color: lineColour }}>{current.toFixed(2)}<span className="text-base ml-1" style={{ color: "#6b7280" }}>GBX</span></p>
+          <div className="flex items-center gap-2 justify-end">
+            {liveStockDelta !== 0 && (
+              <span className="text-xs font-mono px-1.5 py-0.5 rounded animate-pulse"
+                style={{ background: liveStockDelta > 0 ? "rgba(74,254,145,0.15)" : "rgba(239,68,68,0.15)", color: liveStockDelta > 0 ? "#4afe91" : "#ef4444" }}>
+                LIVE
+              </span>
+            )}
+            <p className="text-4xl font-bold tabular-nums" style={{ color: lineColour }}>{current.toFixed(2)}<span className="text-base ml-1" style={{ color: "#6b7280" }}>GBX</span></p>
+          </div>
           <p className="text-sm font-bold tabular-nums mt-0.5" style={{ color: lineColour }}>
-            {isDown ? "▼" : "▲"} {(current - open).toFixed(2)} ({changePct.toFixed(2)}%)
+            {isDown ? "▼" : "▲"} {Math.abs(current - open).toFixed(2)} ({Math.abs(changePct).toFixed(2)}%)
           </p>
         </div>
       </div>
@@ -1525,10 +1590,23 @@ function StockChart({ inject, artifact: art }: { inject: Inject; artifact: Injec
 
 // ─── Slack thread (internal staff panic) ─────────────────────────────────────
 
-function SlackThread({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+function SlackThread({
+  inject, artifact: art, liveMessages = [],
+}: { inject: Inject; artifact: InjectArtifact; liveMessages?: Array<{ author: string; time: string; text: string }> }) {
   const channel  = art.slackChannel ?? "#all-hands";
-  const messages = art.slackMessages ?? [];
+  const baseMessages = art.slackMessages ?? [];
+  // Merge base messages with live-appended messages
+  const messages = [
+    ...baseMessages,
+    ...liveMessages.map((m) => ({ author: m.author, time: m.time, text: m.text })),
+  ];
   const colours  = ["#e11d48", "#f59e0b", "#8b5cf6", "#06b6d4", "#10b981", "#ec4899"];
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length]);
 
   return (
     <div className="w-full max-w-3xl rounded-xl overflow-hidden"
@@ -1550,17 +1628,19 @@ function SlackThread({ inject, artifact: art }: { inject: Inject; artifact: Inje
         {messages.length === 0 ? (
           <p className="text-sm italic" style={{ color: "#6b7280" }}>No messages yet.</p>
         ) : messages.map((m, i) => {
+          const isLive = i >= (art.slackMessages?.length ?? 0);
           const colour = colours[i % colours.length];
           const initials = m.author.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
           return (
-            <div key={i} className="flex gap-3">
+            <div key={i} className={cn("flex gap-3", isLive && "inject-arrive")}>
               <div className="w-9 h-9 rounded flex items-center justify-center text-xs font-bold shrink-0" style={{ background: colour, color: "#fff" }}>
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 mb-0.5">
                   <span className="text-sm font-bold" style={{ color: "#e8eaf0" }}>{m.author}</span>
-                  {m.role && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "#2a2d33", color: "#9aa0a6" }}>{m.role}</span>}
+                  {"role" in m && (m as any).role && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "#2a2d33", color: "#9aa0a6" }}>{String((m as any).role)}</span>}
+                  {isLive && <span className="text-[10px] font-mono px-1 py-0.5 rounded" style={{ background: "rgba(74,254,145,0.1)", color: "#4afe91" }}>LIVE</span>}
                   <span className="text-xs" style={{ color: "#6b7280" }}>{m.time}</span>
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: "#d1d5db" }}>{m.text}</p>
@@ -1568,6 +1648,7 @@ function SlackThread({ inject, artifact: art }: { inject: Inject; artifact: Inje
             </div>
           );
         })}
+        <div ref={bottomRef} />
       </div>
 
       {/* Typing indicator */}
@@ -2122,13 +2203,21 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
         );
       })}
 
-      {revealed && winner && (
-        <div className="rounded-xl p-3 text-center" style={{ background: "rgba(74,254,145,0.08)", border: "1px solid rgba(74,254,145,0.25)" }}>
-          <p className="text-xs font-bold uppercase tracking-widest font-mono" style={{ color: "#4afe91" }}>
-            Majority: Option {winner}
-          </p>
-        </div>
-      )}
+      {revealed && winner && (() => {
+        const winnerOption = inject.decisionOptions.find((o) => o.key === winner);
+        return (
+          <div className="rounded-xl p-4" style={{ background: "rgba(74,254,145,0.08)", border: "1px solid rgba(74,254,145,0.25)" }}>
+            <p className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: "#4afe91" }}>
+              Majority: Option {winner}
+            </p>
+            {winnerOption?.consequence && (
+              <p className="text-xs leading-relaxed mt-1.5" style={{ color: "rgba(197,200,216,0.8)" }}>
+                {winnerOption.consequence}
+              </p>
+            )}
+          </div>
+        );
+      })()}
       {!revealed && votes.length === 0 && (
         <p className="text-xs font-mono text-center mt-2" style={{ color: "#4a4f65" }}>Waiting for votes…</p>
       )}

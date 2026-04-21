@@ -20,6 +20,7 @@ export const RANSOMWARE_TECHNICAL_SCENARIO: Scenario = {
     "Cyber Essentials Plus",
     "UK financial sanctions obligations",
   ],
+  pairedScenarioId: "tpl-ransomware-gold-001",
   roles: ["CISO", "COO", "CLO", "CFO"],
   briefing:
     "You are the technical and operational leadership of Veridian Power plc: a FTSE 250 UK energy retailer with 3.2 million domestic supply contracts and one of the companies the government classifies as providing an essential service to the country. Your infrastructure runs the day-ahead wholesale trading desk and the Priority Services Register - 84,000 vulnerable customers who depend on power for oxygen concentrators, dialysis, and insulin refrigeration.\n\nIt is 03:14 on a Monday. You are the team in the room. The executives will be briefed by you. The decisions in the next five days - technical, legal, and operational - will determine what they have to defend. Start well.\n\nNote: your exercise ends with a handover brief to the executive leadership team. How you performed shapes what they face.",
@@ -48,6 +49,13 @@ export const RANSOMWARE_TECHNICAL_SCENARIO: Scenario = {
         siemEventType:
           "Periodic Outbound DNS - Low-Reputation Domain - Single Host - 180s Interval",
       },
+      worldEvents: [
+        { type: "ticker_headline", delaySeconds: 10, content: "Periodic beaconing patterns are a primary indicator of command-and-control staging — NCSC advisory" },
+        { type: "slack_message", delaySeconds: 20, author: "SOC Analyst L2 · Priya Chen", content: "TREASURY-LDN-019 just made its 7th beacon in exactly 21 minutes. This is scripted. Not a browser." },
+        { type: "slack_message", delaySeconds: 40, author: "SOC Analyst L1 · Ryan Hughes", content: "Running passive DNS enrichment. The domain resolves to AS204711 — same ASN as three known ALPHV infra domains." },
+        { type: "ticker_headline", delaySeconds: 55, content: "ALPHV ransomware group using DNS beaconing for C2 — Mandiant threat intel brief" },
+        { type: "slack_message", delaySeconds: 75, author: "SOC Lead · Priya Chen", content: "I'm logging this as P2 pending senior decision. Reaching 8th beacon in 32 seconds. Call it." },
+      ],
       isDecisionPoint: true,
       targetRoles: ["CISO", "COO"],
       expectedKeywords: [

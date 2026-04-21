@@ -821,8 +821,8 @@ export function Runner() {
                     ) : isNext || (!released && !isLive && orderedInjects[0]?.id === inj.id && session.liveInjects.length === 0) ? (
                       <div className="flex items-center gap-1.5">
                         <button onClick={() => handleRelease(inj.id)}
-                          className="flex items-center gap-1 text-rtr-red font-semibold hover:underline">
-                          <Send className="w-3 h-3" />Release
+                          className="flex items-center gap-1 bg-rtr-red text-white text-[10px] font-bold px-2.5 py-1 rounded hover:bg-[#c0001f] transition-colors shadow-sm shadow-rtr-red/20">
+                          <Send className="w-2.5 h-2.5" />Release
                         </button>
                         {inj.tierSkipSummary && (
                           <button
@@ -1209,7 +1209,11 @@ function VotingPanel({
                     "text-[10px] font-bold font-mono px-1.5 py-0.5 rounded shrink-0",
                     opt.rank === 1
                       ? "bg-rtr-green/20 text-rtr-green border border-rtr-green/40"
-                      : "bg-white/5 text-rtr-dim border border-white/10"
+                      : opt.rank === 2
+                      ? "bg-amber-500/20 text-amber-400 border border-amber-500/40"
+                      : opt.rank === 3
+                      ? "bg-orange-500/15 text-orange-400 border border-orange-500/30"
+                      : "bg-red-500/15 text-red-400 border border-red-500/30"
                   )}>
                     #{opt.rank}
                   </span>
@@ -1232,8 +1236,8 @@ function VotingPanel({
                 </div>
               )}
               {isWinner && <div className="mt-1 text-xs font-semibold text-amber-400 font-mono">▲ MAJORITY</div>}
-              {isBest && !isWinner && (
-                <div className="mt-1 text-xs font-semibold text-rtr-green font-mono">★ DESIGNER'S PICK</div>
+              {isBest && (
+                <div className="mt-1 text-xs font-semibold text-rtr-green font-mono">★ BEST OPTION</div>
               )}
             </div>
           );

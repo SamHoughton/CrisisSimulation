@@ -83,6 +83,24 @@ export interface InjectBranch {
   trackLabel?: string;
 }
 
+/**
+ * A world simulation event attached to an inject. When the inject is released,
+ * the Present screen fires these events after `delaySeconds`, animating live
+ * artifacts (stock ticker, Slack feed, negotiation chat, social posts).
+ */
+export interface WorldEvent {
+  /** Which live artifact this event targets. */
+  type: "stock_tick" | "social_post" | "slack_message" | "chat_pressure" | "ticker_headline";
+  /** Seconds after inject release to fire this event. */
+  delaySeconds: number;
+  /** Text content — new Slack message, tweet body, ticker headline, chat line. */
+  content?: string;
+  /** Stock price delta in pence/cents (positive = up, negative = down). */
+  stockDelta?: number;
+  /** Author / handle for social_post and slack_message events. */
+  author?: string;
+}
+
 // ─── Inject artifact ─────────────────────────────────────────────────────────
 
 export type ArtifactType =
@@ -255,6 +273,12 @@ export interface Inject {
    */
   recapLine?: string;
   /**
+   * Live world simulation events that fire after this inject is released.
+   * Drives animated artifacts on the Present screen (stock ticks, Slack
+   * messages, tweet appearances, negotiation chat pressure).
+   */
+  worldEvents?: WorldEvent[];
+  /**
    * Mark this inject as a scenario ending. When true, the store attaches
    * a structured arcRecap to the rendered inject broadcast to Present so the
    * arc card can be displayed visually. QR phones receive a plain-text
@@ -319,6 +343,12 @@ export interface Scenario {
    * Omit for fictional scenarios.
    */
   realOutcome?: string;
+  /**
+   * ID of a companion scenario that covers the same incident from a different
+   * audience perspective (e.g. executive ↔ technical). Shown as a pairing
+   * indicator in the library so facilitators know a complementary version exists.
+   */
+  pairedScenarioId?: string;
 }
 
 // ─── Session ─────────────────────────────────────────────────────────────────

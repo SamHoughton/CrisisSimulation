@@ -9,11 +9,18 @@
 
 import { useState } from "react";
 import { useStore, getAllScenarios } from "@/store";
-import { Plus, Pencil, PlayCircle, Trash2, Copy, Clock, Users, Search, X } from "lucide-react";
+import { Plus, Pencil, PlayCircle, Trash2, Copy, Clock, Users, Search, X, GitBranch, Link2 } from "lucide-react";
 import {
   SCENARIO_TYPE_LABELS, DIFFICULTY_COLOUR, DIFFICULTY_LABEL, formatDuration, makeId,
 } from "@/lib/utils";
 import type { Scenario } from "@/types";
+
+/** Count injects that have multiple distinct branch targets (true story forks). */
+function countTrueBranches(s: Scenario): number {
+  return s.injects.filter(
+    (inj) => inj.branches && new Set(inj.branches.map((b) => b.nextInjectId)).size > 1
+  ).length;
+}
 
 // Exclude "CUSTOM" - it's a meta-type for user scenarios, not a meaningful crisis category filter
 const ALL_TYPES = (Object.entries(SCENARIO_TYPE_LABELS) as [string, string][]).filter(
@@ -129,13 +136,13 @@ export function Library() {
 
       {filteredMine.length > 0 && (
         <Section title={`My Scenarios (${filteredMine.length})`}>
-          <Grid scenarios={filteredMine} onEdit={edit} onDuplicate={duplicate} onRun={runSetup} onDelete={deleteScenario} owned />
+          <Grid scenarios={filteredMine} onEdit={edit} onDuplicate={duplicate} onRun={runSetup} onDelete={deleteScenario} owned allScenarios={allScenarios} />
         </Section>
       )}
 
       {filteredTemplates.length > 0 && (
         <Section title={`Templates (${filteredTemplates.length})`}>
-          <Grid scenarios={filteredTemplates} onDuplicate={duplicate} onRun={runSetup} />
+          <Grid scenarios={filteredTemplates} onDuplicate={duplicate} onRun={runSetup} allScenarios={allScenarios} />
         </Section>
       )}
     </div>
@@ -166,17 +173,21 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
+function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScenarios }: {
   scenarios: Scenario[];
   onEdit?: (id: string) => void;
   onDuplicate?: (s: Scenario) => void;
   onRun?: (id: string) => void;
   onDelete?: (id: string) => void;
   owned?: boolean;
+  allScenarios?: Scenario[];
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 stagger">
-      {scenarios.map((s) => (
+      {scenarios.map((s) => {
+        const forks = countTrueBranches(s);
+        const paired = allScenarios?.find((other) => other.id === s.pairedScenarioId);
+        return (
         <div key={s.id} className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden card-lift group fade-in-up">
           {/* Cover */}
           {(s.imageUrl || s.coverGradient) && (
@@ -189,7 +200,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
             </div>
           )}
           <div className="p-5">
-            <div className="flex items-start gap-2 mb-2">
+            <div className="flex items-start gap-2 mb-2 flex-wrap">
               <span className={`text-xs font-semibold px-2 py-0.5 rounded ${DIFFICULTY_COLOUR[s.difficulty]}`}>
                 {DIFFICULTY_LABEL[s.difficulty]}
               </span>
@@ -199,6 +210,14 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
               {s.isTemplate && (
                 <span className="text-xs text-rtr-green bg-rtr-green/10 px-2 py-0.5 rounded">Template</span>
               )}
+              {paired && (
+                <span
+                  title={`Paired with: ${paired.title}`}
+                  className="flex items-center gap-1 text-xs text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded"
+                >
+                  <Link2 className="w-3 h-3" />Paired
+                </span>
+              )}
             </div>
             <h3 className="font-semibold text-rtr-text text-sm mb-1">{s.title}</h3>
             {s.audienceLabel && (
@@ -207,7 +226,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
             {s.description && (
               <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{s.description}</p>
             )}
-            <div className="flex items-center gap-3 text-xs text-rtr-dim mb-4">
+            <div className="flex items-center gap-3 text-xs text-rtr-dim mb-4 flex-wrap">
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />{formatDuration(s.durationMin)}
               </span>
@@ -215,6 +234,11 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
                 <Users className="w-3.5 h-3.5" />{s.roles.length} roles
               </span>
               <span>{s.injects.length} injects</span>
+              {forks > 0 && (
+                <span className="flex items-center gap-1 text-amber-400/80">
+                  <GitBranch className="w-3 h-3" />{forks} fork{forks !== 1 ? "s" : ""}
+                </span>
+              )}
             </div>
             {s.regulatoryFrameworks && s.regulatoryFrameworks.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-3">
@@ -261,7 +285,8 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned }: {
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
