@@ -520,11 +520,12 @@ export function getNextInject(session: Session | null) {
   const currentInject = session.scenario.injects.find((i) => i.id === currentLive.injectId);
   if (!currentInject) return null;
 
-  // Score-routed branch resolution: compound rank average selects the ending
+  // Score-routed branch resolution: compound rank average selects the ending.
+  // Note: score-routed injects are typically NOT decision points themselves —
+  // they use historical ranked decisions from the whole session, not local votes.
   if (
     currentInject.branchMode === "score" &&
-    currentInject.branches?.length &&
-    currentLive.decisions.length > 0
+    currentInject.branches?.length
   ) {
     const avgRank = getSessionAverageRank(session);
     if (avgRank !== null) {
