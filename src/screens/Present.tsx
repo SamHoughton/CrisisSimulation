@@ -857,7 +857,7 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
   });
 
   return (
-    <div className="h-full flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-auto">
+    <div className="flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-y-auto" style={{ minHeight: "100%" }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6 shrink-0">
         <div className="flex items-center gap-4">
@@ -919,18 +919,19 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
       </div>
 
       {/* Body layout */}
-      <div className={cn("flex gap-8 flex-1 min-h-0", showVoting ? "items-start" : "flex-col")}>
+      <div className={cn("flex gap-8", showVoting ? "items-start" : "flex-col")}>
         {/* Left / main: artifact */}
-        <div className={cn("flex flex-col gap-5 min-h-0", showVoting ? "flex-1" : "w-full")}>
+        <div className={cn("flex flex-col gap-5", showVoting ? "flex-1 min-w-0" : "w-full")}>
           <h2 className="text-4xl font-bold shrink-0 leading-tight" style={{ color: "#e8eaf0", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.02em" }}>{inject.title}</h2>
           {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
           {/* inject.body is scene-setting narration — show above the artifact for all types
               except: ransomware_note (body IS the note text), internal_memo (body IS the memo
-              content in existing scenarios), and email without an explicit emailBody (body
-              is the email text rendered inside the card). */}
+              content in existing scenarios), news_headline (body is rendered inside the card),
+              and email without an explicit emailBody (body is the email text rendered inside the card). */}
           {inject.artifact &&
             inject.artifact.type !== "ransomware_note" &&
             inject.artifact.type !== "internal_memo" &&
+            inject.artifact.type !== "news_headline" &&
             !(inject.artifact.type === "email" && !inject.artifact.emailBody) && (
             <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
           )}
@@ -1352,6 +1353,7 @@ function LegalLetter({ inject, artifact: art }: { inject: Inject; artifact: Inje
 // ── News headline ──────────────────────────────────────────────────────────────
 
 function NewsHeadline({ inject }: { inject: Inject }) {
+  const paragraphs = inject.body.split(/\n\n+/).filter(Boolean);
   return (
     <div className="rounded-xl overflow-hidden">
       {/* Breaking news banner */}
@@ -1363,8 +1365,12 @@ function NewsHeadline({ inject }: { inject: Inject }) {
       </div>
       <div className="p-7" style={{ background: "#15171a", border: "1px solid rgba(232,34,34,0.3)" }}>
         <h3 className="text-2xl font-bold leading-tight mb-4" style={{ color: "#e8eaf0" }}>{inject.title}</h3>
-        <p className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{inject.body}</p>
-        <div className="flex items-center gap-3 mt-5 text-xs" style={{ color: "#4a4f65" }}>
+        <div className="space-y-3 mb-5">
+          {paragraphs.map((p, i) => (
+            <p key={i} className="text-lg leading-relaxed" style={{ color: "#c5c8d8" }}>{p}</p>
+          ))}
+        </div>
+        <div className="flex items-center gap-3 text-xs" style={{ color: "#4a4f65" }}>
           <span>CrisisNews Desk</span>
           <span>·</span>
           <span>{new Date().toLocaleTimeString()}</span>
@@ -1828,10 +1834,12 @@ function InternalMemo({ inject, artifact: art }: { inject: Inject; artifact: Inj
       </div>
 
       {/* Body */}
-      <div className="px-8 py-6">
-        <p className="text-lg leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#222" }}>
-          {inject.body}
-        </p>
+      <div className="px-8 py-6 space-y-4">
+        {inject.body.split(/\n\n+/).filter(Boolean).map((para, i) => (
+          <p key={i} className="text-base leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#222" }}>
+            {para}
+          </p>
+        ))}
       </div>
 
       {/* Footer */}
