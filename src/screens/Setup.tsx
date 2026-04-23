@@ -319,7 +319,7 @@ function MetaStat({
 
 function difficultyColor(difficulty: string): string {
   const map: Record<string, string> = {
-    low:      "#4afe91",
+    low:      "#1db86a",
     medium:   "#f59e0b",
     high:     "#f97316",
     critical: "#E82222",

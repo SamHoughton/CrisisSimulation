@@ -51,26 +51,32 @@ export function Home() {
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <div className="relative overflow-hidden border-b border-rtr-border">
-        {/* Background ECG motif */}
-        <svg className="absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none" width="600" height="120" viewBox="0 0 600 120" fill="none">
-          <line x1="0" y1="80" x2="180" y2="80" stroke="#E82222" strokeWidth="3" strokeLinecap="round" />
-          <polyline points="180,80 270,20 360,80" stroke="#E82222" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          <line x1="360" y1="80" x2="600" y2="80" stroke="#E82222" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="270" cy="20" r="8" fill="#E82222" />
+        {/* Background vessel watermark */}
+        <svg className="absolute right-8 top-1/2 -translate-y-1/2 opacity-[0.045] pointer-events-none" width="160" height="170" viewBox="0 0 64 68" fill="none">
+          <path d="M 14 12 L 21 54 Q 21 58 25 58 L 39 58 Q 43 58 43 54 L 50 12 Z" stroke="#1db86a" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
+          <line x1="9"  y1="13" x2="55" y2="13" stroke="#1db86a" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="5"  y1="8"  x2="13" y2="16" stroke="#1db86a" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="59" y1="8"  x2="51" y2="16" stroke="#1db86a" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="27" y1="47" x2="27" y2="55" stroke="#1db86a" strokeWidth="2" strokeLinecap="round" opacity="0.45"/>
+          <line x1="32" y1="49" x2="32" y2="57" stroke="#1db86a" strokeWidth="2" strokeLinecap="round" opacity="0.7"/>
+          <line x1="37" y1="47" x2="37" y2="55" stroke="#1db86a" strokeWidth="2" strokeLinecap="round" opacity="0.45"/>
         </svg>
         {/* Top accent line */}
-        <div className="h-[2px] bg-gradient-to-r from-rtr-red via-rtr-red/60 to-transparent" />
+        <div className="h-[2px] bg-gradient-to-r from-rtr-green via-rtr-green/60 to-transparent" />
 
         <div className="px-8 py-10 max-w-5xl mx-auto relative">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(232,34,34,0.1)", border: "1px solid rgba(232,34,34,0.2)" }}>
-                  <svg viewBox="0 0 32 32" className="w-5 h-5">
-                    <line x1="3" y1="23" x2="10" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
-                    <polyline points="10,23 15,8 20,23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                    <line x1="20" y1="23" x2="29" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
-                    <circle cx="15" cy="8" r="2.5" fill="#E82222" />
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "rgba(29,184,106,0.1)", border: "1px solid rgba(29,184,106,0.2)" }}>
+                  <svg viewBox="0 0 64 68" className="w-5 h-5" fill="none">
+                    <path d="M 14 12 L 21 54 Q 21 58 25 58 L 39 58 Q 43 58 43 54 L 50 12 Z" stroke="#1db86a" strokeWidth="5" strokeLinejoin="round" strokeLinecap="round"/>
+                    <line x1="9"  y1="13" x2="55" y2="13" stroke="#1db86a" strokeWidth="5" strokeLinecap="round"/>
+                    <line x1="5"  y1="8"  x2="13" y2="16" stroke="#1db86a" strokeWidth="5" strokeLinecap="round"/>
+                    <line x1="59" y1="8"  x2="51" y2="16" stroke="#1db86a" strokeWidth="5" strokeLinecap="round"/>
+                    <line x1="27" y1="47" x2="27" y2="55" stroke="#1db86a" strokeWidth="3" strokeLinecap="round" opacity="0.45"/>
+                    <line x1="32" y1="49" x2="32" y2="57" stroke="#1db86a" strokeWidth="3" strokeLinecap="round" opacity="0.7"/>
+                    <line x1="37" y1="47" x2="37" y2="55" stroke="#1db86a" strokeWidth="3" strokeLinecap="round" opacity="0.45"/>
                   </svg>
                 </div>
                 <span className="text-[10px] text-rtr-dim tracking-[0.35em] uppercase font-medium">Crisis Simulation Platform</span>
@@ -89,7 +95,7 @@ export function Home() {
                     if (tpl) { useStore.getState().setEditingScenario(tpl.id); setView("setup"); }
                     else setView("library");
                   }}
-                  className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2.5 rounded-lg text-xs font-semibold hover:brightness-110 transition"
+                  className="flex items-center gap-2 bg-rtr-green text-white px-4 py-2.5 rounded-lg text-xs font-semibold hover:brightness-110 transition"
                 >
                   <PlayCircle className="w-4 h-4" />
                   Run a Scenario

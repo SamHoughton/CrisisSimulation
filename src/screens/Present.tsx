@@ -35,10 +35,10 @@ const BG_HEADLINES = [
 
 // ─── Option colours ───────────────────────────────────────────────────────────
 const OPT: Record<string, { bg: string; border: string; text: string; bar: string; winBg: string; winBorder: string }> = {
-  A: { bg: "rgba(59,130,246,0.12)",  border: "rgba(59,130,246,0.35)",  text: "#93c5fd", bar: "#3b82f6",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
-  B: { bg: "rgba(16,185,129,0.12)",  border: "rgba(16,185,129,0.35)",  text: "#6ee7b7", bar: "#10b981",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
-  C: { bg: "rgba(245,158,11,0.12)",  border: "rgba(245,158,11,0.35)",  text: "#fcd34d", bar: "#f59e0b",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
-  D: { bg: "rgba(168,85,247,0.12)",  border: "rgba(168,85,247,0.35)",  text: "#d8b4fe", bar: "#a855f7",  winBg: "rgba(74,254,145,0.1)",  winBorder: "rgba(74,254,145,0.5)" },
+  A: { bg: "rgba(59,130,246,0.12)",  border: "rgba(59,130,246,0.35)",  text: "#93c5fd", bar: "#3b82f6",  winBg: "rgba(29,184,106,0.1)",  winBorder: "rgba(29,184,106,0.5)" },
+  B: { bg: "rgba(16,185,129,0.12)",  border: "rgba(16,185,129,0.35)",  text: "#6ee7b7", bar: "#10b981",  winBg: "rgba(29,184,106,0.1)",  winBorder: "rgba(29,184,106,0.5)" },
+  C: { bg: "rgba(245,158,11,0.12)",  border: "rgba(245,158,11,0.35)",  text: "#fcd34d", bar: "#f59e0b",  winBg: "rgba(29,184,106,0.1)",  winBorder: "rgba(29,184,106,0.5)" },
+  D: { bg: "rgba(168,85,247,0.12)",  border: "rgba(168,85,247,0.35)",  text: "#d8b4fe", bar: "#a855f7",  winBg: "rgba(29,184,106,0.1)",  winBorder: "rgba(29,184,106,0.5)" },
 };
 function opt(key: string) { return OPT[key] ?? OPT.A; }
 
@@ -249,7 +249,7 @@ export function Present() {
     : null;
 
   // Crisis bar colour
-  const crisisBarColour = crisisLevel < 35 ? "#4afe91" : crisisLevel < 65 ? "#f59e0b" : "#E82222";
+  const crisisBarColour = crisisLevel < 35 ? "#1db86a" : crisisLevel < 65 ? "#f59e0b" : "#E82222";
 
   return (
     <div className="min-h-screen flex flex-col select-none" style={{ background: "#0a0b0d", color: "#e8eaf0" }}>
@@ -448,7 +448,7 @@ function SplashScreen({ scenario, onDone }: { scenario: Scenario | null; onDone:
       {/* Progress bar — pinned to screen bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#0d1a10" }}>
         <div className="h-full" style={{
-          background: "linear-gradient(90deg, #0f6e3f, #1db86a, #4afe91)",
+          background: "linear-gradient(90deg, #0f6e3f, #1db86a)",
           animation: "splash-fill 2.4s ease forwards",
         }} />
       </div>
@@ -462,8 +462,8 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
   return (
     <div className="h-full flex flex-col items-center justify-center px-8">
       <div className="flex items-center justify-center w-20 h-20 rounded-2xl mb-8"
-        style={{ background: "rgba(232,34,34,0.1)", border: "1px solid rgba(232,34,34,0.25)" }}>
-        <ShieldAlert className="w-10 h-10" style={{ color: "#E82222" }} />
+        style={{ background: "rgba(29,184,106,0.1)", border: "1px solid rgba(29,184,106,0.25)" }}>
+        <ShieldAlert className="w-10 h-10" style={{ color: "#1db86a" }} />
       </div>
       <h1 className="text-5xl font-bold mb-3" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.03em" }}>{scenario?.title ?? "CRUCIBLE"}</h1>
       {scenario && (
@@ -493,7 +493,7 @@ function BriefingScreen({ scenario }: { scenario: Scenario }) {
 
         {/* ── Left: text ── */}
         <div className={cn("flex flex-col", hasArtifact ? "flex-1 min-w-0" : "items-center text-center w-full")}>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-3 font-mono" style={{ color: "#4afe91" }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3 font-mono" style={{ color: "#1db86a" }}>
             Scenario Briefing
           </p>
           <h1 className={cn("font-bold mb-6 leading-tight", hasArtifact ? "text-4xl" : "text-5xl")}
@@ -674,7 +674,7 @@ function SupplyChainBriefingArtifact() {
         style={{ background: "#0a0f0a", borderBottom: "1px solid #1a2e1a" }}>
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-          <span style={{ color: "#4afe91" }}>Vendor Risk Dashboard</span>
+          <span style={{ color: "#1db86a" }}>Vendor Risk Dashboard</span>
         </div>
         <span style={{ color: "#4a5a4a" }}>07:22 UTC</span>
       </div>
@@ -706,8 +706,8 @@ function SupplyChainBriefingArtifact() {
             </span>
             <span className="w-16 text-center text-xs font-bold px-1.5 py-0.5 rounded"
               style={{
-                color: v.status === "CRITICAL" ? "#ff2222" : "#4afe91",
-                background: v.status === "CRITICAL" ? "rgba(232,34,34,0.15)" : "rgba(74,254,145,0.08)",
+                color: v.status === "CRITICAL" ? "#ff2222" : "#1db86a",
+                background: v.status === "CRITICAL" ? "rgba(232,34,34,0.15)" : "rgba(29,184,106,0.08)",
               }}>
               {v.status}
             </span>
@@ -715,7 +715,7 @@ function SupplyChainBriefingArtifact() {
               {v.records}
             </span>
             <span className="w-20 text-right" style={{
-              color: v.risk === "Unaudited" ? "#ff4444" : v.risk === "Pending" ? "#f59e0b" : "#4afe91",
+              color: v.risk === "Unaudited" ? "#ff4444" : v.risk === "Pending" ? "#f59e0b" : "#1db86a",
             }}>
               {v.risk}
             </span>
@@ -761,7 +761,7 @@ function InfraOutageBriefingArtifact() {
         style={{ background: "#080c08", borderBottom: "1px solid #1a2a1a" }}>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-          <span style={{ color: "#4afe91" }}>NexCore Infrastructure Monitor</span>
+          <span style={{ color: "#1db86a" }}>NexCore Infrastructure Monitor</span>
         </div>
         <span style={{ color: "#3a5a3a" }}>09:00:12 UTC</span>
       </div>
@@ -1148,7 +1148,7 @@ function RansomwareNote({ inject, artifact: art }: { inject: Inject; artifact: I
 // ── SIEM alert ─────────────────────────────────────────────────────────────────
 
 function SiemAlert({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
-  const sevColour = art.siemSeverity === "CRITICAL" ? "#E82222" : art.siemSeverity === "HIGH" ? "#f59e0b" : "#4afe91";
+  const sevColour = art.siemSeverity === "CRITICAL" ? "#E82222" : art.siemSeverity === "HIGH" ? "#f59e0b" : "#1db86a";
   return (
     <div className="rounded-xl font-mono overflow-hidden"
       style={{ background: "#060809", border: `1px solid ${sevColour}40`, boxShadow: `0 0 20px ${sevColour}15` }}>
@@ -1443,8 +1443,8 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
             </div>
           </div>
           <div className="text-right">
-            <p className="text-xs" style={{ color: "#4a7a4a" }}>Active users: <span style={{ color: "#4afe91" }}>1,247</span></p>
-            <p className="text-xs mt-0.5" style={{ color: "#4a7a4a" }}>Listings today: <span style={{ color: "#4afe91" }}>38</span></p>
+            <p className="text-xs" style={{ color: "#4a7a4a" }}>Active users: <span style={{ color: "#1db86a" }}>1,247</span></p>
+            <p className="text-xs mt-0.5" style={{ color: "#4a7a4a" }}>Listings today: <span style={{ color: "#1db86a" }}>38</span></p>
           </div>
         </div>
       </div>
@@ -1471,7 +1471,7 @@ function DarkWebListing({ inject, artifact }: { inject: Inject; artifact: Inject
               📅 <span style={{ color: "#aaa" }}>Posted {new Date().toLocaleDateString("en-GB")}</span>
             </span>
             <span className="flex items-center gap-1.5 px-2.5 py-1 rounded" style={{ background: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
-              ✓ <span style={{ color: "#4afe91" }}>Verified by admin</span>
+              ✓ <span style={{ color: "#1db86a" }}>Verified by admin</span>
             </span>
             <span className="flex items-center gap-1.5 px-2.5 py-1 rounded" style={{ background: "#111", border: "1px solid #1e1e1e", color: "#666" }}>
               ⏳ <span style={{ color: "#ff8800" }}>Auction closes 72h</span>
@@ -1540,8 +1540,8 @@ function StockChart({ inject, artifact: art, liveStockDelta = 0 }: { inject: Inj
   });
   const linePath = `M ${points.join(" L ")}`;
   const areaPath = `${linePath} L 600,180 L 0,180 Z`;
-  const lineColour = isDown ? "#ef4444" : "#4afe91";
-  const fillColour = isDown ? "rgba(239,68,68,0.15)" : "rgba(74,254,145,0.15)";
+  const lineColour = isDown ? "#ef4444" : "#1db86a";
+  const fillColour = isDown ? "rgba(239,68,68,0.15)" : "rgba(29,184,106,0.15)";
 
   return (
     <div className="w-full max-w-3xl rounded-xl overflow-hidden font-mono"
@@ -1567,7 +1567,7 @@ function StockChart({ inject, artifact: art, liveStockDelta = 0 }: { inject: Inj
           <div className="flex items-center gap-2 justify-end">
             {liveStockDelta !== 0 && (
               <span className="text-xs font-mono px-1.5 py-0.5 rounded animate-pulse"
-                style={{ background: liveStockDelta > 0 ? "rgba(74,254,145,0.15)" : "rgba(239,68,68,0.15)", color: liveStockDelta > 0 ? "#4afe91" : "#ef4444" }}>
+                style={{ background: liveStockDelta > 0 ? "rgba(29,184,106,0.15)" : "rgba(239,68,68,0.15)", color: liveStockDelta > 0 ? "#1db86a" : "#ef4444" }}>
                 LIVE
               </span>
             )}
@@ -1671,7 +1671,7 @@ function SlackThread({
                 <div className="flex items-baseline gap-2 mb-0.5">
                   <span className="text-sm font-bold" style={{ color: "#e8eaf0" }}>{m.author}</span>
                   {"role" in m && (m as any).role && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "#2a2d33", color: "#9aa0a6" }}>{String((m as any).role)}</span>}
-                  {isLive && <span className="text-[10px] font-mono px-1 py-0.5 rounded" style={{ background: "rgba(74,254,145,0.1)", color: "#4afe91" }}>LIVE</span>}
+                  {isLive && <span className="text-[10px] font-mono px-1 py-0.5 rounded" style={{ background: "rgba(29,184,106,0.1)", color: "#1db86a" }}>LIVE</span>}
                   <span className="text-xs" style={{ color: "#6b7280" }}>{m.time}</span>
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: "#d1d5db" }}>{m.text}</p>
@@ -2203,23 +2203,23 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
             style={{ background: isWin ? c.winBg : c.bg, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono shrink-0"
-                style={{ background: isWin ? "rgba(74,254,145,0.2)" : c.bg, color: isWin ? "#4afe91" : c.text, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
+                style={{ background: isWin ? "rgba(29,184,106,0.2)" : c.bg, color: isWin ? "#1db86a" : c.text, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
                 {option.key}
               </span>
-              <span className="text-sm font-medium flex-1" style={{ color: isWin ? "#4afe91" : "#e8eaf0" }}>
+              <span className="text-sm font-medium flex-1" style={{ color: isWin ? "#1db86a" : "#e8eaf0" }}>
                 {option.label}
               </span>
               {revealed && (
-                <span className="text-sm font-bold font-mono vote-count" style={{ color: isWin ? "#4afe91" : c.text }}>
+                <span className="text-sm font-bold font-mono vote-count" style={{ color: isWin ? "#1db86a" : c.text }}>
                   {pct}%
                 </span>
               )}
-              {isWin && <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#4afe91" }} />}
+              {isWin && <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#1db86a" }} />}
             </div>
             {revealed && (
               <div className="w-full h-1.5 rounded-full mb-2" style={{ background: "rgba(255,255,255,0.05)" }}>
                 <div className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${barW}%`, background: isWin ? "#4afe91" : c.bar }} />
+                  style={{ width: `${barW}%`, background: isWin ? "#1db86a" : c.bar }} />
               </div>
             )}
             {voters.length > 0 && (
@@ -2239,8 +2239,8 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
       {revealed && winner && (() => {
         const winnerOption = inject.decisionOptions.find((o) => o.key === winner);
         return (
-          <div className="rounded-xl p-4" style={{ background: "rgba(74,254,145,0.08)", border: "1px solid rgba(74,254,145,0.25)" }}>
-            <p className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: "#4afe91" }}>
+          <div className="rounded-xl p-4" style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.25)" }}>
+            <p className="text-xs font-bold uppercase tracking-widest font-mono mb-1" style={{ color: "#1db86a" }}>
               Majority: Option {winner}
             </p>
             {winnerOption?.consequence && (
@@ -2306,8 +2306,8 @@ function EndedScreen() {
     <div className="h-full flex items-center justify-center">
       <div className="text-center">
         <div className="flex items-center justify-center w-24 h-24 rounded-2xl mx-auto mb-6"
-          style={{ background: "rgba(74,254,145,0.08)", border: "1px solid rgba(74,254,145,0.2)" }}>
-          <ShieldAlert className="w-12 h-12" style={{ color: "#4afe91" }} />
+          style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.2)" }}>
+          <ShieldAlert className="w-12 h-12" style={{ color: "#1db86a" }} />
         </div>
         <p className="text-4xl font-bold mb-3">Exercise Complete</p>
         <p style={{ color: "#8b8fa8" }}>Thank you for participating. Debrief to follow.</p>

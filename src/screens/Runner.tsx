@@ -544,7 +544,7 @@ export function Runner() {
             style={{
               width: `${crisisPct}%`,
               background: crisisPct < 40
-                ? "#4afe91"
+                ? "#1db86a"
                 : crisisPct < 70
                 ? "#f59e0b"
                 : "#E82222",
