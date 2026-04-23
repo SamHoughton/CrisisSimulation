@@ -882,9 +882,9 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
   });
 
   return (
-    <div className="flex flex-col px-10 py-8 max-w-7xl mx-auto w-full inject-arrive overflow-y-auto" style={{ minHeight: "100%" }}>
+    <div className="flex flex-col px-8 py-6 max-w-7xl mx-auto w-full h-full inject-arrive overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 shrink-0">
+      <div className="flex items-center justify-between mb-5 shrink-0">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
             <span className="relative flex h-3 w-3">
@@ -943,10 +943,10 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
         </span>
       </div>
 
-      {/* Body layout */}
-      <div className={cn("flex gap-8", showVoting ? "items-start" : "flex-col")}>
-        {/* Left / main: artifact */}
-        <div className={cn("flex flex-col gap-5", showVoting ? "flex-1 min-w-0" : "w-full")}>
+      {/* Body layout — flex-1 min-h-0 so this fills remaining height without overflowing */}
+      <div className={cn("flex gap-8 flex-1 min-h-0", showVoting ? "items-start" : "flex-col")}>
+        {/* Left / main: title + narration + artifact */}
+        <div className={cn("flex flex-col gap-4 min-h-0", showVoting ? "flex-1 min-w-0" : "flex-1")}>
           <h2 className="text-4xl font-bold shrink-0 leading-tight" style={{ color: "#e8eaf0", fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.02em" }}>{inject.title}</h2>
           {inject.arcRecap && <ArcRecapCard data={inject.arcRecap} />}
           {/* inject.body is scene-setting narration — show above the artifact for all types
@@ -960,7 +960,10 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
             !(inject.artifact.type === "email" && !inject.artifact.emailBody) && (
             <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
           )}
-          <ArtifactDisplay inject={inject} liveStockDelta={liveStockDelta} liveSlackMessages={liveSlackMessages} />
+          {/* Artifact gets all remaining vertical space; scrolls internally only if unavoidable */}
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <ArtifactDisplay inject={inject} liveStockDelta={liveStockDelta} liveSlackMessages={liveSlackMessages} />
+          </div>
           {inject.targetRoles.length > 0 && (
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xs font-mono" style={{ color: "#4a4f65" }}>Directed at:</span>
@@ -2178,7 +2181,7 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
   const maxCount = Math.max(1, ...Object.values(counts));
 
   return (
-    <div className="w-80 shrink-0 flex flex-col gap-3">
+    <div className="w-72 shrink-0 flex flex-col gap-3 min-h-0 overflow-y-auto">
       <div className="flex items-center gap-2 mb-1">
         <GitBranch className="w-4 h-4" style={{ color: "#fbbf24" }} />
         <span className="text-xs font-bold uppercase tracking-wider font-mono" style={{ color: "#fcd34d" }}>
@@ -2206,7 +2209,7 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
                 style={{ background: isWin ? "rgba(29,184,106,0.2)" : c.bg, color: isWin ? "#1db86a" : c.text, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
                 {option.key}
               </span>
-              <span className="text-sm font-medium flex-1" style={{ color: isWin ? "#1db86a" : "#e8eaf0" }}>
+              <span className="text-sm font-medium flex-1 line-clamp-2" style={{ color: isWin ? "#1db86a" : "#e8eaf0" }}>
                 {option.label}
               </span>
               {revealed && (
