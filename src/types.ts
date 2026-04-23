@@ -1,5 +1,5 @@
 /**
- * types.ts - All TypeScript type definitions for the Redline platform.
+ * types.ts - All TypeScript type definitions for the Crucible platform.
  *
  * Organised into sections: Scenario (templates + injects), Session (live exercise
  * state), Report (AI-generated analysis), App state (navigation + settings), and

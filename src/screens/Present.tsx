@@ -7,7 +7,7 @@
  * Phases: splash → waiting → briefing → inject (repeating) → ended
  *
  * Features:
- * - Redline splash intro (2.6s animated logo + loading bar)
+ * - Crucible splash intro (2.6s animated logo + loading bar)
  * - Scenario briefing with immersive artifacts (ransomware desktop, deepfake video)
  * - Inject display with typed artifacts (ransomware note, tweet, email, SIEM, etc.)
  * - Real-time vote visualisation with animated reveal and winner glow
@@ -23,14 +23,14 @@ import { useWorldSimulation } from "@/hooks/useWorldSimulation";
 
 // ─── Background ticker headlines (always scrolling) ───────────────────────────
 const BG_HEADLINES = [
-  "NCSC issues guidance on heightened ransomware threat to critical infrastructure",
-  "ICO enforcement action up 42% year-on-year as GDPR scrutiny intensifies",
-  "Cyber insurance premiums rise sharply following wave of high-profile incidents",
-  "Security researchers warn of new AI-generated phishing and deepfake campaigns",
-  "Global ransomware payments exceeded $1.1 billion last year - record high",
-  "FCA confirms increase in market surveillance and enforcement activity",
-  "Supply chain attacks targeting financial services sector on the rise",
-  "Major breach at third-party SaaS provider exposes millions of customer records",
+  "National cyber security authority warns of surge in attacks on UK energy infrastructure",
+  "Energy regulator opens formal review into cyber resilience across licensed suppliers",
+  "Cyber insurance market tightens as ransomware claims double in 12 months",
+  "Parliamentary questions tabled on vulnerability of Priority Services Register systems",
+  "Bank of England publishes new guidance on operational resilience for financial firms",
+  "Criminal groups increasingly targeting utility billing systems, GCHQ warns",
+  "Three FTSE 350 companies report significant cyber incidents in the past 30 days",
+  "Home Secretary calls emergency cross-government session on critical infrastructure security",
 ];
 
 // ─── Option colours ───────────────────────────────────────────────────────────
@@ -79,6 +79,12 @@ export function Present() {
   /** When set, a track-transition banner is shown full-width for 3 seconds. */
   const [trackBanner, setTrackBanner] = useState<string | null>(null);
   const trackBannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Apply 'present' class to <html> so CSS dark tokens activate for this window
+  useEffect(() => {
+    document.documentElement.classList.add("present");
+    return () => document.documentElement.classList.remove("present");
+  }, []);
 
   // Track fullscreen state changes (e.g. user presses Escape)
   useEffect(() => {
@@ -248,14 +254,17 @@ export function Present() {
   return (
     <div className="min-h-screen flex flex-col select-none" style={{ background: "#0a0b0d", color: "#e8eaf0" }}>
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
-      <div className="shrink-0" style={{ borderTop: "2px solid #E82222" }}>
+      <div className="shrink-0" style={{ borderTop: "2px solid #1db86a" }}>
         {/* Crisis escalation bar */}
         <div className="h-1.5 w-full" style={{ background: "#111215" }}>
           <div className="h-full crisis-fill" style={{ width: `${crisisLevel}%`, background: crisisBarColour }} />
         </div>
         <div className="flex items-center justify-between px-8 py-3 border-b" style={{ borderColor: "#1e2128" }}>
           <div className="flex items-center gap-4">
-            <span className="brand-glow text-lg">REDLINE</span>
+            <div className="flex items-center gap-2">
+              <CrucibleVesselMark size={20} />
+              <span className="brand-wordmark text-lg"><span className="brand-accent">C</span>RUCIBLE</span>
+            </div>
             {crisisLevel > 0 && (
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-32 rounded-full" style={{ background: "#1c1f24" }}>
@@ -357,6 +366,27 @@ export function Present() {
   );
 }
 
+// ─── Crucible vessel mark (inline SVG component) ─────────────────────────────
+
+function CrucibleVesselMark({ size = 32, color = "#1db86a" }: { size?: number; color?: string }) {
+  const s = size;
+  const h = Math.round(size * 1.0625); // ~17/16 ratio to match viewBox 64x68
+  return (
+    <svg width={s} height={h} viewBox="0 0 64 68" fill="none" aria-hidden="true">
+      <path
+        d="M 14 12 L 21 54 Q 21 58 25 58 L 39 58 Q 43 58 43 54 L 50 12 Z"
+        stroke={color} strokeWidth="4" strokeLinejoin="round" strokeLinecap="round"
+      />
+      <line x1="9"  y1="13" x2="55" y2="13" stroke={color} strokeWidth="4" strokeLinecap="round"/>
+      <line x1="5"  y1="8"  x2="13" y2="16" stroke={color} strokeWidth="4" strokeLinecap="round"/>
+      <line x1="59" y1="8"  x2="51" y2="16" stroke={color} strokeWidth="4" strokeLinecap="round"/>
+      <line x1="27" y1="47" x2="27" y2="55" stroke={color} strokeWidth="2.5" strokeLinecap="round" opacity={0.45}/>
+      <line x1="32" y1="49" x2="32" y2="57" stroke={color} strokeWidth="2.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="37" y1="47" x2="37" y2="55" stroke={color} strokeWidth="2.5" strokeLinecap="round" opacity={0.45}/>
+    </svg>
+  );
+}
+
 // ─── Live clock ───────────────────────────────────────────────────────────────
 
 function LiveClock() {
@@ -382,31 +412,26 @@ function SplashScreen({ scenario, onDone }: { scenario: Scenario | null; onDone:
   }, []);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center relative overflow-hidden" style={{ background: "#080a0d" }}>
+    <div className="h-full flex flex-col items-center justify-center relative overflow-hidden" style={{ background: "#060d08" }}>
 
       {/* Dot-grid texture */}
       <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: "radial-gradient(circle, rgba(232,34,34,0.12) 1px, transparent 1px)",
+        backgroundImage: "radial-gradient(circle, rgba(29,184,106,0.10) 1px, transparent 1px)",
         backgroundSize: "36px 36px",
         maskImage: "radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%)",
       }} />
 
-      {/* ECG mark */}
+      {/* Crucible vessel mark */}
       <div className="relative mb-8">
-        <svg viewBox="0 0 120 48" className="w-40 h-16" fill="none">
-          <line x1="0"   y1="36" x2="34"  y2="36" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
-          <polyline points="34,36 52,6 70,36" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          <line x1="70"  y1="36" x2="120" y2="36" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="52" cy="6" r="4" fill="#E82222" />
-        </svg>
-        {/* Bloom beneath the ECG */}
+        <CrucibleVesselMark size={80} />
+        {/* Bloom beneath the vessel */}
         <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-32 h-6 rounded-full blur-xl pointer-events-none"
-          style={{ background: "rgba(232,34,34,0.35)" }} />
+          style={{ background: "rgba(29,184,106,0.30)" }} />
       </div>
 
       {/* Wordmark */}
-      <p className="brand-glow text-7xl mb-2 tracking-wider" style={{ textShadow: "0 0 60px rgba(232,34,34,0.2)" }}>
-        REDLINE
+      <p className="brand-wordmark text-7xl mb-2 tracking-wider" style={{ textShadow: "0 0 60px rgba(29,184,106,0.18)", color: "#f7f5f0" }}>
+        <span style={{ color: "#1db86a" }}>C</span>RUCIBLE
       </p>
       <p className="text-[9px] tracking-[0.55em] uppercase mb-10"
         style={{ color: "rgba(255,255,255,0.22)", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: "0.55em" }}>
@@ -421,9 +446,9 @@ function SplashScreen({ scenario, onDone }: { scenario: Scenario | null; onDone:
       )}
 
       {/* Progress bar — pinned to screen bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#111318" }}>
+      <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "#0d1a10" }}>
         <div className="h-full" style={{
-          background: "linear-gradient(90deg, #991111, #E82222, #ff5c5c)",
+          background: "linear-gradient(90deg, #0f6e3f, #1db86a, #4afe91)",
           animation: "splash-fill 2.4s ease forwards",
         }} />
       </div>
@@ -440,7 +465,7 @@ function WaitingScreen({ scenario }: { scenario: Scenario | null }) {
         style={{ background: "rgba(232,34,34,0.1)", border: "1px solid rgba(232,34,34,0.25)" }}>
         <ShieldAlert className="w-10 h-10" style={{ color: "#E82222" }} />
       </div>
-      <h1 className="text-5xl font-bold mb-3" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.03em" }}>{scenario?.title ?? "REDLINE"}</h1>
+      <h1 className="text-5xl font-bold mb-3" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: "0.03em" }}>{scenario?.title ?? "CRUCIBLE"}</h1>
       {scenario && (
         <div className="flex items-center gap-3 mb-6">
           <span className="text-sm" style={{ color: "#8b8fa8" }}>{SCENARIO_TYPE_LABELS[scenario.type]}</span>

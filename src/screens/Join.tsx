@@ -127,7 +127,7 @@ export function Join({ code }: { code: string }) {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-3">
             <div className="w-2 h-2 rounded-full bg-rtr-red animate-pulse" />
-            <span className="text-xs font-semibold text-rtr-red uppercase tracking-widest">REDLINE Live</span>
+            <span className="text-xs font-semibold text-rtr-red uppercase tracking-widest">Crucible Live</span>
           </div>
           <h1 className="text-2xl font-bold mb-1">{session.scenarioTitle}</h1>
           <p className="text-sm text-rtr-muted">
