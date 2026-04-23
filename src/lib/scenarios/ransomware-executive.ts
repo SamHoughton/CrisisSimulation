@@ -67,9 +67,9 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
           label:
             "Call the CISO back and authorise her to act. get Mandiant moving, lock the estate down. Everything else follows once you understand what you're dealing with.",
           consequence:
-            "NCSC respond within 40 minutes with a named incident handler. The notification clock is on record. Ofgem later note the proactive NCSC escalation as evidence of good NIS culture.",
+            "Mandiant reach Edinburgh by 06:15 and have network segmentation in place within the hour. By 07:00 you have a confirmed technical picture — blast radius, patient zero, exfiltration scope. With that in hand you call NCSC at 07:30 and Ofgem shortly after. Both receive a briefing based on facts, not estimates. Ofgem later note the sequencing: contain first, notify with evidence. The response is hard, but it is ordered.",
           rank: 1,
-          recapFragment: "NCSC under network security regulations",
+          recapFragment: "the CISO to get Mandiant moving before making any external calls",
         },
         {
           key: "B",
