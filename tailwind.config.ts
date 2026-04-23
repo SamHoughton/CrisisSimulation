@@ -5,10 +5,28 @@ export default {
   theme: {
     extend: {
       colors: {
-        // All rtr-* colors reference CSS custom properties (defined in index.css).
-        // Using the `rgb(var(--rtr-XXX) / <alpha-value>)` pattern allows Tailwind's
-        // opacity modifiers (e.g. bg-rtr-panel/50, border-rtr-green/20) to work.
-        // The CSS vars are toggled between dark (default) and light (html.light) values.
+        // crux-* — Crucible design tokens. Two contexts: facilitator (warm cream)
+        // and present (deep forest dark, activated via html.present class).
+        // Using rgb(var(...) / <alpha-value>) pattern enables Tailwind opacity modifiers.
+        crux: {
+          base:           "rgb(var(--crux-base)           / <alpha-value>)",
+          surface:        "rgb(var(--crux-surface)        / <alpha-value>)",
+          panel:          "rgb(var(--crux-panel)          / <alpha-value>)",
+          elevated:       "rgb(var(--crux-elevated)       / <alpha-value>)",
+          hover:          "rgb(var(--crux-hover)          / <alpha-value>)",
+          border:         "rgb(var(--crux-border)         / <alpha-value>)",
+          "border-light": "rgb(var(--crux-border-light)   / <alpha-value>)",
+          text:           "rgb(var(--crux-text)           / <alpha-value>)",
+          muted:          "rgb(var(--crux-muted)          / <alpha-value>)",
+          dim:            "rgb(var(--crux-dim)            / <alpha-value>)",
+          green:          "rgb(var(--crux-green)          / <alpha-value>)",
+          "green-light":  "rgb(var(--crux-green-light)    / <alpha-value>)",
+          "green-dark":   "rgb(var(--crux-green-dark)     / <alpha-value>)",
+          red:            "rgb(var(--crux-red)            / <alpha-value>)",
+          cream:          "rgb(var(--crux-cream)          / <alpha-value>)",
+        },
+        // rtr-* — legacy aliases kept for non-breaking migration.
+        // These map to the same CSS vars as crux-* via index.css.
         rtr: {
           base:           "rgb(var(--rtr-base)           / <alpha-value>)",
           sidebar:        "rgb(var(--rtr-sidebar)        / <alpha-value>)",

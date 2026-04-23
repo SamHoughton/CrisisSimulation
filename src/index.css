@@ -1,9 +1,12 @@
 /*
- * index.css - Global styles, custom animations, and print rules.
+ * index.css — Crucible global styles, design tokens, and animations.
  *
- * All animations are hand-written CSS (no animation libraries).
- * Organised into: base layer, brand styling, inject/vote/ticker animations,
- * form utilities, card effects, entrance animations, and @media print overrides.
+ * Token system uses RGB channel triplets so Tailwind opacity modifiers work:
+ *   bg-crux-panel/50 → background: rgb(var(--crux-panel) / 0.5)
+ *
+ * Two visual contexts:
+ *   Facilitator (warm cream) — Home, Library, Runner, Report, Setup, Settings
+ *   Present (deep forest dark) — fullscreen projector view
  */
 
 @tailwind base;
@@ -11,119 +14,173 @@
 @tailwind utilities;
 
 @layer base {
-  /*
-   * ─── Theme tokens (RGB channel triplets, no parentheses) ──────────────────
-   * Using raw RGB channels lets Tailwind's opacity modifiers work:
-   * bg-rtr-panel/50 → background: rgb(var(--rtr-panel) / 0.5)
-   */
+
+  /* ─── Facilitator theme tokens ─────────────────────────────────────────── */
   :root {
-    /* Dark theme (default) */
-    --rtr-base:         15 14 14;
-    --rtr-sidebar:      17 18 21;
-    --rtr-panel:        21 23 26;
-    --rtr-elevated:     28 31 36;
-    --rtr-hover:        34 38 45;
-    --rtr-border:       30 33 40;
-    --rtr-border-light: 42 46 58;
-    --rtr-text:         232 234 240;
-    --rtr-muted:        139 143 168;
-    --rtr-dim:          74 79 101;
-    --rtr-cream:        242 237 232;
-    --rtr-green:        74 254 145;
-    --rtr-red:          232 34 34;
+    /* Warm cream surfaces */
+    --crux-base:          247 245 240;   /* #f7f5f0 — page background      */
+    --crux-surface:       240 237 230;   /* #f0ede6 — card / panel bg       */
+    --crux-panel:         232 228 219;   /* #e8e4db — inset / input bg      */
+    --crux-elevated:      255 255 255;   /* #ffffff — raised card           */
+    --crux-hover:         224 220 212;   /* #e0dcd4 — hover state           */
+    --crux-border:        216 211 200;   /* #d8d3c8 — default border        */
+    --crux-border-light:  232 228 220;   /* #e8e4dc — subtle divider        */
+
+    /* Ink — near-black with warm undertone */
+    --crux-text:          26 24 22;      /* #1a1816 — primary text          */
+    --crux-muted:         107 102 96;    /* #6b6660 — secondary text        */
+    --crux-dim:           158 152 144;   /* #9e9890 — placeholder / hint    */
+
+    /* Signal green */
+    --crux-green:         29 184 106;    /* #1db86a — primary accent        */
+    --crux-green-light:   232 249 238;   /* #e8f9ee — green tint bg         */
+    --crux-green-dark:    15 110 63;     /* #0f6e3f — green on cream        */
+
+    /* Signal red — urgency only */
+    --crux-red:           192 57 43;     /* #c0392b — alert / timer / pulse */
+
+    /* Cream for use on dark surfaces */
+    --crux-cream:         247 245 240;   /* #f7f5f0                         */
+
+    /* ─── Legacy rtr-* aliases (non-breaking during migration) ─────────── */
+    --rtr-base:         var(--crux-base);
+    --rtr-sidebar:      var(--crux-surface);
+    --rtr-panel:        var(--crux-panel);
+    --rtr-elevated:     var(--crux-elevated);
+    --rtr-hover:        var(--crux-hover);
+    --rtr-border:       var(--crux-border);
+    --rtr-border-light: var(--crux-border-light);
+    --rtr-text:         var(--crux-text);
+    --rtr-muted:        var(--crux-muted);
+    --rtr-dim:          var(--crux-dim);
+    --rtr-cream:        var(--crux-cream);
+    --rtr-green:        var(--crux-green);
+    --rtr-red:          var(--crux-red);
   }
 
-  html.light {
-    /* Light theme */
-    --rtr-base:         248 249 252;
-    --rtr-sidebar:      240 242 247;
-    --rtr-panel:        255 255 255;
-    --rtr-elevated:     237 240 246;
-    --rtr-hover:        225 228 238;
-    --rtr-border:       215 219 232;
-    --rtr-border-light: 195 200 215;
-    --rtr-text:         13 15 22;
-    --rtr-muted:        82 87 112;
-    --rtr-dim:          148 153 172;
-    --rtr-cream:        242 237 232;
-    --rtr-green:        5 150 105;
-    --rtr-red:          220 38 38;
+  /* ─── Present / projector dark theme ──────────────────────────────────── */
+  /*
+   * Applied via <html class="present"> when Present screen is open.
+   * All --crux-* tokens remap to the dark forest palette.
+   * --rtr-* aliases follow automatically.
+   */
+  html.present {
+    --crux-base:          15 26 18;      /* #0f1a12 — deep forest black     */
+    --crux-surface:       19 32 22;      /* #132016 — card bg               */
+    --crux-panel:         24 40 28;      /* #18281c — inset panel           */
+    --crux-elevated:      29 48 34;      /* #1d3022                         */
+    --crux-hover:         35 58 42;      /* #233a2a                         */
+    --crux-border:        38 62 46;      /* #263e2e                         */
+    --crux-border-light:  44 72 54;      /* #2c4836                         */
+
+    --crux-text:          240 245 241;   /* #f0f5f1 — near-white            */
+    --crux-muted:         140 170 148;   /* #8caa94                         */
+    --crux-dim:           80 110 88;     /* #506e58                         */
+
+    --crux-green:         29 184 106;    /* #1db86a — stays the same        */
+    --crux-green-light:   29 184 106;
+    --crux-green-dark:    29 184 106;
+
+    --crux-red:           220 50 50;     /* slightly brighter on dark       */
+    --crux-cream:         247 245 240;
+
+    --rtr-base:         var(--crux-base);
+    --rtr-sidebar:      var(--crux-surface);
+    --rtr-panel:        var(--crux-panel);
+    --rtr-elevated:     var(--crux-elevated);
+    --rtr-hover:        var(--crux-hover);
+    --rtr-border:       var(--crux-border);
+    --rtr-border-light: var(--crux-border-light);
+    --rtr-text:         var(--crux-text);
+    --rtr-muted:        var(--crux-muted);
+    --rtr-dim:          var(--crux-dim);
+    --rtr-cream:        var(--crux-cream);
+    --rtr-green:        var(--crux-green);
+    --rtr-red:          var(--crux-red);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
   html, body, #root { height: 100%; margin: 0; padding: 0; }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     font-size: 13px;
-    background: rgb(var(--rtr-base));
-    color: rgb(var(--rtr-text));
+    background: rgb(var(--crux-base));
+    color: rgb(var(--crux-text));
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Brand wordmark */
+/* ─── Brand wordmark ─────────────────────────────────────────────────────── */
+.brand-wordmark {
+  font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Facilitator context: ink on cream */
+.brand-wordmark { color: rgb(var(--crux-text)); }
+/* Present context: cream on dark */
+html.present .brand-wordmark { color: rgb(var(--crux-cream)); }
+
+/* Green accent — apply to a <span class="brand-accent"> inside the wordmark */
+.brand-accent { color: rgb(var(--crux-green)); }
+
+/* Legacy support — brand-glow still works */
 .brand-glow {
   font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
-  color: #f2ede8;
   letter-spacing: 0.09em;
-  text-shadow: none;
+  color: rgb(var(--crux-cream));
 }
 
-/* Inject arrival */
+/* ─── Form inputs ────────────────────────────────────────────────────────── */
+.input {
+  @apply w-full text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors;
+  background: rgb(var(--crux-panel));
+  border: 0.5px solid rgb(var(--crux-border));
+  color: rgb(var(--crux-text));
+}
+.input:focus { border-color: rgb(var(--crux-green)); }
+.input::placeholder { color: rgb(var(--crux-dim)); }
+
+/* Select elements */
+select.input, select { background-image: none; }
+
+/* ─── Inject arrival ─────────────────────────────────────────────────────── */
 .inject-arrive { animation: inject-in 0.25s ease-out; }
 @keyframes inject-in {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Form inputs */
-.input {
-  @apply w-full text-sm bg-[#1c1f24] border border-[#2a2e3a] text-[#e8eaf0] rounded-lg px-3 py-2 focus:outline-none focus:border-[#4afe91] transition-colors;
-}
-.input::placeholder { color: #4a4f65; }
-
-/* Select elements */
-select.input, select {
-  background-image: none;
-}
-
-/* Voting animations */
+/* ─── Vote animations ────────────────────────────────────────────────────── */
 .vote-pulse {
   animation: vote-pulse-ring 1.2s ease-in-out infinite;
 }
 @keyframes vote-pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 254, 145, 0.4); }
-  50%       { box-shadow: 0 0 0 8px rgba(74, 254, 145, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--crux-green) / 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgb(var(--crux-green) / 0); }
 }
 
-.vote-count {
-  animation: vote-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+.vote-count { animation: vote-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 @keyframes vote-pop {
   from { transform: scale(1.4); }
   to   { transform: scale(1); }
 }
 
-.vote-arrive {
-  animation: vote-slide 0.25s ease-out;
-}
+.vote-arrive { animation: vote-slide 0.25s ease-out; }
 @keyframes vote-slide {
   from { opacity: 0; transform: translateX(-8px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
-.winner-glow {
-  animation: winner-pulse 1s ease-in-out 3;
-}
+.winner-glow { animation: winner-pulse 1s ease-in-out 3; }
 @keyframes winner-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 254, 145, 0.5); }
-  50%       { box-shadow: 0 0 20px 4px rgba(74, 254, 145, 0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--crux-green) / 0.5); }
+  50%       { box-shadow: 0 0 20px 4px rgb(var(--crux-green) / 0.2); }
 }
 
-/* News ticker */
-.ticker-wrap {
-  overflow: hidden;
-  white-space: nowrap;
-}
+/* ─── News ticker ────────────────────────────────────────────────────────── */
+.ticker-wrap { overflow: hidden; white-space: nowrap; }
 .ticker-track {
   display: inline-block;
   animation: ticker-scroll 120s linear infinite;
@@ -134,27 +191,33 @@ select.input, select {
   100% { transform: translateX(-50%); }
 }
 
-/* Timer urgency flash when ≤ 60 s */
-.timer-urgent {
-  animation: timer-flash 1s ease-in-out infinite;
-}
+/* ─── Timer urgency ──────────────────────────────────────────────────────── */
+.timer-urgent { animation: timer-flash 1s ease-in-out infinite; }
 @keyframes timer-flash {
-  0%, 100% { color: #E82222; }
-  50%       { color: rgba(232, 34, 34, 0.4); }
+  0%, 100% { color: rgb(var(--crux-red)); }
+  50%       { color: rgb(var(--crux-red) / 0.4); }
 }
 
-/* Crisis bar fill */
-.crisis-fill {
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* ─── Crisis bar fill ────────────────────────────────────────────────────── */
+.crisis-fill { transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+/* ─── Stock chart ────────────────────────────────────────────────────────── */
+@keyframes chart-draw-in {
+  from { stroke-dasharray: 2000; stroke-dashoffset: 2000; opacity: 0; }
+  to   { stroke-dasharray: 2000; stroke-dashoffset: 0;    opacity: 1; }
+}
+.chart-draw { animation: chart-draw-in 1.8s ease-out forwards; }
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2e3a; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #404560; }
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--crux-border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--crux-dim)); }
 
-/* Fade in + rise up */
+/* ─── Utility animations ─────────────────────────────────────────────────── */
 .fade-in-up {
   animation: fade-in-up 0.35s ease-out both;
 }
@@ -163,7 +226,15 @@ select.input, select {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Staggered children */
+.score-reveal {
+  animation: score-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes score-in {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ─── Staggered children ─────────────────────────────────────────────────── */
 .stagger > *:nth-child(1) { animation-delay: 0ms; }
 .stagger > *:nth-child(2) { animation-delay: 60ms; }
 .stagger > *:nth-child(3) { animation-delay: 120ms; }
@@ -173,30 +244,30 @@ select.input, select {
 .stagger > *:nth-child(7) { animation-delay: 360ms; }
 .stagger > *:nth-child(8) { animation-delay: 420ms; }
 
-/* Animated progress bar fill (trigger by adding class) */
-.bar-animate {
-  transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Card lift on hover */
+/* ─── Card effects ───────────────────────────────────────────────────────── */
 .card-lift {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .card-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgb(26 24 22 / 0.08);
+}
+html:not(.present) .card-lift:hover {
+  box-shadow: 0 8px 24px rgb(26 24 22 / 0.1);
 }
 
-/* Subtle shimmer on stat cards */
-.stat-shimmer {
-  position: relative;
-  overflow: hidden;
-}
+/* Stat shimmer */
+.stat-shimmer { position: relative; overflow: hidden; }
 .stat-shimmer::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(74,254,145,0.04) 50%, transparent 60%);
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgb(var(--crux-green) / 0.04) 50%,
+    transparent 60%
+  );
   animation: shimmer 3s ease-in-out infinite;
 }
 @keyframes shimmer {
@@ -204,100 +275,96 @@ select.input, select {
   100% { transform: translateX(100%); }
 }
 
-/* Pulse dot */
+/* ─── Pulse dot ──────────────────────────────────────────────────────────── */
 .pulse-dot::before {
   content: '';
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: #E82222;
+  background: rgb(var(--crux-red));
   margin-right: 6px;
   animation: pulse-dot 1.4s ease-in-out infinite;
   vertical-align: middle;
 }
 @keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
+  0%, 100% { transform: scale(1);   opacity: 1; }
   50%       { transform: scale(1.6); opacity: 0.5; }
 }
 
-/* Score count-up reveal */
-.score-reveal {
-  animation: score-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+/* ─── Bar animate ────────────────────────────────────────────────────────── */
+.bar-animate { transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* ─── Track transition banner (Present) ─────────────────────────────────── */
+.track-banner {
+  animation: track-in 0.3s ease-out, track-out 0.3s ease-in 2.7s both;
 }
-@keyframes score-in {
-  from { transform: scale(0.5); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
+@keyframes track-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes track-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
-/* ── Present splash fill ──────────────────────────────────────────────────── */
+/* ─── Score reveal splash ────────────────────────────────────────────────── */
 @keyframes splash-fill {
   from { width: 0%; }
   to   { width: 100%; }
 }
 
-/* ── Stock chart line draw animation ──────────────────────────────────────── */
-@keyframes chart-draw-in {
-  from { stroke-dasharray: 2000; stroke-dashoffset: 2000; opacity: 0; }
-  to   { stroke-dasharray: 2000; stroke-dashoffset: 0;    opacity: 1; }
-}
-.chart-draw {
-  animation: chart-draw-in 1.8s ease-out forwards;
+/* ─── LoadScreen animations ─────────────────────────────────────────────── */
+@keyframes crucible-scan {
+  0%   { top: -1px; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }
 
-/* ── Print styles ─────────────────────────────────────────────────────────── */
+@keyframes crucible-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Print styles ───────────────────────────────────────────────────────── */
 @media print {
-  /* Hide app chrome */
-  aside,
-  .print\:hidden { display: none !important; }
-  .hidden.print\:block { display: block !important; }
+  aside, .print\:hidden { display: none !important; }
+  .hidden.print\:block  { display: block !important; }
 
-  /* Reset layout so report fills the page */
   html, body, #root {
     height: auto;
     overflow: visible;
     background: #fff;
     color: #111;
   }
-
-  /* Make the main content area overflow-visible so all content prints */
   main { overflow: visible !important; height: auto !important; }
 
-  /* Remove dark backgrounds on cards - let browser use black text on white */
-  .bg-rtr-panel, .bg-rtr-elevated, .bg-rtr-base {
+  .bg-crux-panel, .bg-crux-surface, .bg-crux-base,
+  .bg-rtr-panel,  .bg-rtr-elevated, .bg-rtr-base {
     background: #fff !important;
     color: #111 !important;
   }
 
-  /* Fix text colours for white background */
-  .text-rtr-text  { color: #111 !important; }
-  .text-rtr-muted { color: #444 !important; }
-  .text-rtr-dim   { color: #666 !important; }
+  .text-crux-text,  .text-rtr-text  { color: #111 !important; }
+  .text-crux-muted, .text-rtr-muted { color: #444 !important; }
+  .text-crux-dim,   .text-rtr-dim   { color: #666 !important; }
 
-  /* Fix borders for white background */
-  .border-rtr-border,
-  .border-rtr-border-light,
-  .divide-rtr-border > * + * { border-color: #ddd !important; }
+  .border-crux-border, .border-rtr-border,
+  .divide-crux-border > * + *,
+  .divide-rtr-border  > * + * { border-color: #ddd !important; }
 
-  /* Ensure tables and content don't get clipped */
   table { page-break-inside: auto; }
   tr    { page-break-inside: avoid; }
 
-  /* Section breaks */
   .print-section-title {
     page-break-before: always;
     padding-top: 1rem;
-    border-bottom: 2px solid #E82222;
+    border-bottom: 2px solid #1db86a;
     padding-bottom: 0.5rem;
   }
   .print-section-title:first-child { page-break-before: avoid; }
 
-  /* Widen content area to full page */
   .max-w-5xl { max-width: 100% !important; }
-
-  /* Remove box shadows and animations */
   * { box-shadow: none !important; animation: none !important; }
-
-  /* Expand collapsed gap cards for print */
   .fade-in-up { opacity: 1 !important; transform: none !important; }
 }

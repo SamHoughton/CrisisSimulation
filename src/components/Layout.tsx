@@ -1,7 +1,7 @@
 /**
  * Layout.tsx - App shell with collapsible sidebar navigation.
  *
- * Renders the Redline logo, nav buttons (Dashboard, Scenarios, Live Session, Report,
+ * Renders the Crucible logo, nav buttons (Dashboard, Scenarios, Live Session, Report,
  * Settings), a pulsing red indicator for active sessions, and a session status pill.
  * On mobile (< md), the sidebar collapses to icon-only width (w-14).
  */
@@ -14,14 +14,19 @@ import {
 import { cn } from "@/lib/utils";
 import type { View } from "@/types";
 
-function RedlineMark({ className }: { className?: string }) {
+function CrucibleMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" className={className} xmlns="http://www.w3.org/2000/svg">
-      <rect width="32" height="32" rx="6" fill="rgb(var(--rtr-base))" />
-      <line x1="3" y1="23" x2="10" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
-      <polyline points="10,23 15,8 20,23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <line x1="20" y1="23" x2="29" y2="23" stroke="#E82222" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="15" cy="8" r="2.5" fill="#E82222" />
+    <svg viewBox="0 0 64 68" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M 14 12 L 21 54 Q 21 58 25 58 L 39 58 Q 43 58 43 54 L 50 12 Z"
+        stroke="#1db86a" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round"
+      />
+      <line x1="9"  y1="13" x2="55" y2="13" stroke="#1db86a" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="5"  y1="8"  x2="13" y2="16" stroke="#1db86a" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="59" y1="8"  x2="51" y2="16" stroke="#1db86a" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="27" y1="47" x2="27" y2="55" stroke="#1db86a" strokeWidth="2.5" strokeLinecap="round" opacity={0.45}/>
+      <line x1="32" y1="49" x2="32" y2="57" stroke="#1db86a" strokeWidth="2.5" strokeLinecap="round" opacity={0.7}/>
+      <line x1="37" y1="47" x2="37" y2="55" stroke="#1db86a" strokeWidth="2.5" strokeLinecap="round" opacity={0.45}/>
     </svg>
   );
 }
@@ -45,9 +50,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <aside className="w-14 md:w-56 flex flex-col bg-rtr-sidebar border-r border-rtr-border shrink-0">
         {/* Logo */}
         <div className="flex items-center gap-2.5 px-4 py-4 border-b border-rtr-border">
-          <RedlineMark className="w-7 h-7 shrink-0" />
+          <CrucibleMark className="w-7 h-7 shrink-0" />
           <div className="hidden md:flex flex-col leading-tight">
-            <span className="brand-glow text-base">REDLINE</span>
+            <span className="brand-wordmark text-base">
+              <span className="brand-accent">C</span>RUCIBLE
+            </span>
             <span className="text-[8px] text-rtr-dim tracking-[0.35em] uppercase">Crisis Simulation</span>
           </div>
         </div>

@@ -10,6 +10,7 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { Layout } from "@/components/Layout";
+import { LoadScreen } from "@/components/LoadScreen";
 import { Home } from "@/screens/Home";
 import { Library } from "@/screens/Library";
 import { Builder } from "@/screens/Builder";
@@ -44,6 +45,10 @@ export function App() {
 
   const [route, setRoute] = useState<HashRoute>(() => parseHash());
 
+  // Show the load screen once on first facilitator-app boot.
+  // #present / #join / #participant skip it — they have their own entry UX.
+  const [appReady, setAppReady] = useState(() => parseHash().kind !== "app");
+
   // Sync light/dark class on <html> whenever theme setting changes.
   useEffect(() => {
     if (theme === "light") {
@@ -69,6 +74,10 @@ export function App() {
   if (route.kind === "present" || view === "present") return <Present />;
   if (route.kind === "join") return <Join code={route.code} />;
   if (route.kind === "participant") return <Participant code={route.code} />;
+
+  if (!appReady) {
+    return <LoadScreen onComplete={() => setAppReady(true)} />;
+  }
 
   return (
     <Layout>
