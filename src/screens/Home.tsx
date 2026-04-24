@@ -379,8 +379,8 @@ function StepCard({
   return (
     <div className="bg-rtr-panel border border-rtr-border rounded-xl p-5 group hover:border-rtr-border-light transition-colors">
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-rtr-red"
-          style={{ background: "rgba(232,34,34,0.08)", border: "1px solid rgba(232,34,34,0.15)" }}>
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-rtr-green"
+          style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.15)" }}>
           {icon}
         </div>
         <span className="text-[10px] font-bold text-rtr-dim tracking-wider uppercase">Step {step}</span>
@@ -408,91 +408,114 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
   const visibleFw = frameworks.slice(0, 2);
   const extraFw   = frameworks.length - visibleFw.length;
 
+  const NOISE = "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+
   return (
     <div
-      className="group relative rounded-xl overflow-hidden border border-rtr-border card-lift fade-in-up cursor-pointer bg-[#0f1114]"
+      className="group relative rounded-2xl overflow-hidden cursor-pointer fade-in-up"
+      style={{
+        height: 268,
+        background: scenario.coverGradient
+          ? `linear-gradient(${scenario.coverGradient})`
+          : "#0d0f12",
+        boxShadow: "0 0 0 1px rgba(255,255,255,0.07)",
+        transition: "transform 0.35s cubic-bezier(0.34,1.2,0.64,1), box-shadow 0.3s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow =
+          "0 0 0 1px rgba(29,184,106,0.5), 0 20px 60px rgba(0,0,0,0.5)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "";
+        e.currentTarget.style.boxShadow = "0 0 0 1px rgba(255,255,255,0.07)";
+      }}
       onClick={onRun}
     >
-      {/* ── Cover ── */}
+      {/* Film-grain noise texture */}
+      <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none"
+        style={{ backgroundImage: NOISE }} />
+
+      {/* Gradient vignette — heavy at base so text is always legible */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/30 to-transparent pointer-events-none" />
+
+      {/* Hover: green underglow bloom */}
       <div
-        className="relative h-44 overflow-hidden"
-        style={{ background: scenario.coverGradient ? `linear-gradient(${scenario.coverGradient})` : "#15171a" }}
-      >
-        {scenario.imageUrl && (
-          <img
-            src={scenario.imageUrl} alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity group-hover:opacity-55 transition-opacity duration-500"
-          />
-        )}
-        {/* Vignette — heavier at bottom so title is readable */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1114] via-black/30 to-transparent" />
-        {/* Subtle noise texture */}
-        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
-        />
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at 50% 110%, rgba(29,184,106,0.10) 0%, transparent 65%)",
+          transition: "opacity 0.5s ease",
+        }}
+      />
 
-        {/* Classification badges — top left */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm ${DIFFICULTY_COLOUR[scenario.difficulty]}`}>
-            {DIFFICULTY_LABEL[scenario.difficulty]}
-          </span>
-          <span className="text-[10px] text-white/60 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10 font-medium">
-            {SCENARIO_TYPE_LABELS[scenario.type]}
-          </span>
-        </div>
-
-        {/* Hover play overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="w-12 h-12 rounded-full bg-rtr-red/90 flex items-center justify-center shadow-lg shadow-rtr-red/30 scale-90 group-hover:scale-100 transition-transform duration-200">
-            <PlayCircle className="w-6 h-6 text-white" />
-          </div>
-        </div>
-
-        {/* Title block — pinned to bottom of cover */}
-        <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-8">
-          <p className="text-sm font-bold text-white leading-snug">{scenario.title}</p>
-          {scenario.audienceLabel && (
-            <p className="text-[11px] text-white/50 mt-0.5 line-clamp-1 leading-snug">{scenario.audienceLabel}</p>
-          )}
-        </div>
+      {/* ── Top row: badges ─────────────────────────────────────── */}
+      <div className="absolute top-4 left-4 flex items-center gap-1.5 z-10">
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm ${DIFFICULTY_COLOUR[scenario.difficulty]}`}>
+          {DIFFICULTY_LABEL[scenario.difficulty]}
+        </span>
+        <span className="text-[10px] text-white/55 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10 font-medium">
+          {SCENARIO_TYPE_LABELS[scenario.type]}
+        </span>
       </div>
 
-      {/* ── Footer ── */}
-      <div className="px-4 pt-3 pb-4">
-        {/* Description */}
-        <p className="text-xs text-rtr-muted line-clamp-2 leading-relaxed mb-3">
+      {/* Top-right: inject/duration chip — appears on hover */}
+      <div
+        className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100"
+        style={{ transition: "opacity 0.2s ease" }}
+      >
+        <span className="text-[10px] font-mono text-white/45 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
+          {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
+        </span>
+      </div>
+
+      {/* ── Bottom content ───────────────────────────────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-12 z-10">
+
+        {/* Description — slides up on hover */}
+        <p className="text-xs text-white/55 leading-relaxed line-clamp-2 mb-3 opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           {scenario.description}
         </p>
 
-        {/* Meta row */}
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs text-rtr-dim font-mono">
-            {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
-          </span>
-          {visibleFw.length > 0 && (
-            <div className="flex items-center gap-1">
-              {visibleFw.map((fw: string) => (
-                <span key={fw} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400/80 border border-blue-500/15 font-medium">
-                  {fw}
-                </span>
-              ))}
-              {extraFw > 0 && (
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-rtr-elevated text-rtr-dim border border-rtr-border">
-                  +{extraFw}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Run button — full width */}
-        <button
-          onClick={(e) => { e.stopPropagation(); onRun(); }}
-          className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-rtr-red hover:brightness-110 py-2 rounded-lg transition"
+        {/* Title — always visible */}
+        <h3
+          className="text-[28px] leading-[1.05] text-white mb-0.5"
+          style={{ fontFamily: "'Bebas Neue', 'Arial Black', sans-serif", letterSpacing: "0.04em" }}
         >
-          <PlayCircle className="w-3.5 h-3.5" />
-          Run scenario
-        </button>
+          {scenario.title}
+        </h3>
+
+        {/* Audience label */}
+        {scenario.audienceLabel && (
+          <p className="text-[11px] text-white/40 mb-3 leading-snug">{scenario.audienceLabel}</p>
+        )}
+
+        {/* Framework badges */}
+        {visibleFw.length > 0 && (
+          <div className="flex items-center gap-1 mb-0">
+            {visibleFw.map((fw: string) => (
+              <span key={fw} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-300/65 border border-blue-400/20 font-medium backdrop-blur-sm">
+                {fw}
+              </span>
+            ))}
+            {extraFw > 0 && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/30 text-white/30 border border-white/10">
+                +{extraFw}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Run button — slides up on hover via max-h transition */}
+        <div className="overflow-hidden max-h-0 group-hover:max-h-12 group-hover:mt-3 transition-all duration-300 ease-out">
+          <button
+            onClick={(e) => { e.stopPropagation(); onRun(); }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold text-white hover:brightness-110 transition-all duration-200"
+            style={{ background: "rgba(29,184,106,0.88)", backdropFilter: "blur(8px)" }}
+          >
+            <PlayCircle className="w-3.5 h-3.5" />
+            Run scenario
+          </button>
+        </div>
       </div>
     </div>
   );
