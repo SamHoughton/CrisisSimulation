@@ -458,27 +458,20 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
         </span>
       </div>
 
-      {/* Top-right: inject/duration chip — appears on hover */}
-      <div
-        className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100"
-        style={{ transition: "opacity 0.2s ease" }}
-      >
-        <span className="text-[10px] font-mono text-white/45 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
-          {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
-        </span>
-      </div>
 
-      {/* ── Bottom content ───────────────────────────────────────── */}
-      <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 pt-12 z-10">
+      {/* ── Bottom content — anchored to card base ───────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 z-10">
 
-        {/* Description — slides up on hover */}
-        <p className="text-xs text-white/55 leading-relaxed line-clamp-2 mb-3 opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          {scenario.description}
-        </p>
+        {/* Description — zero height at rest, expands on hover */}
+        <div className="overflow-hidden max-h-0 group-hover:max-h-16 group-hover:mb-3 transition-all duration-300 ease-out">
+          <p className="text-xs text-white/55 leading-relaxed line-clamp-2">
+            {scenario.description}
+          </p>
+        </div>
 
         {/* Title — always visible */}
         <h3
-          className="text-[28px] leading-[1.05] text-white mb-0.5"
+          className="text-[26px] leading-[1.05] text-white mb-1"
           style={{ fontFamily: "'Bebas Neue', 'Arial Black', sans-serif", letterSpacing: "0.04em" }}
         >
           {scenario.title}
@@ -486,26 +479,25 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
 
         {/* Audience label */}
         {scenario.audienceLabel && (
-          <p className="text-[11px] text-white/40 mb-3 leading-snug">{scenario.audienceLabel}</p>
+          <p className="text-[11px] text-white/40 mb-2.5 leading-snug">{scenario.audienceLabel}</p>
         )}
 
-        {/* Framework badges */}
-        {visibleFw.length > 0 && (
-          <div className="flex items-center gap-1 mb-0">
-            {visibleFw.map((fw: string) => (
-              <span key={fw} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-300/65 border border-blue-400/20 font-medium backdrop-blur-sm">
-                {fw}
-              </span>
-            ))}
-            {extraFw > 0 && (
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/30 text-white/30 border border-white/10">
-                +{extraFw}
-              </span>
-            )}
-          </div>
-        )}
+        {/* Framework badges + inject count in one row */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[9px] font-mono text-white/30 mr-0.5">
+            {scenario.injects.length} injects · {formatDuration(scenario.durationMin)}
+          </span>
+          {visibleFw.map((fw: string) => (
+            <span key={fw} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-300/65 border border-blue-400/20 font-medium backdrop-blur-sm">
+              {fw}
+            </span>
+          ))}
+          {extraFw > 0 && (
+            <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/30 text-white/30 border border-white/10">+{extraFw}</span>
+          )}
+        </div>
 
-        {/* Run button — slides up on hover via max-h transition */}
+        {/* Run button — slides in on hover */}
         <div className="overflow-hidden max-h-0 group-hover:max-h-12 group-hover:mt-3 transition-all duration-300 ease-out">
           <button
             onClick={(e) => { e.stopPropagation(); onRun(); }}
