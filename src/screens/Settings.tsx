@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Settings.tsx - Configuration screen.
  *
  * Sections: facilitator profile (name, org), Anthropic API key (with visibility
@@ -33,8 +33,8 @@ export function Settings() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="mb-8 fade-in-up">
-        <h1 className="text-2xl font-semibold text-rtr-text">Settings</h1>
-        <p className="text-rtr-muted text-sm mt-0.5">Configure your facilitator profile and API access</p>
+        <h1 className="text-2xl font-semibold text-crux-text">Settings</h1>
+        <p className="text-crux-muted text-sm mt-0.5">Configure your facilitator profile and API access</p>
       </div>
 
       <div className="space-y-6 stagger">
@@ -60,14 +60,14 @@ export function Settings() {
 
         {/* Claude API */}
         <Card title="Anthropic API Key (optional)">
-          <p className="text-xs text-rtr-muted mb-4 leading-relaxed">
+          <p className="text-xs text-crux-muted mb-4 leading-relaxed">
             Report generation uses Claude via a hosted proxy with some usage limits. Add your own key to use your own Anthropic account and remove those limits.
             Your key is stored in this browser only and sent directly to Anthropic. It never touches our servers.{" "}
             <a
               href="https://console.anthropic.com/"
               target="_blank"
               rel="noreferrer"
-              className="text-rtr-green hover:underline"
+              className="text-crux-green hover:underline"
             >
               Get a key →
             </a>
@@ -83,18 +83,18 @@ export function Settings() {
               />
               <button
                 onClick={() => setShowKey((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-rtr-dim hover:text-rtr-muted"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-crux-dim hover:text-crux-muted"
               >
                 {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </Field>
           {draft.claudeApiKey ? (
-            <p className="text-xs text-rtr-green flex items-center gap-1 mt-2">
+            <p className="text-xs text-crux-green flex items-center gap-1 mt-2">
               <CheckCircle className="w-3.5 h-3.5" />Using your personal API key
             </p>
           ) : (
-            <p className="text-xs text-rtr-dim flex items-center gap-1 mt-2">
+            <p className="text-xs text-crux-dim flex items-center gap-1 mt-2">
               <CheckCircle className="w-3.5 h-3.5" />Using hosted proxy
             </p>
           )}
@@ -104,16 +104,16 @@ export function Settings() {
         <Card title="Appearance">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-rtr-text">Colour theme</p>
-              <p className="text-xs text-rtr-dim mt-0.5">Choose between dark and light mode</p>
+              <p className="text-sm text-crux-text">Colour theme</p>
+              <p className="text-xs text-crux-dim mt-0.5">Choose between dark and light mode</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setDraft({ ...draft, theme: "dark" })}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs border transition-colors ${
                   draft.theme !== "light"
-                    ? "bg-rtr-elevated border-rtr-border-light text-rtr-text font-medium"
-                    : "border-rtr-border text-rtr-dim hover:text-rtr-muted"
+                    ? "bg-crux-elevated border-crux-border-light text-crux-text font-medium"
+                    : "border-crux-border text-crux-dim hover:text-crux-muted"
                 }`}
               >
                 <Moon className="w-3.5 h-3.5" />Dark
@@ -122,8 +122,8 @@ export function Settings() {
                 onClick={() => setDraft({ ...draft, theme: "light" })}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs border transition-colors ${
                   draft.theme === "light"
-                    ? "bg-rtr-elevated border-rtr-border-light text-rtr-text font-medium"
-                    : "border-rtr-border text-rtr-dim hover:text-rtr-muted"
+                    ? "bg-crux-elevated border-crux-border-light text-crux-text font-medium"
+                    : "border-crux-border text-crux-dim hover:text-crux-muted"
                 }`}
               >
                 <Sun className="w-3.5 h-3.5" />Light
@@ -136,10 +136,10 @@ export function Settings() {
         <Card title="Local Storage">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-rtr-text">
+              <p className="text-sm text-crux-text">
                 {pastSessions.length} exercise{pastSessions.length !== 1 ? "s" : ""} stored locally
               </p>
-              <p className="text-xs text-rtr-dim mt-0.5">
+              <p className="text-xs text-crux-dim mt-0.5">
                 All data lives in your browser. Export reports to JSON before clearing.
               </p>
             </div>
@@ -156,7 +156,7 @@ export function Settings() {
       <div className="flex justify-end mt-8 fade-in-up">
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-rtr-red text-white px-5 py-2 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors hover:shadow-lg hover:shadow-rtr-red/20"
+          className="flex items-center gap-2 bg-crux-green text-white px-5 py-2 rounded text-sm font-medium hover:brightness-110 transition-colors hover:shadow-lg hover:shadow-crux-green/20"
         >
           {saved ? (
             <><CheckCircle className="w-4 h-4" />Saved!</>
@@ -171,9 +171,9 @@ export function Settings() {
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden fade-in-up">
-      <div className="px-5 py-3.5 bg-rtr-elevated border-b border-rtr-border">
-        <h2 className="text-xs font-semibold text-rtr-muted uppercase tracking-wider">{title}</h2>
+    <div className="bg-crux-panel border border-crux-border rounded-xl overflow-hidden fade-in-up">
+      <div className="px-5 py-3.5 bg-crux-elevated border-b border-crux-border">
+        <h2 className="text-xs font-semibold text-crux-muted uppercase tracking-wider">{title}</h2>
       </div>
       <div className="p-5 space-y-4">{children}</div>
     </div>
@@ -183,7 +183,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="text-xs font-medium text-rtr-dim block mb-1.5">{label}</label>
+      <label className="text-xs font-medium text-crux-dim block mb-1.5">{label}</label>
       {children}
     </div>
   );

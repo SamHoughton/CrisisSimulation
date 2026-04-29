@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Runner.tsx - Live session facilitator control panel.
  *
  * Three-panel layout:
@@ -438,9 +438,9 @@ export function Runner() {
 
   if (!session) {
     return (
-      <div className="p-8 text-center text-rtr-muted">
+      <div className="p-8 text-center text-crux-muted">
         No active session.{" "}
-        <button onClick={() => setView("library")} className="text-rtr-green underline">
+        <button onClick={() => setView("library")} className="text-crux-green underline">
           Pick a scenario
         </button>
       </div>
@@ -523,10 +523,10 @@ export function Runner() {
   })();
 
   return (
-    <div className="flex h-full flex-col bg-rtr-base">
+    <div className="flex h-full flex-col bg-crux-base">
       {/* ── Control bar ─────────────────────────────────────────────────────── */}
       <div
-        className="flex flex-col bg-rtr-panel sticky top-0 z-20"
+        className="flex flex-col bg-crux-panel sticky top-0 z-20"
         style={{
           borderBottom: `1px solid ${crisisPct < 40 ? "#1e2128" : crisisPct < 70 ? "rgba(245,158,11,0.35)" : "rgba(232,34,34,0.45)"}`,
           boxShadow: crisisPct >= 70
@@ -538,7 +538,7 @@ export function Runner() {
         }}
       >
         {/* Crisis escalation bar */}
-        <div className="h-1 w-full bg-rtr-elevated overflow-hidden">
+        <div className="h-1 w-full bg-crux-elevated overflow-hidden">
           <div
             className="h-full crisis-fill"
             style={{
@@ -566,23 +566,23 @@ export function Runner() {
       )}
       <div className="flex items-center gap-4 px-5 py-3">
           <div className="flex-1 min-w-0">
-            <h1 className="text-sm font-semibold text-rtr-text truncate">{session.scenario.title}</h1>
-            <p className="text-xs text-rtr-dim font-mono">
+            <h1 className="text-sm font-semibold text-crux-text truncate">{session.scenario.title}</h1>
+            <p className="text-xs text-crux-dim font-mono">
               {session.liveInjects.length}/{orderedInjects.length} injects · {session.participants.length} participants
             </p>
           </div>
 
           {/* Inject timer */}
           {currentLive && (
-            <div className="flex items-center gap-1.5 border border-rtr-border rounded-lg px-3 py-1.5 bg-rtr-elevated">
-              <Timer className="w-3.5 h-3.5 text-rtr-dim shrink-0" />
+            <div className="flex items-center gap-1.5 border border-crux-border rounded-lg px-3 py-1.5 bg-crux-elevated">
+              <Timer className="w-3.5 h-3.5 text-crux-dim shrink-0" />
               <span className={cn("font-mono text-sm font-semibold w-14 text-center",
-                timerUrgent ? "timer-urgent" : "text-rtr-text")}>
+                timerUrgent ? "timer-urgent" : "text-crux-text")}>
                 {timerLabel}
               </span>
               {!timerRunning ? (
                 <button onClick={handleStartTimer}
-                  className="text-rtr-green hover:opacity-80 transition-opacity">
+                  className="text-crux-green hover:opacity-80 transition-opacity">
                   <Play className="w-3.5 h-3.5" />
                 </button>
               ) : (
@@ -592,26 +592,26 @@ export function Runner() {
                 </button>
               )}
               <button onClick={handleResetTimer}
-                className="text-rtr-dim hover:text-rtr-muted transition-colors">
+                className="text-crux-dim hover:text-crux-muted transition-colors">
                 <RotateCcw className="w-3 h-3" />
               </button>
             </div>
           )}
 
           <div className={cn("font-mono text-sm font-medium flex items-center gap-1.5",
-            session.status === "active" ? "text-rtr-text" : "text-rtr-dim")}>
+            session.status === "active" ? "text-crux-text" : "text-crux-dim")}>
             <Clock className="w-4 h-4" />{elapsed}
           </div>
           <div className={cn("text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1.5 font-mono",
-            session.status === "active" && "bg-rtr-red/15 text-rtr-red",
+            session.status === "active" && "bg-crux-red/15 text-crux-red",
             session.status === "paused" && "bg-amber-500/15 text-amber-400",
-            session.status === "setup"  && "bg-rtr-elevated text-rtr-muted",
-            session.status === "ended"  && "bg-rtr-green/15 text-rtr-green",
+            session.status === "setup"  && "bg-crux-elevated text-crux-muted",
+            session.status === "ended"  && "bg-crux-green/15 text-crux-green",
           )}>
             {session.status === "active" && (
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rtr-red opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-rtr-red" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-crux-red opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-crux-red" />
               </span>
             )}
             {session.status.toUpperCase()}
@@ -623,21 +623,21 @@ export function Runner() {
                 "flex items-center gap-1.5 text-xs border px-3 py-1.5 rounded transition-colors",
                 showStoryMap
                   ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
-                  : "border-rtr-border-light text-rtr-muted hover:bg-rtr-elevated"
+                  : "border-crux-border-light text-crux-muted hover:bg-crux-elevated"
               )}
               title="Story Map — see the full scenario branch structure"
             >
               <Map className="w-3.5 h-3.5" />Story Map
             </button>
             <button onClick={openPresent}
-              className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted">
+              className="flex items-center gap-1.5 text-xs border border-crux-border-light px-3 py-1.5 rounded hover:bg-crux-elevated transition-colors text-crux-muted">
               <Monitor className="w-3.5 h-3.5" />Present
             </button>
             {!remoteSession ? (
               <button
                 onClick={handleEnableParticipantDevices}
                 disabled={remoteBusy}
-                className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted disabled:opacity-50"
+                className="flex items-center gap-1.5 text-xs border border-crux-border-light px-3 py-1.5 rounded hover:bg-crux-elevated transition-colors text-crux-muted disabled:opacity-50"
                 title="Enable participant devices (QR voting)"
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -646,30 +646,30 @@ export function Runner() {
             ) : (
               <button
                 onClick={() => setShowRemotePanel((v) => !v)}
-                className="flex items-center gap-1.5 text-xs border border-rtr-green/30 bg-rtr-green/10 text-rtr-green px-3 py-1.5 rounded hover:bg-rtr-green/15 transition-colors font-mono"
+                className="flex items-center gap-1.5 text-xs border border-crux-green/30 bg-crux-green/10 text-crux-green px-3 py-1.5 rounded hover:bg-crux-green/15 transition-colors font-mono"
                 title={`Participant code ${remoteSession.code}`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
                 {remoteSession.code}
-                <span className="text-[10px] text-rtr-green/80">
+                <span className="text-[10px] text-crux-green/80">
                   ({remoteSession.participants.length})
                 </span>
               </button>
             )}
             {session.status === "active" && (
               <button onClick={pauseSession}
-                className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors">
+                className="flex items-center gap-1.5 text-xs border border-crux-border-light px-3 py-1.5 rounded hover:bg-crux-elevated text-crux-muted transition-colors">
                 <Pause className="w-3.5 h-3.5" />Pause
               </button>
             )}
             {session.status === "paused" && (
               <button onClick={resumeSession}
-                className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-3 py-1.5 rounded hover:bg-rtr-elevated text-rtr-muted transition-colors">
+                className="flex items-center gap-1.5 text-xs border border-crux-border-light px-3 py-1.5 rounded hover:bg-crux-elevated text-crux-muted transition-colors">
                 <Play className="w-3.5 h-3.5" />Resume
               </button>
             )}
             <button onClick={handleEnd}
-              className="flex items-center gap-1.5 text-xs border border-rtr-red/30 text-red-400 px-3 py-1.5 rounded hover:bg-rtr-red/10 transition-colors">
+              className="flex items-center gap-1.5 text-xs border border-crux-red/30 text-red-400 px-3 py-1.5 rounded hover:bg-crux-red/10 transition-colors">
               <Square className="w-3.5 h-3.5" />End
             </button>
           </div>
@@ -683,63 +683,63 @@ export function Runner() {
 
       {/* ── Participant devices panel ───────────────────────────────────── */}
       {showRemotePanel && remoteSession && (
-        <div className="border-b border-rtr-border bg-rtr-panel px-5 py-4">
+        <div className="border-b border-crux-border bg-crux-panel px-5 py-4">
           <div className="flex gap-5 items-start">
             <div className="shrink-0">
               {remoteQrDataUrl ? (
                 <img
                   src={remoteQrDataUrl}
                   alt={`Join QR for code ${remoteSession.code}`}
-                  className="w-36 h-36 rounded-lg border border-rtr-border bg-white"
+                  className="w-36 h-36 rounded-lg border border-crux-border bg-white"
                 />
               ) : (
-                <div className="w-36 h-36 rounded-lg border border-rtr-border bg-rtr-elevated flex items-center justify-center">
-                  <QrCode className="w-8 h-8 text-rtr-dim" />
+                <div className="w-36 h-36 rounded-lg border border-crux-border bg-crux-elevated flex items-center justify-center">
+                  <QrCode className="w-8 h-8 text-crux-dim" />
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
                 <div>
-                  <p className="text-[10px] font-semibold text-rtr-dim uppercase tracking-widest mb-1">
+                  <p className="text-[10px] font-semibold text-crux-dim uppercase tracking-widest mb-1">
                     Participant join code
                   </p>
-                  <p className="font-mono text-2xl font-bold text-rtr-green tracking-widest">
+                  <p className="font-mono text-2xl font-bold text-crux-green tracking-widest">
                     {remoteSession.code}
                   </p>
                 </div>
                 <button
                   onClick={() => setShowRemotePanel(false)}
-                  className="text-rtr-dim hover:text-rtr-text transition-colors"
+                  className="text-crux-dim hover:text-crux-text transition-colors"
                   title="Hide panel"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-xs text-rtr-muted mb-2 font-mono truncate">
+              <p className="text-xs text-crux-muted mb-2 font-mono truncate">
                 {buildJoinUrl(remoteSession.code)}
               </p>
               <div className="flex items-center gap-2 mb-3">
                 <button
                   onClick={handleCopyJoinUrl}
-                  className="flex items-center gap-1.5 text-xs border border-rtr-border-light px-2.5 py-1 rounded hover:bg-rtr-elevated transition-colors text-rtr-muted"
+                  className="flex items-center gap-1.5 text-xs border border-crux-border-light px-2.5 py-1 rounded hover:bg-crux-elevated transition-colors text-crux-muted"
                 >
                   <Copy className="w-3 h-3" />
                   {copyFeedback || "Copy link"}
                 </button>
                 <button
                   onClick={handleDisableParticipantDevices}
-                  className="flex items-center gap-1.5 text-xs border border-rtr-red/30 text-red-400 px-2.5 py-1 rounded hover:bg-rtr-red/10 transition-colors"
+                  className="flex items-center gap-1.5 text-xs border border-crux-red/30 text-red-400 px-2.5 py-1 rounded hover:bg-crux-red/10 transition-colors"
                 >
                   Stop devices
                 </button>
               </div>
               <div>
-                <p className="text-[10px] font-semibold text-rtr-dim uppercase tracking-widest mb-1">
+                <p className="text-[10px] font-semibold text-crux-dim uppercase tracking-widest mb-1">
                   Joined ({remoteSession.participants.length})
                 </p>
                 {remoteSession.participants.length === 0 ? (
-                  <p className="text-xs text-rtr-dim">
+                  <p className="text-xs text-crux-dim">
                     Waiting for participants to join…
                   </p>
                 ) : (
@@ -747,7 +747,7 @@ export function Runner() {
                     {remoteSession.participants.map((p) => (
                       <span
                         key={p.id}
-                        className={`text-xs px-2 py-0.5 rounded ${ROLE_COLOUR[p.role] ?? "bg-rtr-elevated text-rtr-muted"}`}
+                        className={`text-xs px-2 py-0.5 rounded ${ROLE_COLOUR[p.role] ?? "bg-crux-elevated text-crux-muted"}`}
                       >
                         {p.name} <span className="opacity-70">· {ROLE_SHORT[p.role] ?? p.role}</span>
                       </span>
@@ -762,9 +762,9 @@ export function Runner() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* ── Left: inject queue ───────────────────────────────────────────── */}
-        <div className="w-48 md:w-56 lg:w-64 border-r border-rtr-border flex flex-col overflow-hidden shrink-0 bg-rtr-panel">
-          <div className="px-4 py-2.5 border-b border-rtr-border">
-            <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Inject Queue</p>
+        <div className="w-48 md:w-56 lg:w-64 border-r border-crux-border flex flex-col overflow-hidden shrink-0 bg-crux-panel">
+          <div className="px-4 py-2.5 border-b border-crux-border">
+            <p className="text-xs font-semibold text-crux-dim uppercase tracking-wider">Inject Queue</p>
           </div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {orderedInjects.map((inj, idx) => {
@@ -790,14 +790,14 @@ export function Runner() {
                   )}
                 <div className={cn(
                   "rounded border p-3 text-xs transition-colors",
-                  released && !isLive ? "border-rtr-green/20 bg-rtr-green/5 opacity-60"
-                  : isLive  ? "border-rtr-red/40 bg-rtr-red/8"
-                  : isNext  ? "border-rtr-red/30 bg-rtr-red/5"
-                  : !onPath ? "border-rtr-border/40 bg-rtr-base opacity-35"
-                  :           "border-rtr-border bg-rtr-elevated"
+                  released && !isLive ? "border-crux-green/20 bg-crux-green/5 opacity-60"
+                  : isLive  ? "border-crux-red/40 bg-crux-red/8"
+                  : isNext  ? "border-crux-red/30 bg-crux-red/5"
+                  : !onPath ? "border-crux-border/40 bg-crux-base opacity-35"
+                  :           "border-crux-border bg-crux-elevated"
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
-                    <span className="font-bold text-rtr-dim font-mono shrink-0">{idx + 1}</span>
+                    <span className="font-bold text-crux-dim font-mono shrink-0">{idx + 1}</span>
                     {inj.commandTier && TIER_COLOUR[inj.commandTier] && (
                       <span
                         title={TIER_LABEL[inj.commandTier]}
@@ -805,8 +805,8 @@ export function Runner() {
                       />
                     )}
                     <span className={cn("font-medium flex-1 truncate",
-                      released && !isLive ? "text-rtr-green line-through"
-                      : isLive ? "text-rtr-red" : isNext ? "text-rtr-text" : "text-rtr-muted"
+                      released && !isLive ? "text-crux-green line-through"
+                      : isLive ? "text-crux-red" : isNext ? "text-crux-text" : "text-crux-muted"
                     )}>
                       {inj.title}
                     </span>
@@ -817,11 +817,11 @@ export function Runner() {
                   </div>
                   <div className="flex items-center justify-between">
                     {released && !isLive ? (
-                      <span className="text-rtr-green">✓ Done</span>
+                      <span className="text-crux-green">✓ Done</span>
                     ) : isNext || (!released && !isLive && orderedInjects[0]?.id === inj.id && session.liveInjects.length === 0) ? (
                       <div className="flex items-center gap-1.5">
                         <button onClick={() => handleRelease(inj.id)}
-                          className="flex items-center gap-1 bg-rtr-red text-white text-[10px] font-bold px-2.5 py-1 rounded hover:bg-[#c0001f] transition-colors shadow-sm shadow-rtr-red/20">
+                          className="flex items-center gap-1 bg-crux-green text-white text-[10px] font-bold px-2.5 py-1 rounded hover:brightness-110 transition-colors shadow-sm shadow-crux-green/20">
                           <Send className="w-2.5 h-2.5" />Release
                         </button>
                         {inj.tierSkipSummary && (
@@ -838,10 +838,10 @@ export function Runner() {
                         )}
                       </div>
                     ) : isLive ? (
-                      <span className="text-rtr-red font-mono">LIVE</span>
+                      <span className="text-crux-red font-mono">LIVE</span>
                     ) : !released && onPath && inj.tierSkipSummary ? (
                       <div className="flex items-center gap-1.5">
-                        <span className="text-rtr-dim">Queued</span>
+                        <span className="text-crux-dim">Queued</span>
                         <button
                           onClick={() => {
                             const r1 = inj.decisionOptions.find((o) => o.rank === 1);
@@ -854,10 +854,10 @@ export function Runner() {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-rtr-dim">{onPath ? "Queued" : "Off-path"}</span>
+                      <span className="text-crux-dim">{onPath ? "Queued" : "Off-path"}</span>
                     )}
                     {inj.timerMinutes && (
-                      <span className="text-rtr-dim font-mono text-xs">{inj.timerMinutes}m</span>
+                      <span className="text-crux-dim font-mono text-xs">{inj.timerMinutes}m</span>
                     )}
                   </div>
                 </div>
@@ -867,7 +867,7 @@ export function Runner() {
           </div>
 
           {/* Ad-hoc inject */}
-          <div className="p-3 border-t border-rtr-border">
+          <div className="p-3 border-t border-crux-border">
             {showAdHoc ? (
               <div className="space-y-2">
                 <textarea
@@ -875,7 +875,7 @@ export function Runner() {
                   onChange={(e) => setAdHocText(e.target.value)}
                   placeholder="Something has just happened…"
                   rows={3}
-                  className="w-full text-xs bg-rtr-base border border-rtr-border-light text-rtr-text rounded px-2.5 py-2 resize-none focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+                  className="w-full text-xs bg-crux-base border border-crux-border-light text-crux-text rounded px-2.5 py-2 resize-none focus:outline-none focus:border-crux-green placeholder:text-crux-dim"
                 />
                 <div className="flex gap-2">
                   <button
@@ -891,14 +891,14 @@ export function Runner() {
                     className="flex-1 text-xs bg-amber-500 text-white py-1.5 rounded hover:bg-amber-600"
                   >Send</button>
                   <button onClick={() => setShowAdHoc(false)}
-                    className="text-xs border border-rtr-border px-2 rounded text-rtr-muted hover:text-rtr-text">
+                    className="text-xs border border-crux-border px-2 rounded text-crux-muted hover:text-crux-text">
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
               <button onClick={() => setShowAdHoc(true)}
-                className="w-full flex items-center justify-center gap-1.5 text-xs text-rtr-dim border border-dashed border-rtr-border py-2 rounded hover:border-amber-500/40 hover:text-amber-400 transition-colors">
+                className="w-full flex items-center justify-center gap-1.5 text-xs text-crux-dim border border-dashed border-crux-border py-2 rounded hover:border-amber-500/40 hover:text-amber-400 transition-colors">
                 <Plus className="w-3.5 h-3.5" />Ad-hoc inject
               </button>
             )}
@@ -918,7 +918,7 @@ export function Runner() {
                 </div>
                 <button
                   onClick={() => setSkipPanelInjectId(null)}
-                  className="text-rtr-dim hover:text-rtr-text transition-colors"
+                  className="text-crux-dim hover:text-crux-text transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -928,7 +928,7 @@ export function Runner() {
               </div>
               {skipInj.isDecisionPoint && skipInj.decisionOptions.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs text-rtr-dim mb-2">Which path did the group take?</p>
+                  <p className="text-xs text-crux-dim mb-2">Which path did the group take?</p>
                   <div className="flex flex-wrap gap-2">
                     {skipInj.decisionOptions.map((opt, i) => (
                       <button
@@ -938,13 +938,13 @@ export function Runner() {
                           "flex items-center gap-1.5 text-xs border rounded-lg px-3 py-1.5 font-semibold transition-all",
                           skipChoice === opt.key
                             ? cn(OPTION_COLOURS[i] ?? OPTION_COLOURS[0], "ring-2 ring-white/20")
-                            : "border-rtr-border text-rtr-dim hover:text-rtr-muted",
+                            : "border-crux-border text-crux-dim hover:text-crux-muted",
                         )}
                       >
                         <span className="font-mono">{opt.key}</span>
                         <span className="font-normal opacity-80 max-w-[160px] truncate">{opt.label}</span>
                         {opt.rank === 1 && (
-                          <span className="text-[9px] text-rtr-green font-mono">★</span>
+                          <span className="text-[9px] text-crux-green font-mono">★</span>
                         )}
                       </button>
                     ))}
@@ -968,12 +968,12 @@ export function Runner() {
           )}
           {currentLive ? (
             <>
-              <div className="px-6 py-5 border-b border-rtr-border bg-rtr-panel">
+              <div className="px-6 py-5 border-b border-crux-border bg-crux-panel">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3">
-                    <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Current Inject</p>
+                    <p className="text-xs font-semibold text-crux-dim uppercase tracking-wider">Current Inject</p>
                   </div>
-                  <p className="text-xs text-rtr-dim font-mono">
+                  <p className="text-xs text-crux-dim font-mono">
                     Released {new Date(currentLive.releasedAt).toLocaleTimeString()}
                     <span className="text-amber-400/70"> · on inject for {injectElapsed}</span>
                   </p>
@@ -991,8 +991,8 @@ export function Runner() {
                     </div>
                   ) : null;
                 })()}
-                <h2 className="text-base font-semibold text-rtr-text mb-2">{currentLive.injectTitle}</h2>
-                <p className="text-sm text-rtr-muted leading-relaxed mb-3">{currentLive.injectBody}</p>
+                <h2 className="text-base font-semibold text-crux-text mb-2">{currentLive.injectTitle}</h2>
+                <p className="text-sm text-crux-muted leading-relaxed mb-3">{currentLive.injectBody}</p>
                 {(() => {
                   const inj = session.scenario.injects.find((i) => i.id === currentLive.injectId);
                   return inj?.facilitatorNotes ? (
@@ -1040,26 +1040,26 @@ export function Runner() {
               </div>
 
               {/* Keyboard shortcut hint strip */}
-              <div className="px-6 py-2 border-t border-rtr-border bg-rtr-panel flex items-center gap-3 flex-wrap">
+              <div className="px-6 py-2 border-t border-crux-border bg-crux-panel flex items-center gap-3 flex-wrap">
                 {nextInject && session.status === "active" && (
-                  <span className="text-rtr-dim text-xs font-mono">
+                  <span className="text-crux-dim text-xs font-mono">
                     Space: release next
                   </span>
                 )}
                 {currentLive && (
-                  <span className="text-rtr-dim text-xs font-mono">
+                  <span className="text-crux-dim text-xs font-mono">
                     T: {timerRunning ? "pause timer" : "start timer"}
                   </span>
                 )}
                 {showAdHoc && (
-                  <span className="text-rtr-dim text-xs font-mono">
+                  <span className="text-crux-dim text-xs font-mono">
                     Esc: close panel
                   </span>
                 )}
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-sm text-rtr-dim">
+            <div className="flex-1 flex items-center justify-center text-sm text-crux-dim">
               {session.status === "setup"
                 ? "Release the first inject from the queue to begin"
                 : "No inject released yet"}
@@ -1081,9 +1081,9 @@ export function Runner() {
         )}
 
         {/* ── Right: session notes ─────────────────────────────────────────── */}
-        <div className="hidden md:flex md:w-48 lg:w-56 border-l border-rtr-border flex-col overflow-hidden shrink-0 bg-rtr-panel">
-          <div className="px-4 py-2.5 border-b border-rtr-border">
-            <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider">Session Notes</p>
+        <div className="hidden md:flex md:w-48 lg:w-56 border-l border-crux-border flex-col overflow-hidden shrink-0 bg-crux-panel">
+          <div className="px-4 py-2.5 border-b border-crux-border">
+            <p className="text-xs font-semibold text-crux-dim uppercase tracking-wider">Session Notes</p>
           </div>
 
           {/* Rolling decision quality badge */}
@@ -1092,10 +1092,10 @@ export function Runner() {
               <div className={cn(
                 "flex items-center justify-between rounded-lg px-3 py-2 border text-xs font-semibold",
                 sessionScore <= 1.5
-                  ? "bg-rtr-green/10 border-rtr-green/30 text-rtr-green"
+                  ? "bg-crux-green/10 border-crux-green/30 text-crux-green"
                   : sessionScore <= 2.5
                   ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                  : "bg-rtr-red/10 border-rtr-red/30 text-rtr-red"
+                  : "bg-crux-red/10 border-crux-red/30 text-crux-red"
               )}>
                 <span>
                   {sessionScore <= 1.5
@@ -1113,26 +1113,26 @@ export function Runner() {
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {session.notes.map((n, i) => (
               <div key={i} className="bg-amber-500/8 border border-amber-500/20 rounded px-2.5 py-2">
-                <p className="text-xs text-rtr-text">{n.text}</p>
+                <p className="text-xs text-crux-text">{n.text}</p>
                 <p className="text-xs text-amber-400/60 mt-1 font-mono">
                   {new Date(n.timestamp).toLocaleTimeString()}
                 </p>
               </div>
             ))}
             {session.notes.length === 0 && (
-              <p className="text-xs text-rtr-dim text-center pt-4">No notes yet</p>
+              <p className="text-xs text-crux-dim text-center pt-4">No notes yet</p>
             )}
           </div>
-          <div className="p-3 border-t border-rtr-border">
+          <div className="p-3 border-t border-crux-border">
             <div className="flex gap-1.5">
               <input
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleNote(); }}}
                 placeholder="Observation…"
-                className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2.5 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+                className="flex-1 text-xs bg-crux-base border border-crux-border text-crux-text rounded px-2.5 py-2 focus:outline-none focus:border-crux-green placeholder:text-crux-dim"
               />
-              <button onClick={handleNote} className="bg-rtr-red text-white rounded px-2 hover:bg-[#c0001f]">
+              <button onClick={handleNote} className="bg-crux-green text-white rounded px-2 hover:brightness-110">
                 <Send className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -1176,7 +1176,7 @@ function VotingPanel({
               "flex items-center gap-1.5 text-xs px-3 py-1.5 rounded transition-colors",
               allVoted
                 ? "bg-amber-500 text-white hover:bg-amber-600 vote-pulse"
-                : "border border-rtr-border text-rtr-dim hover:text-rtr-text"
+                : "border border-crux-border text-crux-dim hover:text-crux-text"
             )}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -1196,19 +1196,19 @@ function VotingPanel({
             <div key={opt.key}
               className={cn("border rounded-lg p-3 transition-all", OPTION_COLOURS[i] ?? OPTION_COLOURS[0],
                 isWinner && "ring-2 ring-amber-400/50 scale-[1.02]",
-                isBest && !isWinner && "ring-2 ring-rtr-green/50"
+                isBest && !isWinner && "ring-2 ring-crux-green/50"
               )}>
               <div className="flex items-center gap-2 mb-1">
                 <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-mono bg-white/10",
                   OPTION_TEXT[i] ?? OPTION_TEXT[0])}>
                   {opt.key}
                 </span>
-                <span className="text-xs font-medium text-rtr-text flex-1 line-clamp-1">{opt.label}</span>
+                <span className="text-xs font-medium text-crux-text flex-1 line-clamp-1">{opt.label}</span>
                 {revealed && typeof opt.rank === "number" && (
                   <span className={cn(
                     "text-[10px] font-bold font-mono px-1.5 py-0.5 rounded shrink-0",
                     opt.rank === 1
-                      ? "bg-rtr-green/20 text-rtr-green border border-rtr-green/40"
+                      ? "bg-crux-green/20 text-crux-green border border-crux-green/40"
                       : opt.rank === 2
                       ? "bg-amber-500/20 text-amber-400 border border-amber-500/40"
                       : opt.rank === 3
@@ -1237,7 +1237,7 @@ function VotingPanel({
               )}
               {isWinner && <div className="mt-1 text-xs font-semibold text-amber-400 font-mono">▲ MAJORITY</div>}
               {isBest && (
-                <div className="mt-1 text-xs font-semibold text-rtr-green font-mono">★ BEST OPTION</div>
+                <div className="mt-1 text-xs font-semibold text-crux-green font-mono">★ BEST OPTION</div>
               )}
             </div>
           );
@@ -1245,8 +1245,8 @@ function VotingPanel({
       </div>
 
       {/* Cast votes */}
-      <div className="space-y-2 border-t border-rtr-border pt-3">
-        <p className="text-xs text-rtr-dim mb-2">Cast votes:</p>
+      <div className="space-y-2 border-t border-crux-border pt-3">
+        <p className="text-xs text-crux-dim mb-2">Cast votes:</p>
         {participants.map((p) => {
           const existing = decisions.find((d) => d.role === p.role);
           if (existing) return null;
@@ -1271,7 +1271,7 @@ function VotingPanel({
           );
         })}
         {decisions.length === participants.length && (
-          <p className="text-xs text-rtr-green flex items-center gap-1 font-mono">
+          <p className="text-xs text-crux-green flex items-center gap-1 font-mono">
             <Check className="w-3 h-3" />All votes cast
             {inject.branches?.length > 0 && !revealed && " - reveal to advance"}
           </p>
@@ -1291,7 +1291,7 @@ function InjectNoteEditor({ value, onChange }: { value: string; onChange: (v: st
     return (
       <button
         onClick={() => { setDraft(value); setEditing(true); }}
-        className="w-full flex items-center gap-2 text-xs text-rtr-dim border border-dashed border-rtr-border py-2.5 px-3 rounded hover:border-rtr-border-light hover:text-rtr-muted transition-colors text-left"
+        className="w-full flex items-center gap-2 text-xs text-crux-dim border border-dashed border-crux-border py-2.5 px-3 rounded hover:border-crux-border-light hover:text-crux-muted transition-colors text-left"
       >
         <Pencil className="w-3.5 h-3.5 shrink-0" />
         {value || "Add facilitator note for this inject…"}
@@ -1306,15 +1306,15 @@ function InjectNoteEditor({ value, onChange }: { value: string; onChange: (v: st
         onChange={(e) => setDraft(e.target.value)}
         rows={3}
         autoFocus
-        className="w-full text-xs bg-rtr-elevated border border-rtr-border-light text-rtr-text rounded px-3 py-2 resize-none focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+        className="w-full text-xs bg-crux-elevated border border-crux-border-light text-crux-text rounded px-3 py-2 resize-none focus:outline-none focus:border-crux-green placeholder:text-crux-dim"
         placeholder="Facilitator note for this inject…"
       />
       <div className="flex gap-2 mt-1">
         <button onClick={() => { onChange(draft); setEditing(false); }}
-          className="text-xs text-white bg-rtr-red hover:bg-[#c0001f] px-3 py-1 rounded">
+          className="text-xs text-white bg-crux-green hover:brightness-110 px-3 py-1 rounded">
           Save
         </button>
-        <button onClick={() => setEditing(false)} className="text-xs text-rtr-muted hover:text-rtr-text">
+        <button onClick={() => setEditing(false)} className="text-xs text-crux-muted hover:text-crux-text">
           Cancel
         </button>
       </div>
@@ -1353,10 +1353,10 @@ function ResponseLogger({
   }, {});
 
   return (
-    <div className="border border-rtr-border rounded-xl p-4">
+    <div className="border border-crux-border rounded-xl p-4">
       <div className="flex items-center gap-2 mb-3">
-        <MessageSquare className="w-4 h-4 text-rtr-green" />
-        <p className="text-xs font-semibold text-rtr-green uppercase tracking-wider">
+        <MessageSquare className="w-4 h-4 text-crux-green" />
+        <p className="text-xs font-semibold text-crux-green uppercase tracking-wider">
           Response Log -{responses.length} recorded
         </p>
       </div>
@@ -1374,11 +1374,11 @@ function ResponseLogger({
                   onChange={(e) => updateDraft(p.role, e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(p.role, p.name); } }}
                   placeholder={p.name ? `What did ${p.name} say?` : "What did they say?"}
-                  className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2.5 py-1.5 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+                  className="flex-1 text-xs bg-crux-base border border-crux-border text-crux-text rounded px-2.5 py-1.5 focus:outline-none focus:border-crux-green placeholder:text-crux-dim"
                 />
                 <button
                   onClick={() => submit(p.role, p.name)}
-                  className="text-rtr-green hover:opacity-80 transition-opacity shrink-0"
+                  className="text-crux-green hover:opacity-80 transition-opacity shrink-0"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>
@@ -1386,8 +1386,8 @@ function ResponseLogger({
               {logged.length > 0 && (
                 <div className="ml-8 mt-1 space-y-0.5">
                   {logged.map((r, i) => (
-                    <p key={i} className="text-xs text-rtr-muted">
-                      <span className="text-rtr-dim font-mono">{new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                    <p key={i} className="text-xs text-crux-muted">
+                      <span className="text-crux-dim font-mono">{new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                       {" "}{r.body}
                     </p>
                   ))}

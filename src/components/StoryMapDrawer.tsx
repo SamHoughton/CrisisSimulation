@@ -1,4 +1,4 @@
-/**
+﻿/**
  * StoryMapDrawer.tsx
  *
  * A fixed right-side drawer that shows the full scenario branch structure
@@ -120,23 +120,23 @@ function buildLanes(
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 const STATUS_DOT: Record<NodeStatus, string> = {
-  done:     "text-rtr-green",
-  current:  "text-rtr-red",
+  done:     "text-crux-green",
+  current:  "text-crux-red",
   next:     "text-amber-400",
-  "on-path":  "text-rtr-dim",
-  "off-path": "text-rtr-dim/40",
+  "on-path":  "text-crux-dim",
+  "off-path": "text-crux-dim/40",
 };
 
 const STATUS_BORDER: Record<NodeStatus, string> = {
-  done:     "border-rtr-green/30 bg-rtr-green/5",
-  current:  "border-rtr-red/50 bg-rtr-red/8",
+  done:     "border-crux-green/30 bg-crux-green/5",
+  current:  "border-crux-red/50 bg-crux-red/8",
   next:     "border-amber-500/40 bg-amber-500/5",
-  "on-path":  "border-rtr-border bg-rtr-elevated",
-  "off-path": "border-rtr-border/30 bg-rtr-base opacity-40",
+  "on-path":  "border-crux-border bg-crux-elevated",
+  "off-path": "border-crux-border/30 bg-crux-base opacity-40",
 };
 
 const RANK_COLOUR: Record<number, string> = {
-  1: "text-rtr-green",
+  1: "text-crux-green",
   2: "text-amber-400",
   3: "text-orange-400",
   4: "text-red-400",
@@ -162,18 +162,18 @@ function NodeCard({ node, hasBranches, scoreRoutingTarget }: {
         <div className="flex-1 min-w-0">
           <p className={cn(
             "font-medium truncate",
-            status === "current" ? "text-rtr-red"
-            : status === "done" ? "text-rtr-green"
+            status === "current" ? "text-crux-red"
+            : status === "done" ? "text-crux-green"
             : status === "next" ? "text-amber-300"
-            : status === "on-path" ? "text-rtr-text"
-            : "text-rtr-dim"
+            : status === "on-path" ? "text-crux-text"
+            : "text-crux-dim"
           )}>
             {inj.title}
           </p>
 
           {/* Decision outcome */}
           {chosenKey && (
-            <p className={cn("text-[9px] mt-0.5 font-mono", chosenRank !== undefined ? RANK_COLOUR[chosenRank] ?? "text-rtr-muted" : "text-rtr-muted")}>
+            <p className={cn("text-[9px] mt-0.5 font-mono", chosenRank !== undefined ? RANK_COLOUR[chosenRank] ?? "text-crux-muted" : "text-crux-muted")}>
               Chose {chosenKey}{chosenRank !== undefined ? ` · rank ${chosenRank}` : ""}
             </p>
           )}
@@ -192,7 +192,7 @@ function NodeCard({ node, hasBranches, scoreRoutingTarget }: {
             </p>
           )}
           {inj.branchMode === "score" && !scoreRoutingTarget && (
-            <p className="text-[9px] mt-0.5 text-rtr-dim flex items-center gap-0.5">
+            <p className="text-[9px] mt-0.5 text-crux-dim flex items-center gap-0.5">
               <ChevronRight className="w-2.5 h-2.5" />Auto (score pending)
             </p>
           )}
@@ -247,29 +247,29 @@ export function StoryMapDrawer({
     ?? "Main";
 
   return (
-    <div className="fixed inset-y-0 right-0 w-[520px] max-w-[90vw] bg-rtr-base border-l border-rtr-border flex flex-col z-40 shadow-2xl">
+    <div className="fixed inset-y-0 right-0 w-[520px] max-w-[90vw] bg-crux-base border-l border-crux-border flex flex-col z-40 shadow-2xl">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-rtr-border flex items-center justify-between shrink-0">
+      <div className="px-4 py-3 border-b border-crux-border flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <GitBranch className="w-4 h-4 text-amber-400" />
-          <span className="text-sm font-semibold text-rtr-text">Story Map</span>
+          <span className="text-sm font-semibold text-crux-text">Story Map</span>
           {activeTrack !== "Main" && (
             <span className="text-[10px] font-mono bg-amber-500/15 text-amber-400 border border-amber-500/30 rounded px-1.5 py-0.5">
               {activeTrack}
             </span>
           )}
         </div>
-        <button onClick={onClose} className="text-rtr-dim hover:text-rtr-text transition-colors">
+        <button onClick={onClose} className="text-crux-dim hover:text-crux-text transition-colors">
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Score strip */}
       {avgRank !== null && (
-        <div className="px-4 py-2 border-b border-rtr-border bg-rtr-panel shrink-0 flex items-center gap-3">
-          <span className="text-[10px] text-rtr-dim uppercase tracking-wider font-semibold">Avg rank</span>
+        <div className="px-4 py-2 border-b border-crux-border bg-crux-panel shrink-0 flex items-center gap-3">
+          <span className="text-[10px] text-crux-dim uppercase tracking-wider font-semibold">Avg rank</span>
           <span className={cn("text-sm font-bold font-mono",
-            avgRank <= 1.6 ? "text-rtr-green"
+            avgRank <= 1.6 ? "text-crux-green"
             : avgRank <= 2.3 ? "text-amber-400"
             : avgRank <= 3.0 ? "text-orange-400"
             : "text-red-400"
@@ -278,8 +278,8 @@ export function StoryMapDrawer({
           </span>
           {predictedEnding && (
             <>
-              <span className="text-rtr-border">·</span>
-              <span className="text-[10px] text-rtr-dim">On track for</span>
+              <span className="text-crux-border">·</span>
+              <span className="text-[10px] text-crux-dim">On track for</span>
               <span className="text-[10px] text-amber-400 font-medium truncate">{predictedEnding.title}</span>
             </>
           )}
@@ -320,8 +320,8 @@ export function StoryMapDrawer({
                   lane.isActive
                     ? lane.track === activeTrack
                       ? "text-amber-400 border-amber-500/30"
-                      : "text-rtr-green border-rtr-green/20"
-                    : "text-rtr-dim/50 border-rtr-border/30"
+                      : "text-crux-green border-crux-green/20"
+                    : "text-crux-dim/50 border-crux-border/30"
                 )}>
                   {lane.track === "Main" ? "Main path" : lane.track}
                 </div>
@@ -347,8 +347,8 @@ export function StoryMapDrawer({
 
         {/* Score-routed endings */}
         {endings.length > 0 && (
-          <div className="mt-4 pt-3 border-t border-rtr-border/40">
-            <p className="text-[9px] font-mono font-semibold text-rtr-dim uppercase tracking-wider mb-2 px-1">
+          <div className="mt-4 pt-3 border-t border-crux-border/40">
+            <p className="text-[9px] font-mono font-semibold text-crux-dim uppercase tracking-wider mb-2 px-1">
               Possible endings (auto-selected by score)
             </p>
             <div className="grid grid-cols-2 gap-1">
@@ -358,28 +358,28 @@ export function StoryMapDrawer({
                 return (
                   <div key={inj.id} className={cn(
                     "rounded border px-2 py-1.5 text-[10px]",
-                    isReleased ? "border-rtr-green/30 bg-rtr-green/5"
+                    isReleased ? "border-crux-green/30 bg-crux-green/5"
                     : isPredicted ? "border-amber-500/40 bg-amber-500/5"
-                    : "border-rtr-border/30 bg-rtr-base opacity-40"
+                    : "border-crux-border/30 bg-crux-base opacity-40"
                   )}>
                     <div className="flex items-center gap-1 mb-0.5">
                       {isReleased
-                        ? <CheckCircle2 className="w-2.5 h-2.5 text-rtr-green shrink-0" />
+                        ? <CheckCircle2 className="w-2.5 h-2.5 text-crux-green shrink-0" />
                         : isPredicted
                         ? <ChevronRight className="w-2.5 h-2.5 text-amber-400 shrink-0" />
-                        : <Circle className="w-2.5 h-2.5 text-rtr-dim/40 shrink-0" />
+                        : <Circle className="w-2.5 h-2.5 text-crux-dim/40 shrink-0" />
                       }
                       <span className={cn(
                         "font-medium truncate",
-                        isReleased ? "text-rtr-green"
+                        isReleased ? "text-crux-green"
                         : isPredicted ? "text-amber-300"
-                        : "text-rtr-dim"
+                        : "text-crux-dim"
                       )}>
                         {inj.title}
                       </span>
                     </div>
                     {routingInject?.branches && (
-                      <p className="text-[9px] text-rtr-dim/60 pl-3.5">
+                      <p className="text-[9px] text-crux-dim/60 pl-3.5">
                         ≤ {routingInject.branches.find((b) => b.nextInjectId === inj.id)?.scoreMax} avg rank
                       </p>
                     )}
@@ -392,12 +392,12 @@ export function StoryMapDrawer({
       </div>
 
       {/* Footer legend */}
-      <div className="px-4 py-2.5 border-t border-rtr-border shrink-0 flex items-center gap-4 flex-wrap">
-        <LegendItem colour="text-rtr-green" label="Done" />
-        <LegendItem colour="text-rtr-red" label="Current" />
+      <div className="px-4 py-2.5 border-t border-crux-border shrink-0 flex items-center gap-4 flex-wrap">
+        <LegendItem colour="text-crux-green" label="Done" />
+        <LegendItem colour="text-crux-red" label="Current" />
         <LegendItem colour="text-amber-400" label="Next" />
-        <LegendItem colour="text-rtr-dim" label="Queued" />
-        <LegendItem colour="text-rtr-dim/30" label="Off-path" />
+        <LegendItem colour="text-crux-dim" label="Queued" />
+        <LegendItem colour="text-crux-dim/30" label="Off-path" />
       </div>
     </div>
   );
@@ -407,7 +407,7 @@ function LegendItem({ colour, label }: { colour: string; label: string }) {
   return (
     <div className="flex items-center gap-1">
       <Circle className={cn("w-2.5 h-2.5", colour)} />
-      <span className="text-[10px] text-rtr-dim">{label}</span>
+      <span className="text-[10px] text-crux-dim">{label}</span>
     </div>
   );
 }

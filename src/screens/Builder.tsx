@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Builder.tsx - Scenario editor.
  *
  * Two-panel layout: left panel for scenario metadata (type, difficulty, duration,
@@ -138,21 +138,21 @@ export function Builder() {
     setView("library");
   };
 
-  const inputCls = "w-full text-sm bg-rtr-elevated border border-rtr-border-light text-rtr-text rounded px-3 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors";
+  const inputCls = "w-full text-sm bg-crux-elevated border border-crux-border-light text-crux-text rounded px-3 py-2 focus:outline-none focus:border-crux-green placeholder:text-crux-dim transition-colors";
   const textareaCls = `${inputCls} resize-none`;
 
   return (
-    <div className="flex h-full flex-col bg-rtr-base">
+    <div className="flex h-full flex-col bg-crux-base">
       {/* Top bar */}
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-rtr-border bg-rtr-panel sticky top-0 z-10">
-        <button onClick={() => setView("library")} className="text-rtr-dim hover:text-rtr-text transition-colors">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-crux-border bg-crux-panel sticky top-0 z-10">
+        <button onClick={() => setView("library")} className="text-crux-dim hover:text-crux-text transition-colors">
           <ChevronLeft className="w-5 h-5" />
         </button>
         <input
           value={scenario.title}
           onChange={(e) => update({ title: e.target.value })}
           placeholder="Scenario title…"
-          className="flex-1 text-lg font-semibold bg-transparent border-none outline-none text-rtr-text placeholder:text-rtr-dim"
+          className="flex-1 text-lg font-semibold bg-transparent border-none outline-none text-crux-text placeholder:text-crux-dim"
         />
         {saveError && (
           <span className="flex items-center gap-1 text-xs text-red-400">
@@ -161,7 +161,7 @@ export function Builder() {
         )}
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-sm font-medium hover:bg-[#c0001f] transition-colors"
+          className="flex items-center gap-2 bg-crux-green text-white px-4 py-2 rounded text-sm font-medium hover:brightness-110 transition-colors"
         >
           <Save className="w-4 h-4" />
           {existing ? "Save Changes" : "Create Scenario"}
@@ -170,16 +170,16 @@ export function Builder() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Settings panel */}
-        <div className="shrink-0 border-r border-rtr-border overflow-y-auto px-5 py-6 space-y-6 bg-rtr-panel" style={{ width: 272 }}>
+        <div className="shrink-0 border-r border-crux-border overflow-y-auto px-5 py-6 space-y-6 bg-crux-panel" style={{ width: 272 }}>
           <Field label="Scenario Type">
             <select
               value={scenario.type}
               onChange={(e) => update({ type: e.target.value as ScenarioType })}
               className={inputCls}
-              style={{ backgroundColor: "rgb(var(--rtr-elevated))" }}
+              style={{ backgroundColor: "rgb(var(--crux-elevated))" }}
             >
               {ALL_SCENARIO_TYPES.map((t) => (
-                <option key={t} value={t} style={{ background: "rgb(var(--rtr-elevated))" }}>{SCENARIO_TYPE_LABELS[t]}</option>
+                <option key={t} value={t} style={{ background: "rgb(var(--crux-elevated))" }}>{SCENARIO_TYPE_LABELS[t]}</option>
               ))}
             </select>
           </Field>
@@ -193,8 +193,8 @@ export function Builder() {
                   className={cn(
                     "flex-1 text-xs py-1.5 rounded border transition-colors",
                     scenario.difficulty === d
-                      ? "bg-rtr-red text-white border-rtr-red"
-                      : "border-rtr-border-light text-rtr-muted hover:border-rtr-muted"
+                      ? "bg-crux-green text-white border-crux-green"
+                      : "border-crux-border-light text-crux-muted hover:border-crux-muted"
                   )}
                 >
                   {DIFFICULTY_LABEL[d]}
@@ -232,14 +232,14 @@ export function Builder() {
               <img
                 src={scenario.imageUrl}
                 alt="cover preview"
-                className="mt-2 w-full h-20 object-cover rounded border border-rtr-border"
+                className="mt-2 w-full h-20 object-cover rounded border border-crux-border"
                 onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
               />
             )}
           </Field>
 
           <Field label="Participant Roles">
-            <p className="text-xs text-rtr-dim mb-2">Roles to include in this exercise</p>
+            <p className="text-xs text-crux-dim mb-2">Roles to include in this exercise</p>
             <div className="flex flex-wrap gap-1.5">
               {ALL_ROLES.map((r) => (
                 <button
@@ -248,8 +248,8 @@ export function Builder() {
                   className={cn(
                     "text-xs px-2 py-1 rounded border transition-colors",
                     scenario.roles.includes(r)
-                      ? "bg-rtr-green/15 border-rtr-green/40 text-rtr-green font-medium"
-                      : "border-rtr-border-light text-rtr-dim hover:border-rtr-muted"
+                      ? "bg-crux-green/15 border-crux-green/40 text-crux-green font-medium"
+                      : "border-crux-border-light text-crux-dim hover:border-crux-muted"
                   )}
                 >
                   {ROLE_SHORT[r]}
@@ -270,13 +270,13 @@ export function Builder() {
         </div>
 
         {/* Inject timeline */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 bg-rtr-base">
+        <div className="flex-1 overflow-y-auto px-6 py-6 bg-crux-base">
           <div className="max-w-2xl">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-sm font-semibold text-rtr-text">
+                <h2 className="text-sm font-semibold text-crux-text">
                   Inject Timeline
-                  <span className="ml-2 text-xs font-normal text-rtr-muted">
+                  <span className="ml-2 text-xs font-normal text-crux-muted">
                     ({scenario.injects.length} injects)
                   </span>
                 </h2>
@@ -288,14 +288,14 @@ export function Builder() {
               </div>
               <button
                 onClick={addInject}
-                className="flex items-center gap-1.5 text-xs text-rtr-green border border-rtr-green/30 hover:bg-rtr-green/8 px-3 py-1.5 rounded transition-colors"
+                className="flex items-center gap-1.5 text-xs text-crux-green border border-crux-green/30 hover:bg-crux-green/8 px-3 py-1.5 rounded transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />Add Inject
               </button>
             </div>
 
             {scenario.injects.length === 0 && (
-              <div className="text-center py-16 text-sm text-rtr-dim border border-dashed border-rtr-border rounded-xl bg-rtr-panel">
+              <div className="text-center py-16 text-sm text-crux-dim border border-dashed border-crux-border rounded-xl bg-crux-panel">
                 No injects yet. Add the first inject to build the timeline.
               </div>
             )}
@@ -338,7 +338,7 @@ export function Builder() {
             {scenario.injects.length > 0 && (
               <button
                 onClick={addInject}
-                className="mt-4 w-full flex items-center justify-center gap-2 text-sm text-rtr-dim border border-dashed border-rtr-border hover:border-rtr-green/40 hover:text-rtr-green py-4 rounded-xl transition-colors bg-rtr-panel"
+                className="mt-4 w-full flex items-center justify-center gap-2 text-sm text-crux-dim border border-dashed border-crux-border hover:border-crux-green/40 hover:text-crux-green py-4 rounded-xl transition-colors bg-crux-panel"
               >
                 <Plus className="w-4 h-4" />Add inject
               </button>
@@ -353,7 +353,7 @@ export function Builder() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-xs font-semibold text-crux-dim uppercase tracking-wider mb-2">{label}</p>
       {children}
     </div>
   );
@@ -411,7 +411,7 @@ function InjectCard({
     }
   };
 
-  const inputCls = "w-full text-sm bg-rtr-base border border-rtr-border text-rtr-text rounded px-3 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors";
+  const inputCls = "w-full text-sm bg-crux-base border border-crux-border text-crux-text rounded px-3 py-2 focus:outline-none focus:border-crux-green placeholder:text-crux-dim transition-colors";
   const hasBranches = inject.branches && inject.branches.length > 0;
 
   // Other injects available as branch targets (exclude self)
@@ -420,53 +420,53 @@ function InjectCard({
   return (
     <div className={cn(
       "border rounded-xl overflow-hidden transition-colors",
-      hasBranches ? "bg-rtr-panel border-amber-500/25" : "bg-rtr-panel border-rtr-border"
+      hasBranches ? "bg-crux-panel border-amber-500/25" : "bg-crux-panel border-crux-border"
     )}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
-        <GripVertical className="w-4 h-4 text-rtr-dim cursor-grab" />
-        <div className="w-6 h-6 rounded-full bg-rtr-red/15 flex items-center justify-center shrink-0">
-          <span className="text-xs font-bold text-rtr-red font-mono">{index + 1}</span>
+        <GripVertical className="w-4 h-4 text-crux-dim cursor-grab" />
+        <div className="w-6 h-6 rounded-full bg-crux-red/15 flex items-center justify-center shrink-0">
+          <span className="text-xs font-bold text-crux-red font-mono">{index + 1}</span>
         </div>
         <div className="flex-1 min-w-0 cursor-pointer" onClick={onToggle}>
-          <p className="text-sm font-medium text-rtr-text truncate">
+          <p className="text-sm font-medium text-crux-text truncate">
             {inject.title || `Inject ${index + 1}`}
           </p>
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-xs text-rtr-dim font-mono">T+{inject.delayMinutes}min</span>
+            <span className="text-xs text-crux-dim font-mono">T+{inject.delayMinutes}min</span>
             {inject.isDecisionPoint && (
               <span className="flex items-center gap-0.5 text-xs text-amber-400">
                 <GitBranch className="w-3 h-3" />{hasBranches ? "Branching" : "Decision"}
               </span>
             )}
             {inject.imageUrl && (
-              <span className="flex items-center gap-0.5 text-xs text-rtr-dim">
+              <span className="flex items-center gap-0.5 text-xs text-crux-dim">
                 <Image className="w-3 h-3" />
               </span>
             )}
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={onMoveUp} disabled={index === 0} className="p-1 text-rtr-dim hover:text-rtr-text disabled:opacity-30">
+          <button onClick={onMoveUp} disabled={index === 0} className="p-1 text-crux-dim hover:text-crux-text disabled:opacity-30">
             <ChevronUp className="w-4 h-4" />
           </button>
-          <button onClick={onMoveDown} disabled={index === total - 1} className="p-1 text-rtr-dim hover:text-rtr-text disabled:opacity-30">
+          <button onClick={onMoveDown} disabled={index === total - 1} className="p-1 text-crux-dim hover:text-crux-text disabled:opacity-30">
             <ChevronDown className="w-4 h-4" />
           </button>
-          <button onClick={onRemove} className="p-1 text-rtr-dim hover:text-red-400 transition-colors">
+          <button onClick={onRemove} className="p-1 text-crux-dim hover:text-red-400 transition-colors">
             <Trash2 className="w-4 h-4" />
           </button>
-          <button onClick={onToggle} className="p-1 text-rtr-dim">
+          <button onClick={onToggle} className="p-1 text-crux-dim">
             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>
       </div>
 
       {expanded && (
-        <div className="border-t border-rtr-border px-4 py-4 space-y-4">
+        <div className="border-t border-crux-border px-4 py-4 space-y-4">
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="text-xs font-medium text-rtr-dim block mb-1">Title</label>
+              <label className="text-xs font-medium text-crux-dim block mb-1">Title</label>
               <input
                 value={inject.title}
                 onChange={(e) => onUpdate({ title: e.target.value })}
@@ -475,7 +475,7 @@ function InjectCard({
               />
             </div>
             <div className="w-28">
-              <label className="text-xs font-medium text-rtr-dim block mb-1">Delay (mins)</label>
+              <label className="text-xs font-medium text-crux-dim block mb-1">Delay (mins)</label>
               <input
                 type="number" min={0}
                 value={inject.delayMinutes}
@@ -487,13 +487,13 @@ function InjectCard({
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-medium text-rtr-dim">
+              <label className="text-xs font-medium text-crux-dim">
                 Inject Text <span className="font-normal">(shown on screen)</span>
               </label>
               <button
                 onClick={handleSuggest}
                 disabled={suggesting}
-                className="flex items-center gap-1 text-xs text-rtr-green hover:text-rtr-green/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-1 text-xs text-crux-green hover:text-crux-green/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 title={apiKey ? "Generate inject text with your API key" : "Generate inject text via hosted proxy"}
               >
                 <Wand2 className={`w-3 h-3 ${suggesting ? "animate-pulse" : ""}`} />
@@ -513,7 +513,7 @@ function InjectCard({
 
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="text-xs font-medium text-rtr-dim block mb-1">
+              <label className="text-xs font-medium text-crux-dim block mb-1">
                 Inject Image URL <span className="font-normal">(shown on projector)</span>
               </label>
               <input
@@ -524,7 +524,7 @@ function InjectCard({
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-rtr-dim block mb-1">Command Tier</label>
+              <label className="text-xs font-medium text-crux-dim block mb-1">Command Tier</label>
               <div className="flex gap-1.5">
                 {ALL_TIERS.map((tier) => {
                   const tc = TIER_COLOUR[tier];
@@ -535,7 +535,7 @@ function InjectCard({
                       onClick={() => onUpdate({ commandTier: active ? undefined : tier })}
                       className={cn(
                         "flex-1 text-xs font-bold px-2 py-1 rounded border transition-colors",
-                        active ? `${tc.bg} ${tc.border} ${tc.text}` : "border-rtr-border text-rtr-dim bg-rtr-base hover:border-rtr-border-light"
+                        active ? `${tc.bg} ${tc.border} ${tc.text}` : "border-crux-border text-crux-dim bg-crux-base hover:border-crux-border-light"
                       )}
                     >
                       {tier}
@@ -544,14 +544,14 @@ function InjectCard({
                 })}
               </div>
               {inject.commandTier && (
-                <p className="text-[10px] text-rtr-dim mt-1">
+                <p className="text-[10px] text-crux-dim mt-1">
                   {inject.commandTier === "STRATEGIC" && "Strategic decisions - Executive leadership"}
                   {inject.commandTier === "TACTICAL" && "Tactical decisions - Management / coordination leads"}
                 </p>
               )}
             </div>
             <div className="w-28">
-              <label className="text-xs font-medium text-rtr-dim block mb-1">Timer (mins)</label>
+              <label className="text-xs font-medium text-crux-dim block mb-1">Timer (mins)</label>
               <input
                 type="number" min={1} max={60}
                 value={inject.timerMinutes ?? ""}
@@ -564,7 +564,7 @@ function InjectCard({
 
           {/* Ticker headline */}
           <div>
-            <label className="text-xs font-medium text-rtr-dim block mb-1">
+            <label className="text-xs font-medium text-crux-dim block mb-1">
               News Ticker Headline <span className="font-normal">(scrolls on present screen)</span>
             </label>
             <input
@@ -576,7 +576,7 @@ function InjectCard({
           </div>
 
           <div>
-            <label className="text-xs font-medium text-rtr-dim block mb-1">
+            <label className="text-xs font-medium text-crux-dim block mb-1">
               Facilitator Notes <span className="font-normal">(private - never shown)</span>
             </label>
             <textarea
@@ -589,7 +589,7 @@ function InjectCard({
 
           {/* Artifact type */}
           <div>
-            <label className="text-xs font-medium text-rtr-dim block mb-1">Present Screen Artifact</label>
+            <label className="text-xs font-medium text-crux-dim block mb-1">Present Screen Artifact</label>
             <select
               value={inject.artifact?.type ?? "default"}
               onChange={(e) => {
@@ -598,19 +598,19 @@ function InjectCard({
                 onUpdate({ artifact: { ...inject.artifact, type: t as any } });
               }}
               className={inputCls}
-              style={{ backgroundColor: "rgb(var(--rtr-base))" }}
+              style={{ backgroundColor: "rgb(var(--crux-base))" }}
             >
-              <option value="default" style={{ background: "rgb(var(--rtr-base))" }}>Default (plain text)</option>
-              <option value="ransomware_note" style={{ background: "rgb(var(--rtr-base))" }}>Ransomware Note</option>
-              <option value="siem_alert" style={{ background: "rgb(var(--rtr-base))" }}>SIEM Alert</option>
-              <option value="tweet" style={{ background: "rgb(var(--rtr-base))" }}>Tweet / X Post</option>
-              <option value="email" style={{ background: "rgb(var(--rtr-base))" }}>Email</option>
-              <option value="legal_letter" style={{ background: "rgb(var(--rtr-base))" }}>Legal Letter</option>
-              <option value="news_headline" style={{ background: "rgb(var(--rtr-base))" }}>News Headline</option>
-              <option value="dark_web_listing" style={{ background: "rgb(var(--rtr-base))" }}>Dark Web Listing</option>
-              <option value="stock_chart" style={{ background: "rgb(var(--rtr-base))" }}>Stock Chart (Bloomberg)</option>
-              <option value="slack_thread" style={{ background: "rgb(var(--rtr-base))" }}>Slack Thread</option>
-              <option value="tv_broadcast" style={{ background: "rgb(var(--rtr-base))" }}>TV Broadcast (Breaking News)</option>
+              <option value="default" style={{ background: "rgb(var(--crux-base))" }}>Default (plain text)</option>
+              <option value="ransomware_note" style={{ background: "rgb(var(--crux-base))" }}>Ransomware Note</option>
+              <option value="siem_alert" style={{ background: "rgb(var(--crux-base))" }}>SIEM Alert</option>
+              <option value="tweet" style={{ background: "rgb(var(--crux-base))" }}>Tweet / X Post</option>
+              <option value="email" style={{ background: "rgb(var(--crux-base))" }}>Email</option>
+              <option value="legal_letter" style={{ background: "rgb(var(--crux-base))" }}>Legal Letter</option>
+              <option value="news_headline" style={{ background: "rgb(var(--crux-base))" }}>News Headline</option>
+              <option value="dark_web_listing" style={{ background: "rgb(var(--crux-base))" }}>Dark Web Listing</option>
+              <option value="stock_chart" style={{ background: "rgb(var(--crux-base))" }}>Stock Chart (Bloomberg)</option>
+              <option value="slack_thread" style={{ background: "rgb(var(--crux-base))" }}>Slack Thread</option>
+              <option value="tv_broadcast" style={{ background: "rgb(var(--crux-base))" }}>TV Broadcast (Breaking News)</option>
             </select>
 
             {/* Conditional artifact fields */}
@@ -636,10 +636,10 @@ function InjectCard({
             {inject.artifact?.type === "siem_alert" && (
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <input value={inject.artifact.siemAlertId ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemAlertId: e.target.value } })} className={inputCls} placeholder="Alert ID (SOC-2024-001)" />
-                <select value={inject.artifact.siemSeverity ?? "HIGH"} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSeverity: e.target.value as any } })} className={inputCls} style={{ backgroundColor: "rgb(var(--rtr-base))" }}>
-                  <option value="CRITICAL" style={{ background: "rgb(var(--rtr-base))" }}>Critical</option>
-                  <option value="HIGH" style={{ background: "rgb(var(--rtr-base))" }}>High</option>
-                  <option value="MEDIUM" style={{ background: "rgb(var(--rtr-base))" }}>Medium</option>
+                <select value={inject.artifact.siemSeverity ?? "HIGH"} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSeverity: e.target.value as any } })} className={inputCls} style={{ backgroundColor: "rgb(var(--crux-base))" }}>
+                  <option value="CRITICAL" style={{ background: "rgb(var(--crux-base))" }}>Critical</option>
+                  <option value="HIGH" style={{ background: "rgb(var(--crux-base))" }}>High</option>
+                  <option value="MEDIUM" style={{ background: "rgb(var(--crux-base))" }}>Medium</option>
                 </select>
                 <input value={inject.artifact.siemSourceIp ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemSourceIp: e.target.value } })} className={inputCls} placeholder="Source IP" />
                 <input value={inject.artifact.siemEventType ?? ""} onChange={(e) => onUpdate({ artifact: { ...inject.artifact!, siemEventType: e.target.value } })} className={inputCls} placeholder="Event type" />
@@ -701,7 +701,7 @@ function InjectCard({
                   className={`${inputCls} font-mono text-[11px]`}
                   placeholder='[{"author":"Priya","role":"Eng Lead","time":"06:42","text":"Did anyone else see this?"}]'
                 />
-                <p className="text-[10px] text-rtr-dim">Messages as JSON array. Fields: author, role, time, text, avatar.</p>
+                <p className="text-[10px] text-crux-dim">Messages as JSON array. Fields: author, role, time, text, avatar.</p>
               </div>
             )}
             {inject.artifact?.type === "tv_broadcast" && (
@@ -718,7 +718,7 @@ function InjectCard({
 
           {/* Target roles */}
           <div>
-            <label className="text-xs font-medium text-rtr-dim block mb-1.5">Primarily directed at</label>
+            <label className="text-xs font-medium text-crux-dim block mb-1.5">Primarily directed at</label>
             <div className="flex flex-wrap gap-1.5">
               {roles.map((r) => (
                 <button
@@ -732,8 +732,8 @@ function InjectCard({
                   className={cn(
                     "text-xs px-2 py-0.5 rounded border transition-colors",
                     inject.targetRoles.includes(r)
-                      ? "bg-rtr-green/15 border-rtr-green/40 text-rtr-green"
-                      : "border-rtr-border text-rtr-dim hover:border-rtr-muted"
+                      ? "bg-crux-green/15 border-crux-green/40 text-crux-green"
+                      : "border-crux-border text-crux-dim hover:border-crux-muted"
                   )}
                 >
                   {ROLE_SHORT[r]}
@@ -754,7 +754,7 @@ function InjectCard({
               }
               className={cn(
                 "w-9 h-5 rounded-full transition-colors relative shrink-0",
-                inject.isDecisionPoint ? "bg-amber-500" : "bg-rtr-border-light"
+                inject.isDecisionPoint ? "bg-amber-500" : "bg-crux-border-light"
               )}
             >
               <span className={cn(
@@ -762,7 +762,7 @@ function InjectCard({
                 inject.isDecisionPoint ? "translate-x-4" : "translate-x-0.5"
               )} />
             </button>
-            <span className="text-xs font-medium text-rtr-text">Decision Point</span>
+            <span className="text-xs font-medium text-crux-text">Decision Point</span>
           </div>
 
           {inject.isDecisionPoint && (
@@ -781,7 +781,7 @@ function InjectCard({
                   )}
                 </div>
                 {inject.decisionOptions.map((opt) => (
-                  <div key={opt.key} className="bg-rtr-elevated border border-rtr-border rounded-lg p-3 space-y-2">
+                  <div key={opt.key} className="bg-crux-elevated border border-crux-border rounded-lg p-3 space-y-2">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center shrink-0 font-mono">
                         {opt.key}
@@ -789,17 +789,17 @@ function InjectCard({
                       <input
                         value={opt.label}
                         onChange={(e) => onUpdateOption(opt.key, { label: e.target.value })}
-                        className="flex-1 text-sm bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+                        className="flex-1 text-sm bg-crux-base border border-crux-border text-crux-text rounded px-2 py-1 focus:outline-none focus:border-crux-green placeholder:text-crux-dim"
                         placeholder="Option label shown to participants"
                       />
-                      <button onClick={() => onRemoveOption(opt.key)} className="text-rtr-dim hover:text-red-400">
+                      <button onClick={() => onRemoveOption(opt.key)} className="text-crux-dim hover:text-red-400">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                     <input
                       value={opt.consequence ?? ""}
                       onChange={(e) => onUpdateOption(opt.key, { consequence: e.target.value })}
-                      className="w-full text-xs bg-amber-500/5 border border-amber-500/15 text-rtr-muted rounded px-2 py-1 focus:outline-none focus:border-amber-500/40 placeholder:text-rtr-dim"
+                      className="w-full text-xs bg-amber-500/5 border border-amber-500/15 text-crux-muted rounded px-2 py-1 focus:outline-none focus:border-amber-500/40 placeholder:text-crux-dim"
                       placeholder="Facilitator note: what does this choice trigger?"
                     />
                   </div>
@@ -811,11 +811,11 @@ function InjectCard({
 
               {/* Branch editor - only show if there are options and other injects */}
               {inject.decisionOptions.length > 0 && otherInjects.length > 0 && (
-                <div className="bg-rtr-elevated border border-rtr-border rounded-lg p-3">
+                <div className="bg-crux-elevated border border-crux-border rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <GitBranch className="w-3.5 h-3.5 text-rtr-green" />
-                    <span className="text-xs font-semibold text-rtr-text">Branching Paths</span>
-                    <span className="text-xs text-rtr-dim">(optional - override which inject follows each option)</span>
+                    <GitBranch className="w-3.5 h-3.5 text-crux-green" />
+                    <span className="text-xs font-semibold text-crux-text">Branching Paths</span>
+                    <span className="text-xs text-crux-dim">(optional - override which inject follows each option)</span>
                   </div>
                   <div className="space-y-2">
                     {inject.decisionOptions.map((opt) => {
@@ -825,16 +825,16 @@ function InjectCard({
                           <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold flex items-center justify-center shrink-0 font-mono">
                             {opt.key}
                           </span>
-                          <ArrowRight className="w-3.5 h-3.5 text-rtr-dim shrink-0" />
+                          <ArrowRight className="w-3.5 h-3.5 text-crux-dim shrink-0" />
                           <select
                             value={branch?.nextInjectId ?? ""}
                             onChange={(e) => onUpdateBranch(opt.key, e.target.value)}
-                            className="flex-1 text-xs bg-rtr-base border border-rtr-border text-rtr-text rounded px-2 py-1.5 focus:outline-none focus:border-rtr-green"
-                            style={{ backgroundColor: "rgb(var(--rtr-base))" }}
+                            className="flex-1 text-xs bg-crux-base border border-crux-border text-crux-text rounded px-2 py-1.5 focus:outline-none focus:border-crux-green"
+                            style={{ backgroundColor: "rgb(var(--crux-base))" }}
                           >
-                            <option value="" style={{ background: "rgb(var(--rtr-base))" }}>Follow linear order</option>
+                            <option value="" style={{ background: "rgb(var(--crux-base))" }}>Follow linear order</option>
                             {otherInjects.map((i) => (
-                              <option key={i.id} value={i.id} style={{ background: "rgb(var(--rtr-base))" }}>
+                              <option key={i.id} value={i.id} style={{ background: "rgb(var(--crux-base))" }}>
                                 {i.order + 1}. {i.title || `Inject ${i.order + 1}`}
                               </option>
                             ))}

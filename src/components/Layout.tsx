@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Layout.tsx - App shell with collapsible sidebar navigation.
  *
  * Renders the Crucible logo, nav buttons (Dashboard, Scenarios, Live Session, Report,
@@ -45,17 +45,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const session = useStore((s) => s.session);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-rtr-base">
+    <div className="flex h-screen overflow-hidden bg-crux-base">
       {/* Sidebar */}
-      <aside className="w-14 md:w-56 flex flex-col bg-rtr-sidebar border-r border-rtr-border shrink-0">
+      <aside className="w-14 md:w-56 flex flex-col bg-crux-surface border-r border-crux-border shrink-0">
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-4 py-4 border-b border-rtr-border">
+        <div className="flex items-center gap-2.5 px-4 py-4 border-b border-crux-border">
           <CrucibleMark className="w-7 h-7 shrink-0" />
           <div className="hidden md:flex flex-col leading-tight">
             <span className="brand-wordmark text-base">
               <span className="brand-accent">C</span>RUCIBLE
             </span>
-            <span className="text-[8px] text-rtr-dim tracking-[0.35em] uppercase">Crisis Simulation</span>
+            <span className="text-[8px] text-crux-dim tracking-[0.35em] uppercase">Crisis Simulation</span>
           </div>
         </div>
 
@@ -71,20 +71,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 rounded text-xs transition-colors text-left",
                   active
-                    ? "bg-rtr-green/8 text-rtr-green font-medium"
-                    : "text-rtr-muted hover:bg-rtr-elevated hover:text-rtr-text"
+                    ? "bg-crux-green/8 text-crux-green font-medium"
+                    : "text-crux-muted hover:bg-crux-elevated hover:text-crux-text"
                 )}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 <span className="hidden md:inline">{label}</span>
                 {hasLive && (
                   <span className="ml-auto flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-rtr-red opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rtr-red" />
+                    <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-crux-red opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-crux-red" />
                   </span>
                 )}
                 {active && !hasLive && (
-                  <span className="ml-auto w-1 h-3.5 rounded-full bg-rtr-green/60" />
+                  <span className="ml-auto w-1 h-3.5 rounded-full bg-crux-green/60" />
                 )}
               </button>
             );
@@ -93,20 +93,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Session status pill */}
         {session && session.status !== "ended" && (
-          <div className="px-2 md:px-4 py-3 border-t border-rtr-border">
+          <div className="px-2 md:px-4 py-3 border-t border-crux-border">
             <button onClick={() => setView("runner")} className="w-full text-left hidden md:block">
               <div className="flex items-center gap-2 mb-1">
                 {session.status === "active" && (
                   <span className="relative flex h-2 w-2 shrink-0">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rtr-red opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-rtr-red" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-crux-red opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-crux-red" />
                   </span>
                 )}
-                <span className="text-xs font-medium text-rtr-text truncate">
+                <span className="text-xs font-medium text-crux-text truncate">
                   {session.scenario.title}
                 </span>
               </div>
-              <p className="text-xs text-rtr-dim capitalize">
+              <p className="text-xs text-crux-dim capitalize">
                 {session.status} · {session.liveInjects.length}/{session.scenario.injects.length} injects
               </p>
             </button>

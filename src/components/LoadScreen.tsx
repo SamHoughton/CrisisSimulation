@@ -37,15 +37,15 @@ export function LoadScreen({
 
     const t1 = setTimeout(() => setPhase("letters"), 1300);
     const t2 = setTimeout(() => setPhase("bar"),     2100);
-    const t3 = setTimeout(() => {
-      setPhase("done");
-      onComplete();
-    }, duration);
+    // t3 triggers the fade-out; t4 unmounts after the transition completes (0.5s ease 0.2s = ~700ms)
+    const t3 = setTimeout(() => setPhase("done"), duration);
+    const t4 = setTimeout(onComplete, duration + 750);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
+      clearTimeout(t4);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -275,6 +275,7 @@ function ScanLine() {
     <div
       className="absolute left-0 right-0 pointer-events-none z-20"
       style={{
+        top: -1,
         height: 1,
         background: "linear-gradient(90deg, transparent 0%, rgba(29,184,106,0.09) 50%, transparent 100%)",
         animation: "crucible-scan 3.2s ease-in-out 0.4s infinite",

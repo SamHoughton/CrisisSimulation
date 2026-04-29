@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Library.tsx - Scenario browser and manager.
  *
  * Displays all scenarios (built-in templates + user-created) in a responsive grid.
@@ -81,12 +81,12 @@ export function Library() {
     <div className="p-8 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6 fade-in-up">
         <div>
-          <h1 className="text-2xl font-semibold text-rtr-text">Scenario Library</h1>
-          <p className="text-rtr-muted text-sm mt-0.5">Build, manage, and reuse crisis scenarios</p>
+          <h1 className="text-2xl font-semibold text-crux-text">Scenario Library</h1>
+          <p className="text-crux-muted text-sm mt-0.5">Build, manage, and reuse crisis scenarios</p>
         </div>
         <button
           onClick={() => { useStore.getState().setEditingScenario(null); setView("builder"); }}
-          className="flex items-center gap-2 bg-rtr-red text-white px-4 py-2 rounded text-xs font-medium hover:bg-[#c0001f] transition-colors"
+          className="flex items-center gap-2 bg-crux-green text-white px-4 py-2 rounded text-xs font-medium hover:brightness-110 transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
           New Scenario
@@ -96,17 +96,17 @@ export function Library() {
       {/* Search + filter bar */}
       <div className="mb-6 fade-in-up space-y-3">
         <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-rtr-dim pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-crux-dim pointer-events-none" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search scenarios…"
-            className="w-full text-sm bg-rtr-elevated border border-rtr-border-light text-rtr-text rounded-lg pl-8 pr-8 py-2 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim transition-colors"
+            className="w-full text-sm bg-crux-elevated border border-crux-border-light text-crux-text rounded-lg pl-8 pr-8 py-2 focus:outline-none focus:border-crux-green placeholder:text-crux-dim transition-colors"
           />
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-rtr-dim hover:text-rtr-muted"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-crux-dim hover:text-crux-muted"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -124,11 +124,11 @@ export function Library() {
 
       {/* Results */}
       {!hasResults && (
-        <div className="text-center py-16 text-rtr-muted fade-in-up">
-          <Search className="w-8 h-8 mx-auto mb-3 text-rtr-dim" />
-          <p className="text-sm font-medium text-rtr-text mb-1">No scenarios match</p>
-          <p className="text-xs text-rtr-dim">Try a different search term or filter</p>
-          <button onClick={() => { setQuery(""); setTypeFilter("all"); }} className="mt-3 text-xs text-rtr-green hover:underline">
+        <div className="text-center py-16 text-crux-muted fade-in-up">
+          <Search className="w-8 h-8 mx-auto mb-3 text-crux-dim" />
+          <p className="text-sm font-medium text-crux-text mb-1">No scenarios match</p>
+          <p className="text-xs text-crux-dim">Try a different search term or filter</p>
+          <button onClick={() => { setQuery(""); setTypeFilter("all"); }} className="mt-3 text-xs text-crux-green hover:underline">
             Clear filters
           </button>
         </div>
@@ -155,8 +155,8 @@ function FilterPill({ label, active, onClick }: { label: string; active: boolean
       onClick={onClick}
       className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
         active
-          ? "bg-rtr-red text-white border-rtr-red"
-          : "text-rtr-muted border-rtr-border hover:border-rtr-border-light hover:text-rtr-text"
+          ? "bg-crux-green text-white border-crux-green"
+          : "text-crux-muted border-crux-border hover:border-crux-border-light hover:text-crux-text"
       }`}
     >
       {label}
@@ -167,7 +167,7 @@ function FilterPill({ label, active, onClick }: { label: string; active: boolean
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <h2 className="text-xs font-semibold text-rtr-dim uppercase tracking-wider mb-4">{title}</h2>
+      <h2 className="text-xs font-semibold text-crux-dim uppercase tracking-wider mb-4">{title}</h2>
       {children}
     </section>
   );
@@ -188,7 +188,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
         const forks = countTrueBranches(s);
         const paired = allScenarios?.find((other) => other.id === s.pairedScenarioId);
         return (
-        <div key={s.id} className="bg-rtr-panel border border-rtr-border rounded-xl overflow-hidden card-lift group fade-in-up">
+        <div key={s.id} className="bg-crux-panel border border-crux-border rounded-xl overflow-hidden card-lift group fade-in-up">
           {/* Cover */}
           {(s.imageUrl || s.coverGradient) && (
             <div className="relative h-28 overflow-hidden"
@@ -196,7 +196,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
               {s.imageUrl && (
                 <img src={s.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity group-hover:opacity-65 transition-opacity" />
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-rtr-panel to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-crux-panel to-transparent" />
             </div>
           )}
           <div className="p-5">
@@ -204,11 +204,11 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
               <span className={`text-xs font-semibold px-2 py-0.5 rounded ${DIFFICULTY_COLOUR[s.difficulty]}`}>
                 {DIFFICULTY_LABEL[s.difficulty]}
               </span>
-              <span className="text-xs text-rtr-dim bg-rtr-elevated px-2 py-0.5 rounded">
+              <span className="text-xs text-crux-dim bg-crux-elevated px-2 py-0.5 rounded">
                 {SCENARIO_TYPE_LABELS[s.type]}
               </span>
               {s.isTemplate && (
-                <span className="text-xs text-rtr-green bg-rtr-green/10 px-2 py-0.5 rounded">Template</span>
+                <span className="text-xs text-crux-green bg-crux-green/10 px-2 py-0.5 rounded">Template</span>
               )}
               {paired && (
                 <span
@@ -219,14 +219,14 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
                 </span>
               )}
             </div>
-            <h3 className="font-semibold text-rtr-text text-sm mb-1">{s.title}</h3>
+            <h3 className="font-semibold text-crux-text text-sm mb-1">{s.title}</h3>
             {s.audienceLabel && (
               <p className="text-xs text-amber-400/80 mb-1.5 line-clamp-2">{s.audienceLabel}</p>
             )}
             {s.description && (
-              <p className="text-xs text-rtr-muted mb-3 line-clamp-2">{s.description}</p>
+              <p className="text-xs text-crux-muted mb-3 line-clamp-2">{s.description}</p>
             )}
-            <div className="flex items-center gap-3 text-xs text-rtr-dim mb-4 flex-wrap">
+            <div className="flex items-center gap-3 text-xs text-crux-dim mb-4 flex-wrap">
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />{formatDuration(s.durationMin)}
               </span>
@@ -253,7 +253,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
               {owned && onEdit && (
                 <button
                   onClick={() => onEdit(s.id)}
-                  className="flex items-center gap-1.5 text-xs text-rtr-text bg-rtr-elevated border border-rtr-border-light hover:bg-rtr-hover px-3 py-1.5 rounded transition-colors"
+                  className="flex items-center gap-1.5 text-xs text-crux-text bg-crux-elevated border border-crux-border-light hover:bg-crux-hover px-3 py-1.5 rounded transition-colors"
                 >
                   <Pencil className="w-3.5 h-3.5" />Edit
                 </button>
@@ -261,7 +261,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
               {onDuplicate && (
                 <button
                   onClick={() => onDuplicate(s)}
-                  className="flex items-center gap-1.5 text-xs text-rtr-text bg-rtr-elevated border border-rtr-border-light hover:bg-rtr-hover px-3 py-1.5 rounded transition-colors"
+                  className="flex items-center gap-1.5 text-xs text-crux-text bg-crux-elevated border border-crux-border-light hover:bg-crux-hover px-3 py-1.5 rounded transition-colors"
                 >
                   <Copy className="w-3.5 h-3.5" />Copy
                 </button>
@@ -269,7 +269,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
               {onRun && (
                 <button
                   onClick={() => onRun(s.id)}
-                  className="flex items-center gap-1.5 text-xs text-white bg-rtr-red hover:bg-[#c0001f] px-3 py-1.5 rounded transition-colors"
+                  className="flex items-center gap-1.5 text-xs text-white bg-crux-green hover:brightness-110 px-3 py-1.5 rounded transition-colors"
                 >
                   <PlayCircle className="w-3.5 h-3.5" />Run
                 </button>
@@ -277,7 +277,7 @@ function Grid({ scenarios, onEdit, onDuplicate, onRun, onDelete, owned, allScena
               {owned && onDelete && (
                 <button
                   onClick={() => { if (confirm(`Delete "${s.title}"?`)) onDelete(s.id); }}
-                  className="ml-auto flex items-center gap-1 text-xs text-rtr-dim hover:text-red-400 transition-colors"
+                  className="ml-auto flex items-center gap-1 text-xs text-crux-dim hover:text-red-400 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

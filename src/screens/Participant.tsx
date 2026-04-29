@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Participant.tsx - Mobile screen for joined participants.
  *
  * Reached via /#participant/CODE after joining. Polls the remote session
@@ -112,8 +112,8 @@ export function Participant({ code }: { code: string }) {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-rtr-base flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-rtr-green animate-spin" />
+      <div className="min-h-screen bg-crux-base flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-crux-green animate-spin" />
       </div>
     );
   }
@@ -121,10 +121,10 @@ export function Participant({ code }: { code: string }) {
   if (session.status === "ended") {
     return (
       <ParticipantShell creds={creds}>
-        <div className="bg-rtr-panel border border-rtr-border rounded-2xl p-6 text-center">
-          <CheckCircle2 className="w-10 h-10 text-rtr-green mx-auto mb-3" />
+        <div className="bg-crux-panel border border-crux-border rounded-2xl p-6 text-center">
+          <CheckCircle2 className="w-10 h-10 text-crux-green mx-auto mb-3" />
           <h2 className="text-lg font-semibold mb-1">Exercise complete</h2>
-          <p className="text-sm text-rtr-muted">
+          <p className="text-sm text-crux-muted">
             Thanks for taking part. The facilitator has ended this session.
           </p>
         </div>
@@ -145,32 +145,32 @@ export function Participant({ code }: { code: string }) {
       )}
 
       {!inject && (
-        <div className="bg-rtr-panel border border-rtr-border rounded-2xl p-8 text-center">
+        <div className="bg-crux-panel border border-crux-border rounded-2xl p-8 text-center">
           <div className="relative mx-auto w-12 h-12 mb-4">
-            <Clock className="w-12 h-12 text-rtr-dim" />
-            <div className="absolute inset-0 rounded-full bg-rtr-green/20 animate-ping" />
+            <Clock className="w-12 h-12 text-crux-dim" />
+            <div className="absolute inset-0 rounded-full bg-crux-green/20 animate-ping" />
           </div>
           <h2 className="text-lg font-semibold mb-1">Waiting for facilitator</h2>
-          <p className="text-sm text-rtr-muted">
+          <p className="text-sm text-crux-muted">
             The exercise will start shortly. Keep this screen open.
           </p>
         </div>
       )}
 
       {inject && (
-        <div className="bg-rtr-panel border border-rtr-border rounded-2xl p-5 mb-4">
-          <div className="text-[10px] font-semibold text-rtr-red uppercase tracking-widest mb-2">
+        <div className="bg-crux-panel border border-crux-border rounded-2xl p-5 mb-4">
+          <div className="text-[10px] font-semibold text-crux-red uppercase tracking-widest mb-2">
             Live Inject
           </div>
           <h2 className="text-lg font-semibold mb-3">{inject.title}</h2>
-          <p className="text-sm text-rtr-muted leading-relaxed whitespace-pre-wrap">
+          <p className="text-sm text-crux-muted leading-relaxed whitespace-pre-wrap">
             {inject.body}
           </p>
         </div>
       )}
 
       {inject && decisionPoint && !inject.revealed && (
-        <div className="bg-rtr-panel border border-amber-500/30 rounded-2xl p-5">
+        <div className="bg-crux-panel border border-amber-500/30 rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-3">
             <Vote className="w-4 h-4 text-amber-400" />
             <span className="text-xs font-semibold text-amber-400 uppercase tracking-widest">
@@ -187,13 +187,13 @@ export function Participant({ code }: { code: string }) {
                   disabled={voting}
                   className={`w-full text-left p-4 rounded-xl border transition-colors ${
                     selected
-                      ? "border-rtr-green bg-rtr-green/10"
-                      : "border-rtr-border bg-rtr-base hover:border-rtr-green/40"
+                      ? "border-crux-green bg-crux-green/10"
+                      : "border-crux-border bg-crux-base hover:border-crux-green/40"
                   } disabled:opacity-60 disabled:cursor-not-allowed`}
                 >
                   <div className="flex items-start gap-3">
                     <span className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm ${
-                      selected ? "bg-rtr-green text-rtr-base" : "bg-rtr-elevated text-rtr-muted"
+                      selected ? "bg-crux-green text-crux-base" : "bg-crux-elevated text-crux-muted"
                     }`}>
                       {opt.key}
                     </span>
@@ -204,7 +204,7 @@ export function Participant({ code }: { code: string }) {
             })}
           </div>
           {myVote?.injectId === inject.injectId && (
-            <div className="mt-4 flex items-center gap-2 text-xs text-rtr-green">
+            <div className="mt-4 flex items-center gap-2 text-xs text-crux-green">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Your vote is in. You can change it until the facilitator reveals.
             </div>
@@ -213,19 +213,19 @@ export function Participant({ code }: { code: string }) {
       )}
 
       {inject && decisionPoint && inject.revealed && (
-        <div className="bg-rtr-panel border border-rtr-green/30 rounded-2xl p-5">
-          <div className="text-xs font-semibold text-rtr-green uppercase tracking-widest mb-3">
+        <div className="bg-crux-panel border border-crux-green/30 rounded-2xl p-5">
+          <div className="text-xs font-semibold text-crux-green uppercase tracking-widest mb-3">
             Result
           </div>
           {inject.winningOptionKey ? (
             <div>
-              <p className="text-sm text-rtr-muted mb-2">Winning option</p>
-              <p className="text-base font-semibold text-rtr-text">
+              <p className="text-sm text-crux-muted mb-2">Winning option</p>
+              <p className="text-base font-semibold text-crux-text">
                 {inject.options.find((o) => o.key === inject.winningOptionKey)?.label ?? inject.winningOptionKey}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-rtr-muted">Waiting for facilitator to advance.</p>
+            <p className="text-sm text-crux-muted">Waiting for facilitator to advance.</p>
           )}
         </div>
       )}
@@ -241,18 +241,18 @@ function ParticipantShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-rtr-base text-rtr-text">
+    <div className="min-h-screen bg-crux-base text-crux-text">
       <div className="max-w-md mx-auto p-5 pt-6">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-rtr-border">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-crux-border">
           <div>
-            <p className="text-xs text-rtr-dim uppercase tracking-wider">Logged in as</p>
+            <p className="text-xs text-crux-dim uppercase tracking-wider">Logged in as</p>
             <p className="text-sm font-semibold">{creds.name}</p>
-            <p className="text-[11px] text-rtr-muted">{ROLE_LONG[creds.role] ?? creds.role}</p>
+            <p className="text-[11px] text-crux-muted">{ROLE_LONG[creds.role] ?? creds.role}</p>
           </div>
           <div className="text-right">
             <div className="inline-flex items-center gap-1.5 mb-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-rtr-red animate-pulse" />
-              <span className="text-[10px] font-semibold text-rtr-red uppercase tracking-widest">Live</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-crux-red animate-pulse" />
+              <span className="text-[10px] font-semibold text-crux-red uppercase tracking-widest">Live</span>
             </div>
           </div>
         </div>

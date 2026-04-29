@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Join.tsx - Mobile entry point for QR-voting participants.
  *
  * Reached via /#join/CODE. Fetches the live session, presents available
@@ -82,22 +82,22 @@ export function Join({ code }: { code: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-rtr-base flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-rtr-green animate-spin" />
+      <div className="min-h-screen bg-crux-base flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-crux-green animate-spin" />
       </div>
     );
   }
 
   if (loadError || !session) {
     return (
-      <div className="min-h-screen bg-rtr-base flex items-center justify-center p-6">
-        <div className="bg-rtr-panel border border-rtr-border rounded-2xl p-6 max-w-sm w-full text-center">
-          <ShieldAlert className="w-10 h-10 text-rtr-red mx-auto mb-3" />
-          <h1 className="text-lg font-semibold text-rtr-text mb-1">Can't join session</h1>
-          <p className="text-sm text-rtr-muted mb-4">
+      <div className="min-h-screen bg-crux-base flex items-center justify-center p-6">
+        <div className="bg-crux-panel border border-crux-border rounded-2xl p-6 max-w-sm w-full text-center">
+          <ShieldAlert className="w-10 h-10 text-crux-red mx-auto mb-3" />
+          <h1 className="text-lg font-semibold text-crux-text mb-1">Can't join session</h1>
+          <p className="text-sm text-crux-muted mb-4">
             {loadError || "This session no longer exists."}
           </p>
-          <p className="text-xs text-rtr-dim font-mono">Code: {code}</p>
+          <p className="text-xs text-crux-dim font-mono">Code: {code}</p>
         </div>
       </div>
     );
@@ -105,11 +105,11 @@ export function Join({ code }: { code: string }) {
 
   if (session.status === "ended") {
     return (
-      <div className="min-h-screen bg-rtr-base flex items-center justify-center p-6">
-        <div className="bg-rtr-panel border border-rtr-border rounded-2xl p-6 max-w-sm w-full text-center">
+      <div className="min-h-screen bg-crux-base flex items-center justify-center p-6">
+        <div className="bg-crux-panel border border-crux-border rounded-2xl p-6 max-w-sm w-full text-center">
           <ShieldAlert className="w-10 h-10 text-amber-400 mx-auto mb-3" />
-          <h1 className="text-lg font-semibold text-rtr-text mb-1">Session ended</h1>
-          <p className="text-sm text-rtr-muted">This exercise has finished.</p>
+          <h1 className="text-lg font-semibold text-crux-text mb-1">Session ended</h1>
+          <p className="text-sm text-crux-muted">This exercise has finished.</p>
         </div>
       </div>
     );
@@ -122,22 +122,22 @@ export function Join({ code }: { code: string }) {
   ).filter((r) => r !== "CUSTOM");
 
   return (
-    <div className="min-h-screen bg-rtr-base text-rtr-text">
+    <div className="min-h-screen bg-crux-base text-crux-text">
       <div className="max-w-md mx-auto p-6 pt-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-2 h-2 rounded-full bg-rtr-red animate-pulse" />
-            <span className="text-xs font-semibold text-rtr-red uppercase tracking-widest">Crucible Live</span>
+            <div className="w-2 h-2 rounded-full bg-crux-red animate-pulse" />
+            <span className="text-xs font-semibold text-crux-red uppercase tracking-widest">Crucible Live</span>
           </div>
           <h1 className="text-2xl font-bold mb-1">{session.scenarioTitle}</h1>
-          <p className="text-sm text-rtr-muted">
-            Session code <span className="font-mono text-rtr-text">{session.code}</span>
+          <p className="text-sm text-crux-muted">
+            Session code <span className="font-mono text-crux-text">{session.code}</span>
           </p>
         </div>
 
         <div className="space-y-5">
           <div>
-            <label className="text-xs font-semibold text-rtr-dim uppercase tracking-wider block mb-2">
+            <label className="text-xs font-semibold text-crux-dim uppercase tracking-wider block mb-2">
               Your name
             </label>
             <input
@@ -145,12 +145,12 @@ export function Join({ code }: { code: string }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Alex Chen"
-              className="w-full text-base bg-rtr-panel border border-rtr-border rounded-xl px-4 py-3 focus:outline-none focus:border-rtr-green placeholder:text-rtr-dim"
+              className="w-full text-base bg-crux-panel border border-crux-border rounded-xl px-4 py-3 focus:outline-none focus:border-crux-green placeholder:text-crux-dim"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-rtr-dim uppercase tracking-wider block mb-2">
+            <label className="text-xs font-semibold text-crux-dim uppercase tracking-wider block mb-2">
               Your role
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -164,14 +164,14 @@ export function Join({ code }: { code: string }) {
                     disabled={claimed}
                     className={`px-3 py-3 rounded-xl border text-sm font-medium transition-colors text-left ${
                       selected
-                        ? "border-rtr-green bg-rtr-green/10 text-rtr-text"
+                        ? "border-crux-green bg-crux-green/10 text-crux-text"
                         : claimed
-                        ? "border-rtr-border bg-rtr-panel/50 text-rtr-dim cursor-not-allowed"
-                        : "border-rtr-border bg-rtr-panel text-rtr-text hover:border-rtr-green/50"
+                        ? "border-crux-border bg-crux-panel/50 text-crux-dim cursor-not-allowed"
+                        : "border-crux-border bg-crux-panel text-crux-text hover:border-crux-green/50"
                     }`}
                   >
                     <div className="font-semibold">{ROLE_SHORT[r]}</div>
-                    <div className="text-[10px] text-rtr-dim leading-tight mt-0.5">
+                    <div className="text-[10px] text-crux-dim leading-tight mt-0.5">
                       {claimed ? "Taken" : ROLE_LONG[r]}
                     </div>
                   </button>
@@ -190,7 +190,7 @@ export function Join({ code }: { code: string }) {
           <button
             onClick={handleJoin}
             disabled={!name.trim() || !role || submitting}
-            className="w-full flex items-center justify-center gap-2 bg-rtr-red text-white py-4 rounded-xl text-base font-semibold hover:bg-[#c0001f] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 bg-crux-green text-white py-4 rounded-xl text-base font-semibold hover:brightness-110 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {submitting ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -202,7 +202,7 @@ export function Join({ code }: { code: string }) {
             )}
           </button>
 
-          <p className="text-[11px] text-rtr-dim text-center leading-relaxed">
+          <p className="text-[11px] text-crux-dim text-center leading-relaxed">
             By joining, your name and votes will be visible to the facilitator
             and other participants for this session only.
           </p>

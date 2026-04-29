@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ScenarioDayStrip — shows the fictional day/time position within a scenario.
  *
  * Reads scenarioDay values from all injects to build a strip of labelled day
@@ -57,8 +57,8 @@ export function ScenarioDayStrip({ scenario, currentDay, currentTime, size = "md
                   isCurrent
                     ? "text-white"
                     : isPast
-                    ? "text-rtr-green/70"
-                    : "text-rtr-dim"
+                    ? "text-crux-green/70"
+                    : "text-crux-dim"
                 )}
                 style={{
                   background: isCurrent

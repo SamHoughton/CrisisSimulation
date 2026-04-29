@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Present.tsx - Standalone full-screen projector view.
  *
  * Opened as a separate browser window by Runner.tsx. Receives all data via
@@ -289,8 +289,8 @@ export function Present() {
           <div className="flex items-center gap-5">
             {timerLabel && (
               <div className="flex items-center gap-2">
-                <Wifi className={cn("w-3.5 h-3.5", timerRunning ? "text-rtr-green" : "text-rtr-dim")} />
-                <span className={cn("font-mono text-lg font-bold", timerUrgent ? "timer-urgent" : "text-rtr-text")}>
+                <Wifi className={cn("w-3.5 h-3.5", timerRunning ? "text-crux-green" : "text-crux-dim")} />
+                <span className={cn("font-mono text-lg font-bold", timerUrgent ? "timer-urgent" : "text-crux-text")}>
                   {timerLabel}
                 </span>
               </div>
@@ -299,7 +299,7 @@ export function Present() {
             <button
               onClick={toggleFullscreen}
               title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-              className="text-rtr-dim hover:text-rtr-muted transition-colors"
+              className="text-crux-dim hover:text-crux-muted transition-colors"
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -921,7 +921,7 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
                 timerUrgent
                   ? "timer-urgent text-5xl"
                   : timerRunning
-                    ? "text-rtr-green text-5xl"
+                    ? "text-crux-green text-5xl"
                     : "text-5xl"
               )}
               style={!timerUrgent && !timerRunning ? { color: "#4a4f65" } : undefined}
