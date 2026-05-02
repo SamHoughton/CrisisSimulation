@@ -54,7 +54,7 @@ type PresentPhase =
   | { phase: "inject";   inject: Inject; num: number }
   | { phase: "adhoc";    body: string }
   | { phase: "paused" }
-  | { phase: "ended" };
+  | { phase: "ended";    endingInject?: Inject };
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
@@ -76,6 +76,8 @@ export function Present() {
   const pendingInjectRef = useRef<{ inject: Inject; num: number; totalInjects: number } | null>(null);
   /** Story track of the most recently shown inject — used to detect track transitions. */
   const prevStoryTrackRef = useRef<string | undefined>(undefined);
+  /** The most recently received ending inject — surfaced on the ended screen. */
+  const lastEndingInjectRef = useRef<Inject | null>(null);
   /** When set, a track-transition banner is shown full-width for 3 seconds. */
   const [trackBanner, setTrackBanner] = useState<string | null>(null);
   const trackBannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -112,6 +114,9 @@ export function Present() {
         setCrisisLevel(Math.round((msg.injectNum / msg.totalInjects) * 100));
         if (msg.inject.tickerHeadline) {
           setHeadlines((h) => [msg.inject.tickerHeadline, ...h]);
+        }
+        if (msg.inject.isEnding) {
+          lastEndingInjectRef.current = msg.inject;
         }
         // Fire a track-transition banner when the story track changes.
         const incomingTrack: string | undefined = msg.inject.storyTrack;
@@ -150,7 +155,7 @@ export function Present() {
         } else if (msg.status === "paused") {
           setPhase({ phase: "paused" });
         } else if (msg.status === "ended") {
-          setPhase({ phase: "ended" });
+          setPhase({ phase: "ended", endingInject: lastEndingInjectRef.current ?? undefined });
         } else if (msg.scenario) {
           setPhase({ phase: "waiting", scenario: msg.scenario });
         }
@@ -334,7 +339,7 @@ export function Present() {
         )}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
         {phase.phase === "paused"   && <PausedScreen />}
-        {phase.phase === "ended"    && <EndedScreen />}
+        {phase.phase === "ended"    && <EndedScreen endingInject={phase.endingInject} />}
 
         {/* ── Story-track transition banner ────────────────────────────────── */}
         {trackBanner && (
@@ -2304,16 +2309,77 @@ function PausedScreen() {
 
 // ─── Ended ────────────────────────────────────────────────────────────────────
 
-function EndedScreen() {
-  return (
-    <div className="h-full flex items-center justify-center">
-      <div className="text-center">
-        <div className="flex items-center justify-center w-24 h-24 rounded-2xl mx-auto mb-6"
-          style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.2)" }}>
-          <ShieldAlert className="w-12 h-12" style={{ color: "#1db86a" }} />
+function EndedScreen({ endingInject }: { endingInject?: Inject }) {
+  if (!endingInject) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="flex items-center justify-center w-24 h-24 rounded-2xl mx-auto mb-6"
+            style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.2)" }}>
+            <ShieldAlert className="w-12 h-12" style={{ color: "#1db86a" }} />
+          </div>
+          <p className="text-4xl font-bold mb-3">Exercise Complete</p>
+          <p style={{ color: "#8b8fa8" }}>Thank you for participating. Debrief to follow.</p>
         </div>
-        <p className="text-4xl font-bold mb-3">Exercise Complete</p>
-        <p style={{ color: "#8b8fa8" }}>Thank you for participating. Debrief to follow.</p>
+      </div>
+    );
+  }
+
+  const outcomeTitle = endingInject.title?.replace(/^Ending:\s*/i, "") ?? "Exercise Complete";
+  const bodyParagraphs = endingInject.body ? endingInject.body.split(/\n\n+/) : [];
+
+  return (
+    <div className="h-full overflow-y-auto">
+      <div className="max-w-4xl mx-auto px-12 py-10 flex flex-col gap-8">
+
+        {/* Outcome header */}
+        <div>
+          <p className="text-xs font-mono font-bold tracking-[0.25em] uppercase mb-3"
+            style={{ color: "#1db86a" }}>
+            30-Day Outcome
+          </p>
+          <h1 className="font-black leading-tight"
+            style={{
+              color: "#f0f5f1",
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(2.5rem, 4.5vw, 4rem)",
+              letterSpacing: "0.02em",
+            }}>
+            {outcomeTitle}
+          </h1>
+        </div>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: "rgba(29,184,106,0.2)" }} />
+
+        {/* Narrative body */}
+        {bodyParagraphs.length > 0 && (
+          <div className="flex flex-col gap-4">
+            {bodyParagraphs.map((para, i) => (
+              <p key={i} className="text-lg leading-relaxed"
+                style={{ color: i === 0 ? "#c5d4c8" : "#8caa94" }}>
+                {para}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {/* Arc recap */}
+        {endingInject.arcRecap && <ArcRecapCard data={endingInject.arcRecap} />}
+
+        {/* Footer */}
+        <div className="flex items-center justify-between border-t pt-4"
+          style={{ borderColor: "rgba(29,184,106,0.1)" }}>
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="w-3.5 h-3.5" style={{ color: "#1db86a" }} />
+            <span className="text-xs font-mono font-bold tracking-[0.2em]"
+              style={{ color: "#2a3a2e" }}>CRUCIBLE</span>
+          </div>
+          <p className="text-xs font-mono" style={{ color: "#2a3a2e" }}>
+            Full debrief available on facilitator console
+          </p>
+        </div>
+
       </div>
     </div>
   );
