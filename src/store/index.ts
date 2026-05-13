@@ -15,7 +15,7 @@ import type {
   GeneratedReport, FacilitatorNote, PresentMessage,
   ArcRecap, ArcRecapEntry, CommandTier, Inject,
 } from "@/types";
-import { BUILT_IN_TEMPLATES } from "@/lib/templates";
+import { BUILT_IN_TEMPLATES } from "@/lib/scenarios";
 
 // ─── Broadcast channel ────────────────────────────────────────────────────────
 

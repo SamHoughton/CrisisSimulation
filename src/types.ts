@@ -256,10 +256,10 @@ export interface Inject {
   targetRoles: ExecRole[];
   expectedKeywords?: string[];
   artifact?: InjectArtifact;      // styled display type for present screen
-  commandTier?: CommandTier;      // GOLD/SILVER/BRONZE incident command tier
+  commandTier?: CommandTier;      // STRATEGIC or TACTICAL incident command tier
   /**
    * Short (1-3 sentence) narrator summary shown when this inject is filtered out
-   * due to tier selection (e.g. Bronze inject skipped in a Gold-only session).
+   * due to tier selection (e.g. a TACTICAL inject skipped in a STRATEGIC-only session).
    * Displayed as a "Story so far..." briefing strip on the Present screen before
    * the next in-scope inject, so the room retains narrative coherence.
    */
