@@ -414,7 +414,7 @@ function ScenarioCard({ scenario, onRun }: { scenario: any; onRun: () => void })
     <div
       className="group relative rounded-2xl overflow-hidden cursor-pointer fade-in-up"
       style={{
-        height: 268,
+        height: 320,
         background: scenario.coverGradient
           ? `linear-gradient(${scenario.coverGradient})`
           : "#0d0f12",
