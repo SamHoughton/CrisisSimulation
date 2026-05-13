@@ -2181,7 +2181,7 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
   const maxCount = Math.max(1, ...Object.values(counts));
 
   return (
-    <div className="w-72 shrink-0 flex flex-col gap-3 min-h-0 overflow-y-auto">
+    <div className="w-72 shrink-0 flex flex-col gap-3 min-h-0 overflow-y-auto self-stretch">
       <div className="flex items-center gap-2 mb-1">
         <GitBranch className="w-4 h-4" style={{ color: "#fbbf24" }} />
         <span className="text-xs font-bold uppercase tracking-wider font-mono" style={{ color: "#fcd34d" }}>
