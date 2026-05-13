@@ -2209,7 +2209,7 @@ function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteS
                 style={{ background: isWin ? "rgba(29,184,106,0.2)" : c.bg, color: isWin ? "#1db86a" : c.text, border: `1px solid ${isWin ? c.winBorder : c.border}` }}>
                 {option.key}
               </span>
-              <span className="text-sm font-medium flex-1 line-clamp-2" style={{ color: isWin ? "#1db86a" : "#e8eaf0" }}>
+              <span className="text-sm font-medium flex-1" style={{ color: isWin ? "#1db86a" : "#e8eaf0" }}>
                 {option.label}
               </span>
               {revealed && (
