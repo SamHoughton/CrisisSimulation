@@ -78,16 +78,16 @@ export const ROLE_LONG: Record<string, string> = {
 };
 
 export const ROLE_COLOUR: Record<string, string> = {
-  CEO:      "bg-purple-500/20 text-purple-300",
-  CFO:      "bg-blue-500/20 text-blue-300",
-  CISO:     "bg-red-500/20 text-red-300",
-  CLO:      "bg-slate-500/20 text-slate-300",
-  CCO:      "bg-pink-500/20 text-pink-300",
-  COO:      "bg-indigo-500/20 text-indigo-300",
-  CTO:      "bg-cyan-500/20 text-cyan-300",
-  BOARD_REP:"bg-amber-500/20 text-amber-300",
-  HR_LEAD:  "bg-green-500/20 text-green-300",
-  CUSTOM:   "bg-zinc-500/20 text-zinc-300",
+  CEO:      "bg-purple-500/25 text-purple-600",
+  CFO:      "bg-blue-500/25 text-blue-600",
+  CISO:     "bg-red-500/25 text-red-600",
+  CLO:      "bg-slate-500/25 text-slate-600",
+  CCO:      "bg-pink-500/25 text-pink-600",
+  COO:      "bg-indigo-500/25 text-indigo-600",
+  CTO:      "bg-cyan-500/25 text-cyan-700",
+  BOARD_REP:"bg-amber-500/25 text-amber-700",
+  HR_LEAD:  "bg-green-500/25 text-green-700",
+  CUSTOM:   "bg-zinc-500/25 text-zinc-600",
 };
 
 export const ALL_ROLES = [

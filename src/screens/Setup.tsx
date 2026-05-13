@@ -128,10 +128,10 @@ export function Setup() {
                   inj.isDecisionPoint
                     ? tc
                       ? `${tc.border} ${tc.bg} ${tc.text} ring-1 ring-white/40`
-                      : "border-amber-500/50 bg-amber-500/15 text-amber-400"
+                      : "border-amber-600/70 bg-amber-500/20 text-amber-700"
                     : tc
                     ? `${tc.border} ${tc.bg} ${tc.text} opacity-70`
-                    : "border-crux-border text-crux-dim"
+                    : "border-crux-border bg-crux-elevated text-crux-muted"
                 )}
               >
                 {i + 1}
@@ -141,7 +141,7 @@ export function Setup() {
         </div>
         <div className="flex items-center gap-4 mt-2.5 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <div className="w-3.5 h-3.5 rounded border border-crux-border bg-transparent" />
+            <div className="w-3.5 h-3.5 rounded border border-crux-border bg-crux-elevated" />
             <span className="text-xs text-crux-dim">Inject</span>
           </div>
           <div className="flex items-center gap-1.5">
