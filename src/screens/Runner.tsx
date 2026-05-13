@@ -781,23 +781,23 @@ export function Runner() {
                 <div key={inj.id}>
                   {showTrack && (
                     <div className="flex items-center gap-1.5 pt-1 pb-0.5 px-1">
-                      <div className="flex-1 h-px bg-amber-500/20" />
-                      <span className="text-[9px] font-mono font-semibold text-amber-400/70 uppercase tracking-wider truncate max-w-[140px]">
+                      <div className="flex-1 h-px bg-amber-500/40" />
+                      <span className="text-[9px] font-mono font-semibold text-amber-700 uppercase tracking-wider truncate max-w-[140px]">
                         {inj.storyTrack}
                       </span>
-                      <div className="flex-1 h-px bg-amber-500/20" />
+                      <div className="flex-1 h-px bg-amber-500/40" />
                     </div>
                   )}
                 <div className={cn(
                   "rounded border p-3 text-xs transition-colors",
-                  released && !isLive ? "border-crux-green/20 bg-crux-green/5 opacity-60"
+                  released && !isLive ? "border-crux-green/20 bg-crux-green/5 opacity-75"
                   : isLive  ? "border-crux-red/40 bg-crux-red/8"
                   : isNext  ? "border-crux-red/30 bg-crux-red/5"
-                  : !onPath ? "border-crux-border/40 bg-crux-base opacity-35"
+                  : !onPath ? "border-crux-border/40 bg-crux-base opacity-50"
                   :           "border-crux-border bg-crux-elevated"
                 )}>
                   <div className="flex items-start gap-2 mb-1.5">
-                    <span className="font-bold text-crux-dim font-mono shrink-0">{idx + 1}</span>
+                    <span className="font-bold text-crux-muted font-mono shrink-0">{idx + 1}</span>
                     {inj.commandTier && TIER_COLOUR[inj.commandTier] && (
                       <span
                         title={TIER_LABEL[inj.commandTier]}
@@ -841,7 +841,7 @@ export function Runner() {
                       <span className="text-crux-red font-mono">LIVE</span>
                     ) : !released && onPath && inj.tierSkipSummary ? (
                       <div className="flex items-center gap-1.5">
-                        <span className="text-crux-dim">Queued</span>
+                        <span className="text-crux-muted">Queued</span>
                         <button
                           onClick={() => {
                             const r1 = inj.decisionOptions.find((o) => o.rank === 1);
@@ -854,10 +854,10 @@ export function Runner() {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-crux-dim">{onPath ? "Queued" : "Off-path"}</span>
+                      <span className="text-crux-muted">{onPath ? "Queued" : "Off-path"}</span>
                     )}
                     {inj.timerMinutes && (
-                      <span className="text-crux-dim font-mono text-xs">{inj.timerMinutes}m</span>
+                      <span className="text-crux-muted font-mono text-xs">{inj.timerMinutes}m</span>
                     )}
                   </div>
                 </div>
@@ -928,7 +928,7 @@ export function Runner() {
               </div>
               {skipInj.isDecisionPoint && skipInj.decisionOptions.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs text-crux-dim mb-2">Which path did the group take?</p>
+                  <p className="text-xs text-crux-muted mb-2">Which path did the group take?</p>
                   <div className="flex flex-wrap gap-2">
                     {skipInj.decisionOptions.map((opt, i) => (
                       <button
@@ -938,11 +938,11 @@ export function Runner() {
                           "flex items-center gap-1.5 text-xs border rounded-lg px-3 py-1.5 font-semibold transition-all",
                           skipChoice === opt.key
                             ? cn(OPTION_COLOURS[i] ?? OPTION_COLOURS[0], "ring-2 ring-white/20")
-                            : "border-crux-border text-crux-dim hover:text-crux-muted",
+                            : "border-crux-border text-crux-muted hover:text-crux-text",
                         )}
                       >
                         <span className="font-mono">{opt.key}</span>
-                        <span className="font-normal opacity-80 max-w-[160px] truncate">{opt.label}</span>
+                        <span className="font-normal">{opt.label}</span>
                         {opt.rank === 1 && (
                           <span className="text-[9px] text-crux-green font-mono">★</span>
                         )}
@@ -973,9 +973,9 @@ export function Runner() {
                   <div className="flex items-center gap-3">
                     <p className="text-xs font-semibold text-crux-dim uppercase tracking-wider">Current Inject</p>
                   </div>
-                  <p className="text-xs text-crux-dim font-mono">
+                  <p className="text-xs text-crux-muted font-mono">
                     Released {new Date(currentLive.releasedAt).toLocaleTimeString()}
-                    <span className="text-amber-400/70"> · on inject for {injectElapsed}</span>
+                    <span className="text-amber-600"> · on inject for {injectElapsed}</span>
                   </p>
                 </div>
                 {(() => {
@@ -1203,7 +1203,7 @@ function VotingPanel({
                   OPTION_TEXT[i] ?? OPTION_TEXT[0])}>
                   {opt.key}
                 </span>
-                <span className="text-xs font-medium text-crux-text flex-1 line-clamp-1">{opt.label}</span>
+                <span className="text-xs font-medium text-crux-text flex-1 line-clamp-2">{opt.label}</span>
                 {revealed && typeof opt.rank === "number" && (
                   <span className={cn(
                     "text-[10px] font-bold font-mono px-1.5 py-0.5 rounded shrink-0",
@@ -1246,7 +1246,7 @@ function VotingPanel({
 
       {/* Cast votes */}
       <div className="space-y-2 border-t border-crux-border pt-3">
-        <p className="text-xs text-crux-dim mb-2">Cast votes:</p>
+        <p className="text-xs text-crux-muted mb-2">Cast votes:</p>
         {participants.map((p) => {
           const existing = decisions.find((d) => d.role === p.role);
           if (existing) return null;
