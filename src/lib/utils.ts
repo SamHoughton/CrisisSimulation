@@ -112,8 +112,8 @@ export const TIER_SUBTITLE: Record<string, string> = {
  * bg: badge background  |  text: badge text  |  border: badge border
  */
 export const TIER_COLOUR: Record<string, { bg: string; text: string; border: string; dot: string }> = {
-  STRATEGIC: { bg: "bg-amber-500/20", text: "text-amber-300", border: "border-amber-500/40", dot: "bg-amber-400"  },
-  TACTICAL:  { bg: "bg-sky-500/20",   text: "text-sky-300",   border: "border-sky-500/40",   dot: "bg-sky-400"    },
+  STRATEGIC: { bg: "bg-amber-500/20", text: "text-amber-700", border: "border-amber-600/50", dot: "bg-amber-500" },
+  TACTICAL:  { bg: "bg-sky-500/20",   text: "text-sky-700",   border: "border-sky-600/50",   dot: "bg-sky-500"   },
 };
 
 export const ALL_SCENARIO_TYPES = [

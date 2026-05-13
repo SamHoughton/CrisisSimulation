@@ -115,7 +115,7 @@ export function Setup() {
 
       {/* Inject progress dots */}
       <div className="bg-crux-panel border border-crux-border rounded-xl p-4 mb-6 fade-in-up">
-        <p className="text-xs font-semibold text-crux-dim uppercase tracking-wider mb-3">Inject Timeline Preview</p>
+        <p className="text-xs font-semibold text-crux-muted uppercase tracking-wider mb-3">Inject Timeline Preview</p>
         <div className="flex flex-wrap gap-1.5">
           {[...scenario.injects].sort((a: any, b: any) => a.order - b.order).map((inj: any, i: number) => {
             const tc = inj.commandTier ? TIER_COLOUR[inj.commandTier] : null;
@@ -127,8 +127,8 @@ export function Setup() {
                   "w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold font-mono border transition-colors cursor-default",
                   inj.isDecisionPoint
                     ? tc
-                      ? `${tc.border} ${tc.bg} ${tc.text} ring-1 ring-white/40`
-                      : "border-amber-600/70 bg-amber-500/20 text-amber-700"
+                      ? `${tc.border} ${tc.bg} ${tc.text}`
+                      : "border-amber-600 bg-amber-500 text-white"
                     : tc
                     ? `${tc.border} ${tc.bg} ${tc.text} opacity-70`
                     : "border-crux-border bg-crux-elevated text-crux-muted"
@@ -142,18 +142,18 @@ export function Setup() {
         <div className="flex items-center gap-4 mt-2.5 flex-wrap">
           <div className="flex items-center gap-1.5">
             <div className="w-3.5 h-3.5 rounded border border-crux-border bg-crux-elevated" />
-            <span className="text-xs text-crux-dim">Inject</span>
+            <span className="text-xs text-crux-muted">Inject</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3.5 h-3.5 rounded border border-amber-500/50 bg-amber-500/15 ring-1 ring-white/40" />
-            <span className="text-xs text-amber-400/80">Decision point</span>
+            <div className="w-3.5 h-3.5 rounded border border-amber-600 bg-amber-500" />
+            <span className="text-xs text-amber-700">Decision point</span>
           </div>
           {Object.keys(TIER_COLOUR).some((t) => scenario.injects.some((i: any) => i.commandTier === t)) && (
             <>
               {(["STRATEGIC", "TACTICAL"] as const).filter((t) => scenario.injects.some((i: any) => i.commandTier === t)).map((t) => (
                 <div key={t} className="flex items-center gap-1.5">
                   <div className={`w-3.5 h-3.5 rounded border ${TIER_COLOUR[t].border} ${TIER_COLOUR[t].bg}`} />
-                  <span className={`text-xs ${TIER_COLOUR[t].text} opacity-80`}>{TIER_LABEL[t]}</span>
+                  <span className={`text-xs ${TIER_COLOUR[t].text}`}>{TIER_LABEL[t]}</span>
                 </div>
               ))}
             </>
@@ -161,7 +161,7 @@ export function Setup() {
         </div>
         {scenario.injects.filter((inj: any) => inj.isDecisionPoint).length > 0 && (
           <p className="text-xs text-crux-muted mt-1.5">
-            <span className="text-amber-400 font-medium">
+            <span className="text-amber-700 font-medium">
               {scenario.injects.filter((inj: any) => inj.isDecisionPoint).length} decision point{scenario.injects.filter((inj: any) => inj.isDecisionPoint).length !== 1 ? "s" : ""}
             </span>{" "}
             will require participant votes
