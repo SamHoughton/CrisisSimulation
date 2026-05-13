@@ -47,7 +47,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         voicemailDuration: "1:52",
         voicemailTime: "05:30",
         voicemailTranscript:
-          "It's Sarah. I need sixty seconds and then you'll understand why I'm calling at this hour. Six days ago, someone got into our systems using a stolen password from one of our contractors. They've been moving quietly ever since. At just after four this morning, they ran the trigger. Two hundred and seventeen servers encrypted - billing, trading reconciliation, payroll, all gone. Before they encrypted it, they copied the Priority Services Register. The list of all our vulnerable customers. We don't know for certain it's in criminal hands but Mandiant assess it as highly likely. The lights are still on. No customer has lost power. This is a systems crisis, not a supply crisis. Mandiant are already on their way in. I need to know who you're calling first so I can brief them or hold. I'm so sorry. Call me back.",
+          "It's Sarah. I need sixty seconds and then you'll understand why I'm calling at this hour. Six days ago, someone got into our systems using a stolen password from one of our contractors. They've been moving quietly ever since. At just after four this morning, they ran the trigger. Two hundred and seventeen servers encrypted - billing, trading reconciliation, payroll, all gone. Before they encrypted it, they copied the Priority Services Register. The list of all our vulnerable customers. We don't know for certain it's in criminal hands but Mandiant assess it as highly likely. The lights are still on. No customer has lost power. This is a systems crisis, not a supply crisis. I've got Mandiant on standby. I need your authorisation to deploy them. Tell me who you're calling first so I can brief them. Call me back.",
       },
       isDecisionPoint: true,
       targetRoles: ["CEO", "CLO", "COO"],
@@ -65,9 +65,9 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Call the CISO back and authorise her to act. get Mandiant moving, lock the estate down. Everything else follows once you understand what you're dealing with.",
+            "Call the CISO back and authorise her to act. Get Mandiant deployed, lock the estate down. Everything else follows once you understand what you're dealing with.",
           consequence:
-            "Mandiant reach Edinburgh by 06:15 and have network segmentation in place within the hour. By 07:00 you have a confirmed technical picture — blast radius, patient zero, exfiltration scope. With that in hand you call NCSC at 07:30 and Ofgem shortly after. Both receive a briefing based on facts, not estimates. Ofgem later note the sequencing: contain first, notify with evidence. The response is hard, but it is ordered.",
+            "Mandiant begin remote triage by 05:45 and have the network segmented within the hour. By 07:00 you have a confirmed technical picture , blast radius, patient zero, exfiltration scope. With that in hand you brief NCSC at 07:30 and Ofgem shortly after. Both receive a briefing based on facts, not estimates. Ofgem later note the sequencing: contain first, notify with evidence. The response is hard, but it is ordered.",
           rank: 1,
           recapFragment: "the CISO to get Mandiant moving before making any external calls",
         },
@@ -92,7 +92,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Call the General Counsel first. before you do anything, you need to know what you're legally obligated to do and in what order.",
+            "Call the General Counsel first. Before you do anything, you need to know what you're legally obligated to do and in what order.",
           consequence:
             "Ofgem appreciate the call but explain that under NIS the first call is to NCSC. You have inverted the chain of command. Ofgem note this in their later assessment.",
           rank: 4,
@@ -159,7 +159,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "File now, even with gaps. the data protection regulator prefers to hear early with incomplete information rather than late with the full picture.",
+            "File now, even with gaps. The data protection regulator prefers to hear early with incomplete information rather than late with the full picture.",
           consequence:
             "ICO acknowledge within 2 hours and assign a case officer. The notification is on-time. The ICO final report notes 'prompt and transparent engagement'.",
           rank: 1,
@@ -186,7 +186,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "File through the energy regulator and ask them to pass it on. one call, two boxes ticked.",
+            "File through the energy regulator and ask them to pass it on. One call, two boxes ticked.",
           consequence:
             "Ofgem explain patiently that NIS and GDPR are separate regimes. The ICO clock is now at 1h30m. The confusion is noted.",
           rank: 4,
@@ -246,7 +246,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Selective containment: protect the vulnerable customers database and billing, let trading run on the affected systems. stop the spread where it matters most.",
+            "Selective containment: protect the vulnerable customers database and billing, let trading run on the affected systems. Stop the spread where it matters most.",
           consequence:
             "Trading continues. The attacker re-encrypts the trading reconciliation systems at 06:30. You preserved £1.8M in trading efficiency and gave up another segment.",
           rank: 3,
@@ -266,7 +266,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
           label:
             "Hold and observe - let Mandiant complete their loop before you make a containment call that cannot be reversed",
           consequence:
-            "Encryption spreads for another 90 minutes. By 05:45 the trading book reconciliation is unrecoverable from production. Mandiant arrive to a worse situation than briefed.",
+            "Encryption spreads for another 90 minutes. By 07:45 the trading book reconciliation is unrecoverable from production. The response team arrive to a worse situation than briefed.",
           rank: 4,
           recapFragment: "holding for Mandiant before any containment",
         },
@@ -492,7 +492,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         { type: "slack_message", delaySeconds: 8, author: "Jess Alderton · Legal PA", content: "Tom, do NOT open that file. IT confirmed it's a ransom note. Sit tight." },
         { type: "slack_message", delaySeconds: 18, author: "Anonymous", content: "Someone just posted a screenshot of the ransom note on Twitter. It's circulating." },
         { type: "ticker_headline", delaySeconds: 22, content: "Veridian Power staff report ransom note appearing on company desktops" },
-        { type: "slack_message", delaySeconds: 35, author: "Marcus Webb · Customer Services", content: "Call volumes up 400%. Customers are asking if their direct debits are safe. Scripts please — NOW." },
+        { type: "slack_message", delaySeconds: 35, author: "Marcus Webb · Customer Services", content: "Call volumes up 400%. Customers are asking if their direct debits are safe. Scripts please , NOW." },
         { type: "slack_message", delaySeconds: 55, author: "Ben Cole · IT Helpdesk", content: "We've had 600 tickets in the last 40 minutes. Please stop reopening your laptops." },
       ],
       isDecisionPoint: false,
@@ -558,7 +558,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Customers first. statement on the website and a direct message to the 84,000 vulnerable customers confirming their power supply is unaffected.",
+            "Customers first. Statement on the website and a direct message to the 84,000 vulnerable customers confirming their power supply is unaffected.",
           consequence:
             "Vulnerable customers are reassured. But staff find out via a Times push notification. Internal trust takes a real hit.",
           rank: 2,
@@ -609,7 +609,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       },
       worldEvents: [
         { type: "stock_tick", delaySeconds: 15, stockDelta: -18 },
-        { type: "ticker_headline", delaySeconds: 20, content: "VRD.L accelerating south — volume surge continues on no company statement" },
+        { type: "ticker_headline", delaySeconds: 20, content: "VRD.L accelerating south , volume surge continues on no company statement" },
         { type: "stock_tick", delaySeconds: 35, stockDelta: -11 },
         { type: "stock_tick", delaySeconds: 60, stockDelta: -9 },
         { type: "ticker_headline", delaySeconds: 65, content: "Traders report stop-loss cascade in VRD.L as sell pressure intensifies" },
@@ -641,7 +641,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Issue an official market announcement immediately, no suspension. let the market price the risk openly.",
+            "Issue an official market announcement immediately, no suspension. Let the market price the risk openly.",
           consequence:
             "market announcement out at 09:22. VRD.L drops another 4.1% in the hour after the statement. No regulatory concern raised. Stock finds a floor by midday.",
           rank: 1,
@@ -650,7 +650,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Request voluntary trading suspension while we prepare a fuller announcement. nothing public until we have a clearer picture.",
+            "Request voluntary trading suspension while we prepare a fuller announcement. Nothing public until we have a clearer picture.",
           consequence:
             "Suspension granted at 09:21. Fuller announcement at 11:00. Some investors frustrated by the 2-hour blackout. The FCA note the suspension was appropriate.",
           rank: 2,
@@ -659,7 +659,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Hold any public announcement. premature disclosure will crystallise panic before we understand the full picture.",
+            "Hold any public announcement. Premature disclosure will crystallise panic before we understand the full picture.",
           consequence:
             "VRD.L falls 19.3% by close. The FCA issue a formal query at 11:00. Two institutional shareholders file complaints.",
           rank: 4,
@@ -729,7 +729,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Negotiate in good faith. bring in specialist ransomware negotiators, target a significant reduction, keep the option to walk away.",
+            "Negotiate in good faith. Bring in specialist ransomware negotiators, target a significant reduction, keep the option to walk away.",
           consequence:
             "Specialist negotiators engaged. ALPHV accept engagement and counter at $7.8M. The UK sanctions risk is being assessed in parallel by external counsel by external counsel.",
           rank: 3,
@@ -738,7 +738,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "Pay in full immediately. end the clock, protect the 84,000 people whose data is at risk.",
+            "Pay in full immediately. End the clock, protect the 84,000 people whose data is at risk.",
           consequence:
             "Beazley refuse to authorise without OFSI clearance. The CFO bridges from corporate cash. Keys work on 62% of files. The PSR mirrors to a fourth site within the hour.",
           rank: 4,
@@ -865,7 +865,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Brief the local electricity network engineers first so they are on standby. then begin calls once support is ready.",
+            "Brief the local electricity network engineers first so they are on standby. Then begin calls once support is ready.",
           consequence:
             "Local network operators briefed by 16:00. Engineers on standby across five regions. Outreach begins at 17:30 with support infrastructure in place. Three customers needed a welfare visit.",
           rank: 2,
@@ -874,7 +874,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Send a direct message to all 84,247 affected customers tonight alongside a press statement. full transparency at scale.",
+            "Send a direct message to all 84,247 affected customers tonight alongside a press statement. Full transparency at scale.",
           consequence:
             "SMS sent at 22:00. 14,000 calls to the emergency line before midnight. Three major newspapers lead with PSR. Outreach seen as reactive but comprehensive.",
           rank: 2,
@@ -933,10 +933,10 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       },
       isDecisionPoint: true,
       branches: [
-        { optionKey: "A", nextInjectId: "rwg-d2-brief", trackLabel: "Mandate set. The negotiation continues overnight." },
-        { optionKey: "B", nextInjectId: "rwg-d2-brief", trackLabel: "Stall mandate in place. The clock ticks." },
-        { optionKey: "C", nextInjectId: "rwg-d2-brief", trackLabel: "Open mandate given. Mandiant have the room." },
-        { optionKey: "D", nextInjectId: "rwg-refuse-night", trackLabel: "Window closed. The PSR will publish." },
+        { optionKey: "A", nextInjectId: "rwg-ofgem-vm" },
+        { optionKey: "B", nextInjectId: "rwg-ofgem-vm" },
+        { optionKey: "C", nextInjectId: "rwg-ofgem-vm" },
+        { optionKey: "D", nextInjectId: "rwg-refuse-night" },
       ],
       targetRoles: ["CEO", "CLO", "CFO"],
       expectedKeywords: [
@@ -980,7 +980,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "D",
           label:
-            "No mandate. close the negotiation window, accept the risk that the data will be published, focus entirely on restoring systems.",
+            "No mandate. Close the negotiation window, accept the risk that the data will be published, focus entirely on restoring systems.",
           consequence:
             "Brave. The window closes. The PSR will publish in 24 hours. Mandiant's tone shifts: 'We need the Carlisle customer on the phone this afternoon.'",
           rank: 4,
@@ -1226,7 +1226,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "Proactive £50 credit to all 84,247 affected customers. automatic, no claim required.",
+            "Proactive £50 credit to all 84,247 affected customers. Automatic, no claim required.",
           consequence:
             "Cost: £4.2M. Ofgem note this as a concrete demonstration of Consumer Duty in action. Media coverage the following morning shifts from 'data breach' to 'company does the right thing.' 94% of affected customers receive the credit within 72 hours.",
           rank: 1,
@@ -1236,7 +1236,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "B",
           label:
-            "Three months' free energy for all affected vulnerable customers on our network. a goodwill gesture for the community.",
+            "Three months' free energy for all affected vulnerable customers on our network. A goodwill gesture for the community.",
           consequence:
             "Cost: approximately £2.8M. Well-received and generates positive press. The CLO notes it does not specifically address customers who incurred charges as a direct consequence of the breach, which may not fully satisfy Consumer Duty in those individual cases.",
           rank: 2,
@@ -1537,7 +1537,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "C",
           label:
-            "Escalate to the financial sanctions authority and the National Crime Agency in writing. formally signal that any payment is under law enforcement scrutiny.",
+            "Escalate to the financial sanctions authority and the National Crime Agency in writing. Formally signal that any payment is under law enforcement scrutiny.",
           consequence:
             "OFSI acknowledge. The NCA engage. ALPHV detect the increased noise and post the full PSR replica to their leak site at 16:20.",
           rank: 3,
@@ -1858,21 +1858,21 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         {
           key: "A",
           label:
-            "The decision to act rather than brief. calling the right people in the right order before the story got ahead of us.",
+            "The decision to act rather than brief. Calling the right people in the right order before the story got ahead of us.",
         },
         {
           key: "B",
-          label: "Filing the data protection notification promptly. amending as we learned more rather than waiting for the complete picture.",
+          label: "Filing the data protection notification promptly. Amending as we learned more rather than waiting for the complete picture.",
         },
         {
           key: "C",
           label:
-            "Authorising the immediate call programme to every medically-dependent customer. regardless of the media risk.",
+            "Authorising the immediate call programme to every medically-dependent customer. Regardless of the media risk.",
         },
         {
           key: "D",
           label:
-            "Going to the insurer and the regulator with the same evidence pack at the same time. the decision that saved the coverage claim and the regulatory relationship.",
+            "Going to the insurer and the regulator with the same evidence pack at the same time. The decision that saved the coverage claim and the regulatory relationship.",
         },
       ],
     },
@@ -1944,7 +1944,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       decisionOptions: [
         {
           key: "A",
-          label: "The data protection notification timing. filing earlier with gaps would have been better than waiting for the full picture.",
+          label: "The data protection notification timing. Filing earlier with gaps would have been better than waiting for the full picture.",
         },
         {
           key: "B",
@@ -1956,7 +1956,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         },
         {
           key: "D",
-          label: "The insurer and regulator handling. we should have gone to both with the same evidence at the same time.",
+          label: "The insurer and regulator handling. We should have gone to both with the same evidence at the same time.",
         },
       ],
     },
@@ -1989,15 +1989,15 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       decisionOptions: [
         {
           key: "A",
-          label: "The order of the first calls. who heard about this and when set the tone for every regulator conversation that followed.",
+          label: "The order of the first calls. Who heard about this and when set the tone for every regulator conversation that followed.",
         },
         {
           key: "B",
-          label: "Holding the market announcement while the share price fell. the market knew before we told them.",
+          label: "Holding the market announcement while the share price fell. The market knew before we told them.",
         },
         {
           key: "C",
-          label: "Accepting the counter-offer under pressure to protect vulnerable customers. and what happened to those customers anyway.",
+          label: "Accepting the counter-offer under pressure to protect vulnerable customers. And what happened to those customers anyway.",
         },
         {
           key: "D",
@@ -2052,9 +2052,9 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
     ITV are running the story as their second item. Your head of communications wants to know what the CEO will say.`,
           isDecisionPoint: true,
       branches: [
-        { optionKey: "A", nextInjectId: "rwg-d2-brief" },
-        { optionKey: "B", nextInjectId: "rwg-d2-brief" },
-        { optionKey: "C", nextInjectId: "rwg-d2-brief" },
+        { optionKey: "A", nextInjectId: "rwg-refuse-psrlive" },
+        { optionKey: "B", nextInjectId: "rwg-refuse-psrlive" },
+        { optionKey: "C", nextInjectId: "rwg-refuse-psrlive" },
       ],
           timerMinutes: 10,
           recapLine: "responded to the publication deadline by {{recapFragment}}",
@@ -2077,7 +2077,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "A",
               label:
-                "CEO does the ITV interview tonight. address the 36-hour deadline directly and publicly.",
+            "CEO does the ITV interview tonight. Address the 36-hour deadline directly and publicly.",
               consequence:
                 "The interview runs. CEO says: 'We will not pay criminals. We are working round the clock to protect our customers. And if that data publishes, we will be on the phone to every single person on that list before they read it anywhere else.' The clip runs across every bulletin. Morning coverage shifts from 'company under attack' to 'company holds firm'.",
               rank: 1,
@@ -2086,7 +2086,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "B",
               label:
-                "Written statement only. the CEO is needed for the board and the regulator, not the cameras.",
+            "Written statement only. The CEO is needed for the board and the regulator, not the cameras.",
               consequence:
                 "ITV run the statement and note the CEO declined to appear for the second time. The 36-hour deadline becomes the headline. The statement is accurate. The absence is the story.",
               rank: 2,
@@ -2095,7 +2095,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "C",
               label:
-                "Say nothing tonight. any comment about the 36-hour clock legitimises it.",
+            "Say nothing tonight. Any comment about the 36-hour clock legitimises it.",
               consequence:
                 "Seventeen hours of silence becomes the story. By 07:00 the Guardian runs 'Veridian Power still refusing to comment as countdown to data release ticks.' The Board Chair calls at 07:15 before you've had coffee.",
               rank: 3,
@@ -2108,17 +2108,22 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
           commandTier: "STRATEGIC",
           storyTrack: "No payment. restoration race",
           order: 152,
-          scenarioDay: 2,
-          scenarioTime: "06:30",
-          title: "Day 2, 06:30, It's Out",
-          body: `Day 2, 06:30. You woke up to your phone already ringing.
+          scenarioDay: 3,
+          scenarioTime: "06:14",
+          title: "Day 3, 06:14, It's Out",
+          body: `Day 3, 06:14. You woke up to your phone already ringing.
     
-    ALPHV published at 06:14.
+    ALPHV published at 06:14. Exactly 35 hours after their deadline.
     
     The full Priority Services Register, 84,247 names, medical conditions, home addresses, emergency contacts. is on their leak site. It has been screenshotted and shared on three social platforms before any takedown request could be processed.
     
     Margaret Thornton's name is the first row. BBC Breakfast is running it as their opening story.`,
           isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-refuse-race" },
+        { optionKey: "B", nextInjectId: "rwg-refuse-race" },
+        { optionKey: "C", nextInjectId: "rwg-refuse-race" },
+      ],
           timerMinutes: 10,
           recapLine: "responded to the PSR publication by {{recapFragment}}",
           facilitatorNotes:
@@ -2139,7 +2144,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "A",
               label:
-                "CEO calls Margaret Thornton personally within the next thirty minutes. before she sees the news.",
+            "CEO calls Margaret Thornton personally within the next thirty minutes. Before she sees the news.",
               consequence:
                 "The CEO reaches Sandra Thornton. Margaret's daughter. at 07:02. Sandra is already aware. She's been awake since 05:00 when a neighbour texted her a screenshot. She is frightened and angry. The CEO stays on the call for twenty minutes. At the end: 'I don't forgive what happened. But I'm glad you called.' That call shapes the narrative for the next two days.",
               rank: 1,
@@ -2148,7 +2153,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "B",
               label:
-                "Immediate all-hands outreach to all 4,218 Category 1 customers. personal calls, starting now.",
+            "Immediate all-hands outreach to all 4,218 Category 1 customers. Personal calls, starting now.",
               consequence:
                 "Teams deployed at 06:45. By 09:00, 1,200 Category 1 customers have been reached. Margaret Thornton is called at 07:34. She's already seen it. The call still matters. but the company is 80 minutes late and she knows it.",
               rank: 2,
@@ -2157,7 +2162,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "C",
               label:
-                "Hold until the comms team have a prepared script. you don't want calls going out with the wrong message.",
+            "Hold until the comms team have a prepared script. You don't want calls going out with the wrong message.",
               consequence:
                 "Script ready at 08:30. Calls begin at 09:00. Margaret Thornton sees the BBC Breakfast segment at 07:15. Her daughter calls the helpline at 07:40, on hold for 22 minutes. She speaks to a call centre agent reading from a different script. By the time the personal call comes at 09:30, it is too late to lead with it.",
               rank: 3,
@@ -2214,7 +2219,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "A",
               label:
-                "Surge. three additional teams, three-day restoration. The data is public. Every day matters more than every pound.",
+            "Surge. Three additional teams, three-day restoration. The data is public. Every day matters more than every pound.",
               consequence:
                 "£6.9M authorised. Mandiant surge begins at 14:00. Systems are at 78% by end of Day 3. Trading desk back on primary systems by Day 4. The documentation compression features in Ofgem's audit but is noted as 'operationally justifiable under the circumstances.'",
               rank: 1,
@@ -2223,7 +2228,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "B",
               label:
-                "Current pace. we cannot cut validation corners while we're under regulatory scrutiny. Six days, done properly.",
+            "Current pace. We cannot cut validation corners while we're under regulatory scrutiny. Six days, done properly.",
               consequence:
                 "£4.1M. Clean audit trail. Systems restore in six days. The regulatory review commends the validation discipline. But four more days of encrypted billing and trading systems cost roughly £3.2M in operational impact. making the cheaper option effectively more expensive.",
               rank: 2,
@@ -2232,7 +2237,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "C",
               label:
-                "CLO decides. this has regulatory implications and the General Counsel needs to sign off before we authorise anything.",
+            "CLO decides. This has regulatory implications and the General Counsel needs to sign off before we authorise anything.",
               consequence:
                 "The CLO reviews both options and recommends Scenario 2 with a formal protocol documentation addendum. Authorisation at 15:30. The three-hour delay costs one day of surge benefit. Systems restore in four days at a cost of £7.1M including the additional delay.",
               rank: 3,
@@ -2324,7 +2329,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
           scenarioDay: 3,
           scenarioTime: "08:00",
           title: "Day 3, 08:00, They're Back",
-          body: `Day 3, 08:00. You paid four days ago.
+          body: `Day 3, 08:00. You paid two days ago.
     
     A new message appeared in the dark web negotiation channel at 07:42. You weren't monitoring it. Mandiant flagged it at 08:00.
     
@@ -2364,7 +2369,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "A",
               label:
-                "Refuse the second demand. paying once was a decision, paying twice is a policy.",
+            "Refuse the second demand. Paying once was a decision, paying twice is a policy.",
               consequence:
                 "ALPHV publish the trading book extract to two market intelligence services on Thursday morning. Three counterparties call asking questions. The FCA log the incident. Beazley note the second extortion attempt in the claims file. Refusing the second demand is the correct call. but the trading book data is now in the market.",
               rank: 1,
@@ -2373,7 +2378,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "B",
               label:
-                "Notify the NCA and FCA immediately. this is the evidence trail that confirms ALPHV's bad faith.",
+            "Notify the NCA and FCA immediately. This is the evidence trail that confirms ALPHV's bad faith.",
               consequence:
                 "NCA log the second demand. FCA note the trading book exposure. The notification creates a formal record that the first payment was made under duress and that the deletion commitment was not honoured. This matters for the OFSI investigation that is about to open.",
               rank: 1,
@@ -2382,7 +2387,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "C",
               label:
-                "Pay the second demand. the trading book in the market would be more damaging than the PSR publication.",
+            "Pay the second demand. The trading book in the market would be more damaging than the PSR publication.",
               consequence:
                 "£4.1M from corporate reserves. Beazley won't touch this. ALPHV acknowledge. No further contact for 72 hours. The trading book is not published. On Day 7, OFSI open a formal investigation into both payments. The sanctions exposure on the second payment is significantly higher because ALPHV were added to the UK sanctions list six days after the first wire.",
               rank: 4,
@@ -2447,7 +2452,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "A",
               label:
-                "Respond proactively and fully. provide everything OFSI has asked for, with a legal covering note on timing.",
+            "Respond proactively and fully. Provide everything OFSI has asked for, with a legal covering note on timing.",
               consequence:
                 "External counsel submit a comprehensive response at Day 5. The response establishes that the first payment predated the designation by four days and includes the sanctions due diligence conducted at the time. OFSI close the review with no enforcement action on the first payment, noting 'full and timely cooperation.' The second payment. if made. remains under active review.",
               rank: 1,
@@ -2456,7 +2461,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "B",
               label:
-                "Instruct external sanctions counsel immediately. nothing goes to OFSI without specialist legal sign-off.",
+            "Instruct external sanctions counsel immediately. Nothing goes to OFSI without specialist legal sign-off.",
               consequence:
                 "Counsel engaged by 16:00. First substantive response submitted at Day 7, within the 14-day window. The slight delay is noted but not penalised. Counsel's assessment: the first payment is defensible on timing grounds. They recommend proactive self-disclosure on any second payment.",
               rank: 1,
@@ -2465,7 +2470,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "C",
               label:
-                "Challenge the basis of the review. the payment was made before designation and OFSI has no basis to pursue.",
+            "Challenge the basis of the review. The payment was made before designation and OFSI has no basis to pursue.",
               consequence:
                 "External counsel advises against this approach. The challenge letter is withdrawn at Day 9 after counsel review the designation timeline more carefully. OFSI note the initial challenge in their file. The substantive response is submitted at Day 12. The confrontational opening colours every subsequent interaction.",
               rank: 3,
@@ -2519,7 +2524,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "A",
               label:
-                "The CEO calls Sandra Thornton personally, right now, before any statement or strategy.",
+            "The CEO calls Sandra Thornton personally, right now, before any statement or strategy.",
               consequence:
                 "The CEO reaches Sandra at 08:09. The conversation is difficult and emotional. The CEO does not try to manage it. they listen. Sandra says: 'Nobody called us. We found out from the BBC.' The CEO says: 'I know. I'm sorry. That should not have happened.' The call lasts twelve minutes. Sandra asks to be kept informed personally. The CEO agrees. That relationship. built in the hardest possible moment. becomes part of the testimony given to the parliamentary inquiry.",
               rank: 1,
@@ -2528,7 +2533,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "B",
               label:
-                "Get Sandra to a senior customer manager immediately. the CEO's time is needed for the board and the regulator.",
+            "Get Sandra to a senior customer manager immediately. The CEO's time is needed for the board and the regulator.",
               consequence:
                 "A senior customer manager calls Sandra at 08:15. The conversation goes reasonably well. Sandra asks whether she can speak to someone 'in charge.' The customer manager says the CEO is in meetings but will write personally. The letter is sent. The interaction is noted in the parliamentary inquiry as 'adequate but not exemplary.'",
               rank: 2,
@@ -2537,7 +2542,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
             {
               key: "C",
               label:
-                "Finish the leadership meeting first. the response plan will be more useful to Sandra than an unplanned call.",
+            "Finish the leadership meeting first. The response plan will be more useful to Sandra than an unplanned call.",
               consequence:
                 "The CEO calls Sandra at 09:45, two hours and eleven minutes after she was left on hold with no information. Sandra has by then spoken to a journalist. The journalist has her quote: 'My mother's name was on a list in criminals' hands and nobody from the company called us. We had to find out from the BBC.' That quote runs at 11:00.",
               rank: 3,
