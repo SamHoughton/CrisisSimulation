@@ -12,10 +12,11 @@ import { persist } from "zustand/middleware";
 import type {
   Scenario, Session, Settings, View,
   Participant, LiveInject, ResponseEntry, DecisionEntry,
-  GeneratedReport, FacilitatorNote, PresentMessage,
+  FacilitatorNote, PresentMessage,
   ArcRecap, ArcRecapEntry, CommandTier, Inject,
 } from "@/types";
 import { BUILT_IN_TEMPLATES } from "@/lib/scenarios";
+import { computeReport } from "@/lib/report";
 
 // ─── Broadcast channel ────────────────────────────────────────────────────────
 
@@ -82,7 +83,6 @@ interface AppStore {
   revealVotes: (injectId: string) => void;
   updateInjectNote: (injectId: string, note: string) => void;
   addNote: (text: string) => void;
-  setReport: (report: GeneratedReport) => void;
 
   /**
    * Skip a lower-tier inject without releasing it to the Present screen.
@@ -108,7 +108,7 @@ export const useStore = create<AppStore>()(
   persist(
     (set, get) => ({
       // ── Settings ──────────────────────────────────────────────────────────
-      settings: { claudeApiKey: "", orgName: "", facilitatorName: "", theme: "dark" },
+      settings: { orgName: "", facilitatorName: "", theme: "dark" },
       updateSettings: (s) =>
         set((st) => ({ settings: { ...st.settings, ...s } })),
 
@@ -166,11 +166,12 @@ export const useStore = create<AppStore>()(
       endSession: () => {
         const { session, pastSessions } = get();
         if (!session) return;
-        const ended: Session = {
+        const base: Session = {
           ...session,
           status: "ended",
           endedAt: new Date().toISOString(),
         };
+        const ended: Session = { ...base, report: computeReport(base) };
         broadcast({ type: "status", status: "ended" });
         set({ session: ended, pastSessions: [ended, ...pastSessions], view: "report" });
       },
@@ -356,15 +357,6 @@ export const useStore = create<AppStore>()(
             : st.session,
         })),
 
-      setReport: (report) =>
-        set((st) => {
-          if (!st.session) return {};
-          const updated = { ...st.session, report };
-          return {
-            session: updated,
-            pastSessions: st.pastSessions.map((s) => (s.id === updated.id ? updated : s)),
-          };
-        }),
 
       // ── Session archive import ───────────────────────────────────────────
       importSessions: (sessions) =>

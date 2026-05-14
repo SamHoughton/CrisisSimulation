@@ -1480,6 +1480,39 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
       ],
     },
     {
+      id: "rwg-pentest-doc",
+      commandTier: "STRATEGIC",
+      order: 213,
+      scenarioDay: 3,
+      scenarioTime: "10:45",
+      title: "Day 3, 10:45 - The February 2025 Finding",
+      isDecisionPoint: false,
+      decisionOptions: [],
+      targetRoles: ["CEO", "CLO", "CTO"],
+      body: `Caroline Wu has pulled this from the board cyber risk register. It was filed fourteen months ago.
+
+The room is very quiet.`,
+      facilitatorNotes: `This is the document the board just discovered. The pen test finding was Severity 1 — the highest possible. It was escalated to the CTO. It was not fixed.
+
+Ask the CEO: did you know? Ask the CLO: what is the company's legal position if the regulator asks the same question? Ask the CTO: how do you explain the deferral decision?
+
+This is the moment where the room realises the company had prior knowledge of the exact vulnerability that was exploited.`,
+      expectedKeywords: ["knew", "CTO", "prior knowledge", "CLO", "escalation", "remediation", "February"],
+      artifact: {
+        type: "pen_test_report",
+        ptFindingId: "FINDING-2025-VRD-017",
+        ptFindingTitle: "Contractor VPN — Missing Multi-Factor Authentication",
+        ptSeverity: "CRITICAL",
+        ptSystem: "Contractor Remote Access VPN (Pulse Secure, v9.1R4)",
+        ptDescription: "The contractor VPN portal does not enforce multi-factor authentication. Any valid username and password is sufficient to establish a full-tunnel VPN session with access to the corporate network. Credentials obtained via phishing or credential-stuffing attacks would provide immediate network access with no additional barrier. This finding represents a critical and immediately exploitable gap in the network perimeter.",
+        ptRecommendation: "Enforce MFA on all VPN authentication paths immediately, using hardware token (FIDO2) or authenticator app (TOTP). Review all active contractor sessions for anomalous access patterns. Consider temporary suspension of contractor VPN access pending remediation.",
+        ptTestDate: "14 February 2025",
+        ptTestAuthor: "Coalfire Security Assessment",
+        ptRemediationStatus: "DEFERRED",
+        ptRemediationNote: "Deprioritised in favour of the billing system migration (Q3 2025). Risk accepted by: CTO.",
+      },
+    },
+    {
       id: "rwg-i5",
       commandTier: "STRATEGIC",
       order: 220,
@@ -2744,23 +2777,22 @@ Option A (brief the full board now) is the correct governance call but it surfac
         { optionKey: "D", nextInjectId: "rwg-chairman-demand" },
       ],
       artifact: {
-        type: "internal_memo",
-        memoTitle: "Preliminary Findings - Mandiant Incident Response",
-        memoClassification: "EYES ONLY - CEO, CISO, CLO",
-        memoFrom: "Dr. Claire Hennessey, Mandiant Lead Assessor",
-        memoTo: "S. Khatun - CISO, Veridian Power",
-        memoDate: "14 April 2026, 10:15",
-        memoRef: "MAND-UK-2026-VRD-002",
-        memoBody: `PRELIMINARY FINDINGS - CONFIDENTIAL
-
-Initial Access: Contractor VPN credential. Stolen approximately 23 days prior to deployment.
-Dwell time: Six days confirmed. Possibly longer.
-Exfil confirmed: Priority Services Register (full), payroll records, wholesale trading book Q1 2026.
-Exfil probable: Board communications archive, CFO financial model library. Unable to confirm or rule out at this stage.
-
-NOTE FOR CLO: A penetration test conducted in February 2025 flagged the contractor VPN authentication as a critical finding (Severity 1). Our records indicate this finding was escalated to the CTO. Remediation status: not completed at time of incident.
-
-Full report to follow. Do not distribute further without CLO clearance.`,
+        type: "ir_report",
+        irCaseRef: "MAND-UK-2026-VRD-002",
+        irClientName: "Veridian Power plc",
+        irAttackerName: "ALPHV / BlackCat",
+        irDwellDays: 6,
+        irInitialAccess: "Contractor VPN credential (stolen ~23 days prior to deployment)",
+        irExfilConfirmed: [
+          "Priority Services Register — full dataset (84,247 records)",
+          "Payroll records — all staff",
+          "Wholesale trading book Q1 2026",
+        ],
+        irExfilProbable: [
+          "Board communications archive",
+          "CFO financial model library (2 years)",
+        ],
+        irNoteForCLO: "A penetration test conducted in February 2025 flagged the contractor VPN authentication as a critical finding (Severity 1). Remediation status: not completed at time of incident.",
       },
       decisionOptions: [
         {
@@ -3277,32 +3309,38 @@ Option D (wait for systems) is the answer of a team that has lost sight of what 
       expectedKeywords: ["3,200", "Friday", "staff", "interim", "manual", "trust", "direct debit"],
       delayMinutes: 0,
       artifact: {
-        type: "internal_memo",
-        memoTitle: "Payroll Continuity - Three Options",
-        memoClassification: "RESTRICTED",
-        memoFrom: "M. Levenson, Chief Financial Officer",
-        memoTo: "CEO, Veridian Power",
-        memoDate: "16 April 2026, 08:25",
-        memoRef: "VRD-FIN-2026-PAY-001",
-        memoBody: `CEO,
-
-Friday is in 56 hours. Payroll systems will not be restored in time.
-
-Option A - Manual Processing
-HR run payroll from paper records and last quarter's archive backup. Estimated cost: £180K (agency, audit, manual reconciliation). Estimated error rate: 1.5-2.5% of staff paid the wrong amount, with corrections to follow over two weeks.
-
-Option B - Emergency Interim Payment
-Flat payment of last month's net amount to every account on Friday. Reconciliation and adjustments processed at the next pay cycle. Simpler. Less precise. £4.2M cash exposure if reconciliation runs into a second cycle.
-
-Option C - Two-Week Deferral
-Notice issued to all staff that pay will be delayed by two weeks. Legal exposure under Employment Rights Act 1996 s.13. Estimated grievance volume: significant.
-
-Option D - Wait
-Do nothing. Payroll restored Tuesday next week. Staff paid 4 days late.
-
-I need your decision by 10:00 to give HR a working day to execute.
-
-M. Levenson`,
+        type: "payroll_table",
+        payrollOptions: [
+          {
+            key: "A",
+            label: "Manual Processing",
+            cost: "£180K",
+            impact: "~47 staff paid incorrectly; corrections within 72hrs",
+            legalRisk: "LOW",
+          },
+          {
+            key: "B",
+            label: "Emergency Interim Payment",
+            cost: "£4.2M cash exposure",
+            impact: "All 3,200 staff paid on time",
+            legalRisk: "LOW",
+            recommended: true,
+          },
+          {
+            key: "C",
+            label: "Two-Week Deferral",
+            cost: "£200K hardship fund est.",
+            impact: "71 grievances projected; union action likely",
+            legalRisk: "HIGH",
+          },
+          {
+            key: "D",
+            label: "Wait for Systems",
+            cost: "Nil",
+            impact: "3,200 staff paid 4 days late",
+            legalRisk: "HIGH",
+          },
+        ],
       },
       decisionOptions: [
         {

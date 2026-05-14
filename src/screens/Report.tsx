@@ -1,28 +1,25 @@
 ﻿/**
- * Report.tsx - Post-exercise analysis and AI report dashboard.
+ * Report.tsx - Post-exercise debrief dashboard.
  *
- * Tabs:
- * - Decision Log: timestamped record of all injects, responses, and decisions
- * - Dashboard: summary stats (reputation chart, inject breakdown)
- * - Summary, Timeline, Gap Analysis, Role Feedback, Recommendations: AI-generated
- *   (require Claude API key and report generation)
+ * Report is computed deterministically from session data by computeReport()
+ * (stored on the Session when endSession() fires — no button, no API key needed).
  *
- * Report generation calls generateReport() from claude.ts (Claude Sonnet).
- * Results are stored in session.report and persisted to localStorage.
+ * Tabs: Decision Log · Dashboard · Summary · Timeline · Gap Analysis ·
+ *       Role Feedback · Recommendations · Real Outcome (if defined)
+ *
  * Print-optimised via @media print CSS rules.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store";
 import {
-  Download, Loader2, CheckCircle, AlertCircle, ChevronDown, ChevronUp,
-  Minus, TrendingUp, AlertTriangle, Printer, ClipboardList, BarChart2,
+  Download, CheckCircle, ChevronDown, ChevronUp,
+  Minus, AlertTriangle, Printer, ClipboardList, BarChart2,
 } from "lucide-react";
 import {
   cn, ROLE_SHORT, ROLE_COLOUR, ROLE_LONG,
   SCENARIO_TYPE_LABELS, DIFFICULTY_LABEL, formatDuration,
 } from "@/lib/utils";
-import { generateReport } from "@/lib/claude";
 import { format } from "date-fns";
 import type { GapDimension, Session } from "@/types";
 
@@ -50,13 +47,9 @@ function useCountUp(target: number, duration = 900) {
 
 export function Report() {
   const session      = useStore((s) => s.session);
-  const settings     = useStore((s) => s.settings);
-  const setReport    = useStore((s) => s.setReport);
   const pastSessions = useStore((s) => s.pastSessions);
 
-  const [generating, setGenerating] = useState(false);
-  const [genError, setGenError]     = useState("");
-  const [activeTab, setActiveTab]   = useState<Tab>("log");
+  const [activeTab, setActiveTab] = useState<Tab>("summary");
 
   if (!session) {
     return <div className="p-8 text-center text-crux-muted">No session selected.</div>;
@@ -66,22 +59,6 @@ export function Report() {
   const duration = session.endedAt
     ? Math.round((new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)
     : session.scenario.durationMin;
-
-  const handleGenerate = async () => {
-    setGenerating(true);
-    setGenError("");
-    try {
-      const result = await generateReport(session, settings.claudeApiKey || undefined, {
-        orgName: settings.orgName,
-        facilitatorName: settings.facilitatorName,
-      });
-      setReport(result);
-    } catch (e: any) {
-      setGenError(e.message ?? "Generation failed");
-    } finally {
-      setGenerating(false);
-    }
-  };
 
   const handleExport = () => {
     const blob = new Blob([JSON.stringify({ session, report }, null, 2)], { type: "application/json" });
@@ -100,24 +77,15 @@ export function Report() {
     ? "text-amber-400 bg-amber-500/10 border-amber-500/30"
     : "text-red-400 bg-red-500/10 border-red-500/30";
 
-  // Switch to summary when report first loads
-  const prevReport = useRef(report);
-  useEffect(() => {
-    if (!prevReport.current && report) setActiveTab("summary");
-    prevReport.current = report;
-  }, [report]);
-
-  const handlePrint = () => window.print();
-
-  const TABS: { id: Tab; label: string; requiresReport: boolean }[] = [
-    { id: "log",             label: "Decision Log",   requiresReport: false },
-    { id: "dashboard",       label: "Dashboard",      requiresReport: false },
-    { id: "summary",         label: "Summary",        requiresReport: true  },
-    { id: "timeline",        label: "Timeline",       requiresReport: true  },
-    { id: "gaps",            label: "Gap Analysis",   requiresReport: true  },
-    { id: "roles",           label: "Role Feedback",  requiresReport: true  },
-    { id: "recommendations", label: "Recommendations",requiresReport: true  },
-    ...(session.scenario.realOutcome ? [{ id: "outcome" as Tab, label: "Real Outcome", requiresReport: false }] : []),
+  const TABS: { id: Tab; label: string }[] = [
+    { id: "summary",         label: "Summary"         },
+    { id: "gaps",            label: "Gap Analysis"    },
+    { id: "roles",           label: "Role Feedback"   },
+    { id: "recommendations", label: "Recommendations" },
+    { id: "timeline",        label: "Timeline"        },
+    { id: "log",             label: "Decision Log"    },
+    { id: "dashboard",       label: "Dashboard"       },
+    ...(session.scenario.realOutcome ? [{ id: "outcome" as Tab, label: "Real Outcome" }] : []),
   ];
 
   return (
@@ -133,36 +101,13 @@ export function Report() {
               {DIFFICULTY_LABEL[session.scenario.difficulty]} ·{" "}
               {formatDuration(duration)} ·{" "}
               {format(new Date(session.startedAt), "d MMM yyyy")} ·{" "}
-              {session.participants.length} participants
+              {session.participants.length} participant{session.participants.length !== 1 ? "s" : ""}
             </p>
           </div>
           <div className="flex items-center gap-3 print:hidden">
             {report && <AnimatedScoreBadge score={score} scoreColour={scoreColour} />}
-            {!report && !generating && (
-              <button
-                onClick={handleGenerate}
-                className="flex items-center gap-2 bg-crux-green text-white px-4 py-2 rounded text-sm font-medium hover:brightness-110 transition-colors"
-              >
-                <TrendingUp className="w-4 h-4" />
-                Generate Report
-              </button>
-            )}
-            {generating && (
-              <div className="flex items-center gap-2 text-sm text-crux-muted">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Analysing the transcript…
-              </div>
-            )}
-            {report && (
-              <button
-                onClick={handleGenerate}
-                className="text-xs text-crux-dim hover:text-crux-muted border border-crux-border px-3 py-1.5 rounded"
-              >
-                Regenerate
-              </button>
-            )}
             <button
-              onClick={handlePrint}
+              onClick={() => window.print()}
               className="flex items-center gap-1.5 text-sm border border-crux-border px-3 py-2 rounded hover:bg-crux-elevated transition-colors text-crux-muted"
               title="Print / Save as PDF"
             >
@@ -177,93 +122,56 @@ export function Report() {
           </div>
         </div>
 
-        {genError && (
-          <div className="max-w-5xl mx-auto mt-3 flex items-center gap-2 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded px-3 py-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />{genError}
-          </div>
-        )}
-
         <div className="max-w-5xl mx-auto mt-4 flex gap-1 flex-wrap print:hidden">
-          {TABS.map((t) => {
-            const disabled = t.requiresReport && !report;
-            return (
-              <button
-                key={t.id}
-                onClick={() => !disabled && setActiveTab(t.id)}
-                disabled={disabled}
-                className={cn(
-                  "px-4 py-2 text-xs rounded transition-colors",
-                  activeTab === t.id
-                    ? "bg-crux-green text-white font-medium"
-                    : disabled
-                    ? "text-crux-dim opacity-40 cursor-not-allowed"
-                    : "text-crux-muted hover:bg-crux-elevated"
-                )}
-              >
-                {t.label}
-              </button>
-            );
-          })}
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className={cn(
+                "px-4 py-2 text-xs rounded transition-colors",
+                activeTab === t.id
+                  ? "bg-crux-green text-white font-medium"
+                  : "text-crux-muted hover:bg-crux-elevated"
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-8 py-8">
         <div className="max-w-5xl mx-auto">
-          {/* Screen: show active tab only */}
           <div className="print:hidden">
-            {!report && !generating && (
-              <NoReportState onGenerate={handleGenerate} />
-            )}
-            {generating && (
-              <div className="flex items-center justify-center py-24">
-                <div className="text-center">
-                  <Loader2 className="w-10 h-10 animate-spin text-crux-red mx-auto mb-4" />
-                  <p className="text-crux-text font-medium">Analysing the transcript…</p>
-                  <p className="text-crux-muted text-sm mt-1">Reading all decisions and responses. Usually takes 20 to 40 seconds.</p>
-                </div>
-              </div>
-            )}
-
+            {activeTab === "summary"         && report && <SummaryTab report={report} />}
+            {activeTab === "gaps"            && report && <GapsTab gaps={report.gapAnalysis} />}
+            {activeTab === "roles"           && report && <RolesTab feedback={report.roleFeedback} participants={session.participants} />}
+            {activeTab === "recommendations" && report && <RecsTab recs={report.recommendations} />}
+            {activeTab === "timeline"        && <TimelineTab session={session} />}
             {activeTab === "log"             && <DecisionLogTab session={session} />}
             {activeTab === "dashboard"       && <DashboardTab session={session} pastSessions={pastSessions} />}
-            {report && activeTab === "summary"         && <SummaryTab report={report} />}
-            {report && activeTab === "timeline"        && <TimelineTab session={session} />}
-            {report && activeTab === "gaps"            && <GapsTab gaps={report.gapAnalysis} />}
-            {report && activeTab === "roles"           && <RolesTab feedback={report.roleFeedback} participants={session.participants} />}
-            {report && activeTab === "recommendations" && <RecsTab recs={report.recommendations} />}
             {activeTab === "outcome" && session.scenario.realOutcome && (
               <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
             )}
           </div>
 
-          {/* Print: render all report sections at once */}
-          {report && (
-            <div className="hidden print:block space-y-8">
+          {/* Print: all sections at once */}
+          <div className="hidden print:block space-y-8">
+            {report && <>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Executive Summary</h2><SummaryTab report={report} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Decision Log</h2><DecisionLogTab session={session} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Timeline</h2><TimelineTab session={session} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Gap Analysis</h2><GapsTab gaps={report.gapAnalysis} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Role Feedback</h2><RolesTab feedback={report.roleFeedback} participants={session.participants} /></div>
               <div><h2 className="text-lg font-bold mb-4 print-section-title">Recommendations</h2><RecsTab recs={report.recommendations} /></div>
-              {session.scenario.realOutcome && (
-                <div>
-                  <h2 className="text-lg font-bold mb-4 print-section-title">Real Outcome</h2>
-                  <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
-                </div>
-              )}
-            </div>
-          )}
-          {!report && (
-            <div className="hidden print:block">
-              <DecisionLogTab session={session} />
-              {session.scenario.realOutcome && (
-                <div>
-                  <h2 className="text-lg font-bold mb-4 print-section-title">Real Outcome</h2>
-                  <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
-                </div>
-              )}
-            </div>
-          )}
+            </>}
+            {session.scenario.realOutcome && (
+              <div>
+                <h2 className="text-lg font-bold mb-4 print-section-title">Real Outcome</h2>
+                <RealOutcomeTab realOutcome={session.scenario.realOutcome} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -300,41 +208,6 @@ function RealOutcomeTab({ realOutcome }: { realOutcome: string }) {
   );
 }
 
-function NoReportState({ onGenerate }: { onGenerate: () => void }) {
-  const session = useStore((s) => s.session);
-
-  return (
-    <div className="max-w-2xl mx-auto fade-in-up">
-      <div className="bg-crux-panel border border-crux-border rounded-xl p-6 mb-6">
-        <h2 className="text-sm font-semibold text-crux-text mb-4">Session Summary</h2>
-        <div className="grid grid-cols-3 gap-4 text-center mb-4">
-          <div>
-            <p className="text-2xl font-bold text-crux-text font-mono">{session?.liveInjects.length ?? 0}</p>
-            <p className="text-xs text-crux-muted">Injects released</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-crux-text font-mono">
-              {session?.liveInjects.reduce((n, li) => n + li.responses.length, 0) ?? 0}
-            </p>
-            <p className="text-xs text-crux-muted">Responses logged</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-crux-text font-mono">{session?.notes.length ?? 0}</p>
-            <p className="text-xs text-crux-muted">Facilitator notes</p>
-          </div>
-        </div>
-      </div>
-
-      <button
-        onClick={onGenerate}
-        className="w-full flex items-center justify-center gap-2 bg-crux-green text-white py-3 rounded-xl text-sm font-medium hover:brightness-110 transition-colors"
-      >
-        <TrendingUp className="w-4 h-4" />
-        Generate Debrief Report
-      </button>
-    </div>
-  );
-}
 
 function SummaryTab({ report }: { report: any }) {
   return (

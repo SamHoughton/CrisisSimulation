@@ -378,7 +378,6 @@ function InjectCard({
   onToggle, onUpdate, onRemove, onMoveUp, onMoveDown,
   onAddOption, onUpdateOption, onRemoveOption, onUpdateBranch,
 }: InjectCardProps) {
-  const apiKey = useStore((s) => s.settings.claudeApiKey);
   const [suggesting, setSuggesting] = useState(false);
   const [suggestError, setSuggestError] = useState("");
 
@@ -400,8 +399,7 @@ function InjectCard({
           injectTitle: inject.title,
           targetRoles: inject.targetRoles,
           previousInjects,
-        },
-        apiKey || undefined
+        }
       );
       onUpdate({ body: text });
     } catch (e) {
@@ -494,7 +492,7 @@ function InjectCard({
                 onClick={handleSuggest}
                 disabled={suggesting}
                 className="flex items-center gap-1 text-xs text-crux-green hover:text-crux-green/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                title={apiKey ? "Generate inject text with your API key" : "Generate inject text via hosted proxy"}
+                title="Generate inject text"
               >
                 <Wand2 className={`w-3 h-3 ${suggesting ? "animate-pulse" : ""}`} />
                 {suggesting ? "Generating…" : "AI Suggest"}

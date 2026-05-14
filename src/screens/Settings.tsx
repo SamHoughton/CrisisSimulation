@@ -7,16 +7,15 @@
 
 import { useState } from "react";
 import { useStore } from "@/store";
-import { Save, Eye, EyeOff, CheckCircle, Trash2, Moon, Sun } from "lucide-react";
+import { Save, CheckCircle, Trash2, Moon, Sun } from "lucide-react";
 
 export function Settings() {
   const settings       = useStore((s) => s.settings);
   const updateSettings = useStore((s) => s.updateSettings);
   const pastSessions   = useStore((s) => s.pastSessions);
 
-  const [draft, setDraft]   = useState(settings);
-  const [showKey, setShowKey] = useState(false);
-  const [saved, setSaved]   = useState(false);
+  const [draft, setDraft] = useState(settings);
+  const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
     updateSettings(draft);
@@ -34,7 +33,7 @@ export function Settings() {
     <div className="p-8 max-w-2xl mx-auto">
       <div className="mb-8 fade-in-up">
         <h1 className="text-2xl font-semibold text-crux-text">Settings</h1>
-        <p className="text-crux-muted text-sm mt-0.5">Configure your facilitator profile and API access</p>
+        <p className="text-crux-muted text-sm mt-0.5">Configure your facilitator profile and preferences</p>
       </div>
 
       <div className="space-y-6 stagger">
@@ -56,48 +55,6 @@ export function Settings() {
               className="input"
             />
           </Field>
-        </Card>
-
-        {/* Claude API */}
-        <Card title="Anthropic API Key (optional)">
-          <p className="text-xs text-crux-muted mb-4 leading-relaxed">
-            Report generation uses Claude via a hosted proxy with some usage limits. Add your own key to use your own Anthropic account and remove those limits.
-            Your key is stored in this browser only and sent directly to Anthropic. It never touches our servers.{" "}
-            <a
-              href="https://console.anthropic.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-crux-green hover:underline"
-            >
-              Get a key →
-            </a>
-          </p>
-          <Field label="API Key">
-            <div className="relative">
-              <input
-                value={draft.claudeApiKey}
-                onChange={(e) => setDraft({ ...draft, claudeApiKey: e.target.value })}
-                type={showKey ? "text" : "password"}
-                placeholder="sk-ant-… (leave blank to use the hosted proxy)"
-                className="input pr-10"
-              />
-              <button
-                onClick={() => setShowKey((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-crux-dim hover:text-crux-muted"
-              >
-                {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </Field>
-          {draft.claudeApiKey ? (
-            <p className="text-xs text-crux-green flex items-center gap-1 mt-2">
-              <CheckCircle className="w-3.5 h-3.5" />Using your personal API key
-            </p>
-          ) : (
-            <p className="text-xs text-crux-dim flex items-center gap-1 mt-2">
-              <CheckCircle className="w-3.5 h-3.5" />Using hosted proxy
-            </p>
-          )}
         </Card>
 
         {/* Appearance */}

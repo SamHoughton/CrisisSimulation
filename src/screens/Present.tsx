@@ -334,7 +334,7 @@ export function Present() {
         )}
         {phase.phase === "adhoc"    && <AdHocScreen body={phase.body} />}
         {phase.phase === "paused"   && <PausedScreen />}
-        {phase.phase === "ended"    && <EndedScreen />}
+        {phase.phase === "ended"    && <EndedScreen scenario={activeScenario} />}
 
         {/* ── Story-track transition banner ────────────────────────────────── */}
         {trackBanner && (
@@ -956,6 +956,9 @@ function InjectScreen({ inject, num, voteState, timerSeconds, timerRunning, time
           {inject.artifact &&
             inject.artifact.type !== "ransomware_note" &&
             inject.artifact.type !== "internal_memo" &&
+            inject.artifact.type !== "ir_report" &&
+            inject.artifact.type !== "pen_test_report" &&
+            inject.artifact.type !== "payroll_table" &&
             inject.artifact.type !== "news_headline" &&
             !(inject.artifact.type === "email" && !inject.artifact.emailBody) && (
             <p className="text-xl leading-relaxed shrink-0" style={{ color: "#c5c8d8" }}>{inject.body}</p>
@@ -1092,6 +1095,9 @@ function ArtifactDisplay({
   if (art.type === "negotiation_chat") return <NegotiationChat  inject={inject} artifact={art} />;
   if (art.type === "linkedin_post")   return <LinkedInPost       inject={inject} artifact={art} />;
   if (art.type === "board_portal")    return <BoardPortal        inject={inject} artifact={art} />;
+  if (art.type === "ir_report")       return <IrReport           inject={inject} artifact={art} />;
+  if (art.type === "pen_test_report") return <PenTestReport      inject={inject} artifact={art} />;
+  if (art.type === "payroll_table")   return <PayrollTable       inject={inject} artifact={art} />;
 
   return (
     <div className="rounded-2xl p-8" style={{ background: "#15171a", border: "1px solid #1e2128" }}>
@@ -1863,7 +1869,7 @@ function InternalMemo({ inject, artifact: art }: { inject: Inject; artifact: Inj
 
       {/* Body */}
       <div className="px-8 py-6 space-y-4">
-        {inject.body.split(/\n\n+/).filter(Boolean).map((para, i) => (
+        {(art.memoBody ?? inject.body).split(/\n\n+/).filter(Boolean).map((para, i) => (
           <p key={i} className="text-base leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#222" }}>
             {para}
           </p>
@@ -2172,6 +2178,250 @@ function BoardPortal({ inject, artifact: art }: { inject: Inject; artifact: Inje
   );
 }
 
+// ─── IR report (Mandiant-style) ───────────────────────────────────────────────
+
+function IrReport({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  return (
+    <div className="rounded-xl overflow-hidden font-mono text-sm"
+      style={{ background: "#080a0e", border: "1px solid rgba(232,34,34,0.4)", boxShadow: "0 0 40px rgba(232,34,34,0.08)" }}>
+
+      {/* Header bar */}
+      <div className="px-6 py-4 flex items-center justify-between"
+        style={{ background: "#0f0404", borderBottom: "1px solid rgba(232,34,34,0.3)" }}>
+        <div className="flex items-center gap-4">
+          <div className="px-3 py-1.5 rounded" style={{ background: "rgba(232,34,34,0.15)", border: "1px solid rgba(232,34,34,0.4)" }}>
+            <span className="text-xs font-black tracking-[0.25em] uppercase" style={{ color: "#E82222" }}>MANDIANT</span>
+          </div>
+          <div>
+            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "#4a4f65" }}>Incident Response — Preliminary Findings</p>
+            {art.irCaseRef && <p className="text-xs mt-0.5" style={{ color: "#2e3348" }}>{art.irCaseRef}</p>}
+          </div>
+        </div>
+        <div className="text-right">
+          {art.irClientName && <p className="text-xs font-bold" style={{ color: "#8b8fa8" }}>{art.irClientName}</p>}
+          <p className="text-xs mt-0.5" style={{ color: "#2e3348" }}>CONFIDENTIAL — LEGAL PRIVILEGE</p>
+        </div>
+      </div>
+
+      {/* Top-level stats row */}
+      <div className="grid grid-cols-3" style={{ borderBottom: "1px solid #1a1e28" }}>
+        {[
+          { label: "Threat Actor",   value: art.irAttackerName ?? "Unknown" },
+          { label: "Dwell Time",     value: art.irDwellDays != null ? `${art.irDwellDays} days confirmed` : "Under investigation" },
+          { label: "Initial Access", value: art.irInitialAccess ?? "Under investigation" },
+        ].map(({ label, value }, i) => (
+          <div key={label} className="px-5 py-4" style={i > 0 ? { borderLeft: "1px solid #1a1e28" } : {}}>
+            <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color: "#4a4f65" }}>{label}</p>
+            <p className="text-sm font-semibold leading-snug" style={{ color: "#c5c8d8" }}>{value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Exfiltration findings */}
+      <div className="px-6 py-4 space-y-3" style={{ borderBottom: "1px solid #1a1e28" }}>
+        <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "#4a4f65" }}>Data Exfiltration</p>
+
+        {(art.irExfilConfirmed ?? []).map((item, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-black tracking-wider shrink-0 mt-0.5"
+              style={{ background: "rgba(232,34,34,0.2)", color: "#E82222", border: "1px solid rgba(232,34,34,0.4)" }}>
+              CONFIRMED
+            </span>
+            <span style={{ color: "#c5c8d8" }}>{item}</span>
+          </div>
+        ))}
+
+        {(art.irExfilProbable ?? []).map((item, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-black tracking-wider shrink-0 mt-0.5"
+              style={{ background: "rgba(245,158,11,0.15)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.35)" }}>
+              PROBABLE
+            </span>
+            <span style={{ color: "#8b8fa8" }}>{item}</span>
+          </div>
+        ))}
+
+        {!art.irExfilConfirmed?.length && !art.irExfilProbable?.length && (
+          <p style={{ color: "#4a4f65" }}>Under investigation</p>
+        )}
+      </div>
+
+      {/* CLO callout */}
+      {art.irNoteForCLO && (
+        <div className="px-6 py-4 flex gap-4"
+          style={{ background: "rgba(245,158,11,0.06)", borderTop: "1px solid rgba(245,158,11,0.2)" }}>
+          <div className="shrink-0 px-2 py-0.5 h-fit rounded text-[10px] font-black tracking-wider"
+            style={{ background: "rgba(245,158,11,0.2)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.4)" }}>
+            NOTE FOR CLO
+          </div>
+          <p className="text-sm leading-relaxed" style={{ color: "#fcd34d" }}>{art.irNoteForCLO}</p>
+        </div>
+      )}
+
+      {/* Inject scene-setting body */}
+      {inject.body && (
+        <div className="px-6 py-4" style={{ borderTop: "1px solid #1a1e28" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "#555d7a" }}>{inject.body}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Pen test report ──────────────────────────────────────────────────────────
+
+function PenTestReport({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const sevColour = {
+    CRITICAL: "#E82222", HIGH: "#f97316", MEDIUM: "#f59e0b", LOW: "#22c55e",
+  }[art.ptSeverity ?? "CRITICAL"] ?? "#E82222";
+
+  const statusColour: Record<string, string> = {
+    OPEN: "#E82222", IN_PROGRESS: "#f59e0b", DEFERRED: "#a855f7", CLOSED: "#22c55e",
+  };
+  const statusC = statusColour[art.ptRemediationStatus ?? "OPEN"] ?? "#E82222";
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#fafaf8", color: "#1a1a1a" }}>
+      {/* Header */}
+      <div className="px-8 pt-6 pb-4" style={{ borderBottom: "2px solid #1a1a1a" }}>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: "#777", fontFamily: "Georgia, serif" }}>
+              {art.ptTestAuthor ?? "Security Assessment"}{art.ptTestDate ? ` — ${art.ptTestDate}` : ""}
+            </p>
+            <p className="text-xl font-bold" style={{ fontFamily: "Georgia, serif" }}>
+              {art.ptFindingTitle ?? "Security Finding"}
+            </p>
+            {art.ptFindingId && (
+              <p className="text-xs mt-1" style={{ color: "#999", fontFamily: "monospace" }}>{art.ptFindingId}</p>
+            )}
+          </div>
+          <span className="px-3 py-1.5 rounded text-sm font-black tracking-wider shrink-0"
+            style={{ background: `${sevColour}20`, color: sevColour, border: `2px solid ${sevColour}`, fontFamily: "monospace" }}>
+            {art.ptSeverity ?? "CRITICAL"}
+          </span>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="px-8 py-5 space-y-5">
+        {art.ptSystem && (
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: "#999", fontFamily: "Georgia, serif" }}>Affected System</p>
+            <p className="text-base font-semibold" style={{ fontFamily: "Georgia, serif" }}>{art.ptSystem}</p>
+          </div>
+        )}
+        {art.ptDescription && (
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: "#999", fontFamily: "Georgia, serif" }}>Finding</p>
+            <p className="text-base leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#333" }}>{art.ptDescription}</p>
+          </div>
+        )}
+        {art.ptRecommendation && (
+          <div className="rounded p-4" style={{ background: "#f0ede6", border: "1px solid #ddd" }}>
+            <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: "#999", fontFamily: "Georgia, serif" }}>Recommendation</p>
+            <p className="text-base leading-relaxed" style={{ fontFamily: "Georgia, serif", color: "#333" }}>{art.ptRecommendation}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Remediation status footer */}
+      <div className="px-8 py-4 flex items-center justify-between" style={{ borderTop: "2px solid #1a1a1a", background: "#f0ede6" }}>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider mb-0.5" style={{ color: "#999", fontFamily: "Georgia, serif" }}>Remediation Status</p>
+          {art.ptRemediationNote && (
+            <p className="text-xs" style={{ color: "#777", fontFamily: "Georgia, serif" }}>{art.ptRemediationNote}</p>
+          )}
+        </div>
+        <span className="px-4 py-2 rounded font-black tracking-[0.2em] text-sm"
+          style={{ background: `${statusC}20`, color: statusC, border: `2px solid ${statusC}`, fontFamily: "monospace" }}>
+          {art.ptRemediationStatus ?? "OPEN"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Payroll table ────────────────────────────────────────────────────────────
+
+function PayrollTable({ inject, artifact: art }: { inject: Inject; artifact: InjectArtifact }) {
+  const options = art.payrollOptions ?? [];
+  const riskColour: Record<string, string> = { LOW: "#22c55e", MEDIUM: "#f59e0b", HIGH: "#E82222" };
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: "#fafaf8", color: "#1a1a1a" }}>
+      {/* Letterhead */}
+      <div className="px-8 pt-5 pb-4" style={{ borderBottom: "2px solid #1a1a1a" }}>
+        <div className="flex items-start justify-between">
+          <div>
+            <span className="text-sm font-black tracking-[0.3em] uppercase px-3 py-0.5 border-2 inline-block mb-3"
+              style={{ color: "#cc0000", borderColor: "#cc0000", fontFamily: "Georgia, serif" }}>
+              RESTRICTED
+            </span>
+            <p className="text-xl font-bold" style={{ fontFamily: "Georgia, serif" }}>Payroll Continuity — Options</p>
+            <p className="text-sm mt-0.5" style={{ fontFamily: "Georgia, serif", color: "#555" }}>
+              {inject.body.split("\n")[0]}
+            </p>
+          </div>
+          <div className="text-right text-xs" style={{ color: "#777", fontFamily: "Georgia, serif" }}>
+            <p className="font-bold">CFO / CEO</p>
+            <p>Decision required by 10:00</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Options table */}
+      <div className="px-8 py-5">
+        <table className="w-full text-sm" style={{ fontFamily: "Georgia, serif", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid #ccc" }}>
+              {["Opt.", "Approach", "Cost / Exposure", "Operational Impact", "Legal Risk"].map((h) => (
+                <th key={h} className="text-left pb-2 pr-4 text-xs font-bold uppercase tracking-wider" style={{ color: "#999" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {options.map((o) => (
+              <tr key={o.key}
+                style={{
+                  borderBottom: "1px solid #e5e5e5",
+                  background: o.recommended ? "rgba(34,197,94,0.06)" : "transparent",
+                }}>
+                <td className="py-3 pr-4 font-black text-base align-top" style={{ color: o.recommended ? "#166534" : "#1a1a1a" }}>
+                  {o.key}
+                </td>
+                <td className="py-3 pr-4 align-top font-semibold leading-snug" style={{ color: o.recommended ? "#166534" : "#1a1a1a" }}>
+                  {o.label}
+                  {o.recommended && (
+                    <span className="ml-2 text-[10px] font-black tracking-wider px-1.5 py-0.5 rounded"
+                      style={{ background: "rgba(34,197,94,0.15)", color: "#166534", border: "1px solid rgba(34,197,94,0.4)" }}>
+                      CFO REC.
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 pr-4 align-top font-mono text-xs" style={{ color: "#555" }}>{o.cost}</td>
+                <td className="py-3 pr-4 align-top text-xs leading-snug" style={{ color: "#555" }}>{o.impact}</td>
+                <td className="py-3 align-top">
+                  <span className="text-xs font-bold tracking-wider" style={{ color: riskColour[o.legalRisk] ?? "#555" }}>
+                    {o.legalRisk}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Footer */}
+      <div className="px-8 py-3" style={{ borderTop: "1px solid #ccc", background: "#f0ede6" }}>
+        <p className="text-xs text-center" style={{ color: "#777" }}>
+          RESTRICTED — FOR CEO AND CFO ONLY — DO NOT DISTRIBUTE
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Voting display ───────────────────────────────────────────────────────────
 
 function VotingDisplay({ inject, voteState }: { inject: Inject; voteState: VoteState }) {
@@ -2304,16 +2554,50 @@ function PausedScreen() {
 
 // ─── Ended ────────────────────────────────────────────────────────────────────
 
-function EndedScreen() {
+function EndedScreen({ scenario }: { scenario: import("@/types").Scenario | null }) {
   return (
-    <div className="h-full flex items-center justify-center">
-      <div className="text-center">
-        <div className="flex items-center justify-center w-24 h-24 rounded-2xl mx-auto mb-6"
-          style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.2)" }}>
-          <ShieldAlert className="w-12 h-12" style={{ color: "#1db86a" }} />
-        </div>
-        <p className="text-4xl font-bold mb-3">Exercise Complete</p>
-        <p style={{ color: "#8b8fa8" }}>Thank you for participating. Debrief to follow.</p>
+    <div className="h-full flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Subtle radial glow */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 55% 45% at 50% 52%, rgba(29,184,106,0.05) 0%, transparent 70%)" }} />
+
+      {/* Status pill */}
+      <div className="flex items-center gap-2 mb-10 px-4 py-1.5 rounded-full"
+        style={{ background: "rgba(29,184,106,0.08)", border: "1px solid rgba(29,184,106,0.2)" }}>
+        <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#1db86a" }} />
+        <span className="text-xs font-bold tracking-[0.3em] uppercase font-mono" style={{ color: "#1db86a" }}>
+          Simulation concluded
+        </span>
+      </div>
+
+      {/* Main title */}
+      <h1 className="leading-none text-center"
+        style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(5rem, 14vw, 12rem)", color: "#e8eaf0", letterSpacing: "0.02em" }}>
+        EXERCISE
+      </h1>
+      <h1 className="leading-none text-center"
+        style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(5rem, 14vw, 12rem)", color: "#e8eaf0", letterSpacing: "0.02em", marginTop: "-0.15em" }}>
+        COMPLETE
+      </h1>
+
+      {/* Separator */}
+      <div className="my-8 w-24 h-px" style={{ background: "rgba(232,34,34,0.35)" }} />
+
+      {/* Scenario name */}
+      {scenario && (
+        <p className="text-center mb-8"
+          style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.5rem)", color: "#555d7a", letterSpacing: "0.05em" }}>
+          {scenario.title}
+        </p>
+      )}
+
+      {/* Debrief callout */}
+      <div className="flex items-center gap-3 px-6 py-3 rounded-xl"
+        style={{ background: "rgba(29,184,106,0.07)", border: "1px solid rgba(29,184,106,0.2)" }}>
+        <ShieldAlert className="w-5 h-5 shrink-0" style={{ color: "#1db86a" }} />
+        <span className="text-sm font-semibold tracking-wide" style={{ color: "#4a7c5e" }}>
+          Debrief report is ready — return to the facilitator screen
+        </span>
       </div>
     </div>
   );

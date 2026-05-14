@@ -121,6 +121,9 @@ export type ArtifactType =
   | "negotiation_chat"
   | "linkedin_post"
   | "board_portal"
+  | "ir_report"
+  | "pen_test_report"
+  | "payroll_table"
   | "default";
 
 export interface InjectArtifact {
@@ -222,6 +225,35 @@ export interface InjectArtifact {
   regulatorPortalTitle?: string;  // heading shown at top of regulator portal panel
   regulatorPortalAgency?: string; // agency / division display name
   regulatorPortalBody?: string;   // body content of the portal document
+  // ir_report (Mandiant-style incident response brief)
+  irCaseRef?: string;             // e.g. "MAND-UK-2026-VRD-002"
+  irClientName?: string;          // e.g. "Veridian Power plc"
+  irAttackerName?: string;        // e.g. "ALPHV / BlackCat"
+  irDwellDays?: number;           // days attacker was present before detonation
+  irInitialAccess?: string;       // plain-text description
+  irExfilConfirmed?: string[];    // list of confirmed exfiltrated datasets
+  irExfilProbable?: string[];     // list of probable but unconfirmed exfiltrated datasets
+  irNoteForCLO?: string;          // highlighted legal callout at the bottom
+  // pen_test_report (security assessment finding)
+  ptFindingId?: string;           // e.g. "FINDING-2025-VRD-017"
+  ptFindingTitle?: string;        // one-line finding name
+  ptSeverity?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  ptSystem?: string;              // affected system / component
+  ptDescription?: string;         // finding description
+  ptRecommendation?: string;      // remediation recommendation
+  ptTestDate?: string;            // e.g. "14 February 2025"
+  ptTestAuthor?: string;          // assessor name
+  ptRemediationStatus?: "OPEN" | "IN_PROGRESS" | "DEFERRED" | "CLOSED";
+  ptRemediationNote?: string;     // reason for deferral / close
+  // payroll_table (CFO financial options brief)
+  payrollOptions?: Array<{
+    key: string;                  // "A" | "B" | "C" | "D"
+    label: string;                // short option name
+    cost: string;                 // e.g. "£180K"
+    impact: string;               // e.g. "~47 staff paid incorrectly"
+    legalRisk: "LOW" | "MEDIUM" | "HIGH";
+    recommended?: boolean;        // highlight row in green
+  }>;
 }
 
 export interface ArcRecapEntry {
@@ -469,7 +501,6 @@ export type View =
   | "present";
 
 export interface Settings {
-  claudeApiKey: string;
   orgName: string;
   facilitatorName: string;
   theme: "dark" | "light";
