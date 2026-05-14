@@ -213,6 +213,15 @@ export interface InjectArtifact {
   boardPortalMembers?: Array<{ name: string; role: string; loggedInAt?: string; isOnline?: boolean }>;
   boardPortalAlertCount?: number;
   boardPortalAlertTitle?: string; // e.g. "Unscheduled board meeting request"
+  boardPortalTitle?: string;      // heading shown at the top of the portal panel
+  boardPortalMeeting?: string;    // meeting name / context line
+  boardPortalAgenda?: string;     // agenda or body text for the portal
+  // internal memo body
+  memoBody?: string;              // explicit memo body; if omitted inject.body is used
+  // regulator portal extended fields
+  regulatorPortalTitle?: string;  // heading shown at top of regulator portal panel
+  regulatorPortalAgency?: string; // agency / division display name
+  regulatorPortalBody?: string;   // body content of the portal document
 }
 
 export interface ArcRecapEntry {

@@ -1746,6 +1746,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         regulatorOfficerName: "J. Whitmore, Senior Case Officer - Data Breach Team",
       },
       isDecisionPoint: false,
+      branches: [{ optionKey: "A", nextInjectId: "rwg-payroll" }],
       decisionOptions: [],
       targetRoles: ["CEO", "CLO", "CFO"],
       expectedKeywords: [
@@ -1776,6 +1777,7 @@ export const RANSOMWARE_EXECUTIVE_SCENARIO: Scenario = {
         type: "news_headline",
       },
       isDecisionPoint: false,
+      branches: [{ optionKey: "A", nextInjectId: "rwg-payroll" }],
       decisionOptions: [],
       targetRoles: ["CEO", "CLO", "CFO"],
       expectedKeywords: [
@@ -2707,5 +2709,1059 @@ The most powerful move here. CEO email to all staff in the next 90 minutes, refe
         },
       ],
     },
+    {
+      id: "rwg-mandiant-brief",
+      commandTier: "STRATEGIC",
+      order: 75,
+      scenarioDay: 1,
+      scenarioTime: "10:30",
+      title: "10:30 - What Mandiant Actually Found",
+      isDecisionPoint: true,
+      timerMinutes: 10,
+      recapLine: "handled the Mandiant preliminary findings by {{recapFragment}}",
+      body: `10:30. Mandiant have been on site for four hours. Your CISO has been in the server room with them since 06:00.
+
+She comes upstairs. She closes the door. She has a tablet with a single document on it. She does not send it by email.`,
+      facilitatorNotes: `This is the inject the CEO has been dreading since 05:30. The full Mandiant preliminary findings.
+
+The key facts on the document:
+- The attacker was inside for six days before triggering encryption
+- Patient zero: a contractor VPN credential stolen 23 days ago
+- Files confirmed exfiltrated: PSR master database, payroll records, wholesale trading book
+- Files probably exfiltrated but unconfirmed: board communications folder, two years of CFO financial models
+- One further finding: a penetration test conducted 14 months ago flagged the contractor VPN as a critical vulnerability. The finding was escalated to the CTO. It was not remediated.
+
+The DP is about what the CEO does with this information RIGHT NOW, before the ransom note arrives at 14:30.
+
+Option A (brief the full board now) is the correct governance call but it surfaces the pen test finding to the NEDs before the executive team has a legal strategy. Option B (brief CLO only) is the right sequenced answer - the CLO needs to know about the pen test before it comes out anywhere else. Option D (say nothing until after the ransom) is the instinct of a frightened leadership team and the worst governance choice.`,
+      targetRoles: ["CEO", "CLO", "CFO"],
+      expectedKeywords: ["pen test", "CLO", "board", "contractor", "exfiltration", "legal"],
+      delayMinutes: 0,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-chairman-demand" },
+        { optionKey: "B", nextInjectId: "rwg-chairman-demand" },
+        { optionKey: "C", nextInjectId: "rwg-chairman-demand" },
+        { optionKey: "D", nextInjectId: "rwg-chairman-demand" },
+      ],
+      artifact: {
+        type: "internal_memo",
+        memoTitle: "Preliminary Findings - Mandiant Incident Response",
+        memoClassification: "EYES ONLY - CEO, CISO, CLO",
+        memoFrom: "Dr. Claire Hennessey, Mandiant Lead Assessor",
+        memoTo: "S. Khatun - CISO, Veridian Power",
+        memoDate: "14 April 2026, 10:15",
+        memoRef: "MAND-UK-2026-VRD-002",
+        memoBody: `PRELIMINARY FINDINGS - CONFIDENTIAL
+
+Initial Access: Contractor VPN credential. Stolen approximately 23 days prior to deployment.
+Dwell time: Six days confirmed. Possibly longer.
+Exfil confirmed: Priority Services Register (full), payroll records, wholesale trading book Q1 2026.
+Exfil probable: Board communications archive, CFO financial model library. Unable to confirm or rule out at this stage.
+
+NOTE FOR CLO: A penetration test conducted in February 2025 flagged the contractor VPN authentication as a critical finding (Severity 1). Our records indicate this finding was escalated to the CTO. Remediation status: not completed at time of incident.
+
+Full report to follow. Do not distribute further without CLO clearance.`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Brief the full board immediately. They are entitled to know the complete picture including the pen test finding.",
+          consequence:
+            "The board is briefed at 11:30. Caroline Wu asks immediately: 'Was this finding known to anyone in this room?' The CLO has not yet prepared a legal position. The next two hours are spent managing the board's reaction rather than preparing for the ransom note that arrives at 14:30.",
+          rank: 3,
+          recapFragment: "briefing the full board before establishing a legal position on the pen test",
+        },
+        {
+          key: "B",
+          label:
+            "Brief the CLO only, right now, before this goes any further. The pen test finding needs legal strategy before it reaches the board.",
+          consequence:
+            "The CLO reads the document at 10:35. She is quiet for a moment. Then: 'I need two hours and external counsel on the phone.' By 13:00 you have a legal position, a disclosure sequence, and a clear answer to the question 'who knew and when.' When the ransom note arrives at 14:30, the board is briefed in a controlled way with counsel present.",
+          rank: 1,
+          recapFragment: "briefing the CLO first to establish a legal position before disclosure",
+        },
+        {
+          key: "C",
+          label:
+            "Brief the CEO and CFO only. The fewer people who know about the pen test finding today, the better.",
+          consequence:
+            "The CLO finds out about the pen test finding from Beazley's lawyers at 16:30. She is not pleased. The sequencing - CFO briefed before CLO - becomes a governance question in Ofgem's later review.",
+          rank: 3,
+          recapFragment: "limiting the Mandiant findings to CEO and CFO, excluding the CLO",
+        },
+        {
+          key: "D",
+          label:
+            "Nothing changes before 14:30. Handle the ransom note first, this document second.",
+          consequence:
+            "The ransom note arrives at 14:30. In the four hours of discussion that follow, the CLO is operating without knowing about the pen test finding. She gives advice based on incomplete information. When she reads the Mandiant memo at 18:00, she has to revise two positions she gave the board.",
+          rank: 4,
+          recapFragment: "deferring the Mandiant findings until after the ransom note",
+        },
+      ],
+    },
+    {
+      id: "rwg-chairman-demand",
+      commandTier: "STRATEGIC",
+      order: 81,
+      scenarioDay: 1,
+      scenarioTime: "14:45",
+      title: "14:45 - The Chairman Heard It On Sky",
+      isDecisionPoint: true,
+      timerMinutes: 8,
+      recapLine: "answered the Chairman's questions by {{recapFragment}}",
+      body: `14:45. Fifteen minutes after the ransom note landed.
+
+Sir David Ashworth is calling. He did not wait for you to brief him. Sky News ran the £9.4M demand fourteen minutes ago. Someone leaked it.
+
+He has two questions. He is going to ask them whether you answer or not.`,
+      facilitatorNotes: `The Chairman is back and he is not happy. He found out about the ransom note from a television.
+
+His two questions are visible on the Slack artifact:
+1. What is the board's position on payment?
+2. Who authorised the contractor VPN access and why was the pen test finding not remediated?
+
+Question 1 is a governance question the CEO should welcome - the board should be involved in a £9.4M payment decision. Question 2 is the one that matters most. It is the question that will be asked by every regulator, every parliamentary committee, and every journalist for the next six months.
+
+Watch how the CEO answers question 2. Whether they are honest or evasive in this moment - with the Chairman, in private, before any cameras or regulators - tells you something true about the organisation.
+
+Option A (full transparency) is the correct answer. Option C (defer the pen test question) is what frightened leaders do and it delays the inevitable while storing up damage.`,
+      targetRoles: ["CEO", "CLO"],
+      expectedKeywords: ["pen test", "Chairman", "honest", "payment", "board", "Sky News", "contractor"],
+      delayMinutes: 0,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-i4" },
+        { optionKey: "B", nextInjectId: "rwg-i4" },
+        { optionKey: "C", nextInjectId: "rwg-i4" },
+      ],
+      artifact: {
+        type: "sms_thread",
+        smsParticipants: [],
+        smsMessages: [
+          { sender: "Sir David Ashworth, Chairman", text: "Sky News. £9.4M. I had to find out from a television. We need to speak.", time: "14:41" },
+          { sender: "Sir David Ashworth, Chairman", text: "I have two questions. First: what is the board's position on payment? Second: I'm told there was a penetration test fourteen months ago that flagged this exact vulnerability. I want to know who saw that report.", time: "14:43" },
+        ],
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Call him back now. Tell him everything, including the pen test finding. He needs the complete picture.",
+          consequence:
+            "The call is difficult. The Chairman is quiet when you tell him about the pen test finding. Then: 'I appreciate you telling me directly. I'm going to need Caroline Wu on the next board call.' He agrees to hold on the payment decision until the board has convened. His cooperation on the regulatory response over the next three days is significantly better for this conversation.",
+          rank: 1,
+          recapFragment: "calling the Chairman immediately with full transparency including the pen test",
+        },
+        {
+          key: "B",
+          label:
+            "Call him back, confirm the ransom demand, and tell him a board call is being arranged. Save the pen test detail for the full board.",
+          consequence:
+            "The Chairman accepts this. He asks: 'Is there anything else I should know before I speak to the other NEDs?' The honest answer is yes. What you say in this moment sets the tone for the next three days.",
+          rank: 2,
+          recapFragment: "briefing the Chairman on the demand but deferring the pen test detail to the board call",
+        },
+        {
+          key: "C",
+          label:
+            "Send a message: 'Convening the board now, will brief fully then. No comment on leaks.' Deal with the pen test question in the proper setting.",
+          consequence:
+            "The Chairman calls back twenty minutes later. He has spoken to two other NEDs. One of them has already called their solicitor. The pen test question is now circulating among the non-executives without any context or framing from the CEO.",
+          rank: 3,
+          recapFragment: "deflecting the Chairman's pen test question to the board call",
+        },
+      ],
+    },
+    {
+      id: "rwg-neg-silence",
+      commandTier: "STRATEGIC",
+      storyTrack: "Negotiating",
+      order: 108,
+      scenarioDay: 1,
+      scenarioTime: "22:00",
+      title: "22:00 - They've Gone Quiet",
+      isDecisionPoint: true,
+      timerMinutes: 8,
+      recapLine: "responded to the negotiation silence by {{recapFragment}}",
+      body: `22:00. Six hours since Mandiant opened the negotiation channel.
+
+ALPHV have not responded to the last message. Not unusual in negotiations, Mandiant say. Could be a tactic. Could be they are preparing the PSR publication. Could be a technical issue on their side.
+
+Mandiant's lead negotiator calls the CISO with a question she immediately escalates to you.`,
+      facilitatorNotes: `The silence is a genuine uncertainty. Mandiant do not know what it means and they are being honest about that.
+
+The DP is about how the CEO holds the position during six hours of darkness when the stakes are this high.
+
+Option A (authorise Mandiant to send a message) risks looking desperate. Option B (hold position, increase restoration pace) is the correct answer - use the silence productively without showing urgency to ALPHV. Option D (instruct Mandiant to offer the original demand) is panic and should be pushed back on hard.`,
+      targetRoles: ["CEO", "CISO"],
+      expectedKeywords: ["silence", "restoration", "Mandiant", "leverage", "hold", "midnight"],
+      delayMinutes: 0,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-neg-read" },
+        { optionKey: "B", nextInjectId: "rwg-neg-read" },
+        { optionKey: "C", nextInjectId: "rwg-neg-read" },
+        { optionKey: "D", nextInjectId: "rwg-neg-read" },
+      ],
+      artifact: {
+        type: "sms_thread",
+        smsParticipants: [],
+        smsMessages: [
+          { sender: "Sarah Khatun, CISO", text: "ALPHV have been dark for 90 minutes. Claire at Mandiant says this is not unusual but she needs to know our position if they don't respond by midnight.", time: "21:52" },
+          { sender: "Sarah Khatun, CISO", text: "Her question: do you want her to send a message probing for response, or hold position and use the time to push restoration? And what happens if they're still dark at 04:00?", time: "21:53" },
+          { sender: "Sarah Khatun, CISO", text: "One more thing. Restoration is currently at 34%. If we push Mandiant's team tonight we could hit 48% by morning. That changes our leverage position significantly. Your call.", time: "21:55" },
+        ],
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Authorise Mandiant to send a message at midnight if there is still no response. Check they are still there.",
+          consequence:
+            "Mandiant send the message at midnight. ALPHV respond at 00:17: 'We are still here. We were reviewing your position.' Mandiant note internally: the message showed urgency. ALPHV use this in the next morning's counter-offer.",
+          rank: 3,
+          recapFragment: "authorising Mandiant to probe the silence with a message",
+        },
+        {
+          key: "B",
+          label:
+            "Hold position. Push Mandiant's restoration team through the night. Use the silence to change the leverage.",
+          consequence:
+            "Restoration reaches 51% by 06:00. When ALPHV return at 04:30 with a new message, Mandiant's response leads with the restoration figure. The negotiating position has shifted. ALPHV's tone is different.",
+          rank: 1,
+          recapFragment: "holding position and using the silence to push restoration to 51% overnight",
+        },
+        {
+          key: "C",
+          label:
+            "Get the CLO on the phone. If ALPHV have gone dark, it may mean they are preparing to publish. We need legal sign-off on next steps.",
+          consequence:
+            "CLO called at 22:10. She agrees with holding position and pushing restoration. The conversation takes 40 minutes and produces no new options, but it documents the decision trail correctly.",
+          rank: 2,
+          recapFragment: "consulting the CLO during the silence before deciding to hold position",
+        },
+        {
+          key: "D",
+          label:
+            "Authorise Mandiant to signal we will consider the original $9.4M if they respond by 04:00.",
+          consequence:
+            "Mandiant flag this instruction as inadvisable. The lead negotiator calls you directly: 'That is not a position we recommend signalling. It reads as panic.' The instruction is withdrawn after a difficult conversation. ALPHV, monitoring the channel, note the mixed signals.",
+          rank: 4,
+          recapFragment: "initially authorising a signal on the original demand before withdrawing it",
+        },
+      ],
+    },
+    {
+      id: "rwg-neg-read",
+      commandTier: "STRATEGIC",
+      storyTrack: "Negotiating",
+      order: 109,
+      scenarioDay: 2,
+      scenarioTime: "07:00",
+      title: "Day 2, 07:00 - What Mandiant Actually Think",
+      isDecisionPoint: false,
+      body: `Day 2, 07:00. ALPHV came back at 04:30 with a revised counter: $7.2M.
+
+Before the negotiation resumes, Mandiant's lead assessor has asked for ten minutes alone with the CEO. She has something she needs to say on the record.`,
+      facilitatorNotes: `No formal vote. This is a character moment and an information beat.
+
+Claire Hennessey is about to tell the CEO honestly what she has seen in 40+ ALPHV incidents: deletion commitments are honoured in approximately 58% of cases. In 42% of cases, some or all of the data is either retained, sold to a third party, or re-used in a second extortion attempt.
+
+She is not saying don't pay. She is saying: whoever makes this decision should make it knowing this number.
+
+Let the room sit with 42%. Ask the CEO: does this change anything? Ask the CFO: what does £7.2M buy you if there's a 42% chance the data still publishes?
+
+This inject exists to make the payment decision harder, not easier. It should produce genuine disagreement in the room.`,
+      targetRoles: ["CEO", "CFO", "CLO"],
+      expectedKeywords: ["42%", "deletion", "Claire", "Mandiant", "$7.2M", "honoured", "re-extortion"],
+      delayMinutes: 0,
+      branches: [{ optionKey: "A", nextInjectId: "rwg-neg-floor" }],
+      artifact: {
+        type: "voicemail",
+        voicemailCaller: "Dr. Claire Hennessey, Mandiant Lead Assessor",
+        voicemailCallerNumber: "+44 20 7645 8900",
+        voicemailDuration: "1:34",
+        voicemailTime: "06:55",
+        voicemailTranscript: "It's Claire. ALPHV came back at 04:30 with a revised figure of $7.2M. Before we respond I need ten minutes with you. I have worked 43 ALPHV cases. I want to tell you one thing about deletion commitments before you make any decisions today. I am not going to tell you what to do. That is not my job. But I want to make sure whoever authorises the next step has the full picture. I'll be at your offices at 07:30.",
+      },
+      decisionOptions: [],
+    },
+    {
+      id: "rwg-neg-floor",
+      commandTier: "STRATEGIC",
+      storyTrack: "Negotiating",
+      order: 111,
+      scenarioDay: 2,
+      scenarioTime: "11:00",
+      title: "Day 2, 11:00 - Say the Number",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-d2-brief" },
+        { optionKey: "B", nextInjectId: "rwg-d2-brief" },
+        { optionKey: "C", nextInjectId: "rwg-d2-brief" },
+      ],
+      timerMinutes: 8,
+      recapLine: "responded to Mandiant's floor question by {{recapFragment}}",
+      body: `Day 2, 11:00. The counter-offer stands at $7.2M. Mandiant have stalled twice. ALPHV are not moving further without a signal.
+
+Claire Hennessey calls the CEO directly. Not through the CISO. She has one question.`,
+      facilitatorNotes: `This is the most human inject in the negotiation track. Claire is asking the CEO to say out loud what they are actually willing to pay - not the board-approved mandate, the real number.
+
+The gap between the official ceiling and the real ceiling is where every negotiation lives. Claire has seen it in 43 cases. She is asking because she needs to know how much room she actually has.
+
+The DP is not really about the number. It is about whether the CEO can separate their personal position from the official position, and whether they trust Mandiant enough to be honest with them.
+
+Option A (give the real number) is the right answer for the negotiation. Option B (hold the mandate position) is governance-correct but may end the negotiation. Option C (escalate to board) is delay that ALPHV will read as weakness.
+
+After this inject, the negotiation reaches its conclusion - either a deal or a breakdown. The next shared inject is the Day 3 board call.`,
+      targetRoles: ["CEO"],
+      expectedKeywords: ["floor", "number", "mandate", "Claire", "honest", "end this", "$5.8M"],
+      delayMinutes: 0,
+      artifact: {
+        type: "sms_thread",
+        smsParticipants: [],
+        smsMessages: [
+          { sender: "Dr. Claire Hennessey, Mandiant", text: "I need to ask you something I don't usually ask clients. Not through Sarah. Directly to you.", time: "11:02" },
+          { sender: "Dr. Claire Hennessey, Mandiant", text: "The board mandate says $4M ceiling. I have got them to $7.2M. I can probably get to $5.8M if I have 6 more hours. But to close this I need to know your actual floor. Not the board number. Yours.", time: "11:03" },
+          { sender: "Dr. Claire Hennessey, Mandiant", text: "I am asking because in my experience the gap between the mandate and what the CEO would actually authorise to end this is where deals get made or fall apart. I need the truth to do my job. What number ends this for you?", time: "11:04" },
+        ],
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Tell her the truth. The number that ends this is $5.5M if she can get deletion verified by a neutral third party.",
+          consequence:
+            "Claire has what she needs. By 16:00 she has ALPHV at $5.8M with a third-party deletion verification clause - something they have never offered before. The deal is not perfect. The verification is imperfect. But it is the best outcome the negotiation track produces.",
+          rank: 1,
+          recapFragment: "giving Mandiant the real floor figure with a deletion verification condition",
+        },
+        {
+          key: "B",
+          label:
+            "Hold the board mandate. The CEO does not have authority to move beyond $4M without a board vote.",
+          consequence:
+            "Claire accepts this. She continues the negotiation within $4M. ALPHV do not move below $6.1M. By Day 3 the negotiation has broken down. The PSR publishes.",
+          rank: 2,
+          recapFragment: "holding to the board mandate and declining to share a personal floor figure",
+        },
+        {
+          key: "C",
+          label:
+            "Convene the board for an emergency vote on a revised ceiling. The CEO will not make this call unilaterally.",
+          consequence:
+            "Board convened at 13:30. Vote at 14:15. New ceiling: $5.5M. Claire returns to negotiations at 14:30. ALPHV note the four-hour gap: 'You needed a committee to answer our question.' The deal closes at $6.0M - $500K more than if the CEO had answered directly.",
+          rank: 2,
+          recapFragment: "convening the board for a vote rather than answering Mandiant directly",
+        },
+      ],
+    },
+    {
+      id: "rwg-pentest",
+      commandTier: "STRATEGIC",
+      order: 215,
+      scenarioDay: 3,
+      scenarioTime: "12:00",
+      title: "Day 3, 12:00 - The Question Nobody Wants",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-sos" },
+        { optionKey: "B", nextInjectId: "rwg-sos" },
+        { optionKey: "C", nextInjectId: "rwg-sos" },
+        { optionKey: "D", nextInjectId: "rwg-sos" },
+      ],
+      timerMinutes: 12,
+      recapLine: "responded to the Audit Committee's pen test question by {{recapFragment}}",
+      body: `Day 3, 12:00. The board call has finished. Most people have left the channel.
+
+Caroline Wu, the Audit Committee chair, has stayed behind. She posts a single message in the shared board space. She has clearly been composing it for a while.`,
+      facilitatorNotes: `This is the reckoning inject. The pen test question has been circling since 10:30 yesterday morning. Now it is asked directly, in writing, by the person with the governance responsibility to ask it.
+
+Wu's question: 'The penetration test conducted in February 2025 identified the contractor VPN as a critical vulnerability. It was not remediated in the 14 months before this attack. I need to understand: who saw that report, who made the decision not to act on it, and what is the board's current position on accountability for that decision?'
+
+This is not a hostile question. It is the right question. The CEO's answer in the next 20 minutes will define their relationship with the board for years.
+
+Option A (full honest answer on the record) is correct and painful. Option C (ask for time to prepare a proper response) is a reasonable professional instinct but will be read as stalling. Option D is the response of a leader who has not yet understood that the pen test question will not go away.
+
+Push the CEO to answer Wu's question out loud in the room. Whatever they say to Wu, they will say to the regulator and the select committee.`,
+      targetRoles: ["CEO", "CLO", "COO"],
+      expectedKeywords: ["pen test", "Caroline Wu", "Audit", "CTO", "accountability", "honest", "February 2025"],
+      delayMinutes: 0,
+      artifact: {
+        type: "internal_memo",
+        memoTitle: "Board Note - Audit Committee Chair",
+        memoClassification: "BOARD MEMBERS ONLY",
+        memoFrom: "Caroline Wu, Non-Executive Director (Audit Committee Chair)",
+        memoTo: "Board, Veridian Power",
+        memoDate: "15 April 2026, 11:58",
+        memoRef: "BOARD-AUDIT-2026-001",
+        memoBody: `Colleagues,
+
+I have reviewed the Mandiant preliminary findings circulated this morning.
+
+The penetration test conducted in February 2025 identified the contractor VPN authentication as a Critical (Severity 1) finding and recommended immediate remediation. The finding was escalated to the CTO.
+
+I require answers to three questions before the next board session:
+
+1. Who received the February 2025 penetration test report, and at what level was it reviewed?
+2. What was the stated reason for not remediating this finding in the 14 months prior to the attack?
+3. What is the board's position on accountability for that decision?
+
+I am not asking these questions to apportion blame. I am asking because the Audit Committee has a governance responsibility that cannot wait for the regulatory timeline.
+
+I would appreciate the CEO's response by 14:00 today.
+
+Caroline Wu`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Answer fully and on the record today. The CTO received the report. It was deprioritised against a system migration. That decision was wrong.",
+          consequence:
+            "Wu responds within twenty minutes: 'Thank you. This is what the board needed to hear. I will ensure the Audit Committee documents this properly.' The answer is painful. It is also the answer that prevents a worse version of this conversation happening in front of a regulator.",
+          rank: 1,
+          recapFragment: "giving the Audit Committee a full honest account of the pen test decision on the record",
+        },
+        {
+          key: "B",
+          label:
+            "Respond to Wu directly but ask to have the conversation by phone rather than in writing until legal counsel has been consulted.",
+          consequence:
+            "Wu agrees to a call at 13:00. The conversation is frank and well-managed with the CLO present. The Audit Committee records it as 'fully cooperative.' The written record is cleaner than a rushed written response would have been.",
+          rank: 1,
+          recapFragment: "taking the Audit Committee question to a private call with the CLO present",
+        },
+        {
+          key: "C",
+          label:
+            "Ask Wu for 48 hours to prepare a proper response. The full facts need to be established before anything is said on the record.",
+          consequence:
+            "Wu accepts but logs her request formally. Ofgem's legal team note the 48-hour delay when the board governance record is produced in discovery. The question that needed answering at 12:00 on Day 3 is still unanswered on Day 5.",
+          rank: 3,
+          recapFragment: "requesting 48 hours before responding to the Audit Committee's question",
+        },
+        {
+          key: "D",
+          label:
+            "The appropriate response to Wu is that the board will receive a full external review. This is not a question for the CEO to answer informally.",
+          consequence:
+            "Wu writes back within four minutes: 'I have not asked an informal question. I have asked a governance question that the Audit Committee is entitled to have answered. I would like the CEO to reconsider.' The deflection is noted in the board minutes.",
+          rank: 4,
+          recapFragment: "deflecting the Audit Committee question to an external review",
+        },
+      ],
+    },
+    {
+      id: "rwg-letter",
+      commandTier: "STRATEGIC",
+      order: 305,
+      scenarioDay: 4,
+      scenarioTime: "14:00",
+      title: "Day 4, 14:00 - The Letter",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-back-announce" },
+        { optionKey: "B", nextInjectId: "rwg-back-announce" },
+        { optionKey: "C", nextInjectId: "rwg-back-announce" },
+      ],
+      timerMinutes: 10,
+      recapLine: "chose {{recapFragment}} in the letter to 84,247 customers",
+      body: `Day 4, 14:00. The legal process is in motion. The regulators have their response. The board knows what it needs to know.
+
+Your CCO has sent a draft. The letter that will go to every one of the 84,247 people whose data was taken.
+
+She has flagged one paragraph. She needs your decision on it before the letter goes to the printer.`,
+      facilitatorNotes: `This is the last decision of the active crisis, and it is the most personal one.
+
+The flagged paragraph is the one where the company either acknowledges the penetration test finding - 'we had identified this vulnerability and did not fix it in time' - or does not.
+
+Version A of the letter includes it. Version B does not. Version C is somewhere in between.
+
+This inject does not have a legally correct answer. It has a human one and a strategic one, and they may not be the same.
+
+Sandra Thornton will read this letter. Ask the CEO: if you were Sandra, which version would you want to receive? Then ask the CLO: which version creates more regulatory exposure? The two answers may differ.
+
+This inject should produce the most honest conversation of the entire exercise. Everything else has been about managing the crisis. This is about what the company actually believes about what it did.`,
+      targetRoles: ["CEO", "CLO", "CCO"],
+      expectedKeywords: ["Version A", "Version B", "Sandra", "Margaret", "honest", "pen test", "paragraph 4"],
+      delayMinutes: 0,
+      artifact: {
+        type: "email",
+        emailFrom: "T. Osei, Chief Operating Officer",
+        emailTo: "CEO, Veridian Power",
+        emailSubject: "Draft customer letter - flagged paragraph for your decision",
+        emailBody: `CEO,
+
+Draft attached. The legal team have cleared all sections except one. Please see below.
+
+FLAGGED PARAGRAPH (paragraph 4 of 6):
+
+[Version A - full acknowledgement]
+'We also want to be honest about something that is difficult to say. An independent security review conducted fourteen months ago identified the vulnerability that was exploited in this attack. We did not fix it in time. We are deeply sorry for that failure. It does not diminish our responsibility to you.'
+
+[Version B - regulatory language only]
+'We continue to work with independent security specialists to strengthen our systems. We have committed to a full review of our cyber security practices, the findings of which will be shared with our regulators.'
+
+[Version C - partial acknowledgement]
+'We have identified improvements that could have been made to our security systems prior to this incident. We are taking full responsibility for addressing those gaps.'
+
+The full letter is 340 words. It covers: what happened, what data was affected, what we are doing, and what we are offering. I need your call on paragraph 4 by 16:00.
+
+T. Osei, COO`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Version A. Full acknowledgement of the pen test finding. 84,247 people deserve the honest version.",
+          consequence:
+            "The letter lands on a Tuesday morning. Sandra Thornton calls the company's communications team at 10:00 that day. She has read it. She says: 'I appreciate the honesty. It does not make it better. But I appreciate it.' Ofgem note the disclosure in their final report as an example of proactive transparency. It does not reduce the fine. It does affect the tone of everything that follows.",
+          rank: 1,
+          recapFragment: "Version A - the full honest acknowledgement of the pen test finding",
+        },
+        {
+          key: "B",
+          label:
+            "Version B. The regulatory language only. The pen test finding is a legal matter, not a customer communications matter.",
+          consequence:
+            "The letter is clean, professional, and safe. Three weeks later, a journalist publishes the Mandiant report. The story is not the breach. The story is that Veridian sent 84,247 people a letter that did not mention the thing they most needed to know. Sandra Thornton gives one quote.",
+          rank: 3,
+          recapFragment: "Version B - the regulatory language, omitting the pen test acknowledgement",
+        },
+        {
+          key: "C",
+          label:
+            "Version C. Partial acknowledgement. It is honest without being legally specific about the pen test timeline.",
+          consequence:
+            "Most customers read it as genuine. Legal counsel are satisfied with the exposure level. Sandra Thornton's daughter calls to ask what 'improvements that could have been made' means. The call centre agent does not have a script for this question.",
+          rank: 2,
+          recapFragment: "Version C - the partial acknowledgement without specific reference to the pen test timeline",
+        },
+      ],
+    },
+    {
+      id: "rwg-payroll",
+      commandTier: "STRATEGIC",
+      order: 310,
+      scenarioDay: 4,
+      scenarioTime: "08:30",
+      title: "Day 4, 08:30 - Payroll Friday",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-trading" },
+        { optionKey: "B", nextInjectId: "rwg-trading" },
+        { optionKey: "C", nextInjectId: "rwg-trading" },
+        { optionKey: "D", nextInjectId: "rwg-trading" },
+      ],
+      timerMinutes: 10,
+      recapLine: "handled Friday's payroll by {{recapFragment}}",
+      body: `Day 4, 08:30. The CFO has been in HR since 06:00.
+
+The payroll system was encrypted on Day 1. 3,200 people are due to be paid this Friday. That is 56 hours from now.
+
+Mandiant cannot guarantee the payroll system back online before Tuesday next week. The CFO is in your office with three options and a piece of paper. She does not look like she has slept.`,
+      facilitatorNotes: `This is the inject most crisis simulations never include and that real ransomware incidents hit harder than almost any single decision.
+
+3,200 people depend on their direct debit being processed. Mortgages, rent, childcare, school dinners, credit card minimums. If payroll fails on Friday, the company creates a thousand smaller crises across the workforce on Saturday morning.
+
+The options:
+- Manual processing from paper records is feasible but expensive (approximately £180K in agency costs and accountancy fees) and error-prone (HR estimate 50-80 people will be paid the wrong amount).
+- Two-week deferral has legal complications under the Employment Rights Act and immediate trust consequences. Many staff cannot absorb a two-week pay delay.
+- The interim payment approach (flat amount now, reconciliation next month) is what most large organisations land on in practice. It is messy, but it works.
+
+The correct answer is B (interim flat payment now). It is the option that prioritises staff over administrative cleanliness. Watch the CFO and CEO arguments here - the CFO often wants A (manual processing) because it is auditable. The CEO usually wants B because the staff trust impact of getting payroll wrong is enormous.
+
+Option D (wait for systems) is the answer of a team that has lost sight of what 3,200 people will actually experience on Saturday.`,
+      targetRoles: ["CEO", "CFO", "COO"],
+      expectedKeywords: ["3,200", "Friday", "staff", "interim", "manual", "trust", "direct debit"],
+      delayMinutes: 0,
+      artifact: {
+        type: "internal_memo",
+        memoTitle: "Payroll Continuity - Three Options",
+        memoClassification: "RESTRICTED",
+        memoFrom: "M. Levenson, Chief Financial Officer",
+        memoTo: "CEO, Veridian Power",
+        memoDate: "16 April 2026, 08:25",
+        memoRef: "VRD-FIN-2026-PAY-001",
+        memoBody: `CEO,
+
+Friday is in 56 hours. Payroll systems will not be restored in time.
+
+Option A - Manual Processing
+HR run payroll from paper records and last quarter's archive backup. Estimated cost: £180K (agency, audit, manual reconciliation). Estimated error rate: 1.5-2.5% of staff paid the wrong amount, with corrections to follow over two weeks.
+
+Option B - Emergency Interim Payment
+Flat payment of last month's net amount to every account on Friday. Reconciliation and adjustments processed at the next pay cycle. Simpler. Less precise. £4.2M cash exposure if reconciliation runs into a second cycle.
+
+Option C - Two-Week Deferral
+Notice issued to all staff that pay will be delayed by two weeks. Legal exposure under Employment Rights Act 1996 s.13. Estimated grievance volume: significant.
+
+Option D - Wait
+Do nothing. Payroll restored Tuesday next week. Staff paid 4 days late.
+
+I need your decision by 10:00 to give HR a working day to execute.
+
+M. Levenson`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Manual processing. The CFO is right - staff need their correct amount, not an approximation. Spend the £180K.",
+          consequence:
+            "HR work through the night. Friday morning, 47 employees are paid the wrong amount. Most are corrected within 72 hours. Three discover the error after their direct debits fail. The £180K agency cost lands in the next quarter. Audit trail is clean. Staff Slack on Saturday is mixed - gratitude for being paid, frustration at the errors.",
+          rank: 2,
+          recapFragment: "manual processing - spending £180K to pay everyone the correct amount with some errors",
+        },
+        {
+          key: "B",
+          label:
+            "Interim flat payment. Pay everyone their previous month's net on Friday. Reconcile next cycle.",
+          consequence:
+            "Friday lands. 3,200 people are paid on time. The communication is simple: 'You will receive your usual amount. Any adjustments will appear next month.' Staff Slack on Saturday is grateful. The reconciliation in May is messy but bounded. HR find three staff who left the company in March and were paid in error. Recovered within 30 days.",
+          rank: 1,
+          recapFragment: "interim flat payment - paying everyone their usual amount on Friday and reconciling next month",
+        },
+        {
+          key: "C",
+          label:
+            "Two-week deferral. Notify staff today. Set up a hardship fund for anyone who genuinely cannot wait.",
+          consequence:
+            "The notice goes out at 11:00. The hardship fund opens at 12:00 with £200K available. By 18:00 it has received 847 applications. By Friday morning the company has 71 active grievances filed under the Employment Rights Act and three union representatives requesting urgent meetings. Two BBC journalists have the story by Monday.",
+          rank: 4,
+          recapFragment: "deferring payroll by two weeks and opening a hardship fund",
+        },
+        {
+          key: "D",
+          label:
+            "Wait for systems. Payroll restored Tuesday. Communicate the four-day delay to staff today.",
+          consequence:
+            "The staff email lands at 11:00. By 13:00 the #general Slack channel has 1,400 messages. The Guardian have the story by 17:00: 'Veridian Power staff to miss payday after ransomware attack.' Three staff with serious financial obligations contact the press directly. The board chair calls at 19:00. Caroline Wu writes a formal note expressing concern about leadership judgement under pressure.",
+          rank: 4,
+          recapFragment: "waiting for systems and accepting a four-day payroll delay",
+        },
+      ],
+    },
+    {
+      id: "rwg-trading",
+      commandTier: "STRATEGIC",
+      order: 315,
+      scenarioDay: 4,
+      scenarioTime: "10:00",
+      title: "Day 4, 10:00 - The Trading Desk Wants Back On",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-recovery-triage" },
+        { optionKey: "B", nextInjectId: "rwg-recovery-triage" },
+        { optionKey: "C", nextInjectId: "rwg-recovery-triage" },
+        { optionKey: "D", nextInjectId: "rwg-recovery-triage" },
+      ],
+      timerMinutes: 10,
+      recapLine: "decided on trading desk resumption by {{recapFragment}}",
+      body: `Day 4, 10:00. The Head of Trading has been on the floor since 05:00. He wants thirty minutes.
+
+Manual trading is costing the company approximately £340K per day in suboptimal hedging and missed arbitrage opportunities. The algorithmic platform could be back online within twelve hours. Mandiant's CISO advice: not yet. Another 72 hours of validation. Sarah Khatun supports Mandiant's position. The CFO supports the trading desk.
+
+The CEO is the only person who can authorise this.`,
+      facilitatorNotes: `The trading desk decision is where commercial pressure meets security hygiene head-on. £340K per day is real money and growing. But early resumption of algorithmic trading creates two genuine risks: reinfection (if the attacker retained any persistence) and a market integrity question if anything goes wrong with the platform's first day back.
+
+Mandiant's 72-hour validation window is the industry standard for post-incident algorithmic trading resumption. There is a reason for it.
+
+The correct answer is C (waiting the full 72 hours) or B (phased return with limits). Option A (resume now) is the answer the CFO and Head of Trading want and it is the wrong answer. Option D (extended caution) is over-cautious in a way that has its own commercial costs.
+
+This decision tests whether the executive team can hold a security boundary when commercial pressure is real and quantified. The £340K/day figure is designed to make C feel expensive. It is the right answer anyway.`,
+      targetRoles: ["CEO", "CFO", "CISO"],
+      expectedKeywords: ["Mandiant", "72 hours", "trading", "algorithmic", "validation", "£340K", "phased"],
+      delayMinutes: 0,
+      artifact: {
+        type: "sms_thread",
+        smsParticipants: [],
+        smsMessages: [
+          { sender: "R. Caldwell, Head of Trading", text: "Manual book is costing us £340K/day. Counterparties are starting to ask why we're holding back from positions we'd normally take. I need a decision on platform resumption by 11:00.", time: "09:42" },
+          { sender: "M. Levenson, CFO", text: "Trading position is real. We are bleeding money every hour the algos are off. Beazley don't cover business interruption from precautionary delays.", time: "09:48" },
+          { sender: "S. Khatun, CISO", text: "Mandiant want 72 hours of validation before algorithmic resumption. Their assessment is unchanged from yesterday. I support their position.", time: "09:51" },
+          { sender: "R. Caldwell, Head of Trading", text: "I can run with position limits and manual oversight. Let me bring it up phased. We don't need full algorithmic autonomy on day one back.", time: "09:55" },
+        ],
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Authorise resumption today. The commercial cost is too high. Mandiant can validate alongside live operations.",
+          consequence:
+            "Trading platform back online at 22:00. At 03:00 on Day 5, Mandiant flag suspicious lateral movement on a system adjacent to the trading platform. The platform is taken offline for emergency analysis. The £340K/day saving evaporates against £1.8M in disrupted positions during the emergency shutdown. The Financial Conduct Authority opens a separate inquiry into trading risk controls.",
+          rank: 4,
+          recapFragment: "authorising trading resumption before Mandiant's validation completed",
+        },
+        {
+          key: "B",
+          label:
+            "Phased return with position limits and manual oversight. Mandiant validates alongside.",
+          consequence:
+            "Platform back online at 14:00 with strict position limits and dual sign-off on all trades over £500K. Mandiant complete validation on the original 72-hour timeline. No incidents. Trading operates at approximately 60% of normal volume. The compromise costs approximately £900K against the worst case but maintains the security boundary.",
+          rank: 2,
+          recapFragment: "phased trading return with position limits during Mandiant validation",
+        },
+        {
+          key: "C",
+          label:
+            "Hold the 72 hours. The commercial cost is real but the reinfection risk is unacceptable. Trading resumes Friday morning.",
+          consequence:
+            "Manual operations continue. Total commercial cost of the security hold approaches £1M. The Head of Trading is furious. The CFO is unhappy. The CISO and Mandiant complete validation cleanly. On Friday morning the platform resumes with full confidence. The CISO sends one message: 'Thank you.'",
+          rank: 1,
+          recapFragment: "holding the full 72-hour Mandiant validation window before trading resumed",
+        },
+        {
+          key: "D",
+          label:
+            "Extended caution. Hold trading until Monday next week. The audit needs to be more than just the 72-hour validation.",
+          consequence:
+            "Trading manual until Monday. Total commercial cost reaches £2.4M. Mandiant note the extension was beyond their recommendation. Two counterparties reduce their daily trading lines with Veridian by 15% citing 'operational concerns.' The over-caution itself creates a small but lasting market signal.",
+          rank: 3,
+          recapFragment: "extending the trading hold beyond Mandiant's recommended validation window",
+        },
+      ],
+    },
+    {
+      id: "rwg-recovery-triage",
+      commandTier: "STRATEGIC",
+      order: 320,
+      scenarioDay: 4,
+      scenarioTime: "11:30",
+      title: "Day 4, 11:30 - The Board's Recovery Vote",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-letter" },
+        { optionKey: "B", nextInjectId: "rwg-letter" },
+        { optionKey: "C", nextInjectId: "rwg-letter" },
+        { optionKey: "D", nextInjectId: "rwg-letter" },
+      ],
+      timerMinutes: 12,
+      recapLine: "the board prioritised recovery by {{recapFragment}}",
+      body: `Day 4, 11:30. The board has convened a forty-minute working session. There is one question on the agenda.
+
+Mandiant cannot restore everything at once. Their team has the capacity to fully harden and bring online four systems before the end of next week. There are seven candidates. The board has to pick four.
+
+Each NED has a view. The CEO has to land it.`,
+      facilitatorNotes: `This is the genuine board-level recovery decision and the first fork in Day 4. The choice the team makes routes to a different consequence inject - billing-first, portal-first, trading-first, or operations-first - and each tells a different story about what the company values.
+
+The seven systems and what each one affects:
+- Billing: cash flow, direct debit relationships, customer trust on accounts
+- Customer portal: service perception, ability for customers to self-serve
+- Trading platform: revenue, market position, FCA reporting
+- Internal HR and email: staff communications, return to normal operations
+- PSR management system: ongoing welfare for vulnerable customers (still being managed manually)
+- Reporting and analytics: regulatory submissions, board MI
+- Field operations dispatch: engineer routing, breakdown response
+
+There is no single right answer here. There are four defensible answers and one wrong one (D - pick by board politics rather than principle).
+
+A: Billing-first is the cash-flow conservative answer. The CFO will support this.
+B: Portal-first is the customer-experience answer. The CCO will support this.
+C: Trading-first is the commercial answer that almost mirrors yesterday's trading decision.
+D: Operations-first prioritises staff and field engineers - the answer most defensible to the regulator and the press.
+
+Push the room to argue. The decision is not technical - it is what the board says the company is for, in the immediate aftermath of nearly losing it.`,
+      targetRoles: ["CEO", "CFO", "CCO", "COO"],
+      expectedKeywords: ["billing", "portal", "PSR", "operations", "field", "vulnerable", "trading"],
+      delayMinutes: 0,
+      artifact: {
+        type: "board_portal",
+        boardPortalTitle: "Recovery Sequencing - Board Working Decision",
+        boardPortalMeeting: "Veridian Power Plc - Recovery Steering, 16 April 2026",
+        boardPortalAgenda: `Board to determine the order of system recovery within Mandiant's capacity. Four of the seven candidates will be hardened and restored before end of week:
+
+1. Billing - affects cash flow and direct debit relationships
+2. Customer portal - affects self-service and service perception
+3. Trading platform - affects revenue and FCA reporting
+4. HR and email - affects internal communications and operations
+5. PSR management - currently being run manually for 84,247 vulnerable customers
+6. Reporting and analytics - affects regulatory submissions
+7. Field operations dispatch - affects engineer routing and breakdown response
+
+CFO recommendation: 1, 3, 6, 7
+CCO recommendation: 2, 5, 4, 1
+COO recommendation: 7, 5, 4, 1
+CISO recommendation: cannot make this call - needs business prioritisation`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Cash flow first: billing, trading platform, reporting, field operations. Restore the things that affect the balance sheet.",
+          consequence:
+            "The CFO is satisfied. The CCO is not. By Friday, billing is running again and direct debits process normally. But the PSR system is still being managed manually by an exhausted team and the customer portal stays down - meaning every welfare query goes to the call centre. The Times runs a Sunday piece headlined 'Veridian's recovery puts shareholders before the vulnerable.'",
+          rank: 3,
+          recapFragment: "prioritising cash flow systems - billing, trading, reporting, field operations",
+        },
+        {
+          key: "B",
+          label:
+            "Customer-facing first: portal, PSR management, HR and email, billing. The people we wronged come back online first.",
+          consequence:
+            "The CCO is satisfied. The CFO is concerned. By Friday, the customer portal is back and the PSR system has its software-supported welfare workflow back in place. Cash flow takes a hit - manual billing reconciliation costs an additional £400K. Caroline Wu writes a note to the board: 'The choice reflected the values we should aspire to. It will not be free.'",
+          rank: 1,
+          recapFragment: "prioritising customer-facing systems - portal, PSR management, HR, billing",
+        },
+        {
+          key: "C",
+          label:
+            "Revenue first: trading platform, billing, reporting, field operations. The company has to function before it can serve.",
+          consequence:
+            "The CFO and Head of Trading are pleased. The CCO and COO are not. The trading platform comes back online on schedule. But the PSR welfare team are still running manually on Day 6 of the incident. One PSR customer is missed during the outage and dies of unrelated causes on Saturday. The press do not draw a direct line, but the family does.",
+          rank: 4,
+          recapFragment: "prioritising revenue systems - trading, billing, reporting, field operations",
+        },
+        {
+          key: "D",
+          label:
+            "Operations first: field operations dispatch, PSR management, HR and email, billing. Engineers and welfare before anything else.",
+          consequence:
+            "The COO is satisfied. The CFO is anxious but accepting. By Friday, every field engineer is on the proper dispatch system and the PSR team is back on software. The trading platform is still offline. The CFO presents a £1.4M operational cost figure at Monday's board call. The Audit Committee accepts it. Ofgem's eventual review notes the prioritisation choice favourably.",
+          rank: 1,
+          recapFragment: "prioritising operations and welfare systems - field dispatch, PSR, HR, billing",
+        },
+      ],
+    },
+    {
+      id: "rwg-back-announce",
+      commandTier: "STRATEGIC",
+      order: 325,
+      scenarioDay: 4,
+      scenarioTime: "16:00",
+      title: "Day 4, 16:00 - We're Back - Or Are We?",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-security-vote" },
+        { optionKey: "B", nextInjectId: "rwg-security-vote" },
+        { optionKey: "C", nextInjectId: "rwg-security-vote" },
+        { optionKey: "D", nextInjectId: "rwg-security-vote" },
+      ],
+      timerMinutes: 8,
+      recapLine: "handled the 'we're back' announcement by {{recapFragment}}",
+      body: `Day 4, 16:00. Two hours after the letter has gone to the printer.
+
+Systems restoration: 94%. The CCO has drafted a statement announcing return to normal service. The CLO is asking it not to be published.
+
+The FCA's market disclosure rules require listed companies to communicate material information accurately. 'Normal service restored' at 94% creates regulatory exposure if anything in the remaining 6% subsequently fails.`,
+      facilitatorNotes: `The 'we're back' announcement is one of the most under-considered decisions in incident response. The instinct is to declare victory as soon as the major systems are back. The regulatory and reputational risk is in the gap between 'mostly working' and 'fully restored.'
+
+The CLO and the CCO are in genuine conflict here. The CLO is right that 'normal service' at 94% is a regulatory disclosure problem if the remaining 6% fails. The CCO is right that customers and staff need to see leadership declare the active phase is over.
+
+The correct answer is B (qualified statement). It threads the needle - acknowledges progress without overcommitting. Option A (full announcement) is what frightened executives do because they want the story to end. Option D (no announcement) extends the crisis perception unnecessarily.
+
+Watch the CLO and CCO argument. If the CEO sides with the CCO too quickly, push back: 'Walk me through what happens if the call centre system fails on Saturday after the announcement.'`,
+      targetRoles: ["CEO", "CLO", "CCO"],
+      expectedKeywords: ["94%", "FCA", "qualified", "disclosure", "normal service", "material"],
+      delayMinutes: 0,
+      artifact: {
+        type: "regulator_portal",
+        regulatorPortalTitle: "Draft Market Announcement - FCA Disclosure Review",
+        regulatorPortalAgency: "Veridian Power Plc - Corporate Communications",
+        regulatorCaseRef: "VRD-COMMS-2026-D4-014",
+        regulatorPortalBody: `DRAFT MARKET ANNOUNCEMENT (CCO version)
+
+'Veridian Power Plc confirms that following the cyber incident notified on 14 April 2026, full system restoration has been achieved. Normal service has resumed across all customer-facing platforms and trading operations. We are grateful to our customers and colleagues for their patience.'
+
+- DISCLOSURE REVIEW (CLO note):
+
+1. 'Full system restoration' is not accurate. Current restoration: 94%. The PSR management system, reporting analytics, and one billing subsystem remain in manual fallback.
+
+2. 'Normal service' is misleading. The customer portal is operating with reduced functionality. Welfare cases are still being routed through a manual triage workflow.
+
+3. If any unrestored system subsequently fails or causes customer harm, this announcement will be cited in regulatory and litigation proceedings as evidence of inaccurate disclosure.
+
+4. Recommendation: do not publish in current form. A qualified statement is preferable to the risk this creates.`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "Publish the CCO's statement. Systems are functionally back. Customers need to see leadership declare it.",
+          consequence:
+            "The statement publishes at 17:00. Coverage is positive. Saturday morning at 09:14, the PSR welfare line goes down for 47 minutes because of a related fault. Sandra Thornton's daughter - the CEO had called her on Day 2 - cannot get through and tries the press. The Sunday Times runs: 'Veridian's premature victory lap as glitches return.' The FCA's market integrity team opens a review of the Friday disclosure.",
+          rank: 4,
+          recapFragment: "publishing the full 'normal service restored' announcement at 94% restoration",
+        },
+        {
+          key: "B",
+          label:
+            "Qualified statement. Acknowledge significant progress, name what remains in fallback, set expectations for full restoration.",
+          consequence:
+            "The qualified statement publishes at 17:30. Coverage is more muted but the FCA review team note the accuracy and the proactive disclosure of remaining gaps. When the PSR welfare line glitches on Saturday morning, the company is already on record that the system is not fully restored. The story does not run. The Sunday papers carry a balanced piece about the recovery.",
+          rank: 1,
+          recapFragment: "publishing a qualified statement acknowledging both progress and remaining gaps",
+        },
+        {
+          key: "C",
+          label:
+            "Internal-only statement to staff today. Public statement on Monday after the weekend stability test.",
+          consequence:
+            "The internal email lands at 17:00. Staff are reassured. The market remains uninformed and the share price drifts another 0.8% on rumour. By Monday morning, when the public statement publishes, two analysts have already written speculative pieces about why Veridian has stayed silent. The statement lands cleanly but the silence cost something.",
+          rank: 2,
+          recapFragment: "issuing an internal staff statement and waiting until Monday for the public announcement",
+        },
+        {
+          key: "D",
+          label:
+            "No statement. The CLO is right. Operate quietly until restoration is genuinely complete. Let the data speak.",
+          consequence:
+            "Silence holds through Friday and the weekend. Two journalists write speculative pieces about 'Veridian's continuing crisis.' The share price stays soft. Caroline Wu raises the absence of communication at Monday's board call: 'The lack of any statement created a vacuum that was filled by speculation. That is itself a communications choice.'",
+          rank: 3,
+          recapFragment: "issuing no announcement and letting restoration speak for itself",
+        },
+      ],
+    },
+    {
+      id: "rwg-security-vote",
+      commandTier: "STRATEGIC",
+      order: 330,
+      scenarioDay: 4,
+      scenarioTime: "18:00",
+      title: "Day 4, 18:00 - What Did We Actually Learn?",
+      isDecisionPoint: true,
+      branches: [
+        { optionKey: "A", nextInjectId: "rwg-ciso-final" },
+        { optionKey: "B", nextInjectId: "rwg-ciso-final" },
+        { optionKey: "C", nextInjectId: "rwg-ciso-final" },
+        { optionKey: "D", nextInjectId: "rwg-ciso-final" },
+      ],
+      timerMinutes: 12,
+      recapLine: "voted on long-term security investment at {{recapFragment}}",
+      body: `Day 4, 18:00. The board has reconvened for what should be the final session of the active week.
+
+The CISO has produced three investment proposals for the post-incident security uplift. £5M targeted remediation. £15M full programme. £32M complete infrastructure overhaul.
+
+The board has to vote. The signal this sends to regulators, insurers, and the market is at least as important as the budget itself.`,
+      facilitatorNotes: `This is the last decision of the active scenario and it determines whether the company has actually learned anything.
+
+The £5M proposal fixes the specific gaps that were exploited. The £15M proposal funds a full programme - new SOC, expanded security team, third-party detection and response. The £32M proposal is a complete infrastructure overhaul that signals to every external party that the company has internalised the lesson at the highest possible level.
+
+None of these are wrong answers in isolation. The interesting question is what the signal means in context. £5M after a major incident with a known pen test finding that was deferred reads as defensive and minimal. £32M reads as overcommitting beyond what the underlying business can sustain. £15M is the considered answer - substantial, programmatic, and credible to external observers.
+
+Caroline Wu will push hard on whichever option the CEO recommends. The CFO will have a view on cash. The CISO will support the £15M proposal as the operationally correct answer. Listen to the CEO's framing - are they investing because they have to, or because they want to?
+
+This is the inject that most influences the framing of the Day 5 finale. A team that votes £5M after everything they have learned reads as having missed the lesson. A team that votes £15M reads as having understood it.`,
+      targetRoles: ["CEO", "CFO", "CISO"],
+      expectedKeywords: ["£15M", "£5M", "£32M", "Caroline Wu", "SOC", "programme", "signal", "pen test"],
+      delayMinutes: 0,
+      artifact: {
+        type: "board_portal",
+        boardPortalTitle: "Post-Incident Security Investment - Board Vote",
+        boardPortalMeeting: "Veridian Power Plc - Emergency Board, 16 April 2026, 18:00",
+        boardPortalAgenda: `Vote on post-incident security investment package. CISO has submitted three options.
+
+OPTION A: £5M - Targeted Remediation
+Fix the specific gaps identified by Mandiant. Replace the contractor VPN. Patch the known vulnerabilities. Conduct one external penetration test annually.
+
+OPTION B: £15M - Full Programme
+New Security Operations Centre with 24/7 monitoring. Expanded security team (12 hires). Third-party managed detection and response. Quarterly pen testing. Mandatory remediation governance with board oversight. Three-year programme.
+
+OPTION C: £32M - Infrastructure Overhaul
+Complete migration to a zero-trust architecture. Replacement of all legacy systems flagged in the Mandiant review. New cyber executive role reporting to the CEO. Five-year programme.
+
+CISO recommendation: B - sufficient to address the structural issues without overcommitting to changes the business cannot sustain.
+CFO recommendation: A or B - C is not financeable from operating cash and would require either disposal or an equity raise.
+Audit Committee Chair (Wu): the board needs to think hard about what the appropriate response signal is given the pen test finding.`,
+      },
+      decisionOptions: [
+        {
+          key: "A",
+          label:
+            "£5M. Fix what broke. Replace the contractor VPN. Annual pen test. The minimum credible response.",
+          consequence:
+            "The vote passes 6-3. Caroline Wu and two other NEDs vote against. The package is announced on Monday and lands quietly. Two security analysts publish notes describing the response as 'underwhelming given the scale of the incident.' Beazley's renewal in November includes a higher premium and tighter exclusions. The Audit Committee Chair writes a private letter to the Chairman expressing concern.",
+          rank: 4,
+          recapFragment: "the £5M targeted remediation level - fixing only the specific gaps that were exploited",
+        },
+        {
+          key: "B",
+          label:
+            "£15M. Full programme. New SOC, expanded team, managed detection. Three-year commitment.",
+          consequence:
+            "The vote passes unanimously. The announcement on Monday lands well. Beazley's renewal in November is offered at improved terms based on the strengthened control environment. The Audit Committee's annual report cites the investment package as evidence of board accountability. The CISO has the resources she has been requesting for three years.",
+          rank: 1,
+          recapFragment: "the £15M full programme - new SOC, expanded team, three-year commitment",
+        },
+        {
+          key: "C",
+          label:
+            "£32M. Complete overhaul. Zero-trust architecture. New cyber executive at the CEO's table. Five-year programme.",
+          consequence:
+            "The vote passes 5-4. The CFO votes against. The package commits the company to a level of spending the underlying business will struggle to sustain alongside its other capital priorities. Two analysts upgrade their security ratings on Veridian; one downgrades their balance sheet view. Within nine months, the programme is quietly rescoped down to approximately £18M of actually-funded work.",
+          rank: 3,
+          recapFragment: "the £32M infrastructure overhaul - beyond the level the business could realistically sustain",
+        },
+        {
+          key: "D",
+          label:
+            "Defer the vote. The board needs more time to consider this in light of the regulator's enforcement decision.",
+          consequence:
+            "Wu accepts the deferral with visible reluctance. The vote is moved to the May board meeting. In the intervening four weeks, Beazley issue their renewal terms based on the assumption that no significant uplift will occur. The renewal is significantly worse than it would have been. The May board vote, when it comes, is for £8M - a compromise that pleases no one.",
+          rank: 4,
+          recapFragment: "deferring the security investment vote to the May board meeting",
+        },
+      ],
+    },
+    {
+      id: "rwg-ciso-final",
+      commandTier: "STRATEGIC",
+      order: 395,
+      scenarioDay: 5,
+      scenarioTime: "09:00",
+      title: "Day 5, 09:00 - What I'm Going to Tell the Board",
+      isDecisionPoint: false,
+      body: `Day 5, 09:00. Sarah Khatun knocks on the CEO's office door at 09:00. She has been on this incident for 99 hours.
+
+She is presenting to the full board at 14:00. She wants ten minutes alone with the CEO first.
+
+She is not asking for a decision. She is asking the CEO to hear something before anyone else does.`,
+      facilitatorNotes: `No vote. This is the convergence point between the technical and executive arcs and the inject the room remembers.
+
+The CISO has been a supporting character. In this inject she is the central character. She has prepared one slide for the board. The slide has nothing on it about the attacker. Nothing about the recovery. The slide is a single line of text.
+
+'The pen test finding was on my desk for fourteen months. I did not push hard enough.'
+
+She is telling the CEO before she tells the board that she is going to take personal responsibility for the deferral. She is not resigning. She is naming the thing the company has been dancing around since Day 1.
+
+Let the room sit with what this means. Ask the CEO: what do you say to her? What do you say to the board after she has said this? Does the company have a culture where this kind of accountability is welcomed or punished?
+
+This inject does not have ranked options because it is not asking the CEO to make a decision. It is asking the room to feel what genuine senior accountability looks like and what the executive team should do with it.
+
+The Day 5 finale follows in 7 hours. The CISO's framing changes how the room hears it.`,
+      targetRoles: ["CEO", "CISO"],
+      expectedKeywords: ["Sarah Khatun", "pen test", "fourteen months", "accountability", "responsibility", "board"],
+      delayMinutes: 0,
+      branches: [{ optionKey: "A", nextInjectId: "rwg-i7" }],
+      artifact: {
+        type: "internal_memo",
+        memoTitle: "Personal Note - Pre-Board Brief",
+        memoClassification: "EYES ONLY - CEO",
+        memoFrom: "S. Khatun, Chief Information Security Officer",
+        memoTo: "CEO, Veridian Power",
+        memoDate: "17 April 2026, 08:55",
+        memoRef: "PRIV-2026-CISO-FINAL",
+        memoBody: `CEO,
+
+I am presenting to the board at 14:00.
+
+My slide has one line on it.
+
+'The pen test finding was on my desk for fourteen months. I did not push hard enough.'
+
+I am not resigning. I want to keep doing this job and I think I am the right person to do it now. But I am not willing to let the company narrative on the pen test treat the finding as an organisational accident or a CTO decision in isolation.
+
+I saw the finding. I accepted the deprioritisation. I did not escalate when the deprioritisation extended past 90 days.
+
+When the board asks who knew, I am going to say I knew. When they ask why it was not fixed, I am going to say I did not push hard enough.
+
+I am telling you first because the board will ask you what you knew and when. I want you to know that I have decided what I am going to say so you can decide what you are going to say.
+
+Sarah`,
+      },
+      decisionOptions: [],
+    },
+
   ],
 };
